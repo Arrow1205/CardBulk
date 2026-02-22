@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CardVault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: rgba(255,255,255,0.07);
+    --accent: #6c63ff;
+    --accent2: #ff6b6b;
+    --gold: #f5c542;
+    --text: #f0f0f5;
+    --text-dim: rgba(240,240,245,0.45);
+    --text-mid: rgba(240,240,245,0.7);
+    --radius: 16px;
+    --tab-h: 76px;
+    --safe-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; }
+
+  /* ---- SCROLL CONTAINERS ---- */
+  .page { position:absolute; inset:0; bottom:var(--tab-h); overflow-y:auto; overflow-x:hidden; display:none; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
+  .page.active { display:block; }
+  .page-inner { padding: 0 0 24px; min-height:100%; }
+
+  /* ---- TAB BAR ---- */
+  .tabbar {
+    position:fixed; bottom:0; left:0; right:0; height:var(--tab-h);
+    background:rgba(19,19,26,0.92); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    display:flex; align-items:flex-start; padding-top:10px;
+    padding-bottom: var(--safe-bottom);
+    z-index:100;
+  }
+  .tab-btn {
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    background:none; border:none; cursor:pointer; color:var(--text-dim);
+    font-family:'DM Sans',sans-serif; font-size:10px; font-weight:500;
+    padding:0; transition:color .2s;
+  }
+  .tab-btn.active { color:var(--accent); }
+  .tab-btn svg { width:24px; height:24px; stroke-width:1.8; }
+  .tab-btn.scan-btn {
+    color: var(--text);
+    position:relative; top:-18px;
+  }
+  .scan-circle {
+    width:56px; height:56px; border-radius:50%;
+    background:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---- HEADER ---- */
+  .page-header {
+    padding: 56px 20px 16px;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .page-title { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; letter-spacing:-0.5px; }
+  .page-subtitle { font-size:13px; font-weight:300; color:var(--text-dim); }
+
+  /* ---- SEARCH BAR ---- */
+  .search-wrap { padding: 0 20px 16px; }
+  .search-bar {
+    background:var(--surface2); border:1px solid var(--border); border-radius:12px;
+    display:flex; align-items:center; gap:10px; padding:0 14px; height:44px;
+  }
+  .search-bar svg { color:var(--text-dim); flex-shrink:0; width:16px; height:16px; }
+  .search-bar input {
+    background:none; border:none; outline:none; color:var(--text);
+    font-family:'DM Sans',sans-serif; font-size:15px; width:100%;
+  }
+  .search-bar input::placeholder { color:var(--text-dim); }
+
+  /* ---- SECTION LABEL ---- */
+  .section-label {
+    font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+    color:var(--text-dim); letter-spacing:1.5px; text-transform:uppercase;
+    padding: 0 20px; margin-bottom:12px;
+  }
+
+  /* ---- FAVORITES SLIDER ---- */
+  .favs-scroll { overflow-x:auto; padding: 0 20px 4px; display:flex; gap:14px; scrollbar-width:none; }
+  .favs-scroll::-webkit-scrollbar { display:none; }
+  .fav-card {
+    flex-shrink:0; width:130px; height:190px; border-radius:12px; overflow:hidden;
+    position:relative; cursor:pointer; background:var(--surface2);
+    border:1px solid var(--border);
+  }
+  .fav-card img { width:100%; height:100%; object-fit:cover; }
+  .fav-card-overlay {
+    position:absolute; inset:0; background:rgba(0,0,0,.55);
+    display:flex; flex-direction:column; justify-content:flex-end; padding:10px;
+  }
+  .fav-card-name { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; line-height:1.2; }
+  .fav-card-club { font-size:9px; font-weight:300; color:rgba(255,255,255,.6); margin-top:2px; }
+  .fav-badge { position:absolute; top:8px; right:8px; }
+  .badge {
+    display:inline-flex; align-items:center; gap:3px;
+    background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.15);
+    border-radius:20px; padding:3px 7px; font-size:9px; font-weight:500;
+    backdrop-filter:blur(8px);
+  }
+  .badge.auto { color:var(--gold); border-color:rgba(245,197,66,.3); }
+  .badge.patch { color:#6ee7b7; border-color:rgba(110,231,183,.3); }
+  .badge.num { color:#93c5fd; border-color:rgba(147,197,253,.3); }
+  .fav-placeholder {
+    width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; color:var(--text-dim); font-size:11px; text-align:center; padding:10px;
+  }
+
+  /* ---- RECENT CARDS LIST ---- */
+  .cards-list { padding: 0 20px; display:flex; flex-direction:column; gap:12px; }
+  .card-item {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    display:flex; gap:14px; padding:12px; cursor:pointer;
+    transition:background .15s;
+  }
+  .card-item:active { background:var(--surface2); }
+  .card-thumb {
+    width:56px; height:80px; border-radius:8px; object-fit:cover;
+    background:var(--surface2); flex-shrink:0; border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; color:var(--text-dim);
+    font-size:22px;
+  }
+  .card-thumb img { width:100%; height:100%; object-fit:cover; border-radius:8px; }
+  .card-info { flex:1; display:flex; flex-direction:column; justify-content:center; gap:4px; }
+  .card-player { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; line-height:1.2; }
+  .card-club { font-size:12px; font-weight:300; color:var(--text-dim); display:flex; align-items:center; gap:6px; }
+  .club-logo { width:18px; height:18px; border-radius:50%; object-fit:cover; }
+  .card-badges { display:flex; gap:5px; flex-wrap:wrap; margin-top:4px; }
+  .card-meta { font-size:11px; color:var(--text-dim); display:flex; gap:6px; margin-top:2px; }
+
+  /* ---- COLLECTIONS PAGE ---- */
+  .collections-header { display:flex; align-items:center; justify-content:space-between; padding: 56px 20px 16px; }
+  .btn-icon {
+    width:36px; height:36px; border-radius:10px; background:var(--surface2);
+    border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--text);
+  }
+  .filters-row { padding: 0 20px 16px; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
+  .filters-row::-webkit-scrollbar { display:none; }
+  .filter-tag {
+    flex-shrink:0; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:500;
+    border:1px solid var(--border); background:var(--surface2); color:var(--text-mid);
+    cursor:pointer; transition:all .15s;
+  }
+  .filter-tag.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  /* FOLDER GRID */
+  .folders-grid { padding: 0 20px; display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+  .folder-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px; cursor:pointer; transition:background .15s; position:relative; overflow:hidden;
+  }
+  .folder-card:active { background:var(--surface2); }
+  .folder-icon { font-size:28px; margin-bottom:8px; }
+  .folder-name { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+  .folder-count { font-size:11px; color:var(--text-dim); font-weight:300; margin-top:2px; }
+  .folder-accent { position:absolute; bottom:-20px; right:-10px; font-size:60px; opacity:.06; }
+  .folder-add {
+    border-style:dashed; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:6px; min-height:90px; color:var(--text-dim);
+  }
+  .folder-add-icon { font-size:24px; }
+  .folder-add span { font-size:12px; font-weight:400; }
+
+  .colls-grid { padding: 0 20px; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .coll-thumb {
+    aspect-ratio: 2/3; border-radius:10px; overflow:hidden; position:relative;
+    background:var(--surface2); cursor:pointer;
+  }
+  .coll-thumb img { width:100%; height:100%; object-fit:cover; }
+  .bulk-check {
+    position:absolute; top:6px; left:6px; width:20px; height:20px;
+    border-radius:50%; border:2px solid white; background:transparent;
+    display:none; align-items:center; justify-content:center;
+  }
+  .bulk-mode .bulk-check { display:flex; }
+  .bulk-check.checked { background:var(--accent); border-color:var(--accent); }
+
+  /* ---- MODAL / SHEET ---- */
+  .sheet-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:200;
+    display:none; align-items:flex-end; backdrop-filter:blur(4px);
+  }
+  .sheet-overlay.open { display:flex; }
+  .sheet {
+    width:100%; background:var(--surface); border-radius:24px 24px 0 0;
+    padding: 12px 20px 40px; max-height:92vh; overflow-y:auto;
+    animation: slideUp .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+  .sheet-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+  .sheet-title { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; margin-bottom:20px; }
+
+  /* FORM */
+  .form-group { margin-bottom:16px; }
+  .form-label { font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; display:block; }
+  .form-input {
+    width:100%; background:var(--surface2); border:1px solid var(--border);
+    border-radius:10px; padding:12px 14px; color:var(--text); font-family:'DM Sans',sans-serif;
+    font-size:15px; outline:none; transition:border-color .2s;
+  }
+  .form-input:focus { border-color:var(--accent); }
+  .form-input::placeholder { color:var(--text-dim); }
+  .form-select {
+    width:100%; background:var(--surface2); border:1px solid var(--border);
+    border-radius:10px; padding:12px 14px; color:var(--text); font-family:'DM Sans',sans-serif;
+    font-size:15px; outline:none; appearance:none;
+  }
+  .toggle-row { display:flex; gap:10px; }
+  .toggle-btn {
+    flex:1; padding:10px; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface2); color:var(--text-dim); font-size:12px; font-weight:600;
+    cursor:pointer; text-align:center; transition:all .15s;
+  }
+  .toggle-btn.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  /* PHOTO UPLOAD */
+  .photo-upload {
+    width:100%; aspect-ratio:3/2; border-radius:12px; border:2px dashed var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px; color:var(--text-dim); cursor:pointer; position:relative; overflow:hidden;
+    background:var(--surface2); transition:border-color .2s;
+  }
+  .photo-upload:hover { border-color:var(--accent); }
+  .photo-upload img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .photo-upload-icon { font-size:32px; }
+  .photo-upload span { font-size:13px; }
+  .photo-upload input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .crop-btn {
+    margin-top:8px; width:100%; padding:10px; border-radius:10px;
+    background:var(--surface2); border:1px solid var(--border); color:var(--text-mid);
+    font-size:13px; font-weight:500; cursor:pointer;
+  }
+
+  /* BTN PRIMARY */
+  .btn-primary {
+    width:100%; padding:16px; border-radius:14px;
+    background:var(--accent);
+    border:none; color:#fff; font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
+    cursor:pointer; margin-top:8px; letter-spacing:.3px;
+  }
+
+  /* ---- CARD DETAIL VIEW ---- */
+  .card-detail { position:fixed; inset:0; z-index:150; background:var(--bg); display:none; flex-direction:column; }
+  .card-detail.open { display:flex; }
+
+  .detail-header {
+    position:absolute; top:0; left:0; right:0; z-index:10;
+    padding:52px 20px 16px; display:flex; align-items:center; gap:12px;
+    background:var(--surface);
+  }
+  .back-btn {
+    width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.08);
+    border:none; color:var(--text); cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+
+  .card-3d-scene {
+    width:100%; flex:1; display:flex; align-items:center; justify-content:center;
+    perspective:1200px; overflow:hidden;
+    background:var(--surface);
+    position:relative;
+  }
+  .card-3d {
+    width:220px; height:320px; border-radius:16px; overflow:hidden;
+    position:relative; transform-style:preserve-3d;
+    box-shadow:0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08);
+    transition:transform .08s linear;
+    will-change:transform;
+  }
+  .card-3d img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .card-3d-shine {
+    position:absolute; inset:0; border-radius:16px;
+    background:rgba(255,255,255,0.06);
+    pointer-events:none;
+  }
+  .card-3d-holographic {
+    position:absolute; inset:0; border-radius:16px; opacity:0;
+    background:linear-gradient(135deg, #ff006688 0%, #00ff8888 25%, #0088ff88 50%, #ff00ff88 75%, #ff006688 100%);
+    background-size:400% 400%; pointer-events:none; mix-blend-mode:screen;
+    transition:opacity .3s;
+  }
+  .card-3d:hover .card-3d-holographic, .card-3d.tilting .card-3d-holographic { opacity:.4; animation:holographic 3s linear infinite; }
+  @keyframes holographic { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  .card-3d-placeholder {
+    width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:12px; background:var(--surface2); color:var(--text-dim);
+  }
+  .card-3d-placeholder svg { width:48px; height:48px; opacity:.4; }
+
+  .detail-info {
+    background:var(--surface); border-radius:24px 24px 0 0; padding:24px 20px 90px;
+    overflow-y:auto; max-height:55vh;
+  }
+  .detail-name { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; letter-spacing:-.5px; line-height:1.1; }
+  .detail-club { font-size:14px; font-weight:300; color:var(--text-dim); margin-top:6px; display:flex; align-items:center; gap:8px; }
+  .detail-club .club-logo { width:24px; height:24px; }
+  .detail-badges { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .detail-section { margin-top:20px; }
+  .detail-section-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .detail-chip { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+  .detail-chip-label { font-size:10px; color:var(--text-dim); font-weight:300; margin-bottom:2px; }
+  .detail-chip-value { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+  .detail-actions { display:flex; gap:10px; margin-top:20px; }
+  .btn-secondary {
+    flex:1; padding:14px; border-radius:12px; background:var(--surface2);
+    border:1px solid var(--border); color:var(--text); font-family:'Syne',sans-serif;
+    font-size:14px; font-weight:700; cursor:pointer;
+  }
+  .btn-accent {
+    flex:1; padding:14px; border-radius:12px; background:var(--accent);
+    border:none; color:#fff; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; cursor:pointer;
+  }
+
+  /* PLAYER AI SHEET */
+  .player-ai { padding:4px 0; }
+  .player-ai-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+  .player-avatar { width:56px; height:56px; border-radius:50%; background:var(--surface2); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .player-ai-name { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; }
+  .player-ai-sub { font-size:12px; font-weight:300; color:var(--text-dim); }
+  .ai-section { margin-bottom:16px; }
+  .ai-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin-bottom:8px; }
+  .ai-stat-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); }
+  .ai-stat-row:last-child { border:none; }
+  .ai-stat-label { font-size:13px; font-weight:300; color:var(--text-mid); }
+  .ai-stat-val { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; }
+  .ai-chart { height:80px; margin:10px 0; display:flex; align-items:flex-end; gap:6px; }
+  .ai-bar { flex:1; border-radius:4px 4px 0 0; background:var(--surface2); position:relative; min-height:4px; }
+  .ai-bar.current { background:var(--accent); }
+  .ai-bar-label { position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:9px; color:var(--text-dim); white-space:nowrap; }
+  .ai-clubs-list { display:flex; flex-direction:column; gap:6px; }
+  .ai-club-item { display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--surface2); border-radius:10px; }
+  .ai-club-logo { width:28px; height:28px; border-radius:50%; background:var(--border); display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .ai-club-info { flex:1; }
+  .ai-club-name { font-size:13px; font-weight:700; font-family:'Syne',sans-serif; }
+  .ai-club-years { font-size:11px; color:var(--text-dim); font-weight:300; }
+  .ai-loading { text-align:center; padding:30px; color:var(--text-dim); }
+  .ai-spinner { width:24px; height:24px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto 12px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  /* CLUB SELECTOR */
+  .clubs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
+  .club-option {
+    background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+    padding:10px 6px; display:flex; flex-direction:column; align-items:center; gap:5px;
+    cursor:pointer; transition:all .15s;
+  }
+  .club-option.selected { border-color:var(--accent); background:rgba(108,99,255,.12); }
+  .club-option-logo { font-size:24px; }
+  .club-option-name { font-size:9px; text-align:center; font-weight:500; color:var(--text-mid); }
+
+  /* CROP MODAL */
+  .crop-overlay { position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.95); display:none; flex-direction:column; align-items:center; justify-content:center; }
+  .crop-overlay.open { display:flex; }
+  .crop-canvas-wrap { position:relative; overflow:hidden; width:280px; height:400px; border-radius:12px; }
+  .crop-img { width:100%; height:100%; object-fit:cover; user-select:none; }
+  .crop-frame { position:absolute; inset:20px; border:2px solid white; border-radius:8px; pointer-events:none; }
+  .crop-actions { display:flex; gap:12px; margin-top:24px; }
+  .crop-btn-action { padding:12px 32px; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; border:none; }
+
+  /* STAR / FAV */
+  .fav-btn { position:absolute; top:8px; right:8px; background:rgba(0,0,0,.5); border:none; color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; }
+  .fav-btn.starred { color:var(--gold); }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:calc(var(--tab-h) + 16px); left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--surface2); border:1px solid var(--border); border-radius:24px;
+    padding:10px 20px; font-size:13px; font-weight:500;
+    z-index:400; opacity:0; transition:all .3s; white-space:nowrap;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* EMPTY STATE */
+  .empty-state { text-align:center; padding:48px 24px; color:var(--text-dim); }
+  .empty-state-icon { font-size:56px; margin-bottom:16px; }
+  .empty-state h3 { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--text); margin-bottom:8px; }
+  .empty-state p { font-size:13px; font-weight:300; line-height:1.6; }
+
+  /* COLLECTION VIEW (inside folder) */
+  .coll-view { position:fixed; inset:0; z-index:140; background:var(--bg); display:none; flex-direction:column; overflow:hidden; }
+  .coll-view.open { display:flex; }
+  .coll-view-header { padding:52px 20px 16px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
+  .coll-view-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; flex:1; }
+  .coll-view-body { flex:1; overflow-y:auto; padding:0 20px 16px; }
+  .bulk-bar {
+    position:fixed; bottom:var(--tab-h); left:0; right:0; padding:12px 20px;
+    background:var(--surface); border-top:1px solid var(--border);
+    display:none; gap:10px; z-index:160;
+  }
+  .bulk-bar.show { display:flex; }
+
+  /* num. edition badge styling */
+  .num-badge { color:var(--gold); font-size:10px; font-weight:700; }
+
+  /* Responsive tap feedback */
+  @media (hover:none) {
+    .card-item:active, .folder-card:active, .fav-card:active { opacity:.8; }
+  }
+
+  /* scrollbar hidden globally */
+  ::-webkit-scrollbar { display:none; }
+</style>
+</head>
+<body>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-title">CardVault</div>
+      <div class="page-subtitle">Ta collection, sublimée</div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="home-search" type="text" placeholder="Rechercher un joueur, club…" oninput="homeSearch(this.value)">
+      </div>
+    </div>
+    <div style="margin-bottom:20px;">
+      <div class="section-label" style="margin-bottom:12px;">⭐ Favoris</div>
+      <div class="favs-scroll" id="favs-container">
+        <div class="fav-placeholder" style="width:280px;color:var(--text-dim);font-size:12px;font-weight:300;">Aucun favori pour le moment.<br>Marque des cartes avec ⭐</div>
+      </div>
+    </div>
+    <div class="section-label" style="margin-bottom:12px;">🕐 Derniers ajouts</div>
+    <div class="cards-list" id="recent-list">
+      <div class="empty-state" style="padding:24px;">
+        <div class="empty-state-icon">🃏</div>
+        <h3>Aucune carte</h3>
+        <p>Appuie sur + pour scanner<br>ou uploader ta première carte</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCANNER PAGE ===== -->
+<div class="page" id="page-scanner">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-title">Ajouter</div>
+      <div class="page-subtitle">Scanne ou uploade ta carte</div>
+    </div>
+    <div style="padding:0 20px;">
+      <div class="photo-upload" id="photo-upload-main">
+        <!-- hidden inputs -->
+        <input type="file" id="card-photo-input" accept="image/*" onchange="handlePhotoUpload(this)" style="display:none;">
+        <input type="file" id="card-camera-input" accept="image/*" capture="environment" onchange="handlePhotoUpload(this)" style="display:none;">
+        <div id="photo-preview-layer" style="display:none;position:absolute;inset:0;" onclick="showPhotoMenu()">
+          <img id="photo-preview-img" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+          <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:8px;padding:4px 10px;font-size:11px;color:#fff;">Changer</div>
+        </div>
+        <div id="photo-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div class="photo-upload-icon">📸</div>
+          <div style="display:flex;gap:10px;">
+            <button type="button" onclick="document.getElementById('card-camera-input').click()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">📷 Caméra</button>
+            <button type="button" onclick="document.getElementById('card-photo-input').click()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">🖼️ Bibliothèque</button>
+          </div>
+        </div>
+      </div>
+      <button class="crop-btn" onclick="openCrop()" id="crop-btn" style="display:none;">✂️ Recadrer la carte</button>
+
+      <div style="height:20px;"></div>
+
+      <div class="form-group">
+        <label class="form-label">Prénom</label>
+        <input class="form-input" id="f-prenom" type="text" placeholder="ex: Kylian">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nom</label>
+        <input class="form-input" id="f-nom" type="text" placeholder="ex: Mbappé">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Club</label>
+        <input class="form-input" id="f-club-search" type="text" placeholder="Rechercher un club…" oninput="filterClubs(this.value)" onfocus="showClubGrid()">
+        <div class="clubs-grid" id="clubs-grid" style="display:none;"></div>
+        <div id="selected-club-display" style="display:none;margin-top:10px;"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sport</label>
+        <select class="form-select" id="f-sport">
+          <option value="">Sélectionner</option>
+          <option value="football">⚽ Football</option>
+          <option value="basketball">🏀 Basketball</option>
+          <option value="tennis">🎾 Tennis</option>
+          <option value="baseball">⚾ Baseball</option>
+          <option value="hockey">🏒 Hockey</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numérotée</label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="toggle-row" style="flex:1;">
+            <button class="toggle-btn" id="num-non" onclick="toggleNum(false)">Non</button>
+            <button class="toggle-btn" id="num-oui" onclick="toggleNum(true)">Oui</button>
+          </div>
+          <input class="form-input" id="f-num" type="text" placeholder="/25" style="width:80px;display:none;" oninput="syncNum(this.value)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Spécificités</label>
+        <div class="toggle-row">
+          <button class="toggle-btn" id="tog-auto" onclick="toggleTag('auto')">✍️ Auto</button>
+          <button class="toggle-btn" id="tog-patch" onclick="toggleTag('patch')">🎯 Patch</button>
+          <button class="toggle-btn" id="tog-rookie" onclick="toggleTag('rookie')">🌟 Rookie</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Collection</label>
+        <select class="form-select" id="f-collection">
+          <option value="">Sans collection</option>
+          <option value="__new__">+ Créer une nouvelle…</option>
+        </select>
+      </div>
+      <div id="new-coll-input" style="display:none;margin-top:8px;">
+        <input class="form-input" id="f-new-coll" type="text" placeholder="Nom de la collection">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-input" id="f-notes" rows="3" placeholder="Valeur estimée, état, remarques…"></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveCard()">💾 Enregistrer la carte</button>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COLLECTION PAGE ===== -->
+<div class="page" id="page-collection">
+  <div class="page-inner">
+    <div class="collections-header">
+      <div>
+        <div class="page-title">Collection</div>
+        <div class="page-subtitle" id="coll-subtitle">0 cartes</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div class="btn-icon" onclick="toggleBulk()" id="bulk-toggle-btn" title="Sélection multiple">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="btn-icon" onclick="openNewFolder()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="coll-search" type="text" placeholder="Chercher une carte…" oninput="collSearch(this.value)">
+      </div>
+    </div>
+    <div class="filters-row" id="filters-row">
+      <div class="filter-tag active" onclick="setFilter('all', this)">Tout</div>
+      <div class="filter-tag" onclick="setFilter('auto', this)">✍️ Auto</div>
+      <div class="filter-tag" onclick="setFilter('patch', this)">🎯 Patch</div>
+      <div class="filter-tag" onclick="setFilter('rookie', this)">🌟 Rookie</div>
+      <div class="filter-tag" onclick="setFilter('num', this)">🔢 Numérotée</div>
+      <div class="filter-tag" onclick="setFilter('football', this)">⚽ Football</div>
+      <div class="filter-tag" onclick="setFilter('basketball', this)">🏀 Basketball</div>
+      <div class="filter-tag" onclick="setFilter('tennis', this)">🎾 Tennis</div>
+    </div>
+
+    <!-- FOLDERS -->
+    <div style="padding:0 20px 8px;"><div class="section-label" style="padding:0;margin-bottom:12px;">📁 Dossiers</div></div>
+    <div class="folders-grid" id="folders-grid">
+      <div class="folder-card folder-add" onclick="openNewFolder()">
+        <div class="folder-add-icon">📁</div>
+        <span>Nouveau dossier</span>
+      </div>
+    </div>
+
+    <!-- ALL CARDS GRID -->
+    <div style="padding:0 20px 8px;"><div class="section-label" style="padding:0;margin-bottom:12px;">🃏 Toutes les cartes</div></div>
+    <div class="colls-grid" id="coll-grid"></div>
+    <div id="coll-empty" class="empty-state" style="display:none;">
+      <div class="empty-state-icon">🔍</div>
+      <h3>Aucun résultat</h3>
+      <p>Essaie d'autres filtres ou termes de recherche</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB BAR ===== -->
+<div class="tabbar">
+  <button class="tab-btn active" onclick="navigate('home')" id="tab-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Accueil
+  </button>
+  <button class="tab-btn scan-btn" onclick="navigate('scanner')" id="tab-scanner">
+    <div class="scan-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="26" height="26"><path d="M5 3H3v2"/><path d="M19 3h2v2"/><path d="M5 21H3v-2"/><path d="M19 21h2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+    </div>
+    Scanner
+  </button>
+  <button class="tab-btn" onclick="navigate('collection')" id="tab-collection">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8l-1 4h10z"/></svg>
+    Collection
+  </button>
+</div>
+
+<!-- ===== CARD DETAIL ===== -->
+<div class="card-detail" id="card-detail">
+  <div class="detail-header">
+    <button class="back-btn" onclick="closeDetail()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </button>
+    <span id="detail-header-name" style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;"></span>
+    <button class="fav-btn" id="detail-fav-btn" style="position:static;width:32px;height:32px;background:rgba(255,255,255,.08);border:none;" onclick="toggleFav()">⭐</button>
+  </div>
+  <div class="card-3d-scene">
+    <div class="card-3d" id="card-3d">
+      <div id="card-3d-content" class="card-3d-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8l-1 4h10z"/></svg>
+        <span style="font-size:12px;color:var(--text-dim);">Aucune photo</span>
+      </div>
+      <div class="card-3d-shine"></div>
+      <div class="card-3d-holographic"></div>
+    </div>
+  </div>
+  <div class="detail-info">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div class="detail-name" id="detail-name" onclick="openPlayerAI()">—</div>
+        <div class="detail-club" id="detail-club">
+          <span id="detail-club-logo" style="font-size:20px;"></span>
+          <span id="detail-club-name">—</span>
+        </div>
+      </div>
+      <span id="detail-num-badge" class="num-badge" style="display:none;"></span>
+    </div>
+    <div class="detail-badges" id="detail-badges"></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Informations</div>
+      <div class="detail-grid">
+        <div class="detail-chip"><div class="detail-chip-label">Sport</div><div class="detail-chip-value" id="detail-sport">—</div></div>
+        <div class="detail-chip"><div class="detail-chip-label">Collection</div><div class="detail-chip-value" id="detail-coll">—</div></div>
+        <div class="detail-chip"><div class="detail-chip-label">Numérotée</div><div class="detail-chip-value" id="detail-numbered">—</div></div>
+        <div class="detail-chip"><div class="detail-chip-label">Date d'ajout</div><div class="detail-chip-value" id="detail-date">—</div></div>
+      </div>
+    </div>
+    <div class="detail-section" id="detail-notes-section" style="display:none;">
+      <div class="detail-section-title">Notes</div>
+      <div id="detail-notes" style="font-size:14px;font-weight:300;color:var(--text-mid);line-height:1.6;"></div>
+    </div>
+    <div class="detail-actions">
+      <button class="btn-secondary" onclick="editCurrentCard()">✏️ Modifier</button>
+      <button class="btn-accent" onclick="openPlayerAI()">🤖 Stats joueur</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COLLECTION VIEW (folder) ===== -->
+<div class="coll-view" id="coll-view">
+  <div class="coll-view-header">
+    <button class="back-btn" onclick="closeCollView()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </button>
+    <div class="coll-view-title" id="coll-view-title">Dossier</div>
+    <div class="btn-icon" onclick="deleteCurrentFolder()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+    </div>
+  </div>
+  <div class="coll-view-body">
+    <div class="colls-grid" id="folder-cards-grid"></div>
+  </div>
+</div>
+
+<!-- BULK BAR -->
+<div class="bulk-bar" id="bulk-bar">
+  <button class="btn-secondary" style="flex:0 0 auto;padding:12px 16px;" onclick="cancelBulk()">Annuler</button>
+  <select class="form-select" id="bulk-dest" style="flex:1;">
+    <option value="">Déplacer vers…</option>
+  </select>
+  <button class="btn-accent" style="flex:0 0 auto;padding:12px 16px;" onclick="executeBulk()">✓</button>
+</div>
+
+<!-- ===== ADD CARD SHEET (edit mode) ===== -->
+<div class="sheet-overlay" id="edit-sheet" onclick="closeEditSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="edit-sheet-title">Modifier la carte</div>
+    <div class="form-group">
+      <label class="form-label">Prénom</label>
+      <input class="form-input" id="e-prenom" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nom</label>
+      <input class="form-input" id="e-nom" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Club</label>
+      <input class="form-input" id="e-club" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sport</label>
+      <select class="form-select" id="e-sport">
+        <option value="">Sélectionner</option>
+        <option value="football">⚽ Football</option>
+        <option value="basketball">🏀 Basketball</option>
+        <option value="tennis">🎾 Tennis</option>
+        <option value="baseball">⚾ Baseball</option>
+        <option value="hockey">🏒 Hockey</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Numérotée (/X)</label>
+      <input class="form-input" id="e-num" type="text" placeholder="ex: /25">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Spécificités</label>
+      <div class="toggle-row">
+        <button class="toggle-btn" id="e-tog-auto" onclick="eToggleTag('auto')">✍️ Auto</button>
+        <button class="toggle-btn" id="e-tog-patch" onclick="eToggleTag('patch')">🎯 Patch</button>
+        <button class="toggle-btn" id="e-tog-rookie" onclick="eToggleTag('rookie')">🌟 Rookie</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Collection</label>
+      <select class="form-select" id="e-collection"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-input" id="e-notes" rows="3"></textarea>
+    </div>
+    <button class="btn-primary" onclick="saveEdit()">💾 Sauvegarder</button>
+  </div>
+</div>
+
+<!-- ===== PLAYER AI SHEET ===== -->
+<div class="sheet-overlay" id="player-sheet" onclick="closePlayerSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="player-ai" id="player-ai-content">
+      <div class="ai-loading"><div class="ai-spinner"></div>Analyse en cours…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NEW FOLDER SHEET ===== -->
+<div class="sheet-overlay" id="folder-sheet" onclick="closeFolderSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Nouveau dossier</div>
+    <div class="form-group">
+      <label class="form-label">Nom du dossier</label>
+      <input class="form-input" id="new-folder-name" type="text" placeholder="ex: Rookies 2024">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;" id="emoji-picker">
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">📁</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">⭐</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🏆</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🔥</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">💎</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🎯</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🌟</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">⚡</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🎴</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🏀</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">⚽</span>
+        <span style="cursor:pointer;font-size:24px;" onclick="selectEmoji(this)">🎾</span>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="createFolder()">Créer le dossier</button>
+  </div>
+</div>
+
+<!-- ===== CROP OVERLAY ===== -->
+<div class="crop-overlay" id="crop-overlay">
+  <div style="color:var(--text-dim);font-size:12px;margin-bottom:16px;">Ajuste le cadrage</div>
+  <div class="crop-canvas-wrap" id="crop-wrap">
+    <img id="crop-img" class="crop-img" draggable="false">
+    <div class="crop-frame"></div>
+  </div>
+  <div style="color:var(--text-dim);font-size:11px;margin-top:12px;">Glisse pour repositionner</div>
+  <div class="crop-actions">
+    <button class="crop-btn-action" style="background:var(--surface2);color:var(--text);" onclick="closeCrop()">Annuler</button>
+    <button class="crop-btn-action" style="background:var(--accent);color:#fff;" onclick="applyCrop()">Appliquer</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ====================== STATE ======================
+let db = {
+  cards: JSON.parse(localStorage.getItem('cv_cards') || '[]'),
+  folders: JSON.parse(localStorage.getItem('cv_folders') || '[]'),
+};
+let currentFilter = 'all';
+let currentSearch = '';
+let bulkMode = false;
+let bulkSelected = [];
+let currentCardId = null;
+let currentFolderId = null;
+let editTags = { auto: false, patch: false, rookie: false };
+let addTags = { auto: false, patch: false, rookie: false };
+let addNumEnabled = false;
+let selectedClub = null;
+let selectedFolderEmoji = '📁';
+let currentPhotoDataUrl = null;
+let cropDataUrl = null;
+let gyroEnabled = false;
+
+function save() {
+  localStorage.setItem('cv_cards', JSON.stringify(db.cards));
+  localStorage.setItem('cv_folders', JSON.stringify(db.folders));
+}
+
+// ====================== CLUBS DATA ======================
+const CLUBS = [
+  { name:'PSG', emoji:'🔵', sport:'football', full:'Paris Saint-Germain' },
+  { name:'Real Madrid', emoji:'⚪', sport:'football', full:'Real Madrid CF' },
+  { name:'Barcelona', emoji:'🔴', sport:'football', full:'FC Barcelona' },
+  { name:'Manchester City', emoji:'🔷', sport:'football', full:'Manchester City' },
+  { name:'Arsenal', emoji:'❤️', sport:'football', full:'Arsenal FC' },
+  { name:'Bayern Munich', emoji:'🔴', sport:'football', full:'FC Bayern Munich' },
+  { name:'Juventus', emoji:'⬛', sport:'football', full:'Juventus FC' },
+  { name:'Chelsea', emoji:'💙', sport:'football', full:'Chelsea FC' },
+  { name:'Liverpool', emoji:'❤️', sport:'football', full:'Liverpool FC' },
+  { name:'Inter Milan', emoji:'🔵', sport:'football', full:'Inter Milan' },
+  { name:'Marseille', emoji:'🔵', sport:'football', full:'Olympique de Marseille' },
+  { name:'Lyon', emoji:'🔴', sport:'football', full:'Olympique Lyonnais' },
+  { name:'Lakers', emoji:'💜', sport:'basketball', full:'Los Angeles Lakers' },
+  { name:'Warriors', emoji:'💛', sport:'basketball', full:'Golden State Warriors' },
+  { name:'Bulls', emoji:'🔴', sport:'basketball', full:'Chicago Bulls' },
+  { name:'Celtics', emoji:'💚', sport:'basketball', full:'Boston Celtics' },
+  { name:'Nets', emoji:'⬛', sport:'basketball', full:'Brooklyn Nets' },
+  { name:'Heat', emoji:'🔴', sport:'basketball', full:'Miami Heat' },
+  { name:'France', emoji:'🇫🇷', sport:'tennis', full:'France' },
+  { name:'Espagne', emoji:'🇪🇸', sport:'tennis', full:'Espagne' },
+  { name:'USA', emoji:'🇺🇸', sport:'tennis', full:'États-Unis' },
+  { name:'Serbie', emoji:'🇷🇸', sport:'tennis', full:'Serbie' },
+];
+
+let filteredClubs = [...CLUBS];
+
+function showClubGrid() {
+  renderClubGrid(CLUBS);
+  document.getElementById('clubs-grid').style.display = 'grid';
+}
+function filterClubs(val) {
+  filteredClubs = CLUBS.filter(c => c.name.toLowerCase().includes(val.toLowerCase()) || c.full.toLowerCase().includes(val.toLowerCase()));
+  renderClubGrid(filteredClubs);
+  document.getElementById('clubs-grid').style.display = 'grid';
+}
+function renderClubGrid(list) {
+  const g = document.getElementById('clubs-grid');
+  g.innerHTML = list.map(c => `
+    <div class="club-option ${selectedClub && selectedClub.name === c.name ? 'selected' : ''}" onclick="selectClub('${c.name}')">
+      <div class="club-option-logo">${c.emoji}</div>
+      <div class="club-option-name">${c.name}</div>
+    </div>
+  `).join('');
+}
+function selectClub(name) {
+  selectedClub = CLUBS.find(c => c.name === name);
+  document.getElementById('f-club-search').value = name;
+  document.getElementById('clubs-grid').style.display = 'none';
+  const disp = document.getElementById('selected-club-display');
+  disp.style.display = 'flex';
+  disp.style.alignItems = 'center';
+  disp.style.gap = '8px';
+  disp.innerHTML = `<span style="font-size:24px;">${selectedClub.emoji}</span><span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">${selectedClub.full}</span>`;
+}
+
+// ====================== PHOTO HANDLING ======================
+function triggerUpload() {
+  if (currentPhotoDataUrl) {
+    document.getElementById('card-photo-input').click();
+  } else {
+    document.getElementById('card-photo-input').click();
+  }
+}
+
+function handlePhotoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentPhotoDataUrl = e.target.result;
+    const img = document.getElementById('photo-preview-img');
+    img.src = currentPhotoDataUrl;
+    document.getElementById('photo-preview-layer').style.display = 'block';
+    document.getElementById('photo-placeholder').style.display = 'none';
+    document.getElementById('crop-btn').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ====================== CROP ======================
+let cropOffsetX = 0, cropOffsetY = 0, cropDragStart = null;
+
+function openCrop() {
+  if (!currentPhotoDataUrl) return;
+  document.getElementById('crop-img').src = currentPhotoDataUrl;
+  cropOffsetX = 0; cropOffsetY = 0;
+  document.getElementById('crop-img').style.transform = 'translate(0,0)';
+  document.getElementById('crop-overlay').classList.add('open');
+
+  const img = document.getElementById('crop-img');
+  img.onmousedown = img.ontouchstart = e => {
+    e.preventDefault();
+    const pt = e.touches ? e.touches[0] : e;
+    cropDragStart = { x: pt.clientX - cropOffsetX, y: pt.clientY - cropOffsetY };
+  };
+  document.onmousemove = document.ontouchmove = e => {
+    if (!cropDragStart) return;
+    const pt = e.touches ? e.touches[0] : e;
+    cropOffsetX = pt.clientX - cropDragStart.x;
+    cropOffsetY = pt.clientY - cropDragStart.y;
+    img.style.transform = `translate(${cropOffsetX}px, ${cropOffsetY}px)`;
+  };
+  document.onmouseup = document.ontouchend = () => { cropDragStart = null; };
+}
+
+function closeCrop() {
+  document.getElementById('crop-overlay').classList.remove('open');
+}
+
+function applyCrop() {
+  // Simple crop: use the current image as-is (full crop simulation)
+  cropDataUrl = currentPhotoDataUrl;
+  closeCrop();
+  showToast('✂️ Recadrage appliqué');
+}
+
+// ====================== NAVIGATION ======================
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('tab-' + page).classList.add('active');
+  if (page === 'collection') renderCollection();
+  if (page === 'home') renderHome();
+}
+
+// ====================== TOGGLES ======================
+function toggleNum(val) {
+  addNumEnabled = val;
+  document.getElementById('num-oui').classList.toggle('on', val);
+  document.getElementById('num-non').classList.toggle('on', !val);
+  document.getElementById('f-num').style.display = val ? 'block' : 'none';
+}
+toggleNum(false);
+
+function syncNum(v) {}
+
+function toggleTag(tag) {
+  addTags[tag] = !addTags[tag];
+  document.getElementById('tog-' + tag).classList.toggle('on', addTags[tag]);
+}
+
+function eToggleTag(tag) {
+  editTags[tag] = !editTags[tag];
+  document.getElementById('e-tog-' + tag).classList.toggle('on', editTags[tag]);
+}
+
+// ====================== SAVE CARD ======================
+function saveCard() {
+  const prenom = document.getElementById('f-prenom').value.trim();
+  const nom = document.getElementById('f-nom').value.trim();
+  if (!prenom && !nom) { showToast('⚠️ Saisis au moins un nom'); return; }
+
+  let collSelect = document.getElementById('f-collection').value;
+  if (collSelect === '__new__') {
+    const newName = document.getElementById('f-new-coll').value.trim();
+    if (newName) {
+      if (!db.folders.find(f => f.name === newName)) {
+        db.folders.push({ id: Date.now().toString(), name: newName, emoji: '📁' });
+        save();
+      }
+      collSelect = newName;
+    } else { collSelect = ''; }
+  }
+
+  const card = {
+    id: Date.now().toString(),
+    prenom, nom,
+    club: selectedClub ? selectedClub.name : (document.getElementById('f-club-search').value.trim()),
+    clubEmoji: selectedClub ? selectedClub.emoji : '',
+    sport: document.getElementById('f-sport').value,
+    num: addNumEnabled ? document.getElementById('f-num').value.trim() : '',
+    isNum: addNumEnabled,
+    tags: Object.keys(addTags).filter(k => addTags[k]),
+    collection: collSelect,
+    notes: document.getElementById('f-notes').value.trim(),
+    photo: cropDataUrl || currentPhotoDataUrl || '',
+    fav: false,
+    date: new Date().toLocaleDateString('fr-FR'),
+  };
+
+  db.cards.unshift(card);
+  save();
+  resetForm();
+  showToast('✅ Carte enregistrée !');
+  navigate('home');
+}
+
+function resetForm() {
+  ['f-prenom','f-nom','f-club-search','f-notes','f-num'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-sport').value = '';
+  document.getElementById('photo-preview-layer').style.display = 'none';
+  document.getElementById('photo-placeholder').style.display = 'flex';
+  document.getElementById('crop-btn').style.display = 'none';
+  currentPhotoDataUrl = null; cropDataUrl = null; selectedClub = null;
+  addTags = { auto: false, patch: false, rookie: false };
+  ['tog-auto','tog-patch','tog-rookie'].forEach(id => document.getElementById(id).classList.remove('on'));
+  toggleNum(false);
+  document.getElementById('selected-club-display').style.display = 'none';
+  document.getElementById('clubs-grid').style.display = 'none';
+  document.getElementById('new-coll-input').style.display = 'none';
+  updateCollectionSelect();
+}
+
+function updateCollectionSelect() {
+  const sel = document.getElementById('f-collection');
+  sel.innerHTML = '<option value="">Sans collection</option>' +
+    db.folders.map(f => `<option value="${f.name}">${f.emoji} ${f.name}</option>`).join('') +
+    '<option value="__new__">+ Créer une nouvelle…</option>';
+  sel.onchange = function() {
+    document.getElementById('new-coll-input').style.display = this.value === '__new__' ? 'block' : 'none';
+  };
+}
+updateCollectionSelect();
+
+// ====================== RENDER HOME ======================
+function renderHome() {
+  renderFavs();
+  renderRecent(db.cards);
+}
+
+function renderFavs() {
+  const favs = db.cards.filter(c => c.fav);
+  const container = document.getElementById('favs-container');
+  if (!favs.length) {
+    container.innerHTML = `<div class="fav-placeholder" style="width:280px;color:var(--text-dim);font-size:12px;font-weight:300;">Aucun favori pour le moment.<br>Marque des cartes avec ⭐</div>`;
+    return;
+  }
+  container.innerHTML = favs.map(c => `
+    <div class="fav-card" onclick="openCard('${c.id}')">
+      ${c.photo ? `<img src="${c.photo}" alt="">` : `<div style="width:100%;height:100%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;">${c.clubEmoji || '🃏'}</div>`}
+      <div class="fav-card-overlay">
+        <div class="fav-card-name">${c.prenom} ${c.nom}</div>
+        <div class="fav-card-club">${c.clubEmoji} ${c.club}</div>
+      </div>
+      <div class="fav-badge" style="display:flex;gap:4px;flex-direction:column;align-items:flex-end;">
+        ${c.tags.includes('auto') ? '<span class="badge auto">✍️</span>' : ''}
+        ${c.tags.includes('patch') ? '<span class="badge patch">🎯</span>' : ''}
+        ${c.isNum && c.num ? `<span class="badge num">${c.num}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRecent(cards) {
+  const list = document.getElementById('recent-list');
+  if (!cards.length) {
+    list.innerHTML = `<div class="empty-state" style="padding:24px;"><div class="empty-state-icon">🃏</div><h3>Aucune carte</h3><p>Appuie sur + pour scanner<br>ou uploader ta première carte</p></div>`;
+    return;
+  }
+  list.innerHTML = cards.slice(0, 20).map(c => `
+    <div class="card-item" onclick="openCard('${c.id}')">
+      <div class="card-thumb">
+        ${c.photo ? `<img src="${c.photo}" alt="">` : `<span style="font-size:24px;">${c.clubEmoji || '🃏'}</span>`}
+      </div>
+      <div class="card-info">
+        <div class="card-player">${c.prenom} ${c.nom}</div>
+        <div class="card-club">
+          ${c.clubEmoji ? `<span>${c.clubEmoji}</span>` : ''}
+          <span>${c.club || '—'}</span>
+        </div>
+        <div class="card-badges">
+          ${c.tags.includes('auto') ? '<span class="badge auto">✍️ Auto</span>' : ''}
+          ${c.tags.includes('patch') ? '<span class="badge patch">🎯 Patch</span>' : ''}
+          ${c.tags.includes('rookie') ? '<span class="badge">🌟 Rookie</span>' : ''}
+          ${c.isNum && c.num ? `<span class="badge num">🔢 ${c.num}</span>` : ''}
+        </div>
+        <div class="card-meta"><span>${c.sport ? sportLabel(c.sport) : ''}</span><span>${c.date}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function homeSearch(val) {
+  if (!val.trim()) { renderRecent(db.cards); return; }
+  const q = val.toLowerCase();
+  const res = db.cards.filter(c =>
+    `${c.prenom} ${c.nom} ${c.club}`.toLowerCase().includes(q)
+  );
+  renderRecent(res);
+}
+
+function sportLabel(s) {
+  return { football:'⚽', basketball:'🏀', tennis:'🎾', baseball:'⚾', hockey:'🏒' }[s] || s;
+}
+
+// ====================== COLLECTION ======================
+function renderCollection() {
+  const count = db.cards.length;
+  document.getElementById('coll-subtitle').textContent = `${count} carte${count>1?'s':''}`;
+  renderFolders();
+  renderCollGrid(getFilteredCards());
+}
+
+function getFilteredCards() {
+  let cards = [...db.cards];
+  if (currentFilter !== 'all') {
+    if (['auto','patch','rookie'].includes(currentFilter)) {
+      cards = cards.filter(c => c.tags.includes(currentFilter));
+    } else if (currentFilter === 'num') {
+      cards = cards.filter(c => c.isNum);
+    } else {
+      cards = cards.filter(c => c.sport === currentFilter);
+    }
+  }
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    cards = cards.filter(c => `${c.prenom} ${c.nom} ${c.club}`.toLowerCase().includes(q));
+  }
+  return cards;
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderCollGrid(getFilteredCards());
+}
+
+function collSearch(val) {
+  currentSearch = val;
+  renderCollGrid(getFilteredCards());
+}
+
+function renderFolders() {
+  const g = document.getElementById('folders-grid');
+  const folders = db.folders;
+  g.innerHTML = folders.map(f => {
+    const count = db.cards.filter(c => c.collection === f.name).length;
+    return `<div class="folder-card" onclick="openFolder('${f.id}')">
+      <div class="folder-icon">${f.emoji}</div>
+      <div class="folder-name">${f.name}</div>
+      <div class="folder-count">${count} carte${count>1?'s':''}</div>
+      <div class="folder-accent">${f.emoji}</div>
+    </div>`;
+  }).join('') + `<div class="folder-card folder-add" onclick="openNewFolder()">
+    <div class="folder-add-icon">📁</div><span>Nouveau dossier</span>
+  </div>`;
+  // Update bulk dest
+  const bs = document.getElementById('bulk-dest');
+  bs.innerHTML = '<option value="">Déplacer vers…</option>' +
+    db.folders.map(f => `<option value="${f.name}">${f.emoji} ${f.name}</option>`).join('');
+}
+
+function renderCollGrid(cards) {
+  const g = document.getElementById('coll-grid');
+  const empty = document.getElementById('coll-empty');
+  if (!cards.length) { g.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  g.innerHTML = cards.map(c => `
+    <div class="coll-thumb" onclick="handleThumbClick('${c.id}')">
+      ${c.photo ? `<img src="${c.photo}" alt="">` : `<div style="width:100%;height:100%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:32px;">${c.clubEmoji || '🃏'}</div>`}
+      <div class="bulk-check ${bulkSelected.includes(c.id) ? 'checked' : ''}" id="bc-${c.id}">
+        ${bulkSelected.includes(c.id) ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function handleThumbClick(id) {
+  if (bulkMode) {
+    if (bulkSelected.includes(id)) bulkSelected = bulkSelected.filter(x => x !== id);
+    else bulkSelected.push(id);
+    renderCollGrid(getFilteredCards());
+  } else {
+    openCard(id);
+  }
+}
+
+// ====================== BULK ======================
+function toggleBulk() {
+  bulkMode = !bulkMode;
+  bulkSelected = [];
+  document.getElementById('coll-grid').classList.toggle('bulk-mode', bulkMode);
+  document.getElementById('bulk-bar').classList.toggle('show', bulkMode);
+  renderCollGrid(getFilteredCards());
+}
+
+function cancelBulk() {
+  bulkMode = false; bulkSelected = [];
+  document.getElementById('coll-grid').classList.remove('bulk-mode');
+  document.getElementById('bulk-bar').classList.remove('show');
+  renderCollGrid(getFilteredCards());
+}
+
+function executeBulk() {
+  const dest = document.getElementById('bulk-dest').value;
+  if (!bulkSelected.length) { showToast('⚠️ Aucune carte sélectionnée'); return; }
+  db.cards.forEach(c => { if (bulkSelected.includes(c.id)) c.collection = dest; });
+  save(); cancelBulk(); renderCollection();
+  showToast(`✅ ${bulkSelected.length} carte(s) déplacée(s)`);
+}
+
+// ====================== FOLDERS ======================
+function openNewFolder() {
+  document.getElementById('new-folder-name').value = '';
+  selectedFolderEmoji = '📁';
+  document.getElementById('folder-sheet').classList.add('open');
+}
+function closeFolderSheet(e) {
+  if (e.target === document.getElementById('folder-sheet')) document.getElementById('folder-sheet').classList.remove('open');
+}
+function selectEmoji(el) { selectedFolderEmoji = el.textContent; }
+function createFolder() {
+  const name = document.getElementById('new-folder-name').value.trim();
+  if (!name) { showToast('⚠️ Saisis un nom'); return; }
+  db.folders.push({ id: Date.now().toString(), name, emoji: selectedFolderEmoji });
+  save();
+  document.getElementById('folder-sheet').classList.remove('open');
+  renderCollection();
+  updateCollectionSelect();
+  showToast('📁 Dossier créé !');
+}
+
+function openFolder(fid) {
+  const f = db.folders.find(x => x.id === fid);
+  if (!f) return;
+  currentFolderId = fid;
+  document.getElementById('coll-view-title').textContent = f.emoji + ' ' + f.name;
+  const cards = db.cards.filter(c => c.collection === f.name);
+  const g = document.getElementById('folder-cards-grid');
+  g.innerHTML = cards.map(c => `
+    <div class="coll-thumb" onclick="openCard('${c.id}')">
+      ${c.photo ? `<img src="${c.photo}" alt="">` : `<div style="width:100%;height:100%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:32px;">${c.clubEmoji || '🃏'}</div>`}
+    </div>
+  `).join('') || '<div class="empty-state"><div class="empty-state-icon">🃏</div><h3>Dossier vide</h3></div>';
+  document.getElementById('coll-view').classList.add('open');
+}
+
+function closeCollView() { document.getElementById('coll-view').classList.remove('open'); }
+
+function deleteCurrentFolder() {
+  const f = db.folders.find(x => x.id === currentFolderId);
+  if (!f) return;
+  if (!confirm(`Supprimer le dossier "${f.name}" ? Les cartes ne seront pas supprimées.`)) return;
+  db.folders = db.folders.filter(x => x.id !== currentFolderId);
+  db.cards.forEach(c => { if (c.collection === f.name) c.collection = ''; });
+  save(); closeCollView(); renderCollection();
+  showToast('🗑️ Dossier supprimé');
+}
+
+// ====================== CARD DETAIL ======================
+function openCard(id) {
+  const c = db.cards.find(x => x.id === id);
+  if (!c) return;
+  currentCardId = id;
+
+  document.getElementById('detail-header-name').textContent = `${c.prenom} ${c.nom}`;
+  document.getElementById('detail-name').textContent = `${c.prenom} ${c.nom}`;
+  document.getElementById('detail-fav-btn').textContent = c.fav ? '⭐' : '☆';
+  document.getElementById('detail-fav-btn').style.color = c.fav ? 'var(--gold)' : '';
+
+  // 3D card
+  const content = document.getElementById('card-3d-content');
+  if (c.photo) {
+    content.innerHTML = `<img src="${c.photo}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
+    content.className = '';
+  } else {
+    content.className = 'card-3d-placeholder';
+    content.innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" opacity=".4"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8l-1 4h10z"/></svg><span style="font-size:12px;color:var(--text-dim);">${c.clubEmoji || '🃏'}</span>`;
+  }
+
+  document.getElementById('detail-club-logo').textContent = c.clubEmoji || '';
+  document.getElementById('detail-club-name').textContent = c.club || '—';
+
+  if (c.isNum && c.num) {
+    const nb = document.getElementById('detail-num-badge');
+    nb.style.display = 'block';
+    nb.textContent = '🔢 ' + c.num;
+  } else {
+    document.getElementById('detail-num-badge').style.display = 'none';
+  }
+
+  const badges = document.getElementById('detail-badges');
+  badges.innerHTML = c.tags.map(t => {
+    const map = { auto:'✍️ Auto', patch:'🎯 Patch', rookie:'🌟 Rookie' };
+    const cls = { auto:'auto', patch:'patch' };
+    return `<span class="badge ${cls[t]||''}">${map[t]||t}</span>`;
+  }).join('');
+
+  document.getElementById('detail-sport').textContent = sportLabel(c.sport) + ' ' + (c.sport || '—');
+  document.getElementById('detail-coll').textContent = c.collection || 'Aucune';
+  document.getElementById('detail-numbered').textContent = c.isNum ? (c.num || 'Oui') : 'Non';
+  document.getElementById('detail-date').textContent = c.date;
+
+  if (c.notes) {
+    document.getElementById('detail-notes-section').style.display = 'block';
+    document.getElementById('detail-notes').textContent = c.notes;
+  } else {
+    document.getElementById('detail-notes-section').style.display = 'none';
+  }
+
+  document.getElementById('card-detail').classList.add('open');
+  initGyro();
+}
+
+function closeDetail() {
+  document.getElementById('card-detail').classList.remove('open');
+  stopGyro();
+}
+
+// ====================== 3D TILT ======================
+let gyroHandler = null;
+let gyroBaseBeta = null;
+let gyroBaseGamma = null;
+let currentRotX = 0, currentRotY = 0;
+let targetRotX = 0, targetRotY = 0;
+let rafId = null;
+
+function initGyro() {
+  const scene = document.querySelector('.card-3d-scene');
+
+  // Smooth animation loop
+  function animLoop() {
+    currentRotX += (targetRotX - currentRotX) * 0.12;
+    currentRotY += (targetRotY - currentRotY) * 0.12;
+    const card = document.getElementById('card-3d');
+    if (card) {
+      card.style.transform = `rotateX(${currentRotX}deg) rotateY(${currentRotY}deg)`;
+      if (Math.abs(targetRotX) > 0.5 || Math.abs(targetRotY) > 0.5) card.classList.add('tilting');
+      else card.classList.remove('tilting');
+    }
+    rafId = requestAnimationFrame(animLoop);
+  }
+  if (rafId) cancelAnimationFrame(rafId);
+  animLoop();
+
+  // Mouse tilt (desktop)
+  scene.onmousemove = e => {
+    const rect = scene.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    targetRotX = ((e.clientY - cy) / rect.height) * -28;
+    targetRotY = ((e.clientX - cx) / rect.width) * 28;
+  };
+  scene.onmouseleave = () => { targetRotX = 0; targetRotY = 0; };
+
+  // Touch tilt (mobile fallback without gyro)
+  scene.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    const rect = scene.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    targetRotX = ((t.clientY - cy) / rect.height) * -28;
+    targetRotY = ((t.clientX - cx) / rect.width) * 28;
+    e.preventDefault();
+  }, { passive: false });
+  scene.addEventListener('touchend', () => { targetRotX = 0; targetRotY = 0; });
+
+  // Gyroscope
+  if (typeof DeviceOrientationEvent !== 'undefined') {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS 13+ — must be triggered by user gesture
+      showGyroBtn();
+    } else {
+      // Android / desktop
+      startGyroListener();
+    }
+  }
+}
+
+function showGyroBtn() {
+  const scene = document.querySelector('.card-3d-scene');
+  if (!scene || scene.querySelector('.gyro-btn')) return;
+  const btn = document.createElement('button');
+  btn.className = 'gyro-btn';
+  btn.innerHTML = '📱 Gyroscope';
+  btn.style.cssText = [
+    'position:absolute',
+    'bottom:14px',
+    'left:50%',
+    'transform:translateX(-50%)',
+    'background:var(--surface2)',
+    'border:1px solid var(--border)',
+    'color:var(--text)',
+    'padding:8px 20px',
+    'border-radius:20px',
+    'font-size:12px',
+    'font-weight:600',
+    'cursor:pointer',
+    'z-index:10',
+    'white-space:nowrap',
+    'font-family:DM Sans,sans-serif',
+    'letter-spacing:.3px',
+  ].join(';');
+
+  btn.addEventListener('click', async () => {
+    try {
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if (perm === 'granted') {
+        startGyroListener();
+        btn.innerHTML = '✅ Gyroscope actif';
+        btn.style.color = '#6ee7b7';
+        setTimeout(() => btn.remove(), 1500);
+      } else {
+        btn.innerHTML = '⛔ Permission refusée';
+        setTimeout(() => btn.remove(), 2000);
+      }
+    } catch(err) {
+      btn.innerHTML = '⚠️ ' + err.message;
+      setTimeout(() => btn.remove(), 2000);
+    }
+  });
+
+  scene.appendChild(btn);
+}
+
+function startGyroListener() {
+  gyroBaseBeta = null;
+  gyroBaseGamma = null;
+  let calibCount = 0;
+
+  gyroHandler = e => {
+    if (e.beta === null || e.gamma === null) return;
+    // Calibrate over first 3 reads for stability
+    if (calibCount < 3) {
+      gyroBaseBeta  = (gyroBaseBeta  === null) ? e.beta  : (gyroBaseBeta  + e.beta)  / 2;
+      gyroBaseGamma = (gyroBaseGamma === null) ? e.gamma : (gyroBaseGamma + e.gamma) / 2;
+      calibCount++;
+      return;
+    }
+    const dBeta  = Math.max(-35, Math.min(35, e.beta  - gyroBaseBeta));
+    const dGamma = Math.max(-35, Math.min(35, e.gamma - gyroBaseGamma));
+    targetRotX = dBeta  * -0.65;
+    targetRotY = dGamma *  0.65;
+  };
+
+  window.addEventListener('deviceorientation', gyroHandler, true);
+}
+
+function applyTilt(rotX, rotY) {
+  targetRotX = rotX; targetRotY = rotY;
+}
+
+function resetTilt() {
+  targetRotX = 0; targetRotY = 0;
+}
+
+function stopGyro() {
+  if (gyroHandler) {
+    window.removeEventListener('deviceorientation', gyroHandler, true);
+    gyroHandler = null;
+  }
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  const scene = document.querySelector('.card-3d-scene');
+  if (scene) {
+    scene.onmousemove = null;
+    scene.onmouseleave = null;
+  }
+  const card = document.getElementById('card-3d');
+  if (card) { card.style.transform = ''; card.classList.remove('tilting'); }
+  currentRotX = 0; currentRotY = 0; targetRotX = 0; targetRotY = 0;
+}
+
+// ====================== FAV ======================
+function toggleFav() {
+  const c = db.cards.find(x => x.id === currentCardId);
+  if (!c) return;
+  c.fav = !c.fav;
+  save();
+  const btn = document.getElementById('detail-fav-btn');
+  btn.textContent = c.fav ? '⭐' : '☆';
+  btn.style.color = c.fav ? 'var(--gold)' : '';
+  showToast(c.fav ? '⭐ Ajouté aux favoris' : '✩ Retiré des favoris');
+}
+
+// ====================== EDIT ======================
+function editCurrentCard() {
+  const c = db.cards.find(x => x.id === currentCardId);
+  if (!c) return;
+  document.getElementById('e-prenom').value = c.prenom;
+  document.getElementById('e-nom').value = c.nom;
+  document.getElementById('e-club').value = c.club;
+  document.getElementById('e-sport').value = c.sport;
+  document.getElementById('e-num').value = c.num || '';
+  document.getElementById('e-notes').value = c.notes;
+  editTags = { auto: c.tags.includes('auto'), patch: c.tags.includes('patch'), rookie: c.tags.includes('rookie') };
+  ['auto','patch','rookie'].forEach(t => document.getElementById('e-tog-' + t).classList.toggle('on', editTags[t]));
+
+  // Collection select
+  const sel = document.getElementById('e-collection');
+  sel.innerHTML = '<option value="">Sans collection</option>' +
+    db.folders.map(f => `<option value="${f.name}" ${c.collection === f.name ? 'selected' : ''}>${f.emoji} ${f.name}</option>`).join('');
+
+  document.getElementById('edit-sheet').classList.add('open');
+}
+
+function closeEditSheet(e) {
+  if (e.target === document.getElementById('edit-sheet')) document.getElementById('edit-sheet').classList.remove('open');
+}
+
+function saveEdit() {
+  const c = db.cards.find(x => x.id === currentCardId);
+  if (!c) return;
+  c.prenom = document.getElementById('e-prenom').value.trim();
+  c.nom = document.getElementById('e-nom').value.trim();
+  c.club = document.getElementById('e-club').value.trim();
+  c.sport = document.getElementById('e-sport').value;
+  c.num = document.getElementById('e-num').value.trim();
+  c.isNum = !!c.num;
+  c.tags = Object.keys(editTags).filter(k => editTags[k]);
+  c.notes = document.getElementById('e-notes').value.trim();
+  c.collection = document.getElementById('e-collection').value;
+  save();
+  document.getElementById('edit-sheet').classList.remove('open');
+  openCard(currentCardId);
+  showToast('✅ Carte modifiée !');
+}
+
+// ====================== PLAYER AI ======================
+function openPlayerAI() {
+  const c = db.cards.find(x => x.id === currentCardId);
+  if (!c) return;
+  const name = `${c.prenom} ${c.nom}`;
+  document.getElementById('player-ai-content').innerHTML = `<div class="ai-loading"><div class="ai-spinner"></div>Analyse de ${name}…</div>`;
+  document.getElementById('player-sheet').classList.add('open');
+  fetchPlayerData(c);
+}
+
+function closePlayerSheet(e) {
+  if (e.target === document.getElementById('player-sheet')) document.getElementById('player-sheet').classList.remove('open');
+}
+
+async function fetchPlayerData(card) {
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `Tu es une IA spécialisée en sport. Génère des informations sur le joueur "${card.prenom} ${card.nom}"${card.club ? ` du club ${card.club}` : ''}${card.sport ? ` (sport: ${card.sport})` : ''}.
+          Réponds UNIQUEMENT en JSON valide (pas de backticks, pas de markdown) avec cette structure exacte:
+          {
+            "nom": "Nom complet",
+            "nationalite": "France",
+            "clubActuel": "Nom du club actuel",
+            "clubEmoji": "emoji du pays ou club",
+            "poste": "Attaquant",
+            "statsCurrentSeason": {"buts": 20, "passes": 12, "matchs": 30, "label1": "Buts", "label2": "Passes", "label3": "Matchs"},
+            "statsSaisons": [
+              {"saison": "2021-22", "val": 18},
+              {"saison": "2022-23", "val": 22},
+              {"saison": "2023-24", "val": 25},
+              {"saison": "2024-25", "val": 20}
+            ],
+            "statLabel": "Buts",
+            "historique": [
+              {"club": "Nom club", "emoji": "emoji", "annees": "2018-2022"},
+              {"club": "Nom club", "emoji": "emoji", "annees": "2022-présent"}
+            ],
+            "description": "Courte description en 1 phrase."
+          }
+          Si le joueur n'existe pas ou est fictif, invente des données cohérentes.`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || '';
+    const json = JSON.parse(text.trim());
+    renderPlayerAI(json, card);
+  } catch(e) {
+    // Fallback with mock data if API unavailable
+    renderPlayerAI(getMockPlayerData(card), card);
+  }
+}
+
+function getMockPlayerData(card) {
+  return {
+    nom: `${card.prenom} ${card.nom}`,
+    nationalite: 'France',
+    clubActuel: card.club || 'Libre',
+    clubEmoji: card.clubEmoji || '🏅',
+    poste: 'Attaquant',
+    statsCurrentSeason: { buts: 18, passes: 9, matchs: 24 },
+    statsSaisons: [
+      { saison: '2021-22', val: 14 },
+      { saison: '2022-23', val: 20 },
+      { saison: '2023-24', val: 22 },
+      { saison: '2024-25', val: 18 },
+    ],
+    statLabel: 'Buts',
+    historique: [
+      { club: 'Club Formateur', emoji: '🏟️', annees: '2018-2021' },
+      { club: card.club || 'Club Pro', emoji: card.clubEmoji || '⚽', annees: '2021-présent' },
+    ],
+    description: 'Joueur talentueux reconnu pour sa vitesse et sa technique.'
+  };
+}
+
+function renderPlayerAI(p, card) {
+  const maxVal = Math.max(...p.statsSaisons.map(s => s.val), 1);
+  const bars = p.statsSaisons.map((s, i) => {
+    const isLast = i === p.statsSaisons.length - 1;
+    const h = Math.round((s.val / maxVal) * 60);
+    return `<div class="ai-bar ${isLast ? 'current' : ''}" style="height:${h}px;">
+      <div class="ai-bar-label">${s.val}</div>
+      <div style="position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--text-dim);white-space:nowrap;">${s.saison.slice(-2)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('player-ai-content').innerHTML = `
+    <div class="player-ai-header">
+      <div class="player-avatar">${p.clubEmoji}</div>
+      <div>
+        <div class="player-ai-name">${p.nom}</div>
+        <div class="player-ai-sub">${p.poste} · ${p.nationalite}</div>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:300;color:var(--text-mid);margin-bottom:16px;line-height:1.5;">${p.description}</div>
+    
+    <div class="ai-section">
+      <div class="ai-section-title">Saison actuelle</div>
+      <div style="display:flex;gap:10px;">
+        <div class="detail-chip" style="flex:1;"><div class="detail-chip-label">${p.statLabel}</div><div class="detail-chip-value">${p.statsCurrentSeason.buts}</div></div>
+        <div class="detail-chip" style="flex:1;"><div class="detail-chip-label">Passes</div><div class="detail-chip-value">${p.statsCurrentSeason.passes}</div></div>
+        <div class="detail-chip" style="flex:1;"><div class="detail-chip-label">Matchs</div><div class="detail-chip-value">${p.statsCurrentSeason.matchs}</div></div>
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">${p.statLabel} par saison</div>
+      <div class="ai-chart" style="height:80px;margin-bottom:24px;">${bars}</div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">Historique de clubs</div>
+      <div class="ai-clubs-list">
+        ${p.historique.map(h => `
+          <div class="ai-club-item">
+            <div class="ai-club-logo">${h.emoji}</div>
+            <div class="ai-club-info">
+              <div class="ai-club-name">${h.club}</div>
+              <div class="ai-club-years">${h.annees}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ====================== TOAST ======================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ====================== INIT ======================
+renderHome();
+renderCollection();
+
+// Demo cards if empty
+if (db.cards.length === 0 && db.folders.length === 0) {
+  db.folders.push({ id: '1', name: 'Rookies', emoji: '🌟' });
+  db.folders.push({ id: '2', name: 'Légendes', emoji: '🏆' });
+  db.cards.push({
+    id: '100', prenom: 'Kylian', nom: 'Mbappé', club: 'Real Madrid', clubEmoji: '⚪',
+    sport: 'football', num: '/10', isNum: true, tags: ['auto'], collection: 'Légendes',
+    notes: 'Carte signée en main, état parfait', photo: '',
+    fav: true, date: '15/02/2025'
+  });
+  db.cards.push({
+    id: '101', prenom: 'Victor', nom: 'Wembanyama', club: 'Spurs', clubEmoji: '🖤',
+    sport: 'basketball', num: '/25', isNum: true, tags: ['rookie', 'patch'], collection: 'Rookies',
+    notes: 'Carte rookie numérotée', photo: '',
+    fav: false, date: '10/01/2025'
+  });
+  db.cards.push({
+    id: '102', prenom: 'Carlos', nom: 'Alcaraz', club: 'Espagne', clubEmoji: '🇪🇸',
+    sport: 'tennis', num: '', isNum: false, tags: ['auto'], collection: '',
+    notes: '', photo: '',
+    fav: true, date: '05/02/2025'
+  });
+  save();
+  renderHome();
+  renderCollection();
+}
+</script>
+</body>
+</html>
