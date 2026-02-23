@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0c0c0e;--surface:#111114;--surface2:#18181d;--surface3:#1f1f26;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--accent:#e8a020;--text:#f4f4f6;--text-dim:rgba(244,244,246,0.38);--text-mid:rgba(244,244,246,0.62);--gold:#e8a020;--tab-h:72px;--safe:env(safe-area-inset-bottom,12px);}
+:root{--bg:#0c0c0e;--surface:#111114;--surface2:#18181d;--surface3:#1f1f26;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--accent:#AFFF25;--text:#f4f4f6;--text-dim:rgba(244,244,246,0.38);--text-mid:rgba(244,244,246,0.62);--gold:#AFFF25;--tab-h:72px;--safe:env(safe-area-inset-bottom,12px);}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;}
 .page{position:absolute;inset:0;bottom:var(--tab-h);overflow-y:auto;overflow-x:hidden;display:none;-webkit-overflow-scrolling:touch;}
@@ -36,7 +36,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .search-bar svg{color:var(--text-dim);flex-shrink:0;width:14px;height:14px;}
 .search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;width:100%;}
 .search-bar input::placeholder{color:var(--text-dim);}
-/* AJAX search dropdown */
 .search-dropdown{position:absolute;left:20px;right:20px;top:44px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;z-index:90;overflow:hidden;display:none;box-shadow:0 8px 24px rgba(0,0,0,.5);}
 .search-dropdown.open{display:block;}
 .search-drop-item{padding:10px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--border);}
@@ -59,13 +58,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .fav-card-img img{width:100%;height:100%;object-fit:cover;display:block;}
 .fav-card-img-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:50px;background:var(--surface3);}
 .fav-card-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:7px;z-index:2;}
-.fav-rating{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--bg);background:var(--accent);width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.fav-rating{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--bg);background:var(--accent);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;}
 .fav-rating-empty{width:28px;}
 .fav-card-bot{background:var(--surface);padding:7px 9px;border-top:1px solid var(--border);flex-shrink:0;}
 .fav-card-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;line-height:1.15;text-transform:uppercase;letter-spacing:.3px;}
+.fav-card-first{font-size:10px;font-weight:300;color:var(--text-mid);}
+.fav-card-last{color:var(--accent);font-weight:900;}
 .fav-card-club{font-size:9px;font-weight:400;color:var(--text-dim);margin-top:1px;letter-spacing:.5px;text-transform:uppercase;}
-.badge{display:inline-flex;align-items:center;gap:2px;background:var(--bg);border:1px solid var(--border2);border-radius:3px;padding:2px 5px;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
-.badge.auto{color:var(--gold);border-color:rgba(232,160,32,.3);}
+/* BADGES full rounded */
+.badge{display:inline-flex;align-items:center;gap:2px;background:var(--bg);border:1px solid var(--border2);border-radius:99px;padding:2px 8px;font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.badge.auto{color:var(--gold);border-color:rgba(175,255,37,.3);}
 .badge.patch{color:#6ee7b7;border-color:rgba(110,231,183,.25);}
 .badge.rookie{color:#f9a8d4;border-color:rgba(249,168,212,.25);}
 .badge.num{color:#93c5fd;border-color:rgba(147,197,253,.25);}
@@ -81,20 +83,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .card-sport-bar.basketball{background:var(--accent);}
 .card-sport-bar.tennis{background:#6ee7b7;}
 .card-sport-bar.baseball{background:#f87171;}
-.card-sport-bar.hockey{background:#93c5fd;}
-.card-sport-bar.f1{background:#ef4444;}
 .card-sport-bar.nfl{background:#10b981;}
 .card-sport-bar.nhl{background:#60a5fa;}
+.card-sport-bar.f1{background:#ef4444;}
 .card-thumb{width:58px;height:84px;flex-shrink:0;overflow:hidden;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:26px;}
 .card-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
 .card-info{flex:1;padding:9px 11px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;}
-.card-first{font-size:10px;font-weight:300;color:var(--text-mid);letter-spacing:.3px;}
-.card-last{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;line-height:1;}
+.card-first{font-size:14px;font-weight:300;color:var(--text);letter-spacing:.3px;}
+.card-last{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;line-height:1;color:var(--accent);}
 .card-club-row{font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:5px;margin-top:2px;}
+.card-club-logo{width:16px;height:16px;border-radius:50%;object-fit:cover;flex-shrink:0;}
 .card-badges-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;}
 .card-right{padding:9px 11px 9px 0;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;flex-shrink:0;}
 .card-date{font-size:9px;color:var(--text-dim);font-weight:400;letter-spacing:.3px;}
 .card-sport-ico{font-size:18px;}
+.card-price{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--accent);}
 
 /* COLLECTION */
 .coll-header{padding:52px 20px 14px;display:flex;align-items:flex-end;justify-content:space-between;}
@@ -105,7 +108,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 /* FILTERS */
 .filters-row{padding:0 20px 14px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
-.filter-tag{flex-shrink:0;padding:5px 12px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);cursor:pointer;transition:all .1s;}
+.filter-tag{flex-shrink:0;padding:5px 12px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);cursor:pointer;transition:all .1s;}
 .filter-tag.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 
 /* FOLDERS */
@@ -117,6 +120,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .folder-n{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--text-dim);}
 .folder-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
 .folder-sub{font-size:9px;font-weight:400;color:var(--text-dim);margin-top:2px;letter-spacing:.5px;text-transform:uppercase;}
+.folder-val{font-size:10px;font-weight:600;color:var(--accent);margin-top:3px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;}
 .folder-add{border:1px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:82px;color:var(--text-dim);}
 .folder-add span{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
 
@@ -132,10 +136,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* SHEETS */
 .sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:none;align-items:flex-end;backdrop-filter:blur(6px);}
 .sheet-overlay.open{display:flex;}
-.sheet{width:100%;background:var(--surface);border-radius:16px 16px 0 0;padding:10px 20px 40px;max-height:92vh;overflow-y:auto;animation:up .26s cubic-bezier(.32,1.2,.64,1);}
+.sheet{width:100%;background:var(--surface);border-radius:16px 16px 0 0;padding:10px 20px 40px;max-height:92vh;overflow-y:auto;animation:up .26s cubic-bezier(.32,1.2,.64,1);position:relative;}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .sheet-handle{width:30px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 16px;}
 .sheet-title{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;margin-bottom:18px;}
+/* Delete btn in edit sheet top-right */
+.sheet-delete-btn{position:absolute;top:18px;right:20px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:5px 12px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
 
 /* FORM */
 .form-group{margin-bottom:13px;}
@@ -145,24 +151,31 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .form-input::placeholder{color:var(--text-dim);}
 .form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;outline:none;appearance:none;}
 .toggle-row{display:flex;gap:5px;}
-.toggle-btn{flex:1;padding:8px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;letter-spacing:.5px;text-transform:uppercase;transition:all .15s;}
+.toggle-btn{flex:1;padding:8px;border-radius:99px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;letter-spacing:.5px;text-transform:uppercase;transition:all .15s;}
 .toggle-btn.on{background:var(--accent);border-color:var(--accent);color:var(--bg);}
-.btn-primary{width:100%;padding:13px;border-radius:8px;background:var(--accent);border:none;color:var(--bg);font-size:13px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;}
+.btn-primary{width:100%;padding:13px;border-radius:99px;background:var(--accent);border:none;color:var(--bg);font-size:13px;font-weight:800;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
-.btn-secondary{flex:1;padding:11px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
-.btn-accent{flex:1;padding:11px;border-radius:8px;background:var(--accent);border:none;color:var(--bg);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
-.btn-danger{flex:1;padding:11px;border-radius:8px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
+.btn-secondary{flex:1;padding:11px;border-radius:99px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
+.btn-accent{flex:1;padding:11px;border-radius:99px;background:var(--accent);border:none;color:var(--bg);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
 
 /* PHOTO UPLOAD */
 .photo-upload{position:relative;width:100%;aspect-ratio:2/3;max-height:260px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .photo-btns{display:flex;gap:7px;margin-top:12px;}
-.photo-btn{padding:8px 14px;border-radius:6px;background:var(--surface3);border:1px solid var(--border2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;}
-.crop-btn{width:100%;margin-top:7px;padding:9px;border-radius:7px;background:var(--surface2);border:1px solid var(--border2);color:var(--text-mid);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
+.photo-btn{padding:8px 14px;border-radius:99px;background:var(--surface3);border:1px solid var(--border2);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;}
+.crop-btn{width:100%;margin-top:7px;padding:9px;border-radius:99px;background:var(--surface2);border:1px solid var(--border2);color:var(--text-mid);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
 
-/* BACK/FRONT toggle */
+/* SIDE TABS */
 .side-tabs{display:flex;gap:5px;margin-bottom:10px;}
-.side-tab{flex:1;padding:7px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;text-align:center;transition:all .15s;}
+.side-tab{flex:1;padding:7px;border-radius:99px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);font-size:11px;font-weight:700;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;text-align:center;transition:all .15s;}
 .side-tab.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+
+/* CLUB SEARCH */
+.clubs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;max-height:200px;overflow-y:auto;}
+.club-opt{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .1s;}
+.club-opt.sel{border-color:var(--accent);background:rgba(175,255,37,.1);}
+.club-opt-logo{font-size:20px;}
+.club-opt-name{font-size:9px;text-align:center;font-weight:600;color:var(--text-mid);letter-spacing:.3px;text-transform:uppercase;}
+.club-create-btn{width:100%;margin-top:6px;padding:8px;border-radius:7px;background:transparent;border:1px dashed var(--border2);color:var(--text-dim);font-size:11px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;}
 
 /* CARD DETAIL */
 .card-detail{position:fixed;inset:0;z-index:150;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
@@ -170,48 +183,52 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .card-detail-hdr{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 12px;}
 .back-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
 .detail-fav-btn{background:none;border:none;font-size:22px;cursor:pointer;padding:4px;}
-.card-3d-scene{width:100%;height:54%;flex-shrink:0;display:flex;align-items:center;justify-content:center;perspective:1200px;background:var(--surface);position:relative;overflow:hidden;}
+.card-3d-scene{width:100%;height:54%;flex-shrink:0;display:flex;align-items:center;justify-content:center;perspective:1200px;background:var(--surface);position:relative;overflow:hidden;cursor:pointer;}
 .card-bg-name{position:absolute;inset:0;font-family:'Barlow Condensed',sans-serif;font-size:88px;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:-2px;text-transform:uppercase;pointer-events:none;overflow:hidden;text-align:center;line-height:.9;padding:0 8px;display:flex;align-items:center;justify-content:center;}
-.card-3d{width:196px;height:284px;border-radius:12px;overflow:hidden;position:relative;transform-style:preserve-3d;transition:box-shadow .3s;box-shadow:0 8px 28px rgba(0,0,0,.5);background:var(--surface2);border:1px solid var(--border2);}
-.card-3d.tilting{box-shadow:0 18px 40px rgba(0,0,0,.7);}
-.card-3d-content{width:100%;height:100%;position:relative;}
-.card-3d-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
-.card-holo{position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,.08) 40%,transparent 60%);opacity:0;transition:opacity .2s;pointer-events:none;border-radius:12px;}
-.card-3d.tilting .card-holo{opacity:1;}
-/* Fullscreen 3D card */
-.card-detail.fullscreen .card-3d-scene{height:100%;position:absolute;inset:0;}
-.card-detail.fullscreen .card-detail-bottom{display:none;}
-.card-detail.fullscreen .card-3d{width:min(70vw,280px);height:auto;aspect-ratio:2/3;}
-.card-detail.fullscreen .card-detail-hdr{background:none;}
-.fullscreen-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
-/* Flip card for verso */
-.card-flip-container{width:196px;height:284px;perspective:800px;cursor:pointer;}
+
+/* Flip container */
+.card-flip-container{width:196px;height:284px;perspective:800px;position:relative;}
 .card-flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);}
 .card-flip-inner.flipped{transform:rotateY(180deg);}
 .card-face{position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;background:var(--surface2);border:1px solid var(--border2);box-shadow:0 8px 28px rgba(0,0,0,.5);}
 .card-face-back{transform:rotateY(180deg);}
-.flip-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;pointer-events:none;}
+.card-3d-content{width:100%;height:100%;position:relative;}
+.card-3d-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.card-holo{position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(175,255,37,.06) 40%,transparent 60%);opacity:0;transition:opacity .2s;pointer-events:none;border-radius:12px;}
+.flip-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:8px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;pointer-events:none;}
 
+/* FULLSCREEN */
+.card-detail.fullscreen .card-3d-scene{height:100%;position:absolute;inset:0;}
+.card-detail.fullscreen .card-detail-bottom{display:none;}
+.card-detail.fullscreen .card-flip-container{width:min(65vw,300px);height:auto;aspect-ratio:2/3;}
+.card-detail.fullscreen .card-flip-inner{height:100%;}
+.card-detail.fullscreen .card-face{border-radius:14px;}
+.fullscreen-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
+
+/* DETAIL BOTTOM */
 .card-detail-bottom{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .player-identity{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 18px 0;}
-.player-first{font-size:13px;font-weight:300;color:var(--text-mid);letter-spacing:.5px;}
-.player-last{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1;cursor:pointer;}
+.player-first{font-size:14px;font-weight:300;color:var(--text);letter-spacing:.5px;}
+.player-last{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1;color:var(--accent);cursor:pointer;}
 .player-meta{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap;}
+.player-club-logo{width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0;}
 .player-club-emoji{font-size:15px;}
 .player-club{font-size:13px;font-weight:400;color:var(--text-mid);}
+.player-flag{font-size:16px;}
 .sep{width:3px;height:3px;border-radius:50%;background:var(--text-dim);}
 .player-sport-label{font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
 .player-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;padding-top:4px;}
-.player-num-badge{background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:3px 8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--accent);}
+.player-num-badge{background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:3px 10px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;color:var(--accent);}
 .player-badges{display:flex;flex-direction:column;gap:3px;align-items:flex-end;}
 .chips-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin:14px 18px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
 .chip{background:var(--surface);padding:11px 15px;}
 .chip-label{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;}
 .chip-val{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;}
+.chip-val.price-val{color:var(--accent);}
 .detail-notes-wrap{padding:13px 18px;border-top:1px solid var(--border);}
 .detail-notes-label{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;}
 .detail-notes-val{font-size:13px;font-weight:300;color:var(--text-mid);line-height:1.5;}
-.detail-actions{display:flex;gap:7px;padding:13px 18px 30px;flex-wrap:wrap;}
+.detail-actions{display:flex;gap:7px;padding:13px 18px 30px;}
 
 /* COLLECTION VIEW */
 .coll-view{position:fixed;inset:0;z-index:140;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
@@ -224,13 +241,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .bulk-bar{position:fixed;bottom:var(--tab-h);left:0;right:0;padding:9px 15px;background:var(--surface);border-top:1px solid var(--border);display:none;gap:7px;z-index:160;}
 .bulk-bar.show{display:flex;}
 
-/* CLUBS */
-.clubs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
-.club-opt{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all .1s;}
-.club-opt.sel{border-color:var(--accent);background:rgba(232,160,32,.1);}
-.club-opt-logo{font-size:20px;}
-.club-opt-name{font-size:9px;text-align:center;font-weight:600;color:var(--text-mid);letter-spacing:.3px;text-transform:uppercase;}
-
 /* SCANNER */
 .scanner-hdr{padding:50px 20px 14px;}
 .scanner-title{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;}
@@ -238,7 +248,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 /* PLAYER AI */
 .ai-hdr{display:flex;align-items:center;gap:13px;margin-bottom:14px;}
-.ai-avatar{width:50px;height:50px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.ai-avatar{width:50px;height:50px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;}
+.ai-flag{font-size:18px;margin-left:4px;}
 .ai-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.3px;line-height:1;}
 .ai-sub{font-size:10px;font-weight:400;color:var(--text-dim);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
 .ai-desc{font-size:13px;font-weight:300;color:var(--text-mid);line-height:1.5;margin-bottom:16px;}
@@ -271,10 +282,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .crop-frame{position:absolute;inset:16px;border:2px solid rgba(255,255,255,.45);border-radius:5px;pointer-events:none;}
 .crop-hint{color:var(--text-dim);font-size:10px;letter-spacing:.8px;text-transform:uppercase;margin-top:9px;font-weight:500;}
 .crop-actions{display:flex;gap:9px;margin-top:18px;}
-.crop-btn-a{padding:10px 28px;border-radius:7px;font-size:13px;font-weight:800;cursor:pointer;border:none;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
+.crop-btn-a{padding:10px 28px;border-radius:99px;font-size:13px;font-weight:800;cursor:pointer;border:none;font-family:'Barlow Condensed',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
 
 /* GYRO BTN */
-.gyro-btn{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:7px 17px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;z-index:10;white-space:nowrap;font-family:'Barlow',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
+.gyro-btn{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:7px 17px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;z-index:10;white-space:nowrap;font-family:'Barlow',sans-serif;letter-spacing:.8px;text-transform:uppercase;}
 
 /* EMPTY */
 .empty-state{text-align:center;padding:38px 22px;color:var(--text-dim);}
@@ -283,7 +294,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .empty-sub{font-size:12px;font-weight:300;line-height:1.6;letter-spacing:.3px;}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(var(--tab-h) + 13px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:8px 16px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;z-index:400;opacity:0;transition:all .26s;white-space:nowrap;}
+.toast{position:fixed;bottom:calc(var(--tab-h) + 13px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:8px 18px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;z-index:400;opacity:0;transition:all .26s;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
@@ -317,55 +328,48 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="page-inner">
     <div class="scanner-hdr"><div class="scanner-title">Ajouter</div><div class="scanner-sub">Scanne ou uploade ta carte</div></div>
     <div style="padding:0 20px;">
-      <!-- Side tabs recto/verso -->
       <div class="side-tabs">
-        <div class="side-tab active" id="add-tab-recto" onclick="switchAddSide('recto')">🃏 Recto</div>
-        <div class="side-tab" id="add-tab-verso" onclick="switchAddSide('verso')">🔄 Verso</div>
+        <div class="side-tab active" id="add-tab-recto" onclick="switchAddSide('recto')">Recto</div>
+        <div class="side-tab" id="add-tab-verso" onclick="switchAddSide('verso')">Verso</div>
       </div>
-      <!-- Recto -->
       <div id="add-recto-zone">
         <div class="photo-upload" id="photo-upload-zone">
           <input type="file" id="card-photo-lib" accept="image/*" style="display:none" onchange="handlePhoto(this,'recto')">
           <input type="file" id="card-photo-cam" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'recto')">
           <div id="photo-preview-wrap" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib').click()">
             <img id="photo-preview-img" style="width:100%;height:100%;object-fit:cover;">
-            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
           </div>
-          <div id="photo-placeholder-ui">
-            <div style="font-size:28px;">📸</div>
+          <div id="photo-placeholder-ui"><div style="font-size:28px;">📸</div>
             <div class="photo-btns">
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam').click()">📷 Caméra</button>
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib').click()">🖼️ Bibliothèque</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam').click()">Caméra</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib').click()">Bibliothèque</button>
             </div>
           </div>
         </div>
-        <button class="crop-btn" id="crop-btn" style="display:none;" onclick="openCrop('recto')">✂️ Recadrer</button>
+        <button class="crop-btn" id="crop-btn" style="display:none;" onclick="openCrop('recto')">Recadrer</button>
       </div>
-      <!-- Verso -->
       <div id="add-verso-zone" style="display:none;">
         <div class="photo-upload" id="photo-upload-zone-v">
           <input type="file" id="card-photo-lib-v" accept="image/*" style="display:none" onchange="handlePhoto(this,'verso')">
           <input type="file" id="card-photo-cam-v" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'verso')">
           <div id="photo-preview-wrap-v" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib-v').click()">
             <img id="photo-preview-img-v" style="width:100%;height:100%;object-fit:cover;">
-            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
           </div>
-          <div id="photo-placeholder-ui-v">
-            <div style="font-size:28px;">🔄</div>
+          <div id="photo-placeholder-ui-v"><div style="font-size:28px;">🔄</div>
             <div class="photo-btns">
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam-v').click()">📷 Caméra</button>
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib-v').click()">🖼️ Bibliothèque</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam-v').click()">Caméra</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib-v').click()">Bibliothèque</button>
             </div>
           </div>
         </div>
-        <button class="crop-btn" id="crop-btn-v" style="display:none;" onclick="openCrop('verso')">✂️ Recadrer verso</button>
+        <button class="crop-btn" id="crop-btn-v" style="display:none;" onclick="openCrop('verso')">Recadrer verso</button>
       </div>
 
       <div style="height:16px;"></div>
       <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="f-prenom" type="text" placeholder="Kylian" autocomplete="off"></div>
       <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="f-nom" type="text" placeholder="Mbappé" autocomplete="off"></div>
-
-      <!-- Sport FIRST -->
       <div class="form-group"><label class="form-label">Sport</label>
         <select class="form-select" id="f-sport" onchange="onSportChange()">
           <option value="">Sélectionner</option>
@@ -379,14 +383,19 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
           <option value="autre">🏅 Autre</option>
         </select>
       </div>
-      <!-- Club — masqué pour tennis/f1/autre -->
-      <div class="form-group" id="club-group">
+      <div class="form-group" id="club-group" style="display:none;">
         <label class="form-label">Club / Équipe</label>
-        <input class="form-input" id="f-club-search" type="text" placeholder="Rechercher un club…" oninput="filterClubs(this.value)" onfocus="showClubGrid()" autocomplete="off">
+        <input class="form-input" id="f-club-search" type="text" placeholder="Rechercher un club…" oninput="filterClubs(this.value,'clubs-grid','f')" onfocus="showClubGrid('clubs-grid')" autocomplete="off">
         <div class="clubs-grid" id="clubs-grid" style="display:none;"></div>
         <div id="sel-club-disp" style="display:none;margin-top:9px;align-items:center;gap:8px;"></div>
+        <button class="club-create-btn" id="club-create-show" style="display:none;" onclick="showCreateClubForm('f')">+ Créer ce club</button>
+        <div id="club-create-form" style="display:none;margin-top:8px;">
+          <input class="form-input" id="new-club-name" type="text" placeholder="Nom du club" style="margin-bottom:6px;">
+          <input class="form-input" id="new-club-full" type="text" placeholder="Nom complet" style="margin-bottom:6px;">
+          <input class="form-input" id="new-club-emoji" type="text" placeholder="Emoji (ex: ⚽)" style="margin-bottom:6px;width:80px;">
+          <button class="btn-primary" style="padding:9px;" onclick="createClub('f')">Créer</button>
+        </div>
       </div>
-
       <div class="form-group">
         <label class="form-label">Numérotée</label>
         <div style="display:flex;gap:7px;align-items:center;">
@@ -394,10 +403,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
           <input class="form-input" id="f-num" type="text" placeholder="/25" style="width:76px;display:none;">
         </div>
       </div>
-      <div class="form-group"><label class="form-label">Spécificités</label><div class="toggle-row"><button class="toggle-btn" id="tog-auto" onclick="toggleTag('auto')">✍️ Auto</button><button class="toggle-btn" id="tog-patch" onclick="toggleTag('patch')">🎯 Patch</button><button class="toggle-btn" id="tog-rookie" onclick="toggleTag('rookie')">🌟 Rookie</button></div></div>
+      <div class="form-group"><label class="form-label">Spécificités</label><div class="toggle-row"><button class="toggle-btn" id="tog-auto" onclick="toggleTag('auto')">Auto</button><button class="toggle-btn" id="tog-patch" onclick="toggleTag('patch')">Patch</button><button class="toggle-btn" id="tog-rookie" onclick="toggleTag('rookie')">Rookie</button></div></div>
       <div class="form-group"><label class="form-label">Collection</label><select class="form-select" id="f-collection"></select></div>
       <div id="new-coll-wrap" style="display:none;margin-top:7px;"><input class="form-input" id="f-new-coll" type="text" placeholder="Nom de la collection"></div>
-      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="3" placeholder="Valeur estimée, état…"></textarea></div>
+      <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="f-price" type="number" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="3" placeholder="État, remarques…"></textarea></div>
       <button class="btn-primary" id="save-card-btn" onclick="saveCard()">Enregistrer la carte</button>
       <div style="height:22px;"></div>
     </div>
@@ -431,7 +441,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div class="filter-tag" onclick="setFilter('nhl',this)">🏒 NHL</div>
       <div class="filter-tag" onclick="setFilter('f1',this)">🏎️ F1</div>
     </div>
-    <div style="padding:0 20px 9px;"><div class="sec-title" style="font-size:13px;">Dossiers</div></div>
+    <div style="padding:0 20px 9px;display:flex;align-items:center;justify-content:space-between;"><div class="sec-title" style="font-size:13px;">Dossiers</div><div id="total-val" style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--accent);"></div></div>
     <div class="folders-grid" id="folders-grid"></div>
     <div style="padding:0 20px 9px;"><div class="sec-title" style="font-size:13px;">Toutes les cartes</div></div>
     <div class="colls-grid" id="coll-grid"></div>
@@ -457,7 +467,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="card-detail-hdr">
     <button class="back-btn" onclick="closeDetail()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
     <div style="display:flex;gap:8px;">
-      <button class="fullscreen-btn" onclick="toggleFullscreen()" id="fullscreen-btn" title="Plein écran">
+      <button class="fullscreen-btn" onclick="toggleFullscreen()" id="fullscreen-btn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
       <button class="detail-fav-btn" id="detail-fav-btn" onclick="toggleFav()">☆</button>
@@ -465,31 +475,27 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
   <div class="card-3d-scene" id="card-3d-scene">
     <div class="card-bg-name" id="card-bg-name"></div>
-    <!-- Flip container for recto/verso -->
-    <div class="card-flip-container" id="card-flip-container" onclick="flipCard()">
+    <div class="card-flip-container" id="card-flip-container">
       <div class="card-flip-inner" id="card-flip-inner">
         <div class="card-face" id="card-face-front">
-          <div class="card-3d-content card-3d-placeholder" id="card-3d-content">
-            <span style="font-size:40px;opacity:.25;">🃏</span>
-          </div>
+          <div class="card-3d-content card-3d-placeholder" id="card-3d-content"><span style="font-size:40px;opacity:.25;">🃏</span></div>
           <div class="card-holo"></div>
         </div>
         <div class="card-face card-face-back" id="card-face-back">
-          <div class="card-3d-content card-3d-placeholder" id="card-3d-content-back">
-            <span style="font-size:40px;opacity:.25;">🔄</span><span style="font-size:10px;color:var(--text-dim);">Pas de verso</span>
-          </div>
+          <div class="card-3d-content card-3d-placeholder" id="card-3d-content-back"><span style="font-size:40px;opacity:.25;">🔄</span><span style="font-size:10px;color:var(--text-dim);">Pas de verso</span></div>
         </div>
       </div>
     </div>
-    <div class="flip-hint" id="flip-hint" style="display:none;">Tap pour retourner</div>
+    <div class="flip-hint" id="flip-hint" style="display:none;">Glisse pour retourner</div>
   </div>
   <div class="card-detail-bottom">
     <div class="player-identity">
       <div>
         <div class="player-first" id="detail-prenom"></div>
-        <div class="player-last" id="detail-nom" onclick="openPlayerAI()">—</div>
+        <div class="player-last" id="detail-nom" onclick="openPlayerStats()">—</div>
         <div class="player-meta">
-          <span class="player-club-emoji" id="detail-club-e"></span>
+          <span id="detail-flag" class="player-flag" style="display:none;"></span>
+          <span id="detail-club-logo-wrap"></span>
           <span class="player-club" id="detail-club-n">—</span>
           <span class="sep" id="detail-sep" style="display:none;"></span>
           <span class="player-sport-label" id="detail-sport-label"></span>
@@ -504,16 +510,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       <div class="chip"><div class="chip-label">Collection</div><div class="chip-val" id="d-coll">—</div></div>
       <div class="chip"><div class="chip-label">Numérotée</div><div class="chip-val" id="d-num">—</div></div>
       <div class="chip"><div class="chip-label">Sport</div><div class="chip-val" id="d-sport">—</div></div>
-      <div class="chip"><div class="chip-label">Ajouté le</div><div class="chip-val" id="d-date">—</div></div>
+      <div class="chip"><div class="chip-label">Prix estimé</div><div class="chip-val price-val" id="d-price">—</div></div>
     </div>
     <div class="detail-notes-wrap" id="d-notes-wrap" style="display:none;">
       <div class="detail-notes-label">Notes</div>
       <div class="detail-notes-val" id="d-notes-val"></div>
     </div>
     <div class="detail-actions">
-      <button class="btn-secondary" onclick="editCurrentCard()">✏️ Modifier</button>
-      <button class="btn-accent" onclick="openPlayerAI()">🤖 Stats IA</button>
-      <button class="btn-danger" onclick="deleteCurrentCard()" style="flex:0 0 auto;padding:11px 16px;">🗑️</button>
+      <button class="btn-secondary" onclick="editCurrentCard()">Modifier</button>
+      <button class="btn-accent" onclick="openPlayerStats()">Stats Joueur</button>
     </div>
   </div>
 </div>
@@ -538,11 +543,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <!-- EDIT SHEET -->
 <div class="sheet-overlay" id="edit-sheet" onclick="closeSheet('edit-sheet',event)">
   <div class="sheet" onclick="event.stopPropagation()">
-    <div class="sheet-handle"></div><div class="sheet-title">Modifier</div>
-    <!-- Photo recto/verso dans l'édition -->
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Modifier</div>
+    <button class="sheet-delete-btn" onclick="deleteCurrentCard()">Supprimer</button>
     <div class="side-tabs">
-      <div class="side-tab active" id="edit-tab-recto" onclick="switchEditSide('recto')">🃏 Recto</div>
-      <div class="side-tab" id="edit-tab-verso" onclick="switchEditSide('verso')">🔄 Verso</div>
+      <div class="side-tab active" id="edit-tab-recto" onclick="switchEditSide('recto')">Recto</div>
+      <div class="side-tab" id="edit-tab-verso" onclick="switchEditSide('verso')">Verso</div>
     </div>
     <div id="edit-recto-zone" style="margin-bottom:10px;">
       <div class="photo-upload" id="edit-photo-zone" style="max-height:180px;">
@@ -550,17 +556,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <input type="file" id="e-photo-cam" accept="image/*" capture="environment" style="display:none" onchange="handleEditPhoto(this,'recto')">
         <div id="e-preview-wrap" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('e-photo-lib').click()">
           <img id="e-preview-img" style="width:100%;height:100%;object-fit:cover;">
-          <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+          <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
         </div>
-        <div id="e-placeholder">
-          <div style="font-size:22px;">📸</div>
+        <div id="e-placeholder"><div style="font-size:22px;">📸</div>
           <div class="photo-btns">
-            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-cam').click()">📷</button>
-            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-lib').click()">🖼️</button>
+            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-cam').click()">Caméra</button>
+            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-lib').click()">Bibliothèque</button>
           </div>
         </div>
       </div>
-      <button class="crop-btn" id="e-crop-btn" style="display:none;margin-bottom:8px;" onclick="openCrop('edit-recto')">✂️ Recadrer</button>
+      <button class="crop-btn" id="e-crop-btn" style="display:none;margin-bottom:8px;" onclick="openCrop('edit-recto')">Recadrer</button>
     </div>
     <div id="edit-verso-zone" style="display:none;margin-bottom:10px;">
       <div class="photo-upload" id="edit-photo-zone-v" style="max-height:180px;">
@@ -568,17 +573,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <input type="file" id="e-photo-cam-v" accept="image/*" capture="environment" style="display:none" onchange="handleEditPhoto(this,'verso')">
         <div id="e-preview-wrap-v" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('e-photo-lib-v').click()">
           <img id="e-preview-img-v" style="width:100%;height:100%;object-fit:cover;">
-          <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+          <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
         </div>
-        <div id="e-placeholder-v">
-          <div style="font-size:22px;">🔄</div>
+        <div id="e-placeholder-v"><div style="font-size:22px;">🔄</div>
           <div class="photo-btns">
-            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-cam-v').click()">📷</button>
-            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-lib-v').click()">🖼️</button>
+            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-cam-v').click()">Caméra</button>
+            <button class="photo-btn" type="button" onclick="document.getElementById('e-photo-lib-v').click()">Bibliothèque</button>
           </div>
         </div>
       </div>
-      <button class="crop-btn" id="e-crop-btn-v" style="display:none;margin-bottom:8px;" onclick="openCrop('edit-verso')">✂️ Recadrer verso</button>
+      <button class="crop-btn" id="e-crop-btn-v" style="display:none;margin-bottom:8px;" onclick="openCrop('edit-verso')">Recadrer verso</button>
     </div>
     <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="e-prenom" type="text"></div>
     <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="e-nom" type="text"></div>
@@ -595,20 +599,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <option value="autre">🏅 Autre</option>
       </select>
     </div>
-    <div class="form-group" id="e-club-group"><label class="form-label">Club / Équipe</label><input class="form-input" id="e-club" type="text"></div>
+    <div class="form-group" id="e-club-group" style="display:none;"><label class="form-label">Club / Équipe</label><input class="form-input" id="e-club" type="text"></div>
     <div class="form-group"><label class="form-label">Numérotée (/X)</label><input class="form-input" id="e-num" type="text" placeholder="/25"></div>
-    <div class="form-group"><label class="form-label">Spécificités</label><div class="toggle-row"><button class="toggle-btn" id="e-tog-auto" onclick="eTogTag('auto')">✍️ Auto</button><button class="toggle-btn" id="e-tog-patch" onclick="eTogTag('patch')">🎯 Patch</button><button class="toggle-btn" id="e-tog-rookie" onclick="eTogTag('rookie')">🌟 Rookie</button></div></div>
+    <div class="form-group"><label class="form-label">Spécificités</label><div class="toggle-row"><button class="toggle-btn" id="e-tog-auto" onclick="eTogTag('auto')">Auto</button><button class="toggle-btn" id="e-tog-patch" onclick="eTogTag('patch')">Patch</button><button class="toggle-btn" id="e-tog-rookie" onclick="eTogTag('rookie')">Rookie</button></div></div>
     <div class="form-group"><label class="form-label">Collection</label><select class="form-select" id="e-collection"></select></div>
+    <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="e-price" type="number" placeholder="0.00" step="0.01" min="0"></div>
     <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="e-notes" rows="3"></textarea></div>
     <button class="btn-primary" onclick="saveEdit()">Sauvegarder</button>
   </div>
 </div>
 
-<!-- PLAYER SHEET -->
+<!-- PLAYER STATS SHEET -->
 <div class="sheet-overlay" id="player-sheet" onclick="closeSheet('player-sheet',event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
-    <div id="player-ai-content"><div class="ai-loading"><div class="ai-spin"></div>Analyse en cours…</div></div>
+    <div id="player-ai-content"><div class="ai-loading"><div class="ai-spin"></div>Recherche en cours…</div></div>
   </div>
 </div>
 
@@ -626,7 +631,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
 </div>
 
-<!-- CROP overlay -->
+<!-- CROP -->
 <div class="crop-overlay" id="crop-overlay">
   <div class="crop-label" id="crop-label">Ajuste le cadrage</div>
   <div class="crop-wrap"><img id="crop-img" class="crop-img" draggable="false"><div class="crop-frame"></div></div>
@@ -661,8 +666,8 @@ async function uploadPhoto(dataUrl,cardId,side){
   }catch(e){console.error('uploadPhoto',e);return'';}
 }
 
-function fromSB(c){return{id:c.id,prenom:c.prenom||'',nom:c.nom||'',club:c.club||'',clubEmoji:c.club_emoji||'',sport:c.sport||'',num:c.num||'',isNum:c.is_num||false,tags:c.tags||[],collection:c.collection||'',notes:c.notes||'',photo:c.photo_url||'',photoVerso:c.photo_verso_url||'',fav:c.fav||false,date:c.date||''};}
-function toSB(c){return{id:c.id,prenom:c.prenom||'',nom:c.nom||'',club:c.club||'',club_emoji:c.clubEmoji||'',sport:c.sport||'',num:c.num||'',is_num:c.isNum||false,tags:Array.isArray(c.tags)?c.tags:[],collection:c.collection||'',notes:c.notes||'',photo_url:c.photo||'',photo_verso_url:c.photoVerso||'',fav:c.fav||false,date:c.date||''};}
+function fromSB(c){return{id:c.id,prenom:c.prenom||'',nom:c.nom||'',club:c.club||'',clubEmoji:c.club_emoji||'',sport:c.sport||'',num:c.num||'',isNum:c.is_num||false,tags:c.tags||[],collection:c.collection||'',notes:c.notes||'',photo:c.photo_url||'',photoVerso:c.photo_verso_url||'',fav:c.fav||false,date:c.date||'',price:c.price||0};}
+function toSB(c){return{id:c.id,prenom:c.prenom||'',nom:c.nom||'',club:c.club||'',club_emoji:c.clubEmoji||'',sport:c.sport||'',num:c.num||'',is_num:c.isNum||false,tags:Array.isArray(c.tags)?c.tags:[],collection:c.collection||'',notes:c.notes||'',photo_url:c.photo||'',photo_verso_url:c.photoVerso||'',fav:c.fav||false,date:c.date||'',price:c.price||0};}
 
 /* STATE */
 let db={cards:[],folders:[]};
@@ -671,11 +676,12 @@ let curCardId=null,curFolderId=null;
 let eTags={auto:false,patch:false,rookie:false};
 let aTags={auto:false,patch:false,rookie:false};
 let numOn=false,selClub=null,folderEmoji='📁';
-// Photos: recto/verso pour add et edit
 let addPhoto={recto:null,verso:null},addCrop={recto:null,verso:null};
 let editPhoto={recto:null,verso:null},editCrop={recto:null,verso:null};
-let cropTarget=null; // 'recto'|'verso'|'edit-recto'|'edit-verso'
+let cropTarget=null;
 let isFullscreen=false,isFlipped=false;
+// Swipe detection
+let swipeStartX=null,swipeStartY=null;
 
 async function loadFromDB(){
   showLoader(true);
@@ -690,33 +696,90 @@ async function loadFromDB(){
 }
 function showLoader(on){let el=document.getElementById('global-loader');if(!el){el=document.createElement('div');el.id='global-loader';el.style.cssText='position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;';el.innerHTML='<div style="width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;"></div><div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);">Chargement…</div>';document.body.appendChild(el);}el.style.display=on?'flex':'none';}
 
-/* ══ SPORTS avec/sans club ══ */
+/* SPORTS */
 const SPORTS_WITH_CLUB=['football','basketball','baseball','nfl','nhl'];
 function sportNeedsClub(s){return SPORTS_WITH_CLUB.includes(s);}
-function onSportChange(){const s=document.getElementById('f-sport').value;document.getElementById('club-group').style.display=sportNeedsClub(s)?'block':'none';}
+function onSportChange(){const s=document.getElementById('f-sport').value;const g=document.getElementById('club-group');g.style.display=sportNeedsClub(s)?'block':'none';if(sportNeedsClub(s))showClubGrid('clubs-grid');}
 function onEditSportChange(){const s=document.getElementById('e-sport').value;document.getElementById('e-club-group').style.display=sportNeedsClub(s)?'block':'none';}
 
-/* ══ CLUBS ══ */
-const CLUBS=[
-  {name:'PSG',emoji:'🔵',full:'Paris Saint-Germain'},{name:'Real Madrid',emoji:'⚪',full:'Real Madrid CF'},{name:'Barcelona',emoji:'🔴',full:'FC Barcelona'},
-  {name:'Man. City',emoji:'🔷',full:'Manchester City'},{name:'Arsenal',emoji:'❤️',full:'Arsenal FC'},{name:'Bayern',emoji:'🔴',full:'FC Bayern Munich'},
-  {name:'Juventus',emoji:'⬛',full:'Juventus FC'},{name:'Chelsea',emoji:'💙',full:'Chelsea FC'},{name:'Liverpool',emoji:'❤️',full:'Liverpool FC'},
-  {name:'Inter',emoji:'🔵',full:'Inter Milan'},{name:'Marseille',emoji:'🔵',full:'OM'},{name:'Lyon',emoji:'🔴',full:'OL'},
-  {name:'Lakers',emoji:'💜',full:'Los Angeles Lakers'},{name:'Warriors',emoji:'💛',full:'Golden State Warriors'},{name:'Bulls',emoji:'🔴',full:'Chicago Bulls'},
-  {name:'Celtics',emoji:'💚',full:'Boston Celtics'},{name:'Heat',emoji:'🔴',full:'Miami Heat'},{name:'Spurs',emoji:'⬛',full:'San Antonio Spurs'},
-  {name:'Cowboys',emoji:'⭐',full:'Dallas Cowboys'},{name:'Patriots',emoji:'🔵',full:'New England Patriots'},
-  {name:'Maple Leafs',emoji:'🍁',full:'Toronto Maple Leafs'},{name:'Canadiens',emoji:'🔴',full:'Montréal Canadiens'},
-  {name:'France',emoji:'🇫🇷',full:'France'},{name:'Espagne',emoji:'🇪🇸',full:'Espagne'},{name:'USA',emoji:'🇺🇸',full:'États-Unis'},
+/* CLUBS — dynamique avec possibilité de créer */
+let CLUBS=[
+  {name:'PSG',emoji:'🔵',full:'Paris Saint-Germain',logo:'https://upload.wikimedia.org/wikipedia/fr/thumb/8/86/Paris_Saint-Germain_logo.svg/120px-Paris_Saint-Germain_logo.svg.png'},
+  {name:'Real Madrid',emoji:'⚪',full:'Real Madrid CF',logo:'https://upload.wikimedia.org/wikipedia/fr/thumb/c/c7/Real_Madrid_CF.svg/120px-Real_Madrid_CF.svg.png'},
+  {name:'Barcelona',emoji:'🔴',full:'FC Barcelona',logo:'https://upload.wikimedia.org/wikipedia/fr/thumb/3/3a/FC_Barcelona_crest.svg/120px-FC_Barcelona_crest.svg.png'},
+  {name:'Man. City',emoji:'🔷',full:'Manchester City',logo:'https://upload.wikimedia.org/wikipedia/fr/thumb/5/5d/Logo_Manchester_City_2016.svg/120px-Logo_Manchester_City_2016.svg.png'},
+  {name:'Arsenal',emoji:'❤️',full:'Arsenal FC',logo:'https://upload.wikimedia.org/wikipedia/fr/thumb/5/53/Arsenal_FC.svg/120px-Arsenal_FC.svg.png'},
+  {name:'Bayern',emoji:'🔴',full:'FC Bayern Munich',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg/120px-FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg.png'},
+  {name:'Juventus',emoji:'⬛',full:'Juventus FC',logo:''},
+  {name:'Chelsea',emoji:'💙',full:'Chelsea FC',logo:''},
+  {name:'Liverpool',emoji:'❤️',full:'Liverpool FC',logo:''},
+  {name:'Inter',emoji:'🔵',full:'Inter Milan',logo:''},
+  {name:'Marseille',emoji:'🔵',full:'Olympique de Marseille',logo:''},
+  {name:'Lyon',emoji:'🔴',full:'Olympique Lyonnais',logo:''},
+  {name:'Lakers',emoji:'💜',full:'Los Angeles Lakers',logo:''},
+  {name:'Warriors',emoji:'💛',full:'Golden State Warriors',logo:''},
+  {name:'Bulls',emoji:'🔴',full:'Chicago Bulls',logo:''},
+  {name:'Celtics',emoji:'💚',full:'Boston Celtics',logo:''},
+  {name:'Heat',emoji:'🔴',full:'Miami Heat',logo:''},
+  {name:'Spurs',emoji:'⬛',full:'San Antonio Spurs',logo:''},
+  {name:'Cowboys',emoji:'⭐',full:'Dallas Cowboys',logo:''},
+  {name:'Patriots',emoji:'🔵',full:'New England Patriots',logo:''},
+  {name:'Maple Leafs',emoji:'🍁',full:'Toronto Maple Leafs',logo:''},
+  {name:'Canadiens',emoji:'🔴',full:'Montréal Canadiens',logo:''},
+  {name:'France',emoji:'🇫🇷',full:'Équipe de France',logo:''},
+  {name:'Espagne',emoji:'🇪🇸',full:'Sélection Espagnole',logo:''},
+  {name:'USA',emoji:'🇺🇸',full:'Team USA',logo:''},
 ];
-function showClubGrid(){renderClubGrid(CLUBS);document.getElementById('clubs-grid').style.display='grid';}
-function filterClubs(v){const q=v.toLowerCase();renderClubGrid(CLUBS.filter(c=>c.name.toLowerCase().includes(q)||c.full.toLowerCase().includes(q)));document.getElementById('clubs-grid').style.display='grid';}
-function renderClubGrid(list){document.getElementById('clubs-grid').innerHTML=list.map(c=>`<div class="club-opt ${selClub&&selClub.name===c.name?'sel':''}" onclick="pickClub('${c.name}')"><div class="club-opt-logo">${c.emoji}</div><div class="club-opt-name">${c.name}</div></div>`).join('');}
-function pickClub(n){selClub=CLUBS.find(c=>c.name===n);document.getElementById('f-club-search').value=n;document.getElementById('clubs-grid').style.display='none';const d=document.getElementById('sel-club-disp');d.style.display='flex';d.style.alignItems='center';d.style.gap='8px';d.innerHTML=`<span style="font-size:20px;">${selClub.emoji}</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;">${selClub.full}</span>`;}
 
-/* ══ NORMALISATION NOM (accents + casse) ══ */
+function getClub(name){return CLUBS.find(c=>c.name===name||c.full===name)||null;}
+function clubLogoHtml(club,size=16){if(!club)return'';if(club.logo){return`<img src="${club.logo}" class="card-club-logo" style="width:${size}px;height:${size}px;" onerror="this.style.display='none'">`;}return`<span style="font-size:${size}px;">${club.emoji||''}</span>`;}
+
+function showClubGrid(gridId){renderClubGrid(CLUBS,gridId);document.getElementById(gridId).style.display='grid';}
+function filterClubs(v,gridId,prefix){
+  const q=v.toLowerCase().trim();
+  const filtered=q?CLUBS.filter(c=>c.name.toLowerCase().includes(q)||c.full.toLowerCase().includes(q)):CLUBS;
+  renderClubGrid(filtered,gridId);
+  document.getElementById(gridId).style.display='grid';
+  const cb=document.getElementById('club-create-show');
+  if(cb){
+    const exact=CLUBS.find(c=>normName(c.name)===normName(v)||normName(c.full)===normName(v));
+    cb.style.display=(q&&!exact&&filtered.length===0)?'block':'none';
+    cb.textContent=`+ Créer "${v}"`;
+    cb.dataset.name=v;
+  }
+}
+function renderClubGrid(list,gridId){
+  document.getElementById(gridId).innerHTML=list.slice(0,18).map(c=>`
+    <div class="club-opt ${selClub&&selClub.name===c.name?'sel':''}" onclick="pickClub('${c.name}')">
+      <div class="club-opt-logo">${c.logo?`<img src="${c.logo}" style="width:24px;height:24px;object-fit:contain;" onerror="this.outerHTML='${c.emoji}'">`:`${c.emoji}`}</div>
+      <div class="club-opt-name">${c.name}</div>
+    </div>`).join('');
+}
+function pickClub(n){
+  selClub=CLUBS.find(c=>c.name===n);if(!selClub)return;
+  document.getElementById('f-club-search').value=n;
+  document.getElementById('clubs-grid').style.display='none';
+  document.getElementById('club-create-show').style.display='none';
+  const d=document.getElementById('sel-club-disp');d.style.display='flex';d.style.alignItems='center';d.style.gap='8px';
+  d.innerHTML=`${clubLogoHtml(selClub,22)}<span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;">${selClub.full}</span>`;
+}
+function showCreateClubForm(p){document.getElementById('club-create-form').style.display='block';document.getElementById('new-club-name').value=document.getElementById('club-create-show').dataset.name||'';}
+function createClub(p){
+  const name=document.getElementById('new-club-name').value.trim();
+  const full=document.getElementById('new-club-full').value.trim()||name;
+  const emoji=document.getElementById('new-club-emoji').value.trim()||'🏅';
+  if(!name){showToast('⚠️ Saisis un nom');return;}
+  const club={name,emoji,full,logo:''};
+  CLUBS.push(club);
+  document.getElementById('club-create-form').style.display='none';
+  pickClub(name);
+  showToast('Club créé !');
+}
+
+/* NORMALISATION */
 function normName(s){return(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();}
 
-/* ══ SEARCH AJAX ══ */
+/* SEARCH AJAX */
 let searchTimer=null;
 function homeSearch(v){
   clearTimeout(searchTimer);
@@ -725,114 +788,48 @@ function homeSearch(v){
   const q=normName(v);
   const filtered=db.cards.filter(c=>normName(c.prenom+' '+c.nom+' '+c.club).includes(q));
   renderRecent(filtered);
-  // Dropdown de suggestions groupées par joueur
   searchTimer=setTimeout(()=>{
     const seen=new Set();
     const uniq=filtered.filter(c=>{const k=normName(c.prenom+' '+c.nom);if(seen.has(k))return false;seen.add(k);return true;}).slice(0,6);
     if(!uniq.length){dd.classList.remove('open');return;}
-    dd.innerHTML=uniq.map(c=>`
-      <div class="search-drop-item" onclick="openCard('${c.id}');document.getElementById('home-search-dropdown').classList.remove('open')">
-        <div class="search-drop-thumb">${c.photo?`<img src="${c.photo}">`:(c.clubEmoji||'🃏')}</div>
-        <div><div class="search-drop-name">${c.prenom} ${c.nom}</div><div class="search-drop-sub">${c.club||''} ${c.sport?'· '+sportL(c.sport):''}</div></div>
-      </div>`).join('');
+    dd.innerHTML=uniq.map(c=>`<div class="search-drop-item" onclick="openCard('${c.id}');document.getElementById('home-search-dropdown').classList.remove('open')"><div class="search-drop-thumb">${c.photo?`<img src="${c.photo}">`:(c.clubEmoji||'🃏')}</div><div><div class="search-drop-name">${c.prenom} ${c.nom}</div><div class="search-drop-sub">${c.club||''} ${c.sport?'· '+sportL(c.sport):''}</div></div></div>`).join('');
     dd.classList.add('open');
   },200);
 }
 function collSearch(v){
-  curSearch=v;
-  renderCG2(getFiltered());
+  curSearch=v;renderCG2(getFiltered());
   const dd=document.getElementById('coll-search-dropdown');
   if(!v.trim()){dd.classList.remove('open');return;}
-  const q=normName(v);
-  const seen=new Set();
+  const q=normName(v);const seen=new Set();
   const sugg=db.cards.filter(c=>{const k=normName(c.prenom+' '+c.nom);if(!normName(c.prenom+' '+c.nom+' '+c.club).includes(q))return false;if(seen.has(k))return false;seen.add(k);return true;}).slice(0,5);
   if(!sugg.length){dd.classList.remove('open');return;}
-  dd.innerHTML=sugg.map(c=>`
-    <div class="search-drop-item" onclick="openCard('${c.id}');document.getElementById('coll-search-dropdown').classList.remove('open')">
-      <div class="search-drop-thumb">${c.photo?`<img src="${c.photo}">`:(c.clubEmoji||'🃏')}</div>
-      <div><div class="search-drop-name">${c.prenom} ${c.nom}</div><div class="search-drop-sub">${c.club||''} ${c.sport?'· '+sportL(c.sport):''}</div></div>
-    </div>`).join('');
+  dd.innerHTML=sugg.map(c=>`<div class="search-drop-item" onclick="openCard('${c.id}');document.getElementById('coll-search-dropdown').classList.remove('open')"><div class="search-drop-thumb">${c.photo?`<img src="${c.photo}">`:(c.clubEmoji||'🃏')}</div><div><div class="search-drop-name">${c.prenom} ${c.nom}</div><div class="search-drop-sub">${c.club||''} ${c.sport?'· '+sportL(c.sport):''}</div></div></div>`).join('');
   dd.classList.add('open');
 }
-document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap')){document.querySelectorAll('.search-dropdown').forEach(d=>d.classList.remove('open'));}});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap')&&!e.target.closest('.clubs-grid')){document.querySelectorAll('.search-dropdown').forEach(d=>d.classList.remove('open'));}});
 
 function sportL(s){return{football:'Football',basketball:'Basketball',tennis:'Tennis',baseball:'Baseball',nfl:'NFL',nhl:'NHL',f1:'Formule 1',autre:'Autre'}[s]||s;}
 function sportI(s){return{football:'⚽',basketball:'🏀',tennis:'🎾',baseball:'⚾',nfl:'🏈',nhl:'🏒',f1:'🏎️',autre:'🏅'}[s]||'';}
+function fmtPrice(p){if(!p||p<=0)return'—';return p.toLocaleString('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:0,maximumFractionDigits:2});}
 
-/* ══ PHOTO HANDLING ══ */
-function compressImage(dataUrl,cb){
-  const img=new Image();
-  img.onload=()=>{
-    const MAX=900;let w=img.width,h=img.height;
-    if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
-    const c=document.createElement('canvas');c.width=w;c.height=h;
-    c.getContext('2d').drawImage(img,0,0,w,h);
-    cb(c.toDataURL('image/jpeg',0.8));
-  };img.src=dataUrl;
-}
+/* PHOTO */
+function compressImage(dataUrl,cb){const img=new Image();img.onload=()=>{const MAX=900;let w=img.width,h=img.height;if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',0.8));};img.src=dataUrl;}
+function handlePhoto(inp,side){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>compressImage(e.target.result,data=>{addPhoto[side]=data;addCrop[side]=null;if(side==='recto'){document.getElementById('photo-preview-img').src=data;document.getElementById('photo-preview-wrap').style.display='block';document.getElementById('photo-placeholder-ui').style.display='none';document.getElementById('crop-btn').style.display='block';}else{document.getElementById('photo-preview-img-v').src=data;document.getElementById('photo-preview-wrap-v').style.display='block';document.getElementById('photo-placeholder-ui-v').style.display='none';document.getElementById('crop-btn-v').style.display='block';}});r.readAsDataURL(f);}
+function handleEditPhoto(inp,side){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>compressImage(e.target.result,data=>{editPhoto[side]=data;editCrop[side]=null;if(side==='recto'){document.getElementById('e-preview-img').src=data;document.getElementById('e-preview-wrap').style.display='block';document.getElementById('e-placeholder').style.display='none';document.getElementById('e-crop-btn').style.display='block';}else{document.getElementById('e-preview-img-v').src=data;document.getElementById('e-preview-wrap-v').style.display='block';document.getElementById('e-placeholder-v').style.display='none';document.getElementById('e-crop-btn-v').style.display='block';}});r.readAsDataURL(f);}
 
-function handlePhoto(inp,side){
-  const f=inp.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>compressImage(e.target.result,data=>{
-    addPhoto[side]=data;addCrop[side]=null;
-    if(side==='recto'){
-      document.getElementById('photo-preview-img').src=data;
-      document.getElementById('photo-preview-wrap').style.display='block';
-      document.getElementById('photo-placeholder-ui').style.display='none';
-      document.getElementById('crop-btn').style.display='block';
-    }else{
-      document.getElementById('photo-preview-img-v').src=data;
-      document.getElementById('photo-preview-wrap-v').style.display='block';
-      document.getElementById('photo-placeholder-ui-v').style.display='none';
-      document.getElementById('crop-btn-v').style.display='block';
-    }
-  });
-  r.readAsDataURL(f);
-}
-function handleEditPhoto(inp,side){
-  const f=inp.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>compressImage(e.target.result,data=>{
-    editPhoto[side]=data;editCrop[side]=null;
-    if(side==='recto'){
-      document.getElementById('e-preview-img').src=data;
-      document.getElementById('e-preview-wrap').style.display='block';
-      document.getElementById('e-placeholder').style.display='none';
-      document.getElementById('e-crop-btn').style.display='block';
-    }else{
-      document.getElementById('e-preview-img-v').src=data;
-      document.getElementById('e-preview-wrap-v').style.display='block';
-      document.getElementById('e-placeholder-v').style.display='none';
-      document.getElementById('e-crop-btn-v').style.display='block';
-    }
-  });
-  r.readAsDataURL(f);
-}
+/* SIDE TABS */
+function switchAddSide(side){document.getElementById('add-recto-zone').style.display=side==='recto'?'block':'none';document.getElementById('add-verso-zone').style.display=side==='verso'?'block':'none';document.getElementById('add-tab-recto').classList.toggle('active',side==='recto');document.getElementById('add-tab-verso').classList.toggle('active',side==='verso');}
+function switchEditSide(side){document.getElementById('edit-recto-zone').style.display=side==='recto'?'block':'none';document.getElementById('edit-verso-zone').style.display=side==='verso'?'block':'none';document.getElementById('edit-tab-recto').classList.toggle('active',side==='recto');document.getElementById('edit-tab-verso').classList.toggle('active',side==='verso');}
 
-/* ══ SIDE TABS (add / edit) ══ */
-function switchAddSide(side){
-  document.getElementById('add-recto-zone').style.display=side==='recto'?'block':'none';
-  document.getElementById('add-verso-zone').style.display=side==='verso'?'block':'none';
-  document.getElementById('add-tab-recto').classList.toggle('active',side==='recto');
-  document.getElementById('add-tab-verso').classList.toggle('active',side==='verso');
-}
-function switchEditSide(side){
-  document.getElementById('edit-recto-zone').style.display=side==='recto'?'block':'none';
-  document.getElementById('edit-verso-zone').style.display=side==='verso'?'block':'none';
-  document.getElementById('edit-tab-recto').classList.toggle('active',side==='recto');
-  document.getElementById('edit-tab-verso').classList.toggle('active',side==='verso');
-}
-
-/* ══ CROP ══ */
+/* CROP */
 let cDrag=null,cOX=0,cOY=0;
 function openCrop(target){
   cropTarget=target;
   let src='';
   if(target==='recto')src=addPhoto.recto;
   else if(target==='verso')src=addPhoto.verso;
-  else if(target==='edit-recto')src=editPhoto.recto;
-  else if(target==='edit-verso')src=editPhoto.verso;
+  else if(target==='edit-recto')src=editPhoto.recto||document.getElementById('e-preview-img').src;
+  else if(target==='edit-verso')src=editPhoto.verso||document.getElementById('e-preview-img-v').src;
   if(!src)return;
   const img=document.getElementById('crop-img');img.src=src;cOX=0;cOY=0;img.style.transform='translate(0,0)';
   document.getElementById('crop-label').textContent=target.includes('verso')?'Recadrer le verso':'Recadrer le recto';
@@ -848,24 +845,23 @@ function applyCrop(){
   else if(cropTarget==='verso'){addCrop.verso=src;document.getElementById('photo-preview-img-v').src=src;}
   else if(cropTarget==='edit-recto'){editCrop.recto=src;document.getElementById('e-preview-img').src=src;}
   else if(cropTarget==='edit-verso'){editCrop.verso=src;document.getElementById('e-preview-img-v').src=src;}
-  closeCrop();showToast('✂️ Recadrage appliqué');
+  closeCrop();showToast('Recadrage appliqué');
 }
 
-/* ══ NAV ══ */
+/* NAV */
 function navigate(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.getElementById('tab-'+p).classList.add('active');if(p==='collection')renderCollection();if(p==='home')renderHome();}
 
-/* ══ TOGGLES ══ */
+/* TOGGLES */
 function toggleNum(v){numOn=v;document.getElementById('num-oui').classList.toggle('on',v);document.getElementById('num-non').classList.toggle('on',!v);document.getElementById('f-num').style.display=v?'block':'none';}
 toggleNum(false);
 function toggleTag(t){aTags[t]=!aTags[t];document.getElementById('tog-'+t).classList.toggle('on',aTags[t]);}
 function eTogTag(t){eTags[t]=!eTags[t];document.getElementById('e-tog-'+t).classList.toggle('on',eTags[t]);}
 
-/* ══ SAVE CARD ══ */
+/* SAVE CARD */
 async function saveCard(){
   const prenom=document.getElementById('f-prenom').value.trim(),nom=document.getElementById('f-nom').value.trim();
   if(!prenom&&!nom){showToast('⚠️ Saisis au moins un nom');return;}
-  const btn=document.getElementById('save-card-btn');
-  btn.disabled=true;btn.textContent='⏳ Enregistrement…';
+  const btn=document.getElementById('save-card-btn');btn.disabled=true;btn.textContent='Enregistrement…';
   try{
     let coll=document.getElementById('f-collection').value;
     if(coll==='__new__'){const nn=document.getElementById('f-new-coll').value.trim();if(nn){await createFolderNamed(nn);coll=nn;}else coll='';}
@@ -873,45 +869,31 @@ async function saveCard(){
     const rawR=addCrop.recto||addPhoto.recto||'';
     const rawV=addCrop.verso||addPhoto.verso||'';
     let photoUrl='',photoVersoUrl='';
-    if(rawR){btn.textContent='📤 Upload recto…';photoUrl=await uploadPhoto(rawR,id,'recto');}
-    if(rawV){btn.textContent='📤 Upload verso…';photoVersoUrl=await uploadPhoto(rawV,id,'verso');}
-    const card={id,prenom,nom,
-      club:selClub?selClub.name:document.getElementById('f-club-search').value.trim(),
-      clubEmoji:selClub?selClub.emoji:'',
-      sport:document.getElementById('f-sport').value,
-      num:numOn?document.getElementById('f-num').value.trim():'',
-      isNum:numOn,tags:Object.keys(aTags).filter(k=>aTags[k]),
-      collection:coll,notes:document.getElementById('f-notes').value.trim(),
-      photo:photoUrl,photoVerso:photoVersoUrl,fav:false,date:new Date().toLocaleDateString('fr-FR')};
-    btn.textContent='💾 Sauvegarde…';
+    if(rawR){btn.textContent='Upload recto…';photoUrl=await uploadPhoto(rawR,id,'recto');}
+    if(rawV){btn.textContent='Upload verso…';photoVersoUrl=await uploadPhoto(rawV,id,'verso');}
+    const price=parseFloat(document.getElementById('f-price').value)||0;
+    const card={id,prenom,nom,club:selClub?selClub.name:document.getElementById('f-club-search').value.trim(),clubEmoji:selClub?selClub.emoji:'',sport:document.getElementById('f-sport').value,num:numOn?document.getElementById('f-num').value.trim():'',isNum:numOn,tags:Object.keys(aTags).filter(k=>aTags[k]),collection:coll,notes:document.getElementById('f-notes').value.trim(),photo:photoUrl,photoVerso:photoVersoUrl,fav:false,date:new Date().toLocaleDateString('fr-FR'),price};
+    btn.textContent='Sauvegarde…';
     await sbInsert('cards',toSB(card));
-    db.cards.unshift(card);
-    resetForm();showToast('✅ Carte enregistrée !');navigate('home');
+    db.cards.unshift(card);resetForm();showToast('Carte enregistrée !');navigate('home');
   }catch(e){console.error(e);showToast('⚠️ Erreur : '+e.message);}
   finally{btn.disabled=false;btn.textContent='Enregistrer la carte';}
 }
 function resetForm(){
-  ['f-prenom','f-nom','f-club-search','f-notes','f-num'].forEach(id=>document.getElementById(id).value='');
+  ['f-prenom','f-nom','f-club-search','f-notes','f-num','f-price'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-sport').value='';onSportChange();
-  document.getElementById('photo-preview-wrap').style.display='none';
-  document.getElementById('photo-placeholder-ui').style.display='';
-  document.getElementById('crop-btn').style.display='none';
-  document.getElementById('photo-preview-wrap-v').style.display='none';
-  document.getElementById('photo-placeholder-ui-v').style.display='';
-  document.getElementById('crop-btn-v').style.display='none';
-  addPhoto={recto:null,verso:null};addCrop={recto:null,verso:null};
-  selClub=null;aTags={auto:false,patch:false,rookie:false};
+  document.getElementById('photo-preview-wrap').style.display='none';document.getElementById('photo-placeholder-ui').style.display='';document.getElementById('crop-btn').style.display='none';
+  document.getElementById('photo-preview-wrap-v').style.display='none';document.getElementById('photo-placeholder-ui-v').style.display='';document.getElementById('crop-btn-v').style.display='none';
+  addPhoto={recto:null,verso:null};addCrop={recto:null,verso:null};selClub=null;aTags={auto:false,patch:false,rookie:false};
   ['tog-auto','tog-patch','tog-rookie'].forEach(id=>document.getElementById(id).classList.remove('on'));
-  toggleNum(false);
-  document.getElementById('sel-club-disp').style.display='none';
-  document.getElementById('clubs-grid').style.display='none';
-  document.getElementById('new-coll-wrap').style.display='none';
+  toggleNum(false);document.getElementById('sel-club-disp').style.display='none';document.getElementById('clubs-grid').style.display='none';
+  document.getElementById('new-coll-wrap').style.display='none';document.getElementById('club-create-form').style.display='none';document.getElementById('club-create-show').style.display='none';
   switchAddSide('recto');updateCollSel();
 }
-function updateCollSel(){const s=document.getElementById('f-collection');s.innerHTML='<option value="">Sans collection</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji} ${f.name}</option>`).join('')+'<option value="__new__">+ Créer une nouvelle…</option>';s.onchange=function(){document.getElementById('new-coll-wrap').style.display=this.value==='__new__'?'block':'none';};}
+function updateCollSel(){const s=document.getElementById('f-collection');s.innerHTML='<option value="">Sans collection</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji} ${f.name}</option>`).join('')+'<option value="__new__">+ Créer…</option>';s.onchange=function(){document.getElementById('new-coll-wrap').style.display=this.value==='__new__'?'block':'none';};}
 updateCollSel();
 
-/* ══ HOME ══ */
+/* HOME */
 function renderHome(){const t=db.cards.length;document.getElementById('home-count').textContent=`${t} carte${t>1?'s':''}`;renderFavs();renderRecent(db.cards);}
 function renderFavs(){
   const favs=db.cards.filter(c=>c.fav);document.getElementById('favs-count').textContent=favs.length;
@@ -923,214 +905,305 @@ function renderFavs(){
         ${c.photo?`<img src="${c.photo}" alt="">`:`<div class="fav-card-img-empty">${c.clubEmoji||'🃏'}</div>`}
         <div class="fav-card-top">
           ${c.isNum&&c.num?`<div class="fav-rating">${c.num.replace('/','').substring(0,3)}</div>`:'<div class="fav-rating-empty"></div>'}
-          <div class="fav-badges-top">
-            ${c.tags.includes('auto')?'<span class="badge auto">Auto</span>':''}
-            ${c.tags.includes('patch')?'<span class="badge patch">Patch</span>':''}
-            ${c.tags.includes('rookie')?'<span class="badge rookie">RC</span>':''}
-          </div>
+          <div class="fav-badges-top">${c.tags.includes('auto')?'<span class="badge auto">Auto</span>':''}${c.tags.includes('patch')?'<span class="badge patch">Patch</span>':''}${c.tags.includes('rookie')?'<span class="badge rookie">RC</span>':''}</div>
         </div>
       </div>
-      <div class="fav-card-bot"><div class="fav-card-name">${c.prenom}<br>${c.nom}</div><div class="fav-card-club">${c.clubEmoji||''} ${c.club||'—'}</div></div>
+      <div class="fav-card-bot"><div class="fav-card-name"><span class="fav-card-first">${c.prenom} </span><span class="fav-card-last">${c.nom}</span></div><div class="fav-card-club">${c.clubEmoji||''} ${c.club||'—'}</div></div>
     </div>`).join('');
 }
 function renderRecent(cards){
   const el=document.getElementById('recent-list');
   if(!cards.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🃏</div><div class="empty-title">Aucune carte</div><div class="empty-sub">Appuie sur le scanner pour commencer</div></div>';return;}
-  el.innerHTML=cards.slice(0,30).map(c=>`
-    <div class="card-item" onclick="openCard('${c.id}')">
+  el.innerHTML=cards.slice(0,30).map(c=>{
+    const club=getClub(c.club);
+    const logoHtml=club&&sportNeedsClub(c.sport)?clubLogoHtml(club,16):(c.clubEmoji?`<span>${c.clubEmoji}</span>`:'');
+    return`<div class="card-item" onclick="openCard('${c.id}')">
       <div class="card-sport-bar ${c.sport||''}"></div>
       <div class="card-thumb">${c.photo?`<img src="${c.photo}" alt="">`:`<span>${c.clubEmoji||'🃏'}</span>`}</div>
       <div class="card-info">
         <div class="card-first">${c.prenom}</div>
         <div class="card-last">${c.nom}</div>
-        <div class="card-club-row">${c.clubEmoji?`<span>${c.clubEmoji}</span>`:''}<span>${c.club||sportL(c.sport)||'—'}</span>${c.sport?`<span style="opacity:.35;">·</span><span>${sportL(c.sport)}</span>`:''}</div>
+        <div class="card-club-row">${logoHtml}<span>${c.club||sportL(c.sport)||'—'}</span>${c.sport?`<span style="opacity:.35;">·</span><span>${sportL(c.sport)}</span>`:''}</div>
         <div class="card-badges-row">${c.tags.includes('auto')?'<span class="badge auto">Auto</span>':''}${c.tags.includes('patch')?'<span class="badge patch">Patch</span>':''}${c.tags.includes('rookie')?'<span class="badge rookie">RC</span>':''}${c.isNum&&c.num?`<span class="badge num">${c.num}</span>`:''}</div>
       </div>
-      <div class="card-right"><div class="card-date">${c.date}</div><div class="card-sport-ico">${sportI(c.sport)}</div></div>
-    </div>`).join('');
+      <div class="card-right"><div class="card-date">${c.date}</div>${c.price>0?`<div class="card-price">${fmtPrice(c.price)}</div>`:`<div class="card-sport-ico">${sportI(c.sport)}</div>`}</div>
+    </div>`;}).join('');
 }
 
-/* ══ COLLECTION ══ */
+/* COLLECTION */
 function renderCollection(){document.getElementById('coll-grid').classList.toggle('bulk-mode',bulkMode);renderFolders();renderCG2(getFiltered());}
 function getFiltered(){let c=[...db.cards];if(curFilter!=='all'){if(['auto','patch','rookie'].includes(curFilter))c=c.filter(x=>x.tags.includes(curFilter));else if(curFilter==='num')c=c.filter(x=>x.isNum);else c=c.filter(x=>x.sport===curFilter);}if(curSearch){const q=normName(curSearch);c=c.filter(x=>normName(x.prenom+' '+x.nom+' '+x.club).includes(q));}return c;}
 function setFilter(f,el){curFilter=f;document.querySelectorAll('.filter-tag').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderCG2(getFiltered());}
-function renderFolders(){const g=document.getElementById('folders-grid');g.innerHTML=db.folders.map(f=>{const n=db.cards.filter(c=>c.collection===f.name).length;return`<div class="folder-card" onclick="openFolder('${f.id}')"><div class="folder-top"><div class="folder-emoji">${f.emoji}</div><div class="folder-n">${n}</div></div><div class="folder-name">${f.name}</div><div class="folder-sub">carte${n>1?'s':''}</div></div>`;}).join('')+`<div class="folder-card folder-add" onclick="openNewFolder()"><span style="font-size:20px;">📁</span><span>Nouveau</span></div>`;const bd=document.getElementById('bulk-dest');bd.innerHTML='<option value="">Déplacer vers…</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji} ${f.name}</option>`).join('');}
+function totalVal(cards){return cards.reduce((s,c)=>s+(c.price||0),0);}
+function renderFolders(){
+  const g=document.getElementById('folders-grid');
+  const totalAll=totalVal(db.cards);
+  const tv=document.getElementById('total-val');
+  if(tv)tv.textContent=totalAll>0?`Total : ${fmtPrice(totalAll)}`:'';
+  g.innerHTML=db.folders.map(f=>{
+    const cards=db.cards.filter(c=>c.collection===f.name);
+    const n=cards.length;
+    const val=totalVal(cards);
+    return`<div class="folder-card" onclick="openFolder('${f.id}')"><div class="folder-top"><div class="folder-emoji">${f.emoji}</div><div class="folder-n">${n}</div></div><div class="folder-name">${f.name}</div><div class="folder-sub">carte${n>1?'s':''}</div>${val>0?`<div class="folder-val">${fmtPrice(val)}</div>`:''}</div>`;
+  }).join('')+`<div class="folder-card folder-add" onclick="openNewFolder()"><span style="font-size:20px;">📁</span><span>Nouveau</span></div>`;
+  const bd=document.getElementById('bulk-dest');bd.innerHTML='<option value="">Déplacer vers…</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji} ${f.name}</option>`).join('');
+}
 function renderCG2(cards){const g=document.getElementById('coll-grid'),em=document.getElementById('coll-empty');if(!cards.length){g.innerHTML='';em.style.display='block';return;}em.style.display='none';g.innerHTML=cards.map(c=>`<div class="coll-thumb" onclick="handleThumb('${c.id}')">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||'🃏'}</div>`}<div class="bulk-check ${bulkSel.includes(c.id)?'checked':''}" id="bc-${c.id}">${bulkSel.includes(c.id)?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>':''}</div></div>`).join('');}
 function handleThumb(id){if(bulkMode){if(bulkSel.includes(id))bulkSel=bulkSel.filter(x=>x!==id);else bulkSel.push(id);renderCG2(getFiltered());}else openCard(id);}
 
-/* ══ BULK ══ */
+/* BULK */
 function toggleBulk(){bulkMode=!bulkMode;bulkSel=[];document.getElementById('bulk-bar').classList.toggle('show',bulkMode);renderCollection();}
 function cancelBulk(){bulkMode=false;bulkSel=[];document.getElementById('bulk-bar').classList.remove('show');renderCollection();}
-async function executeBulk(){const d=document.getElementById('bulk-dest').value;if(!bulkSel.length){showToast('⚠️ Aucune carte sélectionnée');return;}await Promise.all(bulkSel.map(id=>sbUpdate('cards',id,{collection:d})));db.cards.forEach(c=>{if(bulkSel.includes(c.id))c.collection=d;});cancelBulk();renderCollection();showToast(`✅ ${bulkSel.length} carte(s) déplacée(s)`);}
+async function executeBulk(){const d=document.getElementById('bulk-dest').value;if(!bulkSel.length){showToast('⚠️ Aucune carte sélectionnée');return;}await Promise.all(bulkSel.map(id=>sbUpdate('cards',id,{collection:d})));db.cards.forEach(c=>{if(bulkSel.includes(c.id))c.collection=d;});cancelBulk();renderCollection();showToast(`${bulkSel.length} carte(s) déplacée(s)`);}
 
-/* ══ FOLDERS ══ */
+/* FOLDERS */
 function openNewFolder(){document.getElementById('new-folder-name').value='';folderEmoji='📁';document.getElementById('folder-sheet').classList.add('open');}
 function selEmoji(el){folderEmoji=el.textContent;}
 async function createFolderNamed(name){if(db.folders.find(f=>f.name===name))return;const f={id:Date.now()+'',name,emoji:'📁'};await sbInsert('folders',f);db.folders.push(f);}
-async function createFolder(){const n=document.getElementById('new-folder-name').value.trim();if(!n){showToast('⚠️ Saisis un nom');return;}const f={id:Date.now()+'',name:n,emoji:folderEmoji};try{await sbInsert('folders',f);db.folders.push(f);document.getElementById('folder-sheet').classList.remove('open');renderCollection();updateCollSel();showToast('📁 Dossier créé !');}catch(e){showToast('⚠️ Erreur');}}
+async function createFolder(){const n=document.getElementById('new-folder-name').value.trim();if(!n){showToast('⚠️ Saisis un nom');return;}const f={id:Date.now()+'',name:n,emoji:folderEmoji};try{await sbInsert('folders',f);db.folders.push(f);document.getElementById('folder-sheet').classList.remove('open');renderCollection();updateCollSel();showToast('Dossier créé !');}catch(e){showToast('⚠️ Erreur');}}
 function openFolder(fid){const f=db.folders.find(x=>x.id===fid);if(!f)return;curFolderId=fid;document.getElementById('coll-view-title').textContent=f.emoji+' '+f.name;const cards=db.cards.filter(c=>c.collection===f.name);document.getElementById('folder-cards-grid').innerHTML=cards.map(c=>`<div class="coll-thumb" onclick="openCard('${c.id}')">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||'🃏'}</div>`}</div>`).join('')||'<div class="empty-state"><div class="empty-icon">🃏</div><div class="empty-title">Dossier vide</div></div>';document.getElementById('coll-view').classList.add('open');}
 function closeCollView(){document.getElementById('coll-view').classList.remove('open');}
-async function deleteCurrentFolder(){const f=db.folders.find(x=>x.id===curFolderId);if(!f)return;if(!confirm(`Supprimer "${f.name}" ?`))return;await sbDelete('folders',curFolderId);await Promise.all(db.cards.filter(c=>c.collection===f.name).map(c=>sbUpdate('cards',c.id,{collection:''})));db.folders=db.folders.filter(x=>x.id!==curFolderId);db.cards.forEach(c=>{if(c.collection===f.name)c.collection='';});closeCollView();renderCollection();showToast('🗑️ Dossier supprimé');}
+async function deleteCurrentFolder(){const f=db.folders.find(x=>x.id===curFolderId);if(!f)return;if(!confirm(`Supprimer "${f.name}" ?`))return;await sbDelete('folders',curFolderId);await Promise.all(db.cards.filter(c=>c.collection===f.name).map(c=>sbUpdate('cards',c.id,{collection:''})));db.folders=db.folders.filter(x=>x.id!==curFolderId);db.cards.forEach(c=>{if(c.collection===f.name)c.collection='';});closeCollView();renderCollection();showToast('Dossier supprimé');}
 
-/* ══ CARD DETAIL ══ */
+/* CARD DETAIL */
 function openCard(id){
   const c=db.cards.find(x=>x.id===id);if(!c)return;curCardId=id;isFlipped=false;
-  // Watermark
   const bgEl=document.getElementById('card-bg-name');
   if(c.photo){bgEl.innerHTML='';bgEl.style.backgroundImage=`url(${c.photo})`;bgEl.style.backgroundSize='cover';bgEl.style.backgroundPosition='center top';bgEl.style.opacity='0.12';bgEl.style.filter='blur(4px) saturate(0)';bgEl.style.transform='scale(1.08)';}
   else{bgEl.innerHTML=c.nom||'';bgEl.style.backgroundImage='none';bgEl.style.opacity='1';bgEl.style.filter='none';bgEl.style.transform='none';}
-  // Recto
   const front=document.getElementById('card-3d-content');
-  if(c.photo){front.innerHTML=`<img src="${c.photo}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;front.className='';}
+  if(c.photo){front.innerHTML=`<img src="${c.photo}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;front.className='card-3d-content';}
   else{front.className='card-3d-content card-3d-placeholder';front.innerHTML=`<span style="font-size:40px;opacity:.25;">🃏</span>`;}
-  // Verso
   const back=document.getElementById('card-3d-content-back');
   const flipHint=document.getElementById('flip-hint');
   const flipInner=document.getElementById('card-flip-inner');
   flipInner.classList.remove('flipped');
   if(c.photoVerso){back.innerHTML=`<img src="${c.photoVerso}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;back.className='card-3d-content';flipHint.style.display='block';}
-  else{back.className='card-3d-content card-3d-placeholder';back.innerHTML=`<span style="font-size:40px;opacity:.25;">🔄</span><span style="font-size:10px;color:var(--text-dim);">Pas de verso</span>`;flipHint.style.display=c.photoVerso?'block':'none';}
+  else{back.className='card-3d-content card-3d-placeholder';back.innerHTML=`<span style="font-size:40px;opacity:.25;">🔄</span><span style="font-size:10px;color:var(--text-dim);">Pas de verso</span>`;flipHint.style.display='none';}
   document.getElementById('detail-prenom').textContent=c.prenom||'';
   document.getElementById('detail-nom').textContent=(c.nom||'—').toUpperCase();
-  document.getElementById('detail-club-e').textContent=c.clubEmoji||'';
+  // Club logo
+  const clubWrap=document.getElementById('detail-club-logo-wrap');
+  const club=getClub(c.club);
+  clubWrap.innerHTML=club&&sportNeedsClub(c.sport)?clubLogoHtml(club,20):(c.clubEmoji?`<span style="font-size:15px;">${c.clubEmoji}</span>`:'');
   document.getElementById('detail-club-n').textContent=sportNeedsClub(c.sport)?(c.club||'—'):'';
   const sep=document.getElementById('detail-sep'),sl=document.getElementById('detail-sport-label');
   if(c.sport){sep.style.display='';sl.textContent=sportL(c.sport);}else{sep.style.display='none';sl.textContent='';}
+  // Flag — sera rempli après les stats IA si dispo, sinon vide
+  document.getElementById('detail-flag').style.display='none';
+  document.getElementById('detail-flag').textContent='';
   const fb=document.getElementById('detail-fav-btn');fb.textContent=c.fav?'⭐':'☆';fb.style.color=c.fav?'var(--gold)':'';
-  const nb=document.getElementById('detail-num');if(c.isNum&&c.num){nb.style.display='';nb.textContent='🔢 '+c.num;}else nb.style.display='none';
+  const nb=document.getElementById('detail-num');if(c.isNum&&c.num){nb.style.display='';nb.textContent=c.num;}else nb.style.display='none';
   document.getElementById('detail-badges').innerHTML=(c.tags.includes('auto')?'<span class="badge auto">Auto</span>':'')+(c.tags.includes('patch')?'<span class="badge patch">Patch</span>':'')+(c.tags.includes('rookie')?'<span class="badge rookie">Rookie</span>':'');
   document.getElementById('d-coll').textContent=c.collection||'Aucune';
   document.getElementById('d-num').textContent=c.isNum?(c.num||'Oui'):'Non';
   document.getElementById('d-sport').textContent=(sportI(c.sport)||'—')+' '+(sportL(c.sport)||'—');
-  document.getElementById('d-date').textContent=c.date;
+  document.getElementById('d-price').textContent=fmtPrice(c.price);
   if(c.notes){document.getElementById('d-notes-wrap').style.display='';document.getElementById('d-notes-val').textContent=c.notes;}else document.getElementById('d-notes-wrap').style.display='none';
   if(isFullscreen)exitFullscreen();
   document.getElementById('card-detail').classList.add('open');
-  initGyro();
+  initGyroAndSwipe();
 }
 function closeDetail(){document.getElementById('card-detail').classList.remove('open');stopGyro();if(isFullscreen)exitFullscreen();}
 
-/* Flip */
-function flipCard(){if(!document.getElementById('flip-hint').style.display||document.getElementById('flip-hint').style.display==='none')return;isFlipped=!isFlipped;document.getElementById('card-flip-inner').classList.toggle('flipped',isFlipped);}
+/* FLIP via swipe */
+function flipCard(){
+  const c=db.cards.find(x=>x.id===curCardId);
+  if(!c||!c.photoVerso)return;
+  isFlipped=!isFlipped;
+  document.getElementById('card-flip-inner').classList.toggle('flipped',isFlipped);
+}
 
-/* Fullscreen */
+/* FULLSCREEN */
 function toggleFullscreen(){isFullscreen?exitFullscreen():enterFullscreen();}
-function enterFullscreen(){isFullscreen=true;document.getElementById('card-detail').classList.add('fullscreen');const btn=document.getElementById('fullscreen-btn');btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';}
-function exitFullscreen(){isFullscreen=false;document.getElementById('card-detail').classList.remove('fullscreen');const btn=document.getElementById('fullscreen-btn');btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';}
+function enterFullscreen(){
+  isFullscreen=true;
+  document.getElementById('card-detail').classList.add('fullscreen');
+  document.getElementById('fullscreen-btn').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
+}
+function exitFullscreen(){
+  isFullscreen=false;
+  document.getElementById('card-detail').classList.remove('fullscreen');
+  document.getElementById('fullscreen-btn').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+}
 
-/* ══ GYRO ══ */
+/* GYRO + SWIPE pour flip */
 let gyroH=null,gBeta=null,gGamma=null,tRX=0,tRY=0,cRX=0,cRY=0,raf=null;
-function initGyro(){
+function initGyroAndSwipe(){
   const scene=document.getElementById('card-3d-scene');
   if(raf)cancelAnimationFrame(raf);tRX=0;tRY=0;cRX=0;cRY=0;
-  function loop(){cRX+=(tRX-cRX)*.10;cRY+=(tRY-cRY)*.10;const card=document.getElementById('card-flip-inner');if(card){card.style.transform=isFlipped?`rotateY(180deg) rotateX(${-cRX}deg)`:`rotateY(0deg) rotateX(${cRX}deg) rotateY(${cRY}deg)`;}raf=requestAnimationFrame(loop);}
+  function loop(){
+    cRX+=(tRX-cRX)*.10;cRY+=(tRY-cRY)*.10;
+    const fi=document.getElementById('card-flip-inner');
+    if(fi){
+      if(isFlipped)fi.style.transform=`rotateY(180deg)`;
+      else fi.style.transform=`rotateX(${cRX}deg) rotateY(${cRY}deg)`;
+    }
+    raf=requestAnimationFrame(loop);
+  }
   loop();
-  scene.onmousemove=e=>{const r=scene.getBoundingClientRect();tRX=((e.clientY-r.top-r.height/2)/r.height)*-28;tRY=((e.clientX-r.left-r.width/2)/r.width)*28;};
+  // Mouse tilt
+  scene.onmousemove=e=>{if(isFlipped)return;const r=scene.getBoundingClientRect();tRX=((e.clientY-r.top-r.height/2)/r.height)*-28;tRY=((e.clientX-r.left-r.width/2)/r.width)*28;};
   scene.onmouseleave=()=>{tRX=0;tRY=0;};
-  scene.addEventListener('touchmove',e=>{const t=e.touches[0],r=scene.getBoundingClientRect();tRX=((t.clientY-r.top-r.height/2)/r.height)*-28;tRY=((t.clientX-r.left-r.width/2)/r.width)*28;e.preventDefault();},{passive:false});
-  scene.addEventListener('touchend',()=>{tRX=0;tRY=0;});
-  if(typeof DeviceOrientationEvent!=='undefined'){if(typeof DeviceOrientationEvent.requestPermission==='function')showGyroBtn();else startGyro();}
+  // Touch: swipe LR = flip, else tilt
+  scene.ontouchstart=e=>{swipeStartX=e.touches[0].clientX;swipeStartY=e.touches[0].clientY;};
+  scene.ontouchmove=e=>{
+    if(swipeStartX===null)return;
+    const dx=e.touches[0].clientX-swipeStartX;
+    const dy=e.touches[0].clientY-swipeStartY;
+    if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>30){
+      // Swipe horizontal → flip
+      return;
+    }
+    if(!isFlipped){const r=scene.getBoundingClientRect();const t=e.touches[0];tRX=((t.clientY-r.top-r.height/2)/r.height)*-28;tRY=((t.clientX-r.left-r.width/2)/r.width)*28;}
+    e.preventDefault();
+  },{passive:false};
+  scene.ontouchend=e=>{
+    if(swipeStartX===null)return;
+    const dx=e.changedTouches[0].clientX-swipeStartX;
+    const dy=e.changedTouches[0].clientY-swipeStartY;
+    if(Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx)>40){flipCard();}
+    tRX=0;tRY=0;swipeStartX=null;swipeStartY=null;
+  };
+  // Gyro
+  if(typeof DeviceOrientationEvent!=='undefined'){
+    if(typeof DeviceOrientationEvent.requestPermission==='function')showGyroBtn();
+    else startGyro();
+  }
 }
-function showGyroBtn(){const scene=document.getElementById('card-3d-scene');if(scene.querySelector('.gyro-btn'))return;const btn=document.createElement('button');btn.className='gyro-btn';btn.textContent='📱 Activer le gyroscope';btn.addEventListener('click',async()=>{try{const p=await DeviceOrientationEvent.requestPermission();if(p==='granted'){startGyro();btn.textContent='✅ Actif';setTimeout(()=>btn.remove(),1200);}else{btn.textContent='⛔ Refusé';setTimeout(()=>btn.remove(),1800);}}catch(e){btn.textContent='⚠️ '+e.message;setTimeout(()=>btn.remove(),2000);}});scene.appendChild(btn);}
-function startGyro(){gBeta=null;gGamma=null;let n=0;gyroH=e=>{if(e.beta===null||e.gamma===null)return;if(n<4){gBeta=gBeta===null?e.beta:(gBeta+e.beta)/2;gGamma=gGamma===null?e.gamma:(gGamma+e.gamma)/2;n++;return;}tRX=Math.max(-30,Math.min(30,(e.beta-gBeta)))*-0.7;tRY=Math.max(-30,Math.min(30,(e.gamma-gGamma)))*0.7;};window.addEventListener('deviceorientation',gyroH,true);}
+function showGyroBtn(){const scene=document.getElementById('card-3d-scene');if(scene.querySelector('.gyro-btn'))return;const btn=document.createElement('button');btn.className='gyro-btn';btn.textContent='Activer gyroscope';btn.addEventListener('click',async()=>{try{const p=await DeviceOrientationEvent.requestPermission();if(p==='granted'){startGyro();btn.textContent='Actif';setTimeout(()=>btn.remove(),1200);}else{btn.textContent='Refusé';setTimeout(()=>btn.remove(),1800);}}catch(e){btn.textContent='Erreur';setTimeout(()=>btn.remove(),2000);}});scene.appendChild(btn);}
+function startGyro(){gBeta=null;gGamma=null;let n=0;gyroH=e=>{if(e.beta===null||e.gamma===null)return;if(n<4){gBeta=gBeta===null?e.beta:(gBeta+e.beta)/2;gGamma=gGamma===null?e.gamma:(gGamma+e.gamma)/2;n++;return;}if(!isFlipped){tRX=Math.max(-30,Math.min(30,(e.beta-gBeta)))*-0.7;tRY=Math.max(-30,Math.min(30,(e.gamma-gGamma)))*0.7;}};window.addEventListener('deviceorientation',gyroH,true);}
 function stopGyro(){if(gyroH){window.removeEventListener('deviceorientation',gyroH,true);gyroH=null;}if(raf){cancelAnimationFrame(raf);raf=null;}tRX=0;tRY=0;cRX=0;cRY=0;}
 
-/* ══ FAV ══ */
-async function toggleFav(){const c=db.cards.find(x=>x.id===curCardId);if(!c)return;c.fav=!c.fav;await sbUpdate('cards',c.id,{fav:c.fav});const b=document.getElementById('detail-fav-btn');b.textContent=c.fav?'⭐':'☆';b.style.color=c.fav?'var(--gold)':'';showToast(c.fav?'⭐ Ajouté aux favoris':'✩ Retiré des favoris');renderHome();}
+/* FAV */
+async function toggleFav(){const c=db.cards.find(x=>x.id===curCardId);if(!c)return;c.fav=!c.fav;await sbUpdate('cards',c.id,{fav:c.fav});const b=document.getElementById('detail-fav-btn');b.textContent=c.fav?'⭐':'☆';b.style.color=c.fav?'var(--gold)':'';showToast(c.fav?'Ajouté aux favoris':'Retiré des favoris');renderHome();}
 
-/* ══ DELETE CARD ══ */
+/* DELETE CARD */
 async function deleteCurrentCard(){
   const c=db.cards.find(x=>x.id===curCardId);if(!c)return;
   if(!confirm(`Supprimer la carte de ${c.prenom} ${c.nom} ?`))return;
   try{
-    await sbDelete('cards',c.id);
-    db.cards=db.cards.filter(x=>x.id!==c.id);
-    closeDetail();renderHome();renderCollection();
-    showToast('🗑️ Carte supprimée');
+    await sbDelete('cards',c.id);db.cards=db.cards.filter(x=>x.id!==c.id);
+    closeSheet('edit-sheet',{target:null});closeDetail();renderHome();renderCollection();showToast('Carte supprimée');
   }catch(e){showToast('⚠️ Erreur suppression');}
 }
 
-/* ══ EDIT ══ */
+/* EDIT */
 function editCurrentCard(){
   const c=db.cards.find(x=>x.id===curCardId);if(!c)return;
-  document.getElementById('e-prenom').value=c.prenom;
-  document.getElementById('e-nom').value=c.nom;
-  document.getElementById('e-club').value=c.club;
-  document.getElementById('e-sport').value=c.sport;
-  onEditSportChange();
-  document.getElementById('e-num').value=c.num||'';
-  document.getElementById('e-notes').value=c.notes;
+  document.getElementById('e-prenom').value=c.prenom;document.getElementById('e-nom').value=c.nom;
+  document.getElementById('e-club').value=c.club;document.getElementById('e-sport').value=c.sport;onEditSportChange();
+  document.getElementById('e-num').value=c.num||'';document.getElementById('e-notes').value=c.notes;
+  document.getElementById('e-price').value=c.price||'';
   eTags={auto:c.tags.includes('auto'),patch:c.tags.includes('patch'),rookie:c.tags.includes('rookie')};
   ['auto','patch','rookie'].forEach(t=>document.getElementById('e-tog-'+t).classList.toggle('on',eTags[t]));
   const s=document.getElementById('e-collection');s.innerHTML='<option value="">Sans collection</option>'+db.folders.map(f=>`<option value="${f.name}" ${c.collection===f.name?'selected':''}>${f.emoji} ${f.name}</option>`).join('');
-  // Photos existantes
   editPhoto={recto:null,verso:null};editCrop={recto:null,verso:null};
   if(c.photo){document.getElementById('e-preview-img').src=c.photo;document.getElementById('e-preview-wrap').style.display='block';document.getElementById('e-placeholder').style.display='none';document.getElementById('e-crop-btn').style.display='block';}
   else{document.getElementById('e-preview-wrap').style.display='none';document.getElementById('e-placeholder').style.display='';document.getElementById('e-crop-btn').style.display='none';}
   if(c.photoVerso){document.getElementById('e-preview-img-v').src=c.photoVerso;document.getElementById('e-preview-wrap-v').style.display='block';document.getElementById('e-placeholder-v').style.display='none';document.getElementById('e-crop-btn-v').style.display='block';}
   else{document.getElementById('e-preview-wrap-v').style.display='none';document.getElementById('e-placeholder-v').style.display='';document.getElementById('e-crop-btn-v').style.display='none';}
-  switchEditSide('recto');
-  document.getElementById('edit-sheet').classList.add('open');
+  switchEditSide('recto');document.getElementById('edit-sheet').classList.add('open');
 }
 async function saveEdit(){
   const c=db.cards.find(x=>x.id===curCardId);if(!c)return;
-  c.prenom=document.getElementById('e-prenom').value.trim();
-  c.nom=document.getElementById('e-nom').value.trim();
-  c.sport=document.getElementById('e-sport').value;
-  c.club=sportNeedsClub(c.sport)?document.getElementById('e-club').value.trim():'';
-  c.num=document.getElementById('e-num').value.trim();
-  c.isNum=!!c.num;
-  c.tags=Object.keys(eTags).filter(k=>eTags[k]);
-  c.notes=document.getElementById('e-notes').value.trim();
-  c.collection=document.getElementById('e-collection').value;
-  // Upload nouvelles photos si changées
-  const rawR=editCrop.recto||editPhoto.recto;
-  const rawV=editCrop.verso||editPhoto.verso;
-  if(rawR){showToast('📤 Upload recto…');const url=await uploadPhoto(rawR,c.id,'recto');if(url)c.photo=url;}
-  if(rawV){showToast('📤 Upload verso…');const url=await uploadPhoto(rawV,c.id,'verso');if(url)c.photoVerso=url;}
+  c.prenom=document.getElementById('e-prenom').value.trim();c.nom=document.getElementById('e-nom').value.trim();
+  c.sport=document.getElementById('e-sport').value;c.club=sportNeedsClub(c.sport)?document.getElementById('e-club').value.trim():'';
+  c.num=document.getElementById('e-num').value.trim();c.isNum=!!c.num;
+  c.tags=Object.keys(eTags).filter(k=>eTags[k]);c.notes=document.getElementById('e-notes').value.trim();
+  c.collection=document.getElementById('e-collection').value;c.price=parseFloat(document.getElementById('e-price').value)||0;
+  const rawR=editCrop.recto||editPhoto.recto;const rawV=editCrop.verso||editPhoto.verso;
+  if(rawR){const url=await uploadPhoto(rawR,c.id,'recto');if(url)c.photo=url;}
+  if(rawV){const url=await uploadPhoto(rawV,c.id,'verso');if(url)c.photoVerso=url;}
   await sbUpdate('cards',c.id,toSB(c));
-  closeSheet('edit-sheet',{target:null});openCard(curCardId);showToast('✅ Carte modifiée !');
+  closeSheet('edit-sheet',{target:null});openCard(curCardId);renderHome();renderCollection();showToast('Carte modifiée !');
 }
 function closeSheet(id,e){if(!e||e.target===document.getElementById(id))document.getElementById(id).classList.remove('open');}
 
-/* ══ PLAYER AI ══ */
-function openPlayerAI(){
+/* PLAYER STATS — vraies données via web search */
+function openPlayerStats(){
   const c=db.cards.find(x=>x.id===curCardId);if(!c)return;
-  document.getElementById('player-ai-content').innerHTML=`<div class="ai-loading"><div class="ai-spin"></div><div style="font-size:11px;letter-spacing:.8px;text-transform:uppercase;">Wikipedia…</div></div>`;
+  document.getElementById('player-ai-content').innerHTML=`<div class="ai-loading"><div class="ai-spin"></div><div style="font-size:11px;letter-spacing:.8px;text-transform:uppercase;">Recherche en cours…</div></div>`;
   document.getElementById('player-sheet').classList.add('open');
-  fetchPlayer(c);
+  fetchPlayerStats(c);
 }
-async function fetchPlayer(card){
+async function fetchPlayerStats(card){
+  const sport=card.sport||'sport';
+  const name=`${card.prenom} ${card.nom}`;
+  const prompt=`Tu dois trouver les VRAIES statistiques actuelles de ${name}, joueur de ${sportL(sport)}.
+Effectue une recherche web pour obtenir ses données réelles de la saison en cours 2024-2025 et son historique réel.
+Réponds UNIQUEMENT en JSON valide (sans backticks markdown, sans texte avant ou après):
+{
+  "nom":"${name}",
+  "nationalite":"France",
+  "drapeauEmoji":"🇫🇷",
+  "clubActuel":"${card.club||'Club'}",
+  "clubEmoji":"${card.clubEmoji||'🏅'}",
+  "poste":"Attaquant",
+  "description":"Biographie courte 1-2 phrases avec données réelles.",
+  "naissance":"01/01/1990",
+  "taille":"1m80",
+  "statsCurrentSeason":{"val1":20,"val2":12,"val3":30,"label1":"Buts","label2":"Passes","label3":"Matchs"},
+  "statsSaisons":[{"saison":"2020-21","val":14},{"saison":"2021-22","val":18},{"saison":"2022-23","val":22},{"saison":"2023-24","val":25},{"saison":"2024-25","val":20}],
+  "statLabel":"Buts",
+  "historique":[{"club":"Club","emoji":"🏟️","annees":"2018-2022"}],
+  "source":"Wikipedia"
+}
+IMPORTANT: Utilise les VRAIES données. Si tu ne trouves pas de données réelles, indique "source":"Estimé" et fournis des estimations réalistes.`;
+
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,tools:[{type:'web_search_20250305',name:'web_search'}],tool_choice:{type:'any'},messages:[{role:'user',content:`Cherche "${card.prenom} ${card.nom} wikipedia ${card.sport||''}" en UNE seule recherche, puis réponds UNIQUEMENT en JSON valide (sans backticks):\n{"nom":"Prénom Nom","nationalite":"France","clubActuel":"Club","clubEmoji":"🏅","poste":"Attaquant","description":"1-2 phrases.","naissance":"01/01/1990","taille":"1m80","statsCurrentSeason":{"val1":20,"val2":12,"val3":30,"label1":"Buts","label2":"Passes","label3":"Matchs"},"statsSaisons":[{"saison":"2021-22","val":18},{"saison":"2022-23","val":22},{"saison":"2023-24","val":25},{"saison":"2024-25","val":20}],"statLabel":"Buts","historique":[{"club":"Club","emoji":"🏟️","annees":"2018-2022"}],"source":"Wikipedia"}`}]})});
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:2000,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      tool_choice:{type:'any'},
+      messages:[{role:'user',content:prompt}]
+    })});
     const d=await r.json();
     const text=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const m=text.match(/\{[\s\S]*\}/);if(!m)throw new Error('no json');
-    renderAI(JSON.parse(m[0]),card);
-  }catch(e){renderAI(mockPlayer(card),card);}
+    const data=JSON.parse(m[0]);
+    // Affiche le drapeau dans le détail
+    if(data.drapeauEmoji){const fl=document.getElementById('detail-flag');fl.textContent=data.drapeauEmoji;fl.style.display='';}
+    renderAI(data,card);
+  }catch(e){
+    console.error(e);
+    renderAI({nom:name,nationalite:'—',drapeauEmoji:'',clubActuel:card.club||'—',clubEmoji:card.clubEmoji||'🏅',poste:'Joueur',description:'Données non disponibles pour ce joueur.',naissance:'—',taille:'—',statsCurrentSeason:{val1:'—',val2:'—',val3:'—',label1:'Stat 1',label2:'Stat 2',label3:'Stat 3'},statsSaisons:[],statLabel:'Stats',historique:[{club:card.club||'—',emoji:card.clubEmoji||'🏟️',annees:'—'}],source:'Erreur'},card);
+  }
 }
-function mockPlayer(c){return{nom:`${c.prenom} ${c.nom}`,nationalite:'—',clubActuel:c.club||'—',clubEmoji:c.clubEmoji||'🏅',poste:'Joueur',description:'Informations non disponibles.',statsCurrentSeason:{val1:0,val2:0,val3:0,label1:'Stat 1',label2:'Stat 2',label3:'Stat 3'},statsSaisons:[{saison:'2021-22',val:0},{saison:'2022-23',val:0},{saison:'2023-24',val:0},{saison:'2024-25',val:0}],statLabel:'Stats',historique:[{club:c.club||'—',emoji:c.clubEmoji||'🏟️',annees:'—'}]};}
 function renderAI(p,card){
-  const mx=Math.max(...p.statsSaisons.map(s=>s.val),1);
-  const bars=p.statsSaisons.map((s,i)=>{const isC=i===p.statsSaisons.length-1;const h=Math.round((s.val/mx)*56);return`<div class="ai-bar${isC?' cur':''}" style="height:${h}px"><div class="ai-bar-v">${s.val}</div><div class="ai-bar-y">${s.saison.slice(-5)}</div></div>`;}).join('');
-  const srcTag=p.source==='Wikipedia'?`<div style="display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:14px;">🌐 Source : Wikipedia</div>`:`<div style="display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;">⚠️ Données IA · non officielles</div>`;
-  const bioExtra=(p.naissance||p.taille)?`<div style="display:flex;gap:7px;margin-bottom:14px;">${p.naissance?`<div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;">Naissance</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;">${p.naissance}</div></div>`:''}${p.taille?`<div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;">Taille</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;">${p.taille}</div></div>`:''}</div>`:'';
+  const hasSaisons=p.statsSaisons&&p.statsSaisons.length>0;
+  const mx=hasSaisons?Math.max(...p.statsSaisons.map(s=>typeof s.val==='number'?s.val:0),1):1;
+  const bars=hasSaisons?p.statsSaisons.map((s,i)=>{const isC=i===p.statsSaisons.length-1;const h=typeof s.val==='number'?Math.round((s.val/mx)*56):4;return`<div class="ai-bar${isC?' cur':''}" style="height:${h}px"><div class="ai-bar-v">${s.val}</div><div class="ai-bar-y">${s.saison.slice(-5)}</div></div>`;}).join(''):'';
+  const srcColor=p.source==='Wikipedia'?'var(--accent)':'var(--text-dim)';
+  const srcTag=`<div style="display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:3px 12px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${srcColor};margin-bottom:14px;">${p.source==='Wikipedia'?'🌐':'⚠️'} ${p.source||'IA'}</div>`;
+  const bioExtra=(p.naissance&&p.naissance!=='—')||p.taille?`<div style="display:flex;gap:7px;margin-bottom:14px;">${p.naissance&&p.naissance!=='—'?`<div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;">Naissance</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;">${p.naissance}</div></div>`:''}${p.taille?`<div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;"><div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;">Taille</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;">${p.taille}</div></div>`:''}</div>`:'';
   document.getElementById('player-ai-content').innerHTML=`
-    <div class="ai-hdr"><div class="ai-avatar">${p.clubEmoji}</div><div><div class="ai-name">${p.nom}</div><div class="ai-sub">${p.poste} · ${p.nationalite}</div></div></div>
-    ${srcTag}<div class="ai-desc">${p.description}</div>${bioExtra}
+    <div class="ai-hdr">
+      <div class="ai-avatar">${p.clubEmoji}</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="ai-name">${p.nom}</div>
+          ${p.drapeauEmoji?`<span class="ai-flag">${p.drapeauEmoji}</span>`:''}
+        </div>
+        <div class="ai-sub">${p.poste||''} · ${p.nationalite||''}</div>
+      </div>
+    </div>
+    ${srcTag}
+    <div class="ai-desc">${p.description}</div>
+    ${bioExtra}
     <div class="ai-sec"><div class="ai-sec-title">Saison en cours</div><div class="ai-stats">
       <div class="ai-stat"><div class="ai-stat-label">${p.statsCurrentSeason.label1}</div><div class="ai-stat-val">${p.statsCurrentSeason.val1}</div></div>
       <div class="ai-stat"><div class="ai-stat-label">${p.statsCurrentSeason.label2}</div><div class="ai-stat-val">${p.statsCurrentSeason.val2}</div></div>
       <div class="ai-stat"><div class="ai-stat-label">${p.statsCurrentSeason.label3}</div><div class="ai-stat-val">${p.statsCurrentSeason.val3}</div></div>
     </div></div>
-    <div class="ai-sec"><div class="ai-sec-title">${p.statLabel} par saison</div><div class="ai-chart" style="margin-bottom:22px;">${bars}</div></div>
-    <div class="ai-sec"><div class="ai-sec-title">Historique de clubs</div><div class="ai-clubs">${p.historique.map(h=>`<div class="ai-club-row"><div class="ai-club-e">${h.emoji}</div><div><div class="ai-club-n">${h.club}</div><div class="ai-club-y">${h.annees}</div></div></div>`).join('')}</div></div>`;
+    ${hasSaisons?`<div class="ai-sec"><div class="ai-sec-title">${p.statLabel||'Stats'} par saison</div><div class="ai-chart" style="margin-bottom:22px;">${bars}</div></div>`:''}
+    <div class="ai-sec"><div class="ai-sec-title">Historique</div><div class="ai-clubs">${(p.historique||[]).map(h=>`<div class="ai-club-row"><div class="ai-club-e">${h.emoji}</div><div><div class="ai-club-n">${h.club}</div><div class="ai-club-y">${h.annees}</div></div></div>`).join('')}</div></div>`;
 }
 
-/* ══ TOAST ══ */
+/* TOAST */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-/* ══ INIT ══ */
+/* INIT */
 loadFromDB();
 </script>
 </body>
