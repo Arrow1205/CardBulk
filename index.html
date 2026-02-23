@@ -1,175 +1,626 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
+<html lang="fr" class="dark"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draft FC - PoC Complet</title>
-    <style>
-        :root {
-            --primary: #10B981; --primary-dark: #059669; --bg: #F3F4F6;
-            --card-bg: #FFFFFF; --text-main: #1F2937; --text-light: #6B7280; --border: #E5E7EB;
+    <title>Collect.io - Ultimate Edition</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            basket: '#f97316',
+                            soccer: '#10b981',
+                            nfl: '#92400e',
+                            tennis: '#84cc16'
+                        }
+                    },
+                    perspective: { '1000': '1000px' }
+                }
+            }
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid var(--primary); }
-        h1 { margin: 0; font-size: 24px; font-weight: 800; }
-        .budget-badge { background: #ECFDF5; color: var(--primary-dark); padding: 8px 16px; border-radius: 99px; font-weight: 700; font-size: 18px; }
-        button { background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 15px; }
-        button:hover { background-color: var(--primary-dark); transform: translateY(-1px); }
-        button:disabled { background-color: #D1D5DB; cursor: not-allowed; transform: none; }
-        .btn-outline { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background-color: var(--primary); color: white; }
-        .section { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; display: none; }
-        .section.active { display: block; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
-        .card { border: 1px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; position: relative; overflow: hidden; }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--border); }
-        .card.ATT::before { background: #EF4444; } .card.MIL::before { background: #3B82F6; }
-        .card.DEF::before { background: #F59E0B; } .card.GAR::before { background: #8B5CF6; }
-        .card:hover:not(.disabled) { border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .card.disabled { opacity: 0.4; cursor: not-allowed; background: #F9FAFB; }
-        .card-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-        .card-pos { font-size: 11px; color: var(--text-light); font-weight: 600; margin-bottom: 8px; }
-        .card-price { font-weight: 800; color: var(--primary-dark); }
-        .match-board { display: flex; justify-content: space-between; gap: 20px; }
-        .team-col { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 15px; }
-        .score-display { text-align: center; font-size: 48px; font-weight: 900; margin: 20px 0; }
-        .stat-line { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { transition: background-color 0.5s ease, color 0.3s ease; }
+        
+        /* Glassmorphism */
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .dark .glass { background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Utils */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        
+        /* 3D Styles */
+        .card-container-3d { perspective: 1000px; transform-style: preserve-3d; }
+        .card-item-3d { transition: transform 0.1s ease-out; transform-style: preserve-3d; will-change: transform; }
+        .card-shadow { box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .gloss-overlay { background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.3) 25%, transparent 30%); mix-blend-mode: overlay; background-size: 200% 200%; }
+        
+        /* Gradient Mask */
+        .mask-image-gradient { -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%); mask-image: linear-gradient(to bottom, black 50%, transparent 100%); }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="header">
-        <h1>Draft FC ⚽</h1>
-        <div class="budget-badge" id="budget-badge">Budget: 400 M€</div>
-    </div>
-    <div id="screen-draft" class="section active">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h2>Sélection (<span id="draft-count">0</span>/5)</h2>
-            <button id="roll-btn" class="btn-outline" onclick="rollPlayers()">Générer 5 joueurs</button>
+
+<body class="bg-gray-50 text-slate-900 dark:bg-black dark:text-gray-100 min-h-screen flex flex-col transition-colors">
+
+    <div id="ambient-gradient" class="absolute top-0 left-0 w-full h-[35vh] -z-10 transition-all duration-700 opacity-60 dark:opacity-40 mask-image-gradient"></div>
+
+    <header class="sticky top-0 z-50 glass border-b border-gray-200/50 dark:border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div onclick="router('dashboard')" class="flex items-center gap-2 cursor-pointer">
+                <div class="w-8 h-8 bg-black dark:bg-white text-white dark:text-black rounded-lg flex items-center justify-center font-display font-bold text-xl">C.</div>
+                <h1 class="text-xl font-display font-bold tracking-tight italic">COLLECT<span id="brand-dot" class="text-brand-basket">.IO</span></h1>
+            </div>
+            <nav class="hidden md:flex gap-8">
+                <button onclick="router('dashboard')" class="text-sm font-bold uppercase tracking-wider hover:text-brand-basket transition-colors">Accueil</button>
+                <button onclick="router('collection')" class="text-sm font-bold uppercase tracking-wider hover:text-brand-basket transition-colors">Ma Collection</button>
+                <button onclick="router('scan')" class="text-sm font-bold uppercase tracking-wider hover:text-brand-basket transition-colors">Scanner</button>
+            </nav>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
         </div>
-        <div class="grid" id="draft-board"></div>
-        <h3 style="margin-top: 30px;">Mon Équipe</h3>
-        <div class="grid" id="my-team-board"></div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button id="start-match-btn" disabled onclick="startMatch()">Lancer le match vs IA</button>
+    </header>
+
+    <main id="main-content" class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 relative"></main>
+
+    <nav class="md:hidden fixed bottom-0 left-0 w-full glass border-t border-gray-200 dark:border-gray-800 pb-safe z-50">
+        <div class="flex justify-around items-center h-16">
+            <button onclick="router('dashboard')" class="flex flex-col items-center p-2"><i data-lucide="layout-dashboard" class="w-5 h-5"></i></button>
+            <button onclick="router('scan')" class="flex flex-col items-center p-2"><div class="bg-black dark:bg-white text-white dark:text-black p-3 rounded-full -mt-8 shadow-lg"><i data-lucide="scan" class="w-6 h-6"></i></div></button>
+            <button onclick="router('collection')" class="flex flex-col items-center p-2"><i data-lucide="layers" class="w-5 h-5"></i></button>
         </div>
-    </div>
-    <div id="screen-match" class="section">
-        <h2 style="text-align: center;">Résultat du Week-end</h2>
-        <div class="score-display" id="final-score">0 - 0</div>
-        <div class="match-board">
-            <div class="team-col"><h3 style="color: var(--primary-dark);">Mon Équipe</h3><div id="my-match-stats"></div></div>
-            <div class="team-col"><h3 style="color: #EF4444;">Ordinateur FC</h3><div id="bot-match-stats"></div></div>
-        </div>
-        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #ECFDF5; border-radius: 8px;">
-            <h3 id="match-verdict">Victoire ! (+100 M€)</h3>
-            <p>Choisis UN joueur à conserver pour la semaine prochaine (Coût: 120%).</p>
-            <div class="grid" id="keep-player-board" style="margin-bottom: 20px;"></div>
-            <button onclick="nextWeek(null, 0)">Passer à la Semaine Suivante (sans conserver)</button>
-        </div>
-    </div>
-</div>
+    </nav>
 
-<script>
-    const db = [
-        {id:1, n:"K. Mbappé", p:"ATT", v:180}, {id:2, n:"E. Haaland", p:"ATT", v:180}, {id:3, n:"Vini Jr", p:"ATT", v:150},
-        {id:16, n:"J. Bellingham", p:"MIL", v:180}, {id:19, n:"Rodri", p:"MIL", v:110}, {id:26, n:"K. De Bruyne", p:"MIL", v:60},
-        {id:31, n:"W. Saliba", p:"DEF", v:80}, {id:34, n:"A. Davies", p:"DEF", v:70}, {id:39, n:"Marquinhos", p:"DEF", v:60},
-        {id:43, n:"G. Donnarumma", p:"GAR", v:40}, {id:44, n:"M. Maignan", p:"GAR", v:40}, {id:45, n:"Alisson", p:"GAR", v:32}
-    ]; // Base raccourcie pour l'exemple
-
-    let state = { budget: 400, myTeam: [], botTeam: [] };
-
-    function showScreen(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-    function updateBudgetDisplay() { document.getElementById('budget-badge').innerText = `Budget: ${state.budget} M€`; }
-
-    function rollPlayers() {
-        if (state.myTeam.length >= 5) return;
-        const board = document.getElementById('draft-board'); board.innerHTML = '';
-        const shuffled = [...db].sort(() => 0.5 - Math.random()).slice(0, 5);
-        shuffled.forEach(p => {
-            const canAfford = state.budget >= p.v; const inTeam = state.myTeam.some(t => t.id === p.id);
-            const card = document.createElement('div');
-            card.className = `card ${p.p} ${(!canAfford || inTeam) ? 'disabled' : ''}`;
-            card.innerHTML = `<div class="card-name">${p.n}</div><div class="card-pos">${p.p}</div><div class="card-price">${p.v} M€</div>`;
-            if (canAfford && !inTeam) card.onclick = () => draftPlayer(p);
-            board.appendChild(card);
-        });
-    }
-
-    function draftPlayer(p) {
-        state.myTeam.push(p); state.budget -= p.v; updateBudgetDisplay();
-        document.getElementById('draft-count').innerText = state.myTeam.length;
-        document.getElementById('draft-board').innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Joueur drafté !</p>';
-        document.getElementById('my-team-board').innerHTML = state.myTeam.map(p => `<div class="card ${p.p}"><div class="card-name">${p.n}</div></div>`).join('');
-        if (state.myTeam.length === 5) { document.getElementById('roll-btn').disabled = true; document.getElementById('start-match-btn').disabled = false; }
-    }
-
-    function startMatch() {
-        // Draft de l'IA
-        state.botTeam = []; let botBudget = 400;
-        [...db].sort(() => 0.5 - Math.random()).forEach(p => {
-            if (botBudget >= p.v && state.botTeam.length < 5 && !state.myTeam.some(my => my.id === p.id)) { state.botTeam.push(p); botBudget -= p.v; }
-        });
-
-        // Simulation des stats
-        const myConceded = Math.floor(Math.random() * 5); const botConceded = Math.floor(Math.random() * 5);
-        const myResult = calculateStats(state.myTeam, myConceded); const botResult = calculateStats(state.botTeam, botConceded);
-
-        // Calcul final selon ton barème
-        let myScore = Math.max(0, (myResult.goals + botResult.penalty) - botResult.bonus);
-        let botScore = Math.max(0, (botResult.goals + myResult.penalty) - myResult.bonus);
-
-        document.getElementById('my-match-stats').innerHTML = myResult.logs.map(l => `<div class="stat-line"><b>${l.n}</b> <span>${l.text}</span></div>`).join('');
-        document.getElementById('bot-match-stats').innerHTML = botResult.logs.map(l => `<div class="stat-line"><b>${l.n}</b> <span>${l.text}</span></div>`).join('');
-        document.getElementById('final-score').innerText = `${myScore} - ${botScore}`;
-
-        // Gestion de la victoire (+100M)
-        const verdict = document.getElementById('match-verdict');
-        if (myScore > botScore) { verdict.innerText = "Victoire ! (+100 M€)"; state.budget = 500; } 
-        else { verdict.innerText = myScore < botScore ? "Défaite (Budget = 400M€)" : "Nul (Budget = 400M€)"; state.budget = 400; }
-
-        // Préparation du joueur à conserver (120%)
-        document.getElementById('keep-player-board').innerHTML = state.myTeam.map(p => {
-            const cost = Math.round(p.v * 1.2);
-            return `<div class="card ${p.p}" onclick="nextWeek(${p.id}, ${cost})"><div class="card-name">${p.n}</div><div style="color:#EF4444; font-weight:bold;">Gardé: ${cost} M€</div></div>`;
-        }).join('');
-        showScreen('screen-match');
-    }
-
-    function calculateStats(team, conceded) {
-        let goals = 0; let bonus = 0; let penalty = 0; let logs = [];
-        team.forEach(p => {
-            let log = { n: p.n, text: "" };
-            if (p.p === 'ATT') { const g = Math.floor(Math.random() * 3); goals += g; log.text = `${g} but(s)`; }
-            else if (p.p === 'MIL') { const passes = Math.floor(Math.random() * 80) + 10; if (passes > 50) { goals += 1; log.text = `${passes} passes (+1 But)`; } else log.text = `${passes} passes`; }
-            else if (p.p === 'DEF') { const t = Math.floor(Math.random() * 8); if (t > 5) { bonus += 1; log.text = `${t} tacles (-1 adv)`; } else log.text = `${t} tacles`; }
-            else if (p.p === 'GAR') { log.text = `${conceded} but(s) pris`; }
-            
-            if (p.p === 'GAR' || p.p === 'DEF') {
-                if (conceded === 0) { bonus += 1; log.text += " (Clean Sheet)"; }
-                if (conceded > 3) { penalty += 1; log.text += " (Valise)"; }
+    <script>
+        
+        // ==========================================
+        // 1. IMAGE LIBRARY (VOS FICHIERS)
+        // ==========================================
+        const IMAGE_LIBRARY = {
+            soccer: {
+                mbappe: ["./img/mbappe-1.jpg", "./img/mbappe-2.jpg", "./img/mbappe-3.jpg"],
+                henry:  ["./img/henry-1.jpg", "./img/henry-2.jpg"],
+                zidane: ["./img/zidane-1.jpg", "./img/zidane-2.jpg"]
+            },
+            basket: {
+                curry:  ["./img/curry-1.jpg", "./img/curry-2.jpg", "./img/curry-3.jpg"],
+                jordan: ["./img/jordan-1.jpg", "./img/jordan-2.jpg"],
+                lebron: ["./img/lebron-1.jpg", "./img/lebron-2.jpg"]
+            },
+            nfl: {
+                mahomes:["./img/mahomes-1.jpg", "./img/mahomes-2.jpg"],
+                brady:  ["./img/brady-1.jpg"]
+            },
+            tennis: {
+                federer:["./img/federer-1.jpg", "./img/federer-2.jpg"],
+                nadal:  ["./img/nadal-1.jpg"]
             }
-            logs.push(log);
-        });
-        return { goals, bonus, penalty, logs };
-    }
+        };
 
-    function nextWeek(id, cost) {
-        state.myTeam = [];
-        if (id) {
-            if (state.budget < cost) { alert("Budget insuffisant !"); return; }
-            state.myTeam.push(db.find(p => p.id === id)); state.budget -= cost;
+        // ==========================================
+        // 2. PROFILS COMPLETS (Données enrichies)
+        // ==========================================
+        const PLAYER_PROFILES = {
+            // SOCCER
+            mbappe: { 
+                name: "Kylian Mbappé", sport: "soccer", set: "Prizm World Cup", priceBase: 800, 
+                team: "Real Madrid", year: "2024",
+                profileImage: "./img/mbappe-view.png", 
+                stats: { season: { goals: 42, assist: 14, min: 3200 }, career: { goals: 280, assist: 120, min: 24500 } } 
+            },
+            henry: { 
+                name: "Thierry Henry", sport: "soccer", set: "Arsenal Legend", priceBase: 450, 
+                team: "Arsenal FC", year: "2004",
+                profileImage: "./img/henry-view.png", 
+                stats: { season: { goals: 0, assist: 0, min: 0 }, career: { goals: 360, assist: 180, min: 45000 } } 
+            },
+            zidane: { 
+                name: "Zinédine Zidane", sport: "soccer", set: "Futera Unique", priceBase: 1200, 
+                team: "Real Madrid", year: "2002",
+                profileImage: "./img/zidane-view.png", 
+                stats: { season: { goals: 0, assist: 0, min: 0 }, career: { goals: 125, assist: 210, min: 52000 } } 
+            },
+            // BASKET
+            curry: { 
+                name: "Stephen Curry", sport: "basket", set: "Select Courtside", priceBase: 1500, 
+                team: "Golden State", year: "2023",
+                profileImage: "./img/curry-view.png", 
+                stats: { season: { points: 26.4, reb: 4.5, wins: 42, loss: 30, min: 2400 }, career: { points: 24.8, reb: 4.7, wins: 600, loss: 350, min: 32000 } } 
+            },
+            jordan: { 
+                name: "Michael Jordan", sport: "basket", set: "Fleer 86 Retro", priceBase: 5000, 
+                team: "Chicago Bulls", year: "1986",
+                profileImage: "./img/jordan-view.png", 
+                stats: { season: { points: 0, reb: 0, wins: 0, loss: 0, min: 0 }, career: { points: 30.1, reb: 6.2, wins: 706, loss: 366, min: 41011 } } 
+            },
+            lebron: { 
+                name: "LeBron James", sport: "basket", set: "Topps Chrome", priceBase: 2500, 
+                team: "LA Lakers", year: "2024",
+                profileImage: "./img/lebron-view.png", 
+                stats: { season: { points: 25.4, reb: 7.3, wins: 45, loss: 35, min: 2600 }, career: { points: 27.1, reb: 7.5, wins: 950, loss: 500, min: 67000 } } 
+            },
+            // NFL
+            mahomes: { 
+                name: "Patrick Mahomes", sport: "nfl", set: "Panini Absolute", priceBase: 900, 
+                team: "Kansas City", year: "2023",
+                profileImage: "./img/mahomes-view.png", 
+                stats: { season: { td: 41, yds: 5200, gp: 17 }, career: { td: 219, yds: 28000, gp: 96 } } 
+            },
+            brady: { 
+                name: "Tom Brady", sport: "nfl", set: "Bowman Chrome", priceBase: 3000, 
+                team: "NE Patriots", year: "2000",
+                profileImage: "./img/brady-view.png", 
+                stats: { season: { td: 0, yds: 0, gp: 0 }, career: { td: 649, yds: 89214, gp: 335 } } 
+            },
+            // TENNIS
+            federer: { 
+                name: "Roger Federer", sport: "tennis", set: "NetPro Elite", priceBase: 800, 
+                team: "Suisse", year: "2003",
+                profileImage: "./img/federer-view.png", 
+                stats: { season: { wins: 0, loss: 0 }, career: { wins: 1251, loss: 275 } } 
+            },
+            nadal: { 
+                name: "Rafael Nadal", sport: "tennis", set: "Ace Authentic", priceBase: 750, 
+                team: "Espagne", year: "2005",
+                profileImage: "./img/nadal-view.png", 
+                stats: { season: { wins: 12, loss: 4 }, career: { wins: 1068, loss: 220 } } 
+            }
+        };
+
+        const SPORTS_CONFIG = {
+            basket: { label: "Basket", iconName: "dribbble", color: "text-orange-500", border: "border-orange-500", bg: "bg-orange-500", gradient: "bg-gradient-to-b from-orange-500 to-transparent" },
+            soccer: { label: "Soccer", iconName: "disc", color: "text-emerald-500", border: "border-emerald-500", bg: "bg-emerald-500", gradient: "bg-gradient-to-b from-emerald-500 to-transparent" },
+            nfl:    { label: "NFL",    iconName: "shield",   color: "text-amber-700",   border: "border-amber-700",   bg: "bg-amber-700",   gradient: "bg-gradient-to-b from-amber-700 to-transparent" },
+            tennis: { label: "Tennis", iconName: "target",   color: "text-lime-500",    border: "border-lime-500",    bg: "bg-lime-500",    gradient: "bg-gradient-to-b from-lime-500 to-transparent" }
+        };
+
+        const MANUFACTURERS = ["Topps", "Panini", "Leaf", "Upper Deck", "Bowman", "Futera"];
+
+        // --- ETAT GLOBAL ---
+        let DATABASE = []; 
+        let state = { 
+            currentSport: 'basket', 
+            view: 'dashboard', 
+            darkMode: true, // Default Dark
+            favorites: [],
+            filters: { manufacturer: 'all', numbered: false, auto: false, patch: false }
+        };
+
+        // --- GÉNÉRATEUR DB ---
+        function generateData() {
+            let idCounter = 1;
+            for (const [sportKey, players] of Object.entries(IMAGE_LIBRARY)) {
+                for (const [playerKey, images] of Object.entries(players)) {
+                    const profile = PLAYER_PROFILES[playerKey] || { name: playerKey.toUpperCase(), sport: sportKey, set: "Unknown", priceBase: 100, team: "Unknown", year: "N/A", stats: null };
+                    images.forEach((imgUrl, index) => {
+                        const manufacturer = MANUFACTURERS[Math.floor(Math.random() * MANUFACTURERS.length)];
+                        const isNumbered = Math.random() > 0.7;
+                        const isAuto = Math.random() > 0.8;
+                        const isPatch = Math.random() > 0.9;
+                        
+                        DATABASE.push({
+                            id: idCounter++,
+                            type: sportKey,
+                            name: profile.name,
+                            subName: `#${index + 1}`,
+                            set: profile.set,
+                            team: profile.team,
+                            year: profile.year,
+                            manufacturer: manufacturer,
+                            isNumbered: isNumbered,
+                            isAuto: isAuto,
+                            isPatch: isPatch,
+                            price: `${profile.priceBase + (index * 50)} €`,
+                            playerRef: playerKey,
+                            imageUrl: imgUrl,
+                            stats: profile.stats
+                        });
+                    });
+                }
+            }
         }
-        document.getElementById('draft-board').innerHTML = '';
-        document.getElementById('roll-btn').disabled = false; document.getElementById('start-match-btn').disabled = true;
-        document.getElementById('draft-count').innerText = state.myTeam.length;
-        document.getElementById('my-team-board').innerHTML = state.myTeam.map(p => `<div class="card ${p.p}"><div class="card-name">${p.n}</div></div>`).join('');
-        updateBudgetDisplay(); showScreen('screen-draft');
-    }
 
-    rollPlayers();
-</script>
+        // --- FONCTIONS LOGIQUE ---
+        function toggleFavorite(e, id) {
+            e.stopPropagation();
+            if (state.favorites.includes(id)) state.favorites = state.favorites.filter(favId => favId !== id);
+            else state.favorites.push(id);
+            renderCurrentView(); // Refresh ui
+        }
+
+        function updateFilter(key, value) {
+            state.filters[key] = value;
+            renderCollection();
+        }
+
+        let scrollInterval;
+        function startAutoScroll(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            clearInterval(scrollInterval);
+            scrollInterval = setInterval(() => {
+                el.scrollLeft += 1;
+                if(el.scrollLeft >= (el.scrollWidth - el.clientWidth)) el.scrollLeft = 0;
+            }, 30);
+        }
+        function stopAutoScroll() { clearInterval(scrollInterval); }
+
+        function setGradient(sportKey) {
+            const gradientEl = document.getElementById('ambient-gradient');
+            const dotEl = document.getElementById('brand-dot');
+            const sport = SPORTS_CONFIG[sportKey];
+            gradientEl.className = `absolute top-0 left-0 w-full h-[35vh] -z-10 transition-all duration-700 opacity-60 dark:opacity-40 mask-image-gradient ${sport.gradient}`;
+            dotEl.className = sport.color;
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            state.darkMode = !state.darkMode;
+        }
+
+        function init3DEffect() {
+            const container = document.getElementById('zoom-container');
+            const card = document.getElementById('zoom-card');
+            if(!container || !card) return;
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -20; 
+                const rotateY = ((x - centerX) / centerX) * 20;
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                const gloss = document.getElementById('gloss-effect');
+                if(gloss) gloss.style.backgroundPosition = `${(x / rect.width) * 100}% ${(y / rect.height) * 100}%`;
+            });
+            container.addEventListener('mouseleave', () => { card.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`; });
+        }
+
+        function renderStatBlock(sportType, stats) {
+            if (!stats) return '<p class="text-sm opacity-50 p-4">Pas de stats disponibles</p>';
+            const header = `<div class="grid grid-cols-3 bg-gray-100 dark:bg-gray-800 p-3 font-bold text-xs uppercase tracking-widest text-center"><div class="text-left">Statistique</div><div>Saison 24/25</div><div>Carrière</div></div>`;
+            let rows = '';
+            if (sportType === 'basket') {
+                rows = `${renderStatRow('Points (Moy)', stats.season.points, stats.career.points)}${renderStatRow('Rebonds (Moy)', stats.season.reb, stats.career.reb)}${renderStatRow('Victoires', stats.season.wins, stats.career.wins)}${renderStatRow('Défaites', stats.season.loss, stats.career.loss)}${renderStatRow('Minutes', stats.season.min, stats.career.min)}`;
+            } else if (sportType === 'soccer') {
+                rows = `${renderStatRow('Buts', stats.season.goals, stats.career.goals)}${renderStatRow('Passes D.', stats.season.assist, stats.career.assist)}${renderStatRow('Minutes', stats.season.min, stats.career.min)}`;
+            } else if (sportType === 'tennis') {
+                rows = `${renderStatRow('Victoires', stats.season.wins, stats.career.wins)}${renderStatRow('Défaites', stats.season.loss, stats.career.loss)}`;
+            } else if (sportType === 'nfl') {
+                rows = `${renderStatRow('Touchdowns', stats.season.td, stats.career.td)}${renderStatRow('Yards', stats.season.yds, stats.career.yds)}${renderStatRow('Matchs', stats.season.gp, stats.career.gp)}`;
+            }
+            return `<div class="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">${header}<div class="divide-y divide-gray-100 dark:divide-gray-800">${rows}</div></div>`;
+        }
+        function renderStatRow(label, sVal, cVal) {
+            return `<div class="grid grid-cols-3 p-4 text-center items-center"><div class="text-left text-xs font-bold uppercase opacity-60">${label}</div><div class="font-display font-bold text-lg">${sVal}</div><div class="font-display font-bold text-lg opacity-80">${cVal}</div></div>`;
+        }
+
+        // --- VUES ---
+
+        function renderDashboard() {
+            setGradient(state.currentSport);
+            const filteredCards = DATABASE.filter(c => c.type === state.currentSport);
+            const favCards = DATABASE.filter(c => state.favorites.includes(c.id));
+            let favSection = '';
+            if (favCards.length > 0) {
+                favSection = `
+                    <div class="mb-8 animate-fade">
+                        <div class="flex items-center gap-2 mb-4 text-red-500"><i data-lucide="heart" class="fill-current w-5 h-5"></i><h3 class="text-lg font-bold uppercase tracking-wider text-slate-900 dark:text-white">Mes Favoris</h3></div>
+                        <div id="fav-slider" class="flex gap-6 overflow-x-auto no-scrollbar pb-4" onmouseenter="stopAutoScroll()" onmouseleave="startAutoScroll('fav-slider')">
+                            ${favCards.map(c => `
+                                <div onclick="router('zoom', ${c.id})" class="min-w-[280px] md:min-w-[320px] relative group cursor-pointer transform hover:scale-105 transition-transform duration-300">
+                                     <div class="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-yellow-500/30 aspect-[3/4]">
+                                        <img src="${c.imageUrl}" class="w-full h-full object-cover">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                        <div class="absolute bottom-4 left-4 right-4"><p class="text-white font-display font-bold text-2xl uppercase">${c.name}</p><p class="text-yellow-400 text-sm font-bold">${c.price}</p></div>
+                                     </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => startAutoScroll('fav-slider'), 500);
+            }
+
+            let html = `
+                <div class="mb-6"><h2 class="text-3xl md:text-5xl font-display font-black uppercase italic tracking-tighter">Marketplace <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-800 to-gray-400 dark:from-white dark:to-gray-500">Trending</span></h2></div>
+                ${favSection}
+                <div class="flex flex-wrap gap-3 mb-8 animate-fade">
+                    ${Object.keys(SPORTS_CONFIG).map(key => {
+                        const s = SPORTS_CONFIG[key];
+                        const isActive = state.currentSport === key;
+                        const activeClass = isActive ? `${s.bg} text-white border-transparent shadow-lg shadow-${key}-500/30` : `bg-transparent border border-gray-300 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400`;
+                        return `<button onclick="switchSport('${key}')" class="px-5 py-2 rounded-full font-bold uppercase text-xs tracking-wider transition-all duration-300 transform hover:scale-105 ${activeClass} flex items-center gap-2"><i data-lucide="${s.iconName}" class="w-4 h-4"></i>${s.label}</button>`;
+                    }).join('')}
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 animate-fade">
+                    ${filteredCards.map(card => `
+                        <div onclick="router('zoom', ${card.id})" class="group cursor-pointer relative">
+                            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+                                <img src="${card.imageUrl}" onerror="this.src='https://placehold.co/400x600?text=Image+Introuvable'" class="w-full h-full object-cover">
+                                <button onclick="toggleFavorite(event, ${card.id})" class="absolute top-2 right-2 p-2 rounded-full glass hover:bg-white z-20"><i data-lucide="heart" class="w-4 h-4 ${state.favorites.includes(card.id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}"></i></button>
+                                <div class="absolute bottom-0 left-0 w-full p-3 glass dark:border-t dark:border-white/10">
+                                    <h3 class="font-display font-bold text-lg leading-none uppercase truncate">${card.name}</h3>
+                                    <div class="flex justify-between items-center mt-1"><span class="text-xs text-gray-600 dark:text-gray-300 font-medium truncate pr-2">${card.set}</span><span class="font-bold text-sm ${SPORTS_CONFIG[state.currentSport].color}">${card.price}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderPlayer(playerRef) {
+            const profile = PLAYER_PROFILES[playerRef];
+            if (!profile) return;
+            const relatedCards = DATABASE.filter(c => c.playerRef === playerRef);
+            const cutoutImage = profile.profileImage || "https://placehold.co/400x600?text=No+Image";
+            const lastName = profile.name.split(' ').pop().toUpperCase();
+            let html = `
+                <div class="animate-fade pb-20">
+                    <button onclick="router('dashboard')" class="mb-6 flex items-center gap-2 text-sm font-bold opacity-60 hover:opacity-100 transition"><i data-lucide="arrow-left" class="w-4 h-4"></i> Retour</button>
+                    <div class="grid md:grid-cols-2 gap-10 items-center mb-16">
+                        <div class="relative text-center">
+                            <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[8rem] md:text-[12rem] font-display font-black opacity-5 dark:opacity-[0.05] select-none z-0 whitespace-nowrap">${lastName}</span>
+                            <img src="${cutoutImage}" class="relative z-10 w-full max-w-md mx-auto drop-shadow-2xl animate-fade object-contain max-h-[500px]" style="animation-delay: 0.2s" alt="${profile.name}">
+                        </div>
+                        <div class="pt-10 md:pt-0">
+                            <div class="inline-block px-3 py-1 bg-black text-white dark:bg-white dark:text-black text-xs font-bold uppercase tracking-widest rounded mb-4">${SPORTS_CONFIG[profile.sport].label}</div>
+                            <h1 class="text-6xl font-display font-black uppercase leading-none mb-6">${profile.name}</h1>
+                            ${renderStatBlock(profile.sport, profile.stats)}
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 dark:border-gray-800 pt-10">
+                        <div class="flex items-center gap-3 mb-8">
+                             <div class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg"><i data-lucide="layers" class="w-6 h-6"></i></div>
+                             <h3 class="text-3xl font-display font-black uppercase">Collection ${profile.name}</h3>
+                             <span class="text-sm opacity-50 font-bold bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">${relatedCards.length}</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                            ${relatedCards.map(c => `
+                                <div onclick="router('zoom', ${c.id})" class="bg-white dark:bg-gray-900 p-3 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 hover:border-brand-${SPORTS_CONFIG[c.type].color.split('-')[1]} transition group cursor-pointer relative">
+                                    <button onclick="toggleFavorite(event, ${c.id})" class="absolute top-4 right-4 z-20"><i data-lucide="heart" class="w-4 h-4 ${state.favorites.includes(c.id) ? 'fill-red-500 text-red-500' : 'text-gray-300'}"></i></button>
+                                    <div class="relative rounded-lg overflow-hidden aspect-[3/4] mb-3">
+                                         <img src="${c.imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    </div>
+                                    <div class="px-1"><p class="font-bold text-sm truncate">${c.name} <span class="text-xs opacity-50">${c.subName}</span></p><p class="text-xs text-gray-500 font-bold mt-1">${c.price}</p></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderCardZoom(cardId) {
+            const card = DATABASE.find(c => c.id == cardId);
+            if(!card) return;
+            let html = `
+                <div class="animate-fade pb-10 min-h-[80vh] flex flex-col items-center justify-center relative px-4">
+                    <button onclick="router('folder', '${card.type}')" class="absolute top-0 left-0 p-3 glass rounded-full hover:scale-105 transition z-50"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
+                    <h2 class="text-3xl font-display font-black uppercase mb-2 tracking-widest text-center">${card.name}</h2>
+                    <p class="text-sm opacity-60 font-bold uppercase mb-8 tracking-widest">${card.set}</p>
+
+                    <div id="zoom-container" class="card-container-3d relative w-[300px] h-[420px] md:w-[380px] md:h-[530px] cursor-pointer mb-8">
+                        <div id="zoom-card" class="card-item-3d w-full h-full rounded-[2rem] overflow-hidden card-shadow relative bg-gray-200 dark:bg-gray-800">
+                            <img src="${card.imageUrl}" onerror="this.src='https://placehold.co/400x600?text=Image+Introuvable'" class="w-full h-full object-cover z-10 pointer-events-none">
+                            <div id="gloss-effect" class="gloss-overlay absolute inset-0 z-20 pointer-events-none"></div>
+                            <div class="absolute top-4 right-4 bg-white/90 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg z-30">${card.price}</div>
+                        </div>
+                    </div>
+                    <div class="text-center opacity-50 text-xs uppercase tracking-widest animate-pulse mb-8"><i data-lucide="move" class="inline w-4 h-4 mr-1"></i> Bougez pour voir l'effet 3D</div>
+
+                    <div class="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-3xl p-6 md:p-8 shadow-xl border border-gray-200 dark:border-gray-800">
+                        <div class="flex items-center gap-2 mb-6 border-b border-gray-100 dark:border-gray-800 pb-4"><i data-lucide="file-text" class="w-6 h-6 text-blue-500"></i><h3 class="text-xl font-bold uppercase tracking-wider">Caractéristiques Carte</h3></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center"><span class="text-xs uppercase font-bold opacity-50">Joueur</span><span class="font-bold text-lg">${card.name}</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs uppercase font-bold opacity-50">Club / Équipe</span><span class="font-bold text-lg">${card.team}</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs uppercase font-bold opacity-50">Année</span><span class="font-bold font-mono text-lg">${card.year}</span></div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center"><span class="text-xs uppercase font-bold opacity-50">Fabricant</span><span class="font-bold text-lg">${card.manufacturer}</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs uppercase font-bold opacity-50">Collection</span><span class="font-bold text-lg">${card.set}</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs uppercase font-bold opacity-50">Estimation Prix</span><span class="font-bold text-xl text-green-500">${card.price}</span></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-3">
+                            <span class="text-xs uppercase font-bold opacity-50 flex items-center mr-2">Attributs :</span>
+                            ${card.isAuto ? `<span class="px-3 py-1 rounded-lg bg-blue-500/10 text-blue-500 border border-blue-500/20 text-xs font-bold uppercase flex items-center gap-1"><i data-lucide="pen-tool" class="w-3 h-3"></i> Autograph</span>` : ''}
+                            ${card.isPatch ? `<span class="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 border border-purple-500/20 text-xs font-bold uppercase flex items-center gap-1"><i data-lucide="shirt" class="w-3 h-3"></i> Jersey Patch</span>` : ''}
+                            ${card.isNumbered ? `<span class="px-3 py-1 rounded-lg bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-xs font-bold uppercase flex items-center gap-1"><i data-lucide="hash" class="w-3 h-3"></i> Numérotée</span>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row gap-4 mt-8 w-full max-w-lg">
+                        <button onclick="toggleFavorite(event, ${card.id})" class="flex-1 py-4 rounded-xl border border-gray-300 dark:border-gray-700 font-bold uppercase hover:bg-gray-100 dark:hover:bg-gray-800 transition flex justify-center items-center gap-2">
+                             <i data-lucide="heart" class="w-5 h-5 ${state.favorites.includes(card.id) ? 'fill-red-500 text-red-500' : ''}"></i>
+                             ${state.favorites.includes(card.id) ? 'Retirer Favoris' : 'Ajouter Favoris'}
+                        </button>
+                        <button onclick="router('player', '${card.playerRef}')" class="flex-1 py-4 bg-blue-600 text-white font-bold uppercase rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/30">Voir fiche Joueur</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+            setTimeout(init3DEffect, 100);
+        }
+
+        function renderCollection() {
+            setGradient('basket');
+            let displayCards = DATABASE;
+            if(state.filters.manufacturer !== 'all') displayCards = displayCards.filter(c => c.manufacturer === state.filters.manufacturer);
+            if(state.filters.numbered) displayCards = displayCards.filter(c => c.isNumbered);
+            if(state.filters.auto) displayCards = displayCards.filter(c => c.isAuto);
+            if(state.filters.patch) displayCards = displayCards.filter(c => c.isPatch);
+
+            const counts = {};
+            Object.keys(SPORTS_CONFIG).forEach(k => counts[k] = DATABASE.filter(c => c.type === k).length);
+            
+            let html = `
+                <div class="animate-fade">
+                    <h2 class="text-4xl font-display font-black uppercase mb-8">Ma Collection</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                        ${Object.keys(SPORTS_CONFIG).map(key => `
+                            <div onclick="router('folder', '${key}')" class="cursor-pointer group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 h-32 p-4 flex flex-col justify-between hover:shadow-lg hover:border-${SPORTS_CONFIG[key].color.split('-')[1]}-500 transition-all">
+                                <div class="absolute right-0 top-0 w-32 h-32 bg-${SPORTS_CONFIG[key].bg.replace('bg-', '')}-500/10 rounded-full -mr-10 -mt-10 blur-2xl group-hover:bg-${SPORTS_CONFIG[key].bg.replace('bg-', '')}-500/20 transition-colors"></div>
+                                <i data-lucide="${SPORTS_CONFIG[key].iconName}" class="w-8 h-8 ${SPORTS_CONFIG[key].color}"></i>
+                                <div class="relative z-10"><span class="block font-bold uppercase text-sm group-hover:translate-x-1 transition-transform">${SPORTS_CONFIG[key].label}</span><span class="text-xs opacity-50">${counts[key]} Cartes</span></div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-8 flex flex-wrap gap-6 items-center">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Fabricant</label>
+                            <select onchange="updateFilter('manufacturer', this.value)" class="bg-gray-100 dark:bg-gray-800 border-none rounded-lg px-3 py-2 text-sm font-bold focus:ring-2 focus:ring-blue-500">
+                                <option value="all">Tous</option>
+                                ${MANUFACTURERS.map(m => `<option value="${m}" ${state.filters.manufacturer === m ? 'selected' : ''}>${m}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="toggle-num" class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 bg-gray-100 dark:bg-gray-800 border-gray-300" ${state.filters.numbered ? 'checked' : ''} onchange="updateFilter('numbered', this.checked)"><label for="toggle-num" class="text-sm font-bold">Numéroté</label></div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="toggle-auto" class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 bg-gray-100 dark:bg-gray-800 border-gray-300" ${state.filters.auto ? 'checked' : ''} onchange="updateFilter('auto', this.checked)"><label for="toggle-auto" class="text-sm font-bold">Autograph</label></div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="toggle-patch" class="w-4 h-4 rounded text-blue-500 focus:ring-blue-500 bg-gray-100 dark:bg-gray-800 border-gray-300" ${state.filters.patch ? 'checked' : ''} onchange="updateFilter('patch', this.checked)"><label for="toggle-patch" class="text-sm font-bold">Patch</label></div>
+                    </div>
+
+                    <h3 class="text-xl font-bold uppercase mb-4 opacity-80">Résultats (${displayCards.length})</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 animate-fade">
+                         ${displayCards.map(c => `
+                            <div onclick="router('zoom', ${c.id})" class="relative group cursor-pointer">
+                                <div class="rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden aspect-[3/4]">
+                                    <img src="${c.imageUrl}" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105">
+                                    <div class="absolute top-2 left-2 flex flex-col gap-1">
+                                        ${c.isAuto ? '<span class="bg-blue-500 text-white text-[9px] px-1 rounded font-bold">AUTO</span>' : ''}
+                                        ${c.isNumbered ? '<span class="bg-yellow-500 text-black text-[9px] px-1 rounded font-bold">#/99</span>' : ''}
+                                        ${c.isPatch ? '<span class="bg-purple-500 text-white text-[9px] px-1 rounded font-bold">PATCH</span>' : ''}
+                                    </div>
+                                </div>
+                                <div class="mt-2 px-1"><p class="text-xs font-bold truncate">${c.name}</p><p class="text-[10px] opacity-60">${c.manufacturer}</p></div>
+                            </div>
+                         `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderFolder(sportKey) {
+            setGradient(sportKey);
+            const cards = DATABASE.filter(c => c.type === sportKey);
+            let html = `
+                <div class="animate-fade">
+                    <button onclick="router('collection')" class="mb-6 flex items-center gap-2 text-sm font-bold opacity-60 hover:opacity-100 transition"><i data-lucide="arrow-left" class="w-4 h-4"></i> Retour Collection</button>
+                    <div class="flex items-center gap-4 mb-8">
+                         <div class="p-3 rounded-xl bg-${SPORTS_CONFIG[sportKey].bg.replace('bg-', '')}-100 dark:bg-gray-800"><i data-lucide="${SPORTS_CONFIG[sportKey].iconName}" class="w-8 h-8 ${SPORTS_CONFIG[sportKey].color}"></i></div>
+                         <h2 class="text-4xl font-display font-black uppercase">Dossier ${SPORTS_CONFIG[sportKey].label}</h2>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        ${cards.map(card => `
+                            <div onclick="router('zoom', ${card.id})" class="group cursor-pointer">
+                                <div class="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-sm transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+                                    <img src="${card.imageUrl}" class="w-full h-full object-cover">
+                                    <div class="absolute bottom-0 left-0 w-full p-3 glass"><p class="font-bold text-sm truncate">${card.name}</p></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderScanner() {
+            setGradient('nfl');
+            let html = `
+                <div class="animate-fade pb-20">
+                    <h2 class="text-3xl font-display font-black uppercase mb-2">Ajouter une carte</h2>
+                    <p class="opacity-60 mb-8">Utilisez la caméra, glissez un fichier ou remplissez manuellement.</p>
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <div class="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-3xl h-96 flex flex-col items-center justify-center bg-white/50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer relative overflow-hidden group">
+                                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="alert('Image chargée (Simulé)')">
+                                <div class="text-center p-6 group-hover:scale-105 transition-transform">
+                                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30"><i data-lucide="scan-line" class="w-8 h-8 text-white"></i></div>
+                                    <h3 class="font-bold text-lg mb-1">Scanner ou Déposer</h3><p class="text-sm opacity-60">Glissez une image ici</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4"><button class="flex-1 py-3 rounded-xl bg-gray-200 dark:bg-gray-800 font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-700 transition"><i data-lucide="smartphone" class="w-4 h-4"></i> Mobile</button><button class="flex-1 py-3 rounded-xl bg-gray-200 dark:bg-gray-800 font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-700 transition"><i data-lucide="upload-cloud" class="w-4 h-4"></i> URL Web</button></div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-800">
+                            <h3 class="font-bold text-xl mb-6 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-blue-500"></i> Détails de la carte</h3>
+                            <form class="space-y-4" onsubmit="event.preventDefault(); alert('Carte ajoutée !'); router('collection')">
+                                <div><label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Joueur</label><input type="text" placeholder="Ex: Michael Jordan" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-3 font-bold focus:ring-2 focus:ring-blue-500"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Année</label><input type="number" placeholder="2024" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-3 font-bold"></div>
+                                    <div><label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Sport</label><select class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-3 font-bold"><option>Basket</option><option>Soccer</option><option>NFL</option><option>Tennis</option></select></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Fabricant</label><select class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-3 font-bold">${MANUFACTURERS.map(m => `<option>${m}</option>`).join('')}</select></div>
+                                    <div><label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Collection</label><input type="text" placeholder="Ex: Prizm" class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg p-3 font-bold"></div>
+                                </div>
+                                <div class="flex gap-4 py-2">
+                                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="w-4 h-4 rounded text-blue-500 bg-gray-100 dark:bg-gray-800 border-none"><span class="text-sm font-bold">Auto</span></label>
+                                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="w-4 h-4 rounded text-blue-500 bg-gray-100 dark:bg-gray-800 border-none"><span class="text-sm font-bold">Patch</span></label>
+                                    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="w-4 h-4 rounded text-blue-500 bg-gray-100 dark:bg-gray-800 border-none"><span class="text-sm font-bold">Numéroté</span></label>
+                                </div>
+                                <div><label class="block text-xs font-bold uppercase tracking-widest opacity-60 mb-1 flex justify-between">Estimation Prix <span class="text-green-500 flex items-center gap-1"><i data-lucide="search" class="w-3 h-3"></i> eBay API</span></label><div class="relative"><input type="text" value="Calcul en cours..." class="w-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 rounded-lg p-3 font-mono font-bold pl-10"><span class="absolute left-3 top-3 text-green-600">$</span></div></div>
+                                <button type="submit" class="w-full py-4 bg-blue-600 text-white font-bold uppercase tracking-widest rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-500/30 mt-4">Enregistrer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('main-content').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function switchSport(sportKey) { state.currentSport = sportKey; renderDashboard(); }
+        function renderCurrentView() { router(state.view, state.currentParam); }
+
+        function router(routeName, param = null) {
+            if(state.view === 'dashboard' && routeName !== 'dashboard') stopAutoScroll();
+            state.view = routeName;
+            state.currentParam = param;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(routeName === 'dashboard') renderDashboard();
+            else if(routeName === 'player') renderPlayer(param);
+            else if(routeName === 'collection') renderCollection();
+            else if(routeName === 'folder') renderFolder(param);
+            else if(routeName === 'zoom') renderCardZoom(param);
+            else if(routeName === 'scan') renderScanner();
+        }
+
+        // --- INIT ---
+        generateData();
+        renderDashboard();
+    </script>
 </body>
 </html>
