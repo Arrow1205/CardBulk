@@ -517,10 +517,26 @@ const SB_URL = 'https://tykayvplynkysqwmhkyt.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5a2F5dnBseW5reXNxd21oa3l0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MzQxNzYsImV4cCI6MjA4NzQxMDE3Nn0.sbRIHt_qvIBODeLLKS5DWULGmxaghUPYFtBvfFyA85o';
 const SB_HDR = { 'Content-Type':'application/json', 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Prefer':'return=representation' };
 
-async function sbGet(table){ const r=await fetch(`${SB_URL}/rest/v1/${table}?select=*&order=created_at.desc`,{headers:SB_HDR}); return r.json(); }
-async function sbInsert(table,row){ const r=await fetch(`${SB_URL}/rest/v1/${table}`,{method:'POST',headers:SB_HDR,body:JSON.stringify(row)}); return r.json(); }
-async function sbUpdate(table,id,patch){ await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`,{method:'PATCH',headers:SB_HDR,body:JSON.stringify(patch)}); }
-async function sbDelete(table,id){ await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`,{method:'DELETE',headers:SB_HDR}); }
+async function sbGet(table){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?select=*&order=created_at.desc`,{headers:SB_HDR});
+  const d=await r.json();
+  if(!r.ok) console.error('sbGet error',table,r.status,d);
+  return d;
+}
+async function sbInsert(table,row){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}`,{method:'POST',headers:SB_HDR,body:JSON.stringify(row)});
+  const d=await r.json();
+  if(!r.ok){ console.error('sbInsert error',table,r.status,JSON.stringify(d)); throw new Error(d?.message||d?.error||JSON.stringify(d)); }
+  return d;
+}
+async function sbUpdate(table,id,patch){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`,{method:'PATCH',headers:SB_HDR,body:JSON.stringify(patch)});
+  if(!r.ok){ const d=await r.json(); console.error('sbUpdate error',table,r.status,d); }
+}
+async function sbDelete(table,id){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`,{method:'DELETE',headers:SB_HDR});
+  if(!r.ok){ const d=await r.json(); console.error('sbDelete error',table,r.status,d); }
+}
 
 /* Upload image vers Supabase Storage */
 async function uploadPhoto(dataUrl, cardId){
@@ -556,7 +572,22 @@ async function uploadPhoto(dataUrl, cardId){
 
 /* Normalise un objet carte depuis Supabase (snake_case → camelCase) */
 function fromSB(c){ return { id:c.id, prenom:c.prenom||'', nom:c.nom||'', club:c.club||'', clubEmoji:c.club_emoji||'', sport:c.sport||'', num:c.num||'', isNum:c.is_num||false, tags:c.tags||[], collection:c.collection||'', notes:c.notes||'', photo:c.photo_url||'', fav:c.fav||false, date:c.date||'' }; }
-function toSB(c){ return { id:c.id, prenom:c.prenom, nom:c.nom, club:c.club, club_emoji:c.clubEmoji, sport:c.sport, num:c.num, is_num:c.isNum, tags:c.tags, collection:c.collection, notes:c.notes, photo_url:c.photo, fav:c.fav, date:c.date }; }
+function toSB(c){ return {
+  id: c.id,
+  prenom: c.prenom||'',
+  nom: c.nom||'',
+  club: c.club||'',
+  club_emoji: c.clubEmoji||'',
+  sport: c.sport||'',
+  num: c.num||'',
+  is_num: c.isNum||false,
+  tags: Array.isArray(c.tags)?c.tags:[],
+  collection: c.collection||'',
+  notes: c.notes||'',
+  photo_url: c.photo||'',
+  fav: c.fav||false,
+  date: c.date||''
+}; }
 
 /* STATE — en mémoire, chargé depuis Supabase au démarrage */
 let db = { cards:[], folders:[] };
