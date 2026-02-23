@@ -330,8 +330,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 /* CARD SHIMMER / TILT ANIMATION (replaces gyro) */
 @keyframes cardFloat{0%{transform:rotateX(10deg) rotateY(-8deg) translateY(0px) scale(1)}20%{transform:rotateX(-7deg) rotateY(12deg) translateY(-8px) scale(1.02)}40%{transform:rotateX(12deg) rotateY(4deg) translateY(-4px) scale(.99)}60%{transform:rotateX(-5deg) rotateY(-12deg) translateY(-10px) scale(1.02)}80%{transform:rotateX(8deg) rotateY(8deg) translateY(-3px) scale(1.01)}100%{transform:rotateX(10deg) rotateY(-8deg) translateY(0px) scale(1)}}
-50%{background-position:100% 50%;opacity:.85}100%{background-position:0% 50%;opacity:.55}}
-100%{transform:translateY(200%)}}
 .card-animated .card-flip-inner:not(.flipped){animation:cardFloat 6s ease-in-out infinite;}
 .card-animated .card-face{overflow:hidden;}
 
