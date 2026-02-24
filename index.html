@@ -1820,8 +1820,40 @@ function closeCrop(){document.getElementById("crop-overlay").classList.remove("o
 
 function applyCrop(){
   const canvas=document.getElementById("crop-canvas");
-  if(!canvas){closeCrop();return;}
-  const data=canvas.toDataURL("image/jpeg",0.88);
+  const img=document.getElementById("crop-img");
+  if(!canvas||!img||!window.__cropState){closeCrop();return;}
+  const st=window.__cropState;
+
+  // Zone fixe (cadre) en coordonnées canvas
+  const frame=st.frame; // {x,y,w,h} en px canvas (déjà * dpr)
+  const sx=(frame.x - st.dx)/st.scale;
+  const sy=(frame.y - st.dy)/st.scale;
+  const sw=frame.w/st.scale;
+  const sh=frame.h/st.scale;
+
+  // Sécurité : clamp dans l'image source
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  const csx=clamp(sx,0,Math.max(0,st.iw - sw));
+  const csy=clamp(sy,0,Math.max(0,st.ih - sh));
+  const csw=clamp(sw,1,st.iw);
+  const csh=clamp(sh,1,st.ih);
+
+  // Canvas de sortie (on garde une qualité correcte sans exploser la taille)
+  const maxOut=1200; // px
+  let outW=Math.round(csw);
+  let outH=Math.round(csh);
+  const ratio=Math.min(1, maxOut/Math.max(outW,outH));
+  outW=Math.max(1, Math.round(outW*ratio));
+  outH=Math.max(1, Math.round(outH*ratio));
+
+  const out=document.createElement("canvas");
+  out.width=outW; out.height=outH;
+  const octx=out.getContext("2d");
+  octx.imageSmoothingEnabled=true;
+  octx.imageSmoothingQuality="high";
+  octx.drawImage(img, csx, csy, csw, csh, 0, 0, outW, outH);
+
+  const data=out.toDataURL("image/jpeg",0.9);
   addCrop[cropTarget]=data;
   if(cropTarget==="recto"){document.getElementById("photo-preview-img").src=data;}
   else{document.getElementById("photo-preview-img-v").src=data;}
@@ -1832,13 +1864,115 @@ function applyCrop(){
 function initCrop(){
   const canvas=document.getElementById("crop-canvas");
   const img=document.getElementById("crop-img");
-  if(!canvas||!img) return;
-  // Dessine l'image dans le canvas (recadrage simplifié pour l'instant)
-  canvas.width=img.naturalWidth||900;
-  canvas.height=img.naturalHeight||1200;
+  const wrap=document.querySelector("#crop-overlay .crop-wrap");
+  if(!canvas||!img||!wrap) return;
+
+  // Dimensionne le canvas pour un rendu net (retina)
+  const dpr=Math.max(1, Math.min(3, window.devicePixelRatio||1));
+  const cw=Math.round(wrap.clientWidth*dpr);
+  const ch=Math.round(wrap.clientHeight*dpr);
+  canvas.width=cw; canvas.height=ch;
+
+  // Cadre fixe (il correspond au .crop-frame inset:16px en CSS)
+  const insetCss=16; // px CSS
+  const inset=Math.round(insetCss*dpr);
+  const frame={x:inset,y:inset,w:cw-2*inset,h:ch-2*inset};
+
+  // Image source
+  const iw=img.naturalWidth||1;
+  const ih=img.naturalHeight||1;
+
+  // Scale "cover" pour que l'image remplisse le cadre (style Instagram)
+  const scale=Math.max(frame.w/iw, frame.h/ih);
+
+  // Position initiale : centre image sur centre cadre
+  const dx=(frame.x + frame.w/2) - (iw*scale/2);
+  const dy=(frame.y + frame.h/2) - (ih*scale/2);
+
+  window.__cropState={dpr,cw,ch,frame,iw,ih,scale,dx,dy,drag:false,px:0,py:0};
+
+  // Installe les handlers une seule fois
+  if(!canvas.__cropHandlers){
+    const onDown=(e)=>{
+      e.preventDefault();
+      const st=window.__cropState; if(!st) return;
+      st.drag=true;
+      const p=(e.touches&&e.touches[0])?e.touches[0]:e;
+      st.px=p.clientX; st.py=p.clientY;
+    };
+    const onMove=(e)=>{
+      const st=window.__cropState; if(!st||!st.drag) return;
+      const p=(e.touches&&e.touches[0])?e.touches[0]:e;
+      const dxp=(p.clientX-st.px)*(st.dpr);
+      const dyp=(p.clientY-st.py)*(st.dpr);
+      st.px=p.clientX; st.py=p.clientY;
+      st.dx+=dxp; st.dy+=dyp;
+      __cropClamp(st);
+      __cropDraw();
+    };
+    const onUp=()=>{
+      const st=window.__cropState; if(!st) return;
+      st.drag=false;
+    };
+
+    canvas.addEventListener("mousedown", onDown, {passive:false});
+    canvas.addEventListener("mousemove", onMove, {passive:false});
+    window.addEventListener("mouseup", onUp, {passive:true});
+
+    canvas.addEventListener("touchstart", onDown, {passive:false});
+    canvas.addEventListener("touchmove", onMove, {passive:false});
+    window.addEventListener("touchend", onUp, {passive:true});
+    window.addEventListener("touchcancel", onUp, {passive:true});
+
+    canvas.__cropHandlers=true;
+  }
+
+  __cropClamp(window.__cropState);
+  __cropDraw();
+}
+
+// Garde le cadre toujours "couvert" par l'image
+function __cropClamp(st){
+  const dw=st.iw*st.scale;
+  const dh=st.ih*st.scale;
+
+  // contraintes pour que le cadre (frame) reste dans l'image
+  const minX=st.frame.x + st.frame.w - dw;
+  const maxX=st.frame.x;
+  const minY=st.frame.y + st.frame.h - dh;
+  const maxY=st.frame.y;
+
+  st.dx=Math.max(minX, Math.min(maxX, st.dx));
+  st.dy=Math.max(minY, Math.min(maxY, st.dy));
+}
+
+function __cropDraw(){
+  const canvas=document.getElementById("crop-canvas");
+  const img=document.getElementById("crop-img");
+  const st=window.__cropState;
+  if(!canvas||!img||!st) return;
   const ctx=canvas.getContext("2d");
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+  ctx.clearRect(0,0,st.cw,st.ch);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality="high";
+  ctx.drawImage(img, st.dx, st.dy, st.iw*st.scale, st.ih*st.scale);
+
+  // voile sombre hors cadre
+  ctx.save();
+  ctx.fillStyle="rgba(0,0,0,0.55)";
+  ctx.beginPath();
+  ctx.rect(0,0,st.cw,st.ch);
+  ctx.rect(st.frame.x, st.frame.y, st.frame.w, st.frame.h);
+  ctx.fill("evenodd");
+  ctx.restore();
+
+  // outline cadre (renforce le .crop-frame)
+  ctx.save();
+  ctx.strokeStyle="rgba(255,255,255,0.65)";
+  ctx.lineWidth=Math.max(2, Math.round(2*st.dpr));
+  ctx.strokeRect(st.frame.x+0.5, st.frame.y+0.5, st.frame.w-1, st.frame.h-1);
+  ctx.restore();
 }
 
 async function saveCard(){
