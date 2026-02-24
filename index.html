@@ -209,7 +209,7 @@ function filterByClub(clubName){
 .photo-upload{position:relative;width:100%;aspect-ratio:3/2;max-height:220px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .photo-btns{display:flex;gap:7px;margin-top:12px;}
 .photo-btn{padding:8px 14px;border-radius:99px;background:var(--surface3);border:1px solid var(--border2);color:var(--text);font-size:14px;font-weight:700;cursor:pointer;font-family:"Barlow",sans-serif;}
-.crop-btn{width:100%;margin-top:7px;padding:9px;border-radius:99px;background:var(--surface2);border:1px solid var(--border2);color:var(--text-mid);font-size:14px;font-weight:700;cursor:pointer;font-family:"Barlow",sans-serif;letter-spacing:.8px;text-transform:uppercase;}
+.crop-btn{width:100%;margin-top:7px;padding:9px 12px;border-radius:99px;background:var(--surface2);border:1px solid var(--border2);color:var(--text-mid);font-size:13px;font-weight:700;cursor:pointer;font-family:"Barlow Condensed",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* SIDE TABS */
 .side-tabs{display:flex;gap:5px;margin-bottom:10px;}
@@ -229,7 +229,7 @@ function filterByClub(clubName){
 .club-create-btn{width:100%;margin-top:6px;padding:8px;border-radius:7px;background:transparent;border:1px dashed var(--border2);color:var(--text-dim);font-size:14px;font-weight:600;cursor:pointer;font-family:"Barlow",sans-serif;}
 
 /* CARD DETAIL */
-.card-detail{position:fixed;inset:0;z-index:150;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
+.card-detail{position:fixed;inset:0;z-index:150;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .card-detail.open{display:flex;}
 .card-detail-hdr{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 12px;}
 .back-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
@@ -237,13 +237,13 @@ function filterByClub(clubName){
 .fullscreen-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
 
 /* 3D Scene */
-.card-3d-scene{width:100%;height:72%;flex-shrink:0;display:flex;align-items:center;justify-content:center;perspective:1200px;background:var(--surface);position:relative;overflow:hidden;cursor:pointer;}
+.card-3d-scene{width:100%;height:58vh;flex-shrink:0;display:flex;align-items:center;justify-content:center;perspective:1200px;background:var(--surface);position:sticky;top:0;overflow:hidden;cursor:pointer;z-index:1;}
 
 /* BG NAME — texte seulement quand pas de photo */
 .card-bg-name-text{position:absolute;inset:0;font-family:"Barlow Condensed",sans-serif;font-weight:900;color:rgba(175,255,37,.07);letter-spacing:-4px;text-transform:uppercase;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
 
 /* FLIP */
-.card-flip-container{width:min(calc(72vh * 0.716), 90%);height:min(72vh, calc(90vw / 0.716));perspective:800px;position:relative;max-width:300px;max-height:420px;}
+.card-flip-container{width:min(calc(56vh * 0.716), 88%);height:min(56vh, calc(88vw / 0.716));perspective:800px;position:relative;max-width:280px;max-height:390px;}
 .card-flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);}
 .card-flip-inner.flipped{transform:rotateY(180deg);}
 .card-face{position:absolute;inset:0;border-radius:12px;overflow:hidden;backface-visibility:hidden;background:var(--surface2);border:1px solid var(--border2);box-shadow:0 8px 28px rgba(0,0,0,.5);}
@@ -259,7 +259,7 @@ function filterByClub(clubName){
 .card-detail.fullscreen .card-face{border-radius:14px;}
 
 /* DETAIL BOTTOM */
-.card-detail-bottom{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.card-detail-bottom{position:relative;z-index:2;background:var(--bg);border-radius:20px 20px 0 0;margin-top:-20px;padding-top:8px;}
 .player-identity{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 18px 0;}
 .player-first{font-size:16px;font-weight:300;color:var(--text);letter-spacing:.5px;}
 .player-last{font-family:"Barlow Condensed",sans-serif;font-size:38px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1;color:var(--accent);cursor:pointer;}
@@ -615,7 +615,7 @@ body *{font-size:inherit;}
       <button class="detail-fav-btn" id="detail-fav-btn" onclick="toggleFav()">☆</button>
     </div>
   </div>
-  <div class="card-3d-scene card-animated" id="card-3d-scene" onclick="toggleFullscreen()">
+  <div class="card-3d-scene card-animated" id="card-3d-scene">
     <!-- Big name BG text (no photo) -->
     <div class="card-bg-name-text" id="card-bg-name-text" style="display:none;"></div>
     <!-- Flip container -->
@@ -1048,7 +1048,7 @@ function onMarqueChange(p){
 }
 
 /* ═══════ ANNÉES ═══════ */
-function populateYears(selId){const s=document.getElementById(selId);s.innerHTML='<option value="">Sélectionner</option>';for(let y=2025;y>=1990;y--)s.innerHTML+=`<option value="${y}">${y}</option>`;}
+function populateYears(selId){const s=document.getElementById(selId);s.innerHTML='<option value="">Sélectionner</option>';for(let y=2026;y>=1995;y--)s.innerHTML+=`<option value="${y}">${y}</option>`;}
 
 /* ═══════ SPORTS ═══════ */
 const SPORTS_WITH_CLUB=["football","basketball","baseball","nfl","nhl"];
@@ -1106,7 +1106,13 @@ function getClubLogoB64(club){
   for(const[k,v]of Object.entries(LOGOS_DB)){if(slug(k)===cSlug&&v)return v;}
   return club.logo||"";
 }
-function clubLogoHtml(club,size=16){if(!club)return"";const src=getClubLogoB64(club);if(src)return`<img src="${src}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:contain;background:rgba(255,255,255,.06);padding:1px;">`;return`<span style="font-size:${Math.round(size*.85)}px;">${club.emoji||""}</span>`;}
+function clubLogoHtml(club,size=16){
+  if(!club)return"";
+  const src=getClubLogoB64(club);
+  if(src)return`<img src="${src}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;flex-shrink:0;">`;
+  const c=CLUBS.find(x=>x.name===club)||{};
+  return`<span style="font-size:${Math.round(size*.85)}px;">${c.emoji||"🏟️"}</span>`;
+}
 
 /* AJAX CLUB SEARCH */
 function clubSearch(v,p){
@@ -1213,34 +1219,40 @@ function compressImage(dataUrl,cb){const img=new Image();img.onload=()=>{const M
 async function ocrCard(dataUrl){
   try{
     showToast("🔍 Analyse en cours…");
-    const prompt="Donne les statistiques réelles et biographie de "+(card.prenom||"")+" "+(card.nom||"")+", joueur de "+(card.sport||"sport")+(card.club?" ("+card.club+")":"")+". Réponds UNIQUEMENT en JSON: {bio,age,nationalite,club_actuel,valeur_marchande,stats:{label:valeur x5}}. Métriques adaptées au sport. Si inconnu: tiret.";
+    const base64=dataUrl.includes(",")? dataUrl.split(",")[1]:dataUrl;
     const resp=await fetch("https://api.anthropic.com/v1/messages",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
+      headers:{
+        "Content-Type":"application/json",
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true"
+      },
       body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",
-        max_tokens:600,
-        messages:[{role:"user",content:prompt}]
+        model:"claude-opus-4-5-20251101",
+        max_tokens:300,
+        messages:[{role:"user",content:[
+          {type:"image",source:{type:"base64",media_type:"image/jpeg",data:base64}},
+          {type:"text",text:"Sports trading card. Extract in JSON only (no markdown): {prenom, nom, club, sport (football/basketball/baseball/nfl/nhl/tennis/f1/marvel/pokemon), marque (Topps/Panini/Leaf/Futera/Daka)}. Empty string if unknown."}
+        ]}]
       })
     });
+    if(!resp.ok)throw new Error("HTTP "+resp.status);
     const data=await resp.json();
-    if(!data.content||!data.content[0])return;
+    const txt=data.content&&data.content[0]?data.content[0].text:"";
     let json=null;
-    try{json=JSON.parse(data.content[0].text);}catch(e){
-      const m=data.content[0].text.match(/\{[\s\S]+\}/);
-      if(m)try{json=JSON.parse(m[0]);}catch(e2){}
-    }
-    if(!json)return;
-    if(json.prenom){document.getElementById("f-prenom").value=json.prenom;}
-    if(json.nom){document.getElementById("f-nom").value=json.nom;}
-    if(json.sport){const s=document.getElementById("f-sport");s.value=json.sport;onSportChange();}
-    if(json.club&&json.club.trim()){
-      document.getElementById("f-club-search").value=json.club;
-      clubSearch(json.club,"f");
-    }
-    if(json.marque){const m=document.getElementById("f-marque");m.value=json.marque;onMarqueChange("f");}
+    try{json=JSON.parse(txt);}
+    catch(e){const m=txt.match(/\{[\s\S]+?\}/);if(m)try{json=JSON.parse(m[0]);}catch(e2){}}
+    if(!json){showToast("⚠️ Analyse impossible");return;}
+    if(json.prenom)document.getElementById("f-prenom").value=json.prenom;
+    if(json.nom)document.getElementById("f-nom").value=json.nom;
+    if(json.sport){const s=document.getElementById("f-sport");if(s){s.value=json.sport;onSportChange&&onSportChange();}}
+    if(json.club&&json.club.trim()){document.getElementById("f-club-search").value=json.club;clubSearch(json.club,"f");}
+    if(json.marque){const m=document.getElementById("f-marque");if(m){m.value=json.marque;onMarqueChange&&onMarqueChange("f");}}
     showToast("✅ Infos détectées !");
-  }catch(e){console.warn("OCR error:",e);}
+  }catch(e){
+    console.error("OCR error:",e);
+    showToast("⚠️ Erreur analyse: "+e.message);
+  }
 }
 function handlePhoto(inp,side){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>compressImage(e.target.result,data=>{addPhoto[side]=data;addCrop[side]=null;if(side==="recto"){document.getElementById("photo-preview-img").src=data;document.getElementById("photo-preview-wrap").style.display="block";document.getElementById("photo-placeholder-ui").style.display="none";document.getElementById("crop-btn").style.display="block";const ocrBtn=document.getElementById("ocr-btn");if(ocrBtn)ocrBtn.style.display="block";ocrCard(data);}else{document.getElementById("photo-preview-img-v").src=data;document.getElementById("photo-preview-wrap-v").style.display="block";document.getElementById("photo-placeholder-ui-v").style.display="none";document.getElementById("crop-btn-v").style.display="block";}});r.readAsDataURL(f);}
 function handleEditPhoto(inp,side){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>compressImage(e.target.result,data=>{editPhoto[side]=data;editCrop[side]=null;if(side==="recto"){document.getElementById("e-preview-img").src=data;document.getElementById("e-preview-wrap").style.display="block";document.getElementById("e-placeholder").style.display="none";document.getElementById("e-crop-btn").style.display="block";}else{document.getElementById("e-preview-img-v").src=data;document.getElementById("e-preview-wrap-v").style.display="block";document.getElementById("e-placeholder-v").style.display="none";document.getElementById("e-crop-btn-v").style.display="block";}});r.readAsDataURL(f);}
@@ -1434,14 +1446,15 @@ function renderCollection(){
   document.getElementById("coll-grid").classList.toggle("bulk-mode",bulkMode);
   renderFolders();renderCG2(getFiltered());
   setTimeout(()=>{
-    document.querySelectorAll(".brand-filter-btn").forEach(btn=>{
+    document.querySelectorAll("#brand-filters-row .brand-filter-btn").forEach(btn=>{
       const fn=btn.getAttribute("onclick")||"";
-      const m=fn.match(/setBrandFilter\('([^']+)'/)||fn.match(/setFilter\('([^']+)'/);
-      if(m&&m[1]&&BRANDS_DB[m[1]]){
-        btn.innerHTML=`<img src="${BRANDS_DB[m[1]]}" style="height:20px;max-width:64px;object-fit:contain;display:block;">`;
+      const m=fn.match(/setBrandFilter\('([^']+)'/) || fn.match(/setFilter\('([^']+)'/);
+      if(m && m[1] && m[1]!=="all" && BRANDS_DB[m[1]]){
+        btn.innerHTML=`<img src="${BRANDS_DB[m[1]]}" style="height:20px;max-width:60px;object-fit:contain;display:block;">`;
+        btn.style.padding="4px 10px";
       }
     });
-  },50);
+  },100);
 }
 function getFiltered(){
   let c=[...db.cards];
@@ -1540,8 +1553,30 @@ function flipCard(){const c=db.cards.find(x=>String(x.id)===String(curCardId));i
 
 /* FULLSCREEN */
 function toggleFullscreen(){isFullscreen?exitFullscreen():enterFullscreen();}
-function enterFullscreen(){isFullscreen=true;document.getElementById("card-detail").classList.add("fullscreen");document.getElementById("fullscreen-btn").innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';}
-function exitFullscreen(){isFullscreen=false;document.getElementById("card-detail").classList.remove("fullscreen");document.getElementById("fullscreen-btn").innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';}
+function enterFullscreen(){
+  isFullscreen=true;
+  const detail=document.getElementById("card-detail");
+  const scene=document.getElementById("card-3d-scene");
+  const bottom=document.getElementById("card-detail-bottom-wrap")||document.querySelector(".card-detail-bottom");
+  detail.classList.add("fullscreen");
+  scene.style.height="100dvh";
+  scene.style.position="fixed";
+  scene.style.inset="0";
+  scene.style.zIndex="200";
+  if(bottom)bottom.style.display="none";
+}
+function exitFullscreen(){
+  isFullscreen=false;
+  const detail=document.getElementById("card-detail");
+  const scene=document.getElementById("card-3d-scene");
+  const bottom=document.getElementById("card-detail-bottom-wrap")||document.querySelector(".card-detail-bottom");
+  detail.classList.remove("fullscreen");
+  scene.style.height="";
+  scene.style.position="";
+  scene.style.inset="";
+  scene.style.zIndex="";
+  if(bottom)bottom.style.display="";
+}
 
 /* ═══════ TILT MANUEL (DeviceOrientation) + DOUBLE TAP FLIP ═══════ */
 let gyroH=null,gyroRef={b:null,g:null},rafTilt=null,tRX=0,tRY=0,cRX=0,cRY=0;
@@ -1579,6 +1614,16 @@ function initGyroAndSwipe(){
   sc.onmouseleave=()=>{tRX=0;tRY=0;};
 
 
+
+  // Tap to fullscreen (distinguish from tilt drag)
+  let touchStartX=0,touchStartY=0,touchStartTime=0;
+  sc.addEventListener("touchstart",e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;touchStartTime=Date.now();},{passive:true});
+  sc.addEventListener("touchend",e=>{
+    const dx=Math.abs(e.changedTouches[0].clientX-touchStartX);
+    const dy=Math.abs(e.changedTouches[0].clientY-touchStartY);
+    const dt=Date.now()-touchStartTime;
+    if(dx<8&&dy<8&&dt<300)toggleFullscreen();
+  },{passive:true});
 
   // Request DeviceOrientation
   if(typeof DeviceOrientationEvent!=="undefined"){
@@ -1743,7 +1788,7 @@ async function loadPlayerStats(card,forceRefresh=false){
         "anthropic-version":"2023-06-01",
         "anthropic-dangerous-direct-browser-access":"true"
       },
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:[{role:"user",content:prompt}]})
+      body:JSON.stringify({model:"claude-opus-4-5-20251101",max_tokens:600,messages:[{role:"user",content:prompt}]})
     });
     const data=await resp.json();
     if(!data.content||!data.content[0])throw new Error("no content");
