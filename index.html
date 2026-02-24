@@ -378,6 +378,36 @@ body *{font-size:inherit;}
 .toast{position:fixed;bottom:calc(var(--tab-h) + 13px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--surface2);border:1px solid var(--border2);border-radius:99px;padding:8px 18px;font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;z-index:400;opacity:0;transition:all .26s;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .club-logo-img{background:white;border-radius:50%;padding:2px;object-fit:contain;}
+
+/* --- Home: mini cards (Derniers ajouts) --- */
+#page-home .list-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+  margin:8px 20px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  border-radius:10px;
+  cursor:pointer;
+}
+#page-home .list-thumb{
+  width:46px;
+  height:64px;
+  border-radius:8px;
+  overflow:hidden;
+  flex:0 0 auto;
+  background:var(--surface2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#page-home .list-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+#page-home .list-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+#page-home .list-name{font-size:13px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#page-home .list-meta{font-size:11px;line-height:1.2;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#page-home .list-price{font-size:12px;font-weight:800;color:var(--accent);margin-top:2px;}
+
 </style>
 </head>
 <body>
@@ -1631,7 +1661,22 @@ function navigate(p){
   document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
   document.getElementById("page-"+p).classList.add("active");
   document.getElementById("tab-"+p).classList.add("active");
-  if(p==="collection"){renderCollection();}
+
+  // Default: Collection opens in Bulk view
+  if(p==="collection"){
+    bulkMode=true;
+    bulkSel=[];
+    const bb=document.getElementById("bulk-bar");
+    if(bb)bb.classList.add("show");
+    renderCollection();
+  } else {
+    // Leave collection -> reset bulk UI so it doesn't leak to other pages
+    bulkMode=false;
+    bulkSel=[];
+    const bb=document.getElementById("bulk-bar");
+    if(bb)bb.classList.remove("show");
+  }
+
   if(p==="home"){renderHome();}
 }
 
