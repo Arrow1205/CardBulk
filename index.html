@@ -330,6 +330,7 @@ function filterByClub(clubName){
 .crop-label{color:var(--text-dim);font-size:14px;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:12px;}
 .crop-wrap{position:relative;overflow:hidden;width:278px;height:396px;border-radius:9px;border:1px solid var(--border2);}
 .crop-img{width:100%;height:100%;object-fit:cover;user-select:none;}
+.crop-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
 .crop-frame{position:absolute;inset:16px;border:2px solid rgba(255,255,255,.45);border-radius:5px;pointer-events:none;}
 .crop-hint{color:var(--text-dim);font-size:14px;letter-spacing:.8px;text-transform:uppercase;margin-top:9px;font-weight:500;}
 .crop-actions{display:flex;gap:9px;margin-top:18px;}
@@ -440,8 +441,7 @@ body *{font-size:inherit;}
           </div>
         </div>
         <button class="crop-btn" id="crop-btn" style="display:none;" onclick="openCrop('recto')">Recadrer</button>
-          <button id="ocr-btn" onclick="if(addPhoto.recto)ocrCard(addPhoto.recto)" style="display:none;background:var(--accent);color:var(--bg);border:none;border-radius:99px;padding:7px 18px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.3px;margin-top:8px;width:100%;">🔍 Analyser la carte</button>Recadrer</button>
-      </div>
+</div>
       <div id="add-verso-zone" style="display:none;">
         <div class="photo-upload" id="photo-upload-zone-v">
           <input type="file" id="card-photo-lib-v" accept="image/*" style="display:none" onchange="handlePhoto(this,'verso')">
@@ -799,7 +799,11 @@ body *{font-size:inherit;}
 <!-- CROP -->
 <div class="crop-overlay" id="crop-overlay">
   <div class="crop-label" id="crop-label">Ajuste le cadrage</div>
-  <div class="crop-wrap"><img id="crop-img" class="crop-img" draggable="false"><div class="crop-frame"></div></div>
+  <div class="crop-wrap">
+    <canvas id="crop-canvas" class="crop-canvas"></canvas>
+    <img id="crop-img" class="crop-img" draggable="false" style="display:none;">
+    <div class="crop-frame"></div>
+</div>
   <div class="crop-hint">Glisse pour repositionner</div>
   <div class="crop-actions">
     <button class="crop-btn-a" style="background:var(--surface2);color:var(--text);" onclick="closeCrop()">Annuler</button>
@@ -1525,30 +1529,10 @@ async function loadPlayerStats(card,forceRefresh=false){
       if(cached&&cached.data){renderStats(content,cached.data,cached.updated_at,card);return;}
     }catch(e){}
   }
-  const prompt="Statistiques et biographie de "+(card.prenom||"")+" "+(card.nom||"")+", "+(card.sport||"sportif")+(card.club?" du "+card.club:"")+". Réponds en JSON: {bio,age,nationalite,club_actuel,valeur_marchande,stats:{label:valeur}} avec 5 stats adaptées au sport. Si inconnu: tiret.";
-  try{
-    const resp=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "anthropic-version":"2023-06-01",
-        "anthropic-dangerous-direct-browser-access":"true"
-      },
-      body:JSON.stringify({model:"claude-opus-4-5-20251101",max_tokens:600,messages:[{role:"user",content:prompt}]})
-    });
-    const data=await resp.json();
-    if(!data.content||!data.content[0])throw new Error("no content");
-    let json=null;
-    try{json=JSON.parse(data.content[0].text);}
-    catch(e){const mx=data.content[0].text.match(/\{[\s\S]+\}/);if(mx)try{json=JSON.parse(mx[0]);}catch(e2){}}
-    if(!json)throw new Error("parse fail");
-    const now=new Date().toISOString();
-    try{await sbUpsertStats(cacheKey,{player_key:cacheKey,prenom:card.prenom,nom:card.nom,sport:card.sport||"",data:json,updated_at:now});}catch(e){}
-    renderStats(content,json,now,card);
-  }catch(e){
-    content.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);"><div style="font-size:28px;">⚠️</div><div style="font-size:14px;margin-top:8px;">Erreur de chargement</div><button onclick="loadPlayerStats(db.cards.find(x=>String(x.id)===String(curCardId)),true)" style="margin-top:14px;padding:8px 20px;background:var(--accent);color:var(--bg);border:none;border-radius:99px;font-weight:700;cursor:pointer;font-size:13px;">Réessayer</button></div>';
-    console.error("Stats error:",e);
-  }
+  const prompt="";
+  // IA désactivée: pas d'appel externe pour l'instant
+  content.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-dim);"><div style="font-size:28px;">ℹ️</div><div style="font-size:14px;margin-top:8px;">Stats IA désactivées (maintenance)</div></div>';
+  return;
 }
 
 function renderStats(el,data,updatedAt,card){
@@ -1813,8 +1797,7 @@ function handlePhoto(inp,side){
       document.getElementById("photo-preview-wrap").style.display="block";
       document.getElementById("photo-placeholder-ui").style.display="none";
       document.getElementById("crop-btn").style.display="block";
-      const ocrBtn=document.getElementById("ocr-btn");if(ocrBtn)ocrBtn.style.display="block";
-      ocrCard(data);
+      // OCR désactivé
     }else{
       document.getElementById("photo-preview-img-v").src=data;
       document.getElementById("photo-preview-wrap-v").style.display="block";
@@ -1830,10 +1813,10 @@ function openCrop(side){
   const src=addPhoto[side];if(!src){showToast("⚠️ Ajoute d'abord une photo");return;}
   const img=document.getElementById("crop-img");
   img.src=src;img.onload=()=>{initCrop();};
-  document.getElementById("crop-sheet").classList.add("open");
+  document.getElementById("crop-overlay").classList.add("open");
 }
 
-function closeCrop(){document.getElementById("crop-sheet").classList.remove("open");}
+function closeCrop(){document.getElementById("crop-overlay").classList.remove("open");}
 
 function applyCrop(){
   const canvas=document.getElementById("crop-canvas");
@@ -1847,12 +1830,15 @@ function applyCrop(){
 }
 
 function initCrop(){
-  // Simple crop UI – just use the image as-is for now
   const canvas=document.getElementById("crop-canvas");
-  if(!canvas)return;
   const img=document.getElementById("crop-img");
-  canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
-  canvas.getContext("2d").drawImage(img,0,0);
+  if(!canvas||!img) return;
+  // Dessine l'image dans le canvas (recadrage simplifié pour l'instant)
+  canvas.width=img.naturalWidth||900;
+  canvas.height=img.naturalHeight||1200;
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
 }
 
 async function saveCard(){
@@ -1897,6 +1883,8 @@ async function saveCard(){
     btn.textContent="Sauvegarde…";
     await sbInsert("cards",toSB(card));
     db.cards.unshift(card);
+    renderHome();
+    renderCollection();
     resetForm();
     showToast("✅ Carte enregistrée !");
     openCard(card.id);
@@ -1922,7 +1910,7 @@ function resetForm(){
   ["photo-placeholder-ui","photo-placeholder-ui-v"].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display="";
   });
-  ["crop-btn","crop-btn-v","ocr-btn"].forEach(id=>{
+  ["crop-btn","crop-btn-v"].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display="none";
   });
   // Reset tags
@@ -1963,45 +1951,8 @@ function eTogTag(tag){
 }
 
 /* — OCR — */
-async function ocrCard(dataUrl){
-  try{
-    showToast("🔍 Analyse en cours…");
-    const base64=dataUrl.includes(",")? dataUrl.split(",")[1]:dataUrl;
-    const resp=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "anthropic-version":"2023-06-01",
-        "anthropic-dangerous-direct-browser-access":"true"
-      },
-      body:JSON.stringify({
-        model:"claude-haiku-4-5-20251001",
-        max_tokens:300,
-        messages:[{role:"user",content:[
-          {type:"image",source:{type:"base64",media_type:"image/jpeg",data:base64}},
-          {type:"text",text:"Sports trading card. JSON only (no markdown): {\"prenom\":\"\",\"nom\":\"\",\"club\":\"\",\"sport\":\"football|basketball|baseball|nfl|nhl|tennis|f1|autre\",\"marque\":\"Topps|Panini|Leaf|Futera|Daka|\"}"}
-        ]}]
-      })
-    });
-    if(!resp.ok)throw new Error("HTTP "+resp.status);
-    const data=await resp.json();
-    const txt=(data.content&&data.content[0]&&data.content[0].text)||"";
-    let json=null;
-    try{json=JSON.parse(txt);}catch(e){const m=txt.match(/\{[\s\S]+?\}/);if(m)try{json=JSON.parse(m[0]);}catch(e2){}}
-    if(!json){showToast("⚠️ Analyse impossible");return;}
-    if(json.prenom){const el=document.getElementById("f-prenom");if(el)el.value=json.prenom;}
-    if(json.nom){const el=document.getElementById("f-nom");if(el)el.value=json.nom;}
-    if(json.sport){const s=document.getElementById("f-sport");if(s){s.value=json.sport;onSportChange();}}
-    if(json.club&&json.club.trim()){
-      const si=document.getElementById("f-club-search");if(si)si.value=json.club;
-      clubSearch(json.club,"f");
-    }
-    if(json.marque){const m=document.getElementById("f-marque");if(m){m.value=json.marque;onMarqueChange("f");}}
-    showToast("✅ Infos détectées !");
-  }catch(e){
-    console.error("OCR error:",e);
-    showToast("⚠️ Analyse: "+e.message.slice(0,30));
-  }
+function ocrCard(){
+  showToast("ℹ️ Analyse désactivée (OCR en maintenance)");
 }
 
 /* TOAST */
