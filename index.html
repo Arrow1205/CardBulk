@@ -1235,6 +1235,27 @@ function closeCollView(){document.getElementById("coll-view").classList.remove("
 async function deleteCurrentFolder(){const f=db.folders.find(x=>x.id===curFolderId);if(!f)return;if(!confirm(`Supprimer "${f.name}" ?`))return;await sbDelete("folders",curFolderId);await Promise.all(db.cards.filter(c=>c.collection===f.name).map(c=>sbUpdate("cards",c.id,{collection:""})));db.folders=db.folders.filter(x=>x.id!==curFolderId);db.cards.forEach(c=>{if(c.collection===f.name)c.collection="";});closeCollView();renderCollection();showToast("Dossier supprimé");}
 
 /* CARD DETAIL */
+
+// --- helpers: safe HTML for brand rendering (fix ReferenceError brandLogoHtml) ---
+function _escapeHtml(s){
+  return String(s ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
+function brandLogoHtml(brand, size){
+  const label = String(brand ?? "").trim();
+  if(!label) return "—";
+  const b = label.toLowerCase();
+  // Minimal, no external assets: keep it robust and safe
+  // If you later add SVGs, do it here.
+  const cls = (b.includes("topps")) ? "brand-topps" : (b.includes("panini")) ? "brand-panini" : "brand-generic";
+  const px = Number.isFinite(+size) ? Math.max(12, +size) : 16;
+  return `<span class="brand-pill ${cls}" style="font-size:${px}px;line-height:1;">${_escapeHtml(label)}</span>`;
+}
+// --- end helpers ---
 function openCard(id){
   try{
   const sid=String(id);const c=db.cards.find(x=>String(x.id)===sid);
