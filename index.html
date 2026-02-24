@@ -1426,8 +1426,9 @@ function openCard(id){
   // Back
   const back=document.getElementById("card-3d-content-back");const flipInner=document.getElementById("card-flip-inner");flipInner.classList.remove("flipped");
   const fb2=document.getElementById("flip-btn");
-  if(c.photoVerso){back.innerHTML=`<img src="${c.photoVerso}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;back.className="card-3d-content";if(fb2)fb2.style.display="flex";}
-  else{back.className="card-3d-content card-3d-placeholder";back.innerHTML=`<span style="font-size:40px;opacity:.25;">🔄</span>`;if(fb2)fb2.style.display="none";}
+  if(c.photoVerso){back.innerHTML=`<img src="${c.photoVerso}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;back.className="card-3d-content";}
+  else{back.className="card-3d-content card-3d-placeholder";back.innerHTML=`<span style="font-size:40px;opacity:.25;">🔄</span>`;}
+  if(fb2)fb2.style.display="flex";
   // Text info
   document.getElementById("detail-prenom").textContent=c.prenom||"";
   document.getElementById("detail-nom").textContent=(c.nom||"—").toUpperCase();
@@ -1465,7 +1466,7 @@ function openCard(id){
 function closeDetail(){document.getElementById("card-detail").classList.remove("open");stopGyro();if(isFullscreen)exitFullscreen();renderHome();renderCollection();}
 
 /* FLIP */
-function flipCard(){const c=db.cards.find(x=>x.id===curCardId);if(!c)return;if(!c.photoVerso&&!isFlipped)return;isFlipped=!isFlipped;document.getElementById("card-flip-inner").classList.toggle("flipped",isFlipped);}
+function flipCard(){const c=db.cards.find(x=>String(x.id)===String(curCardId));if(!c)return;isFlipped=!isFlipped;document.getElementById("card-flip-inner").classList.toggle("flipped",isFlipped);}
 
 /* FULLSCREEN */
 function toggleFullscreen(){isFullscreen?exitFullscreen():enterFullscreen();}
@@ -1490,6 +1491,9 @@ function initGyroAndSwipe(){
     if(fi&&!isFlipped){
       fi.style.transform=`rotateX(${cRX}deg) rotateY(${cRY}deg)`;
       fi.style.transition="none";
+    } else if(fi&&isFlipped){
+      fi.style.transform="rotateY(180deg)";
+      fi.style.transition="transform .5s cubic-bezier(.4,0,.2,1)";
     }
     rafTilt=requestAnimationFrame(loop);
   }
