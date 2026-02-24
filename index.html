@@ -409,6 +409,102 @@ body *{font-size:inherit;}
 #page-home .list-meta{font-size:11px;line-height:1.2;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #page-home .list-price{font-size:12px;font-weight:800;color:var(--accent);margin-top:2px;}
 
+
+/* Bulk disabled */
+#btn-bulk, .bulk-btn, .btn-bulk{display:none !important;}
+#bulk-bar{display:none !important;}
+
+/* Outline-only UI (no black fills) */
+:root{
+  --panel-bg: transparent;
+  --card-bg: transparent;
+}
+body{ background:#fff !important; }
+.section, .panel, .card, .tile, .kpi, .stats, .sheet, .modal, .drawer,
+#page-collection .panel, #page-home .panel, #page-card .panel,
+#page-collection .section, #page-home .section, #page-card .section{
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.section, .panel, .card, .tile, .kpi, .stats, .sheet, .modal, .drawer{
+  border: 1px solid rgba(0,0,0,.14) !important;
+}
+.navbar, .topbar, header, .footerbar{
+  background: transparent !important;
+  border-bottom: 1px solid rgba(0,0,0,.14) !important;
+  box-shadow: none !important;
+}
+.btn, button, .chip, select, input{
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(0,0,0,.18) !important;
+}
+.btn-primary, .primary{ /* keep but outline */
+  background: transparent !important;
+}
+
+/* More vertical spacing between filters in Collection */
+#page-collection .filters, #page-collection .filter-row, #page-collection .filters-row{
+  row-gap: 14px !important;
+}
+#page-collection .filters .field, #page-collection .filters .filter, #page-collection .filters label{
+  margin-bottom: 10px !important;
+}
+
+/* Collection total unified block layout */
+#collection-total-block{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  padding:14px !important;
+}
+#collection-total-block .ctb-left{flex:0 0 auto;}
+#collection-total-block .ctb-pie{width:140px; height:140px; display:flex; align-items:center; justify-content:center;}
+#collection-total-block .ctb-pie canvas{max-width:140px; max-height:140px;}
+#collection-total-block .ctb-right{display:flex; flex-direction:column; gap:6px;}
+#collection-total-block .ctb-title{font-weight:700; font-size:16px;}
+#collection-total-block .ctb-value{font-weight:800; font-size:28px; line-height:1;}
+#collection-total-block .ctb-count{font-size:14px; opacity:.8;}
+
+/* Fullscreen image viewer */
+.img-viewer{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.86);
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.img-viewer img{
+  max-width:100%;
+  max-height:100%;
+  transform:scale(1);
+  transition:transform .18s ease;
+  border-radius:14px;
+  background:#fff;
+}
+.img-viewer[aria-hidden="false"] img{ transform:scale(1); }
+.img-viewer-close{
+  position:fixed;
+  top:14px; left:14px;
+  width:44px; height:44px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.35);
+  color:#fff;
+  font-size:18px;
+}
+
+body.no-scroll{overflow:hidden !important;}
+
+/* 3D tilt target */
+#page-card .card-3d, #page-card .detail-card, #page-card .card-photo{
+  transform-origin: center center;
+}
+
+/* Drag-to-tilt (finger) */
+.card-tilt-drag{transform-style:preserve-3d;transition:transform .12s ease-out;will-change:transform;}
 </style>
 </head>
 <body>
@@ -1448,6 +1544,17 @@ function openCard(id){
   document.getElementById("card-detail").classList.add("open");
   initGyroAndSwipe();
   }catch(e){console.error("openCard error:",e);}
+
+    setTimeout(setupGyroTilt, 0);
+
+    // Drag-to-tilt on card image (iOS friendly)
+    const tiltTarget = document.querySelector('#page-card .card-photo img, #page-card .card-photo, #page-card .detail-card img, #page-card .detail-card, #page-card .card img, #page-card .card');
+    if(tiltTarget){
+      // apply to container if possible (avoid tilting only the bitmap)
+      const t = tiltTarget.closest('.card-photo, .detail-card, .card') || tiltTarget;
+      t.classList.add('card-tilt-drag');
+      enableDragTilt(t);
+    }
 }
 function closeDetail(){document.getElementById("card-detail").classList.remove("open");stopGyro();if(isFullscreen)exitFullscreen();renderHome();renderCollection();}
 
@@ -1774,7 +1881,7 @@ function navigate(p){
 
   // Default: Collection opens in Bulk view
   if(p==="collection"){
-    bulkMode=true;
+    bulkMode = false;
     bulkSel=[];
     const bb=document.getElementById("bulk-bar");
     if(bb)bb.classList.add("show");
@@ -1916,6 +2023,8 @@ function renderCollection(){
   initSportDD();
   // Pie chart
   renderPie();
+
+  unifyCollectionTotalBlock();
 }
 
 function renderPie(){
@@ -2185,6 +2294,243 @@ loadFromDB();
   }, {capture:true});
 })();
 
+
+// --- unify collection total block (pie + value + count) ---
+function unifyCollectionTotalBlock(){
+  try{
+    const page = document.getElementById('page-collection');
+    if(!page) return;
+
+    // Find candidates
+    const kpi = page.querySelector('#kpi-total, .kpi-total, [data-kpi="total"], .collection-total');
+    const pie = page.querySelector('#brandPie, canvas[data-chart="brandPie"], .brand-pie canvas, #chart-pie, canvas.pie');
+    const countEl = page.querySelector('#totalCards, .total-cards, [data-total-cards]');
+    const valueEl = page.querySelector('#totalValue, .total-value, [data-total-value]');
+
+    // Create wrapper
+    let wrap = page.querySelector('#collection-total-block');
+    if(!wrap){
+      wrap = document.createElement('div');
+      wrap.id = 'collection-total-block';
+      wrap.className = 'panel collection-total-block';
+      // Insert near top of collection page (before "Toutes les cartes" section if exists)
+      const anchor = page.querySelector('#section-all-cards, .section-all-cards, [data-section="allcards"]') || page.firstElementChild;
+      if(anchor && anchor.parentNode === page) page.insertBefore(wrap, anchor);
+      else page.prepend(wrap);
+    }
+    wrap.innerHTML = '';
+
+    const left = document.createElement('div');
+    left.className = 'ctb-left';
+    const right = document.createElement('div');
+    right.className = 'ctb-right';
+
+    if(pie){
+      const pieBox = document.createElement('div');
+      pieBox.className = 'ctb-pie';
+      pieBox.appendChild(pie);
+      left.appendChild(pieBox);
+    }
+
+    const title = document.createElement('div');
+    title.className = 'ctb-title';
+    title.textContent = 'Valeur de la collection';
+    right.appendChild(title);
+
+    // Prefer existing value/count nodes if exist; else create placeholders that your render can fill
+    const val = valueEl ? valueEl : document.createElement('div');
+    if(!valueEl){ val.id='totalValue'; val.className='total-value'; }
+    val.classList.add('ctb-value');
+    right.appendChild(val);
+
+    const cnt = countEl ? countEl : document.createElement('div');
+    if(!countEl){ cnt.id='totalCards'; cnt.className='total-cards'; }
+    cnt.classList.add('ctb-count');
+    right.appendChild(cnt);
+
+    wrap.appendChild(left);
+    wrap.appendChild(right);
+  }catch(e){
+    console.warn('unifyCollectionTotalBlock failed', e);
+  }
+}
+// --- end unify ---
+
+
+// --- fullscreen image viewer (tap card photo) ---
+function setupImageViewer(){
+  const viewer = document.getElementById('img-viewer');
+  const closeBtn = document.getElementById('img-viewer-close');
+  const img = document.getElementById('img-viewer-img');
+  if(!viewer || !closeBtn || !img) return;
+
+  function close(){
+    viewer.style.display='none';
+    viewer.setAttribute('aria-hidden','true');
+    img.src='';
+    document.body.classList.remove('no-scroll');
+  }
+  closeBtn.addEventListener('click', close);
+  viewer.addEventListener('click', (e)=>{ if(e.target===viewer) close(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+
+  // Delegate clicks on card images
+  document.addEventListener('click', (e)=>{
+    const el = e.target.closest('img');
+    if(!el) return;
+    // heuristics: only images inside card detail or card tiles
+    const inCard = el.closest('#page-card, .card-detail, .card-photo, .card-tile, [data-card-id]');
+    if(!inCard) return;
+    const src = el.getAttribute('src');
+    if(!src) return;
+    // avoid opening for tiny icons/logos
+    const w = el.naturalWidth || 0;
+    const h = el.naturalHeight || 0;
+    if((w && h) && (w*h < 200*200)) return;
+
+    img.src = src;
+    viewer.style.display='flex';
+    viewer.setAttribute('aria-hidden','false');
+    document.body.classList.add('no-scroll');
+  }, true);
+}
+
+
+// --- robust 3D tilt with gyroscope (card detail) ---
+function setupGyroTilt(){
+  const card = document.querySelector('#page-card .card-3d, #page-card .card-photo, #page-card .card, #page-card .detail-card');
+  if(!card) return;
+
+  let enabled = false;
+  let raf = 0;
+  let latest = {beta:0, gamma:0};
+
+  function apply(beta, gamma){
+    // beta: front/back [-180..180], gamma: left/right [-90..90]
+    const maxTilt = 12; // degrees
+    const rx = Math.max(-maxTilt, Math.min(maxTilt, (beta||0) / 6));
+    const ry = Math.max(-maxTilt, Math.min(maxTilt, (gamma||0) / 6));
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }
+
+  function onOrient(e){
+    latest.beta = e.beta ?? 0;
+    latest.gamma = e.gamma ?? 0;
+    if(!raf){
+      raf = requestAnimationFrame(()=>{
+        raf = 0;
+        apply(latest.beta, latest.gamma);
+      });
+    }
+  }
+
+  async function enable(){
+    if(enabled) return true;
+    try{
+      // iOS permission
+      if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+        const p = await DeviceOrientationEvent.requestPermission();
+        if(p !== 'granted') return false;
+      }
+      window.addEventListener('deviceorientation', onOrient, {passive:true});
+      enabled = true;
+      return true;
+    }catch(err){
+      console.warn('gyro enable failed', err);
+      return false;
+    }
+  }
+
+  // Make sure perspective works and there is a subtle shadow/outline only
+  card.style.transformStyle = 'preserve-3d';
+  card.style.willChange = 'transform';
+
+  // Try auto-enable on Android; on iOS needs user gesture → attach to first tap on detail page
+  enable();
+
+  // If iOS blocks, ask on first interaction in card page
+  document.addEventListener('click', async (e)=>{
+    const inCardPage = e.target.closest('#page-card');
+    if(!inCardPage) return;
+    if(enabled) return;
+    const ok = await enable();
+    if(!ok){
+      // fallback to pointer tilt
+      card.dataset.pointerTilt = "1";
+    }
+  }, {capture:true, passive:true});
+
+  // Fallback: pointer move tilt
+  function pointerMove(e){
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;   // 0..1
+    const y = (e.clientY - rect.top) / rect.height;   // 0..1
+    const maxTilt = 10;
+    const ry = (x - 0.5) * (maxTilt*2);
+    const rx = -(y - 0.5) * (maxTilt*2);
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }
+  card.addEventListener('pointermove', (e)=>{
+    if(!enabled) pointerMove(e);
+  });
+  card.addEventListener('pointerleave', ()=>{
+    card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+  });
+}
+// --- end gyro tilt ---
+
+
+setupImageViewer();
+
+// --- Drag-to-tilt (finger-controlled 3D) ---
+function enableDragTilt(el){
+  if(!el) return;
+  let rect = null;
+  let active = false;
+  const maxTilt = 14; // degrees
+
+  function onDown(e){
+    active = true;
+    rect = el.getBoundingClientRect();
+    try{ el.setPointerCapture(e.pointerId); }catch(_){}
+    el.classList.add('is-tilting');
+  }
+
+  function onMove(e){
+    if(!active || !rect) return;
+    const x = (e.clientX - rect.left) / rect.width;  // 0..1
+    const y = (e.clientY - rect.top) / rect.height;  // 0..1
+    const rx = (0.5 - y) * (maxTilt * 2);
+    const ry = (x - 0.5) * (maxTilt * 2);
+    el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }
+
+  function onUp(e){
+    active = false;
+    try{ el.releasePointerCapture(e.pointerId); }catch(_){}
+    el.classList.remove('is-tilting');
+    el.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+  }
+
+  // Ensure we don't double-bind
+  if(el.dataset.dragTiltBound === "1") return;
+  el.dataset.dragTiltBound = "1";
+
+  el.addEventListener("pointerdown", onDown);
+  el.addEventListener("pointermove", onMove);
+  el.addEventListener("pointerup", onUp);
+  el.addEventListener("pointercancel", onUp);
+  el.addEventListener("pointerleave", ()=>{ if(active) onUp({pointerId:0}); });
+}
+// --- end drag tilt ---
+
 </script>
+
+<!-- Fullscreen image viewer -->
+<div id="img-viewer" class="img-viewer" style="display:none" aria-hidden="true">
+  <button id="img-viewer-close" class="img-viewer-close" aria-label="Fermer">✕</button>
+  <img id="img-viewer-img" alt="Carte" />
+</div>
+
 </body>
 </html>
