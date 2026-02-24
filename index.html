@@ -1412,7 +1412,9 @@ async function deleteCurrentFolder(){const f=db.folders.find(x=>x.id===curFolder
 /* CARD DETAIL */
 function openCard(id){
   try{
-  const sid=String(id);const c=db.cards.find(x=>String(x.id)===sid);if(!c){console.warn("Card not found:",id,"db has",db.cards.length,"cards");return;}curCardId=sid;isFlipped=false;
+  const sid=String(id);const c=db.cards.find(x=>String(x.id)===sid);
+  if(!c){showToast("❌ Carte introuvable. DB="+db.cards.length);console.warn("Card not found:",id,"available ids:",db.cards.slice(0,3).map(x=>x.id));return;}
+  curCardId=sid;isFlipped=false;
   // BG: nom si pas de photo, sinon rien (on garde le fond simple)
   const bgT=document.getElementById("card-bg-name-text");
   if(!c.photo){bgT.style.display="flex";const name=c.nom||"";const vw=window.innerWidth;const fs=Math.min(Math.floor((vw-20)/(name.length*.48+.5)),130);bgT.style.fontSize=fs+"px";bgT.textContent=name;}
@@ -1422,9 +1424,10 @@ function openCard(id){
   if(c.photo){front.innerHTML=`<img src="${c.photo}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;front.className="card-3d-content";}
   else{front.className="card-3d-content card-3d-placeholder";front.innerHTML=`<span style="font-size:40px;opacity:.25;">🃏</span>`;}
   // Back
-  const back=document.getElementById("card-3d-content-back");const flipHint=document.getElementById("flip-hint");const flipInner=document.getElementById("card-flip-inner");flipInner.classList.remove("flipped");
-  if(c.photoVerso){back.innerHTML=`<img src="${c.photoVerso}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;back.className="card-3d-content";flipHint.style.display="block";const fb2=document.getElementById("flip-btn");if(fb2)fb2.style.display="flex";}
-  else{back.className="card-3d-content card-3d-placeholder";back.innerHTML=`<span style="font-size:40px;opacity:.25;">🔄</span>`;flipHint.style.display="none";const fb2=document.getElementById("flip-btn");if(fb2)fb2.style.display="none";}
+  const back=document.getElementById("card-3d-content-back");const flipInner=document.getElementById("card-flip-inner");flipInner.classList.remove("flipped");
+  const fb2=document.getElementById("flip-btn");
+  if(c.photoVerso){back.innerHTML=`<img src="${c.photoVerso}" alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`;back.className="card-3d-content";if(fb2)fb2.style.display="flex";}
+  else{back.className="card-3d-content card-3d-placeholder";back.innerHTML=`<span style="font-size:40px;opacity:.25;">🔄</span>`;if(fb2)fb2.style.display="none";}
   // Text info
   document.getElementById("detail-prenom").textContent=c.prenom||"";
   document.getElementById("detail-nom").textContent=(c.nom||"—").toUpperCase();
