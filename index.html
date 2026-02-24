@@ -1217,7 +1217,7 @@ function setTypeFilter(f,el){curTypeFilter=f;document.querySelectorAll(".type-fi
 function setFilter(f,el){setBrandFilter(f,el);}
 function totalVal(cards){return cards.reduce((s,c)=>s+(c.price||0),0);}
 function renderFolders(){const g=document.getElementById("folders-grid");const totalAll=totalVal(db.cards);const tv=document.getElementById("total-val");if(tv)tv.textContent=totalAll>0?`Total : ${fmtPrice(totalAll)}`:"";g.innerHTML=db.folders.map(f=>{const cards=db.cards.filter(c=>c.collection===f.name);const n=cards.length;const val=totalVal(cards);return`<div class="folder-card" onclick="openFolder('${f.id}')"><div class="folder-top"><div class="folder-emoji">${f.emoji}</div><div class="folder-n">${n}</div></div><div class="folder-name">${f.name}</div><div class="folder-sub">carte${n>1?"s":""}</div>${val>0?`<div class="folder-val">${fmtPrice(val)}</div>`:""}</div>`;}).join("")+'<div class="folder-card folder-add" onclick="openNewFolder()"><span style="font-size:20px;">📁</span><span>Nouveau</span></div>';const bd=document.getElementById("bulk-dest");bd.innerHTML='<option value="">Déplacer vers…</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji} ${f.name}</option>`).join("");}
-function renderCG2(cards){const g=document.getElementById("coll-grid"),em=document.getElementById("coll-empty");if(!cards.length){g.innerHTML="";em.style.display="block";return;}em.style.display="none";g.innerHTML=cards.map(c=>`<div class="coll-thumb" onclick="handleThumb('${c.id}')">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||"🃏"}</div>`}<div class="bulk-check ${bulkSel.includes(c.id)?"checked":""}" id="bc-${c.id}">${bulkSel.includes(c.id)?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>':""}</div></div>`).join("");}
+function renderCG2(cards){const g=document.getElementById("coll-grid"),em=document.getElementById("coll-empty");if(!cards.length){g.innerHTML="";em.style.display="block";return;}em.style.display="none";g.innerHTML=cards.map(c=>`<div class="coll-thumb" data-card-id="${c.id}" onclick="handleThumb(\'${c.id}\')">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||"🃏"}</div>`}<div class="bulk-check ${bulkSel.includes(c.id)?"checked":""}" id="bc-${c.id}">${bulkSel.includes(c.id)?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>':""}</div></div>`).join("");}
 function handleThumb(id){const sid=String(id);if(bulkMode){if(bulkSel.includes(sid))bulkSel=bulkSel.filter(x=>x!==sid);else bulkSel.push(sid);renderCG2(getFiltered());}else openCard(sid);}
 
 /* BULK */
@@ -1230,7 +1230,7 @@ function openNewFolder(){document.getElementById("new-folder-name").value="";fol
 function selEmoji(el){folderEmoji=el.textContent;}
 async function createFolderNamed(name){if(db.folders.find(f=>f.name===name))return;const f={id:Date.now()+"",name,emoji:"📁"};await sbInsert("folders",f);db.folders.push(f);}
 async function createFolder(){const n=document.getElementById("new-folder-name").value.trim();if(!n){showToast("⚠️ Saisis un nom");return;}const f={id:Date.now()+"",name:n,emoji:folderEmoji};try{await sbInsert("folders",f);db.folders.push(f);document.getElementById("folder-sheet").classList.remove("open");renderCollection();updateCollSel();showToast("Dossier créé !");}catch(e){showToast("⚠️ Erreur");}}
-function openFolder(fid){const f=db.folders.find(x=>x.id===fid);if(!f)return;curFolderId=fid;document.getElementById("coll-view-title").textContent=f.emoji+" "+f.name;const cards=db.cards.filter(c=>c.collection===f.name);document.getElementById("folder-cards-grid").innerHTML=cards.map(c=>`<div class="coll-thumb" onclick="openCard('${c.id}')">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||"🃏"}</div>`}</div>`).join("")||'<div class="empty-state"><div class="empty-icon">🃏</div><div class="empty-title">Dossier vide</div></div>';document.getElementById("coll-view").classList.add("open");}
+function openFolder(fid){const f=db.folders.find(x=>x.id===fid);if(!f)return;curFolderId=fid;document.getElementById("coll-view-title").textContent=f.emoji+" "+f.name;const cards=db.cards.filter(c=>c.collection===f.name);document.getElementById("folder-cards-grid").innerHTML=cards.map(c=>`<div class="coll-thumb" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||"🃏"}</div>`}</div>`).join("")||'<div class="empty-state"><div class="empty-icon">🃏</div><div class="empty-title">Dossier vide</div></div>';document.getElementById("coll-view").classList.add("open");}
 function closeCollView(){document.getElementById("coll-view").classList.remove("open");}
 async function deleteCurrentFolder(){const f=db.folders.find(x=>x.id===curFolderId);if(!f)return;if(!confirm(`Supprimer "${f.name}" ?`))return;await sbDelete("folders",curFolderId);await Promise.all(db.cards.filter(c=>c.collection===f.name).map(c=>sbUpdate("cards",c.id,{collection:""})));db.folders=db.folders.filter(x=>x.id!==curFolderId);db.cards.forEach(c=>{if(c.collection===f.name)c.collection="";});closeCollView();renderCollection();showToast("Dossier supprimé");}
 
@@ -1634,7 +1634,7 @@ function renderHome(){
       if(dots)dots.innerHTML="";
     } else {
       carousel.innerHTML=favs.map((c,i)=>`
-        <div class="hero-slide" onclick="openCard('${c.id}')" style="background:${c.photo?'transparent':'var(--surface2)'}">
+        <div class="hero-slide" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}" style="background:${c.photo?'transparent':'var(--surface2)'}">
           ${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`:`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;"><div style="font-size:42px;opacity:.2;">🃏</div><div style="font-size:16px;font-weight:800;">${(c.nom||"").toUpperCase()}</div></div>`}
         </div>`).join("");
       if(dots)dots.innerHTML=favs.map((_,i)=>`<div class="hero-dot${i===0?" active":""}" onclick="goSlide(${i})"></div>`).join("");
@@ -1649,7 +1649,7 @@ function renderHome(){
       recent.innerHTML=`<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">Aucune carte — appuie sur ＋ pour commencer !</div>`;
     } else {
       recent.innerHTML=last.map(c=>`
-        <div class="list-item" onclick="openCard('${c.id}')">
+        <div class="list-item" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}">
           <div class="list-thumb">${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">`:`<span style="font-size:24px;opacity:.3;">🃏</span>`}</div>
           <div class="list-info">
             <div class="list-name">${c.prenom?c.prenom+" ":""}<strong>${(c.nom||"").toUpperCase()}</strong></div>
@@ -1691,7 +1691,7 @@ function homeSearch(v){
   if(!q){if(dd)dd.innerHTML="";return;}
   const hits=db.cards.filter(c=>(c.nom+c.prenom+c.club).toLowerCase().includes(q)).slice(0,8);
   if(!dd)return;
-  dd.innerHTML=hits.map(c=>`<div class="drop-item" onclick="openCard('${c.id}')">${c.prenom?c.prenom+" ":""}${c.nom||""} <span style="opacity:.5;">${c.club||""}</span></div>`).join("") || `<div class="drop-item" style="opacity:.5;">Aucun résultat</div>`;
+  dd.innerHTML=hits.map(c=>`<div class="drop-item" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}">${c.prenom?c.prenom+" ":""}${c.nom||""} <span style="opacity:.5;">${c.club||""}</span></div>`).join("") || `<div class="drop-item" style="opacity:.5;">Aucun résultat</div>`;
 }
 
 function renderCollection(){
@@ -1820,40 +1820,8 @@ function closeCrop(){document.getElementById("crop-overlay").classList.remove("o
 
 function applyCrop(){
   const canvas=document.getElementById("crop-canvas");
-  const img=document.getElementById("crop-img");
-  if(!canvas||!img||!window.__cropState){closeCrop();return;}
-  const st=window.__cropState;
-
-  // Zone fixe (cadre) en coordonnées canvas
-  const frame=st.frame; // {x,y,w,h} en px canvas (déjà * dpr)
-  const sx=(frame.x - st.dx)/st.scale;
-  const sy=(frame.y - st.dy)/st.scale;
-  const sw=frame.w/st.scale;
-  const sh=frame.h/st.scale;
-
-  // Sécurité : clamp dans l'image source
-  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-  const csx=clamp(sx,0,Math.max(0,st.iw - sw));
-  const csy=clamp(sy,0,Math.max(0,st.ih - sh));
-  const csw=clamp(sw,1,st.iw);
-  const csh=clamp(sh,1,st.ih);
-
-  // Canvas de sortie (on garde une qualité correcte sans exploser la taille)
-  const maxOut=1200; // px
-  let outW=Math.round(csw);
-  let outH=Math.round(csh);
-  const ratio=Math.min(1, maxOut/Math.max(outW,outH));
-  outW=Math.max(1, Math.round(outW*ratio));
-  outH=Math.max(1, Math.round(outH*ratio));
-
-  const out=document.createElement("canvas");
-  out.width=outW; out.height=outH;
-  const octx=out.getContext("2d");
-  octx.imageSmoothingEnabled=true;
-  octx.imageSmoothingQuality="high";
-  octx.drawImage(img, csx, csy, csw, csh, 0, 0, outW, outH);
-
-  const data=out.toDataURL("image/jpeg",0.9);
+  if(!canvas){closeCrop();return;}
+  const data=canvas.toDataURL("image/jpeg",0.88);
   addCrop[cropTarget]=data;
   if(cropTarget==="recto"){document.getElementById("photo-preview-img").src=data;}
   else{document.getElementById("photo-preview-img-v").src=data;}
@@ -1864,115 +1832,13 @@ function applyCrop(){
 function initCrop(){
   const canvas=document.getElementById("crop-canvas");
   const img=document.getElementById("crop-img");
-  const wrap=document.querySelector("#crop-overlay .crop-wrap");
-  if(!canvas||!img||!wrap) return;
-
-  // Dimensionne le canvas pour un rendu net (retina)
-  const dpr=Math.max(1, Math.min(3, window.devicePixelRatio||1));
-  const cw=Math.round(wrap.clientWidth*dpr);
-  const ch=Math.round(wrap.clientHeight*dpr);
-  canvas.width=cw; canvas.height=ch;
-
-  // Cadre fixe (il correspond au .crop-frame inset:16px en CSS)
-  const insetCss=16; // px CSS
-  const inset=Math.round(insetCss*dpr);
-  const frame={x:inset,y:inset,w:cw-2*inset,h:ch-2*inset};
-
-  // Image source
-  const iw=img.naturalWidth||1;
-  const ih=img.naturalHeight||1;
-
-  // Scale "cover" pour que l'image remplisse le cadre (style Instagram)
-  const scale=Math.max(frame.w/iw, frame.h/ih);
-
-  // Position initiale : centre image sur centre cadre
-  const dx=(frame.x + frame.w/2) - (iw*scale/2);
-  const dy=(frame.y + frame.h/2) - (ih*scale/2);
-
-  window.__cropState={dpr,cw,ch,frame,iw,ih,scale,dx,dy,drag:false,px:0,py:0};
-
-  // Installe les handlers une seule fois
-  if(!canvas.__cropHandlers){
-    const onDown=(e)=>{
-      e.preventDefault();
-      const st=window.__cropState; if(!st) return;
-      st.drag=true;
-      const p=(e.touches&&e.touches[0])?e.touches[0]:e;
-      st.px=p.clientX; st.py=p.clientY;
-    };
-    const onMove=(e)=>{
-      const st=window.__cropState; if(!st||!st.drag) return;
-      const p=(e.touches&&e.touches[0])?e.touches[0]:e;
-      const dxp=(p.clientX-st.px)*(st.dpr);
-      const dyp=(p.clientY-st.py)*(st.dpr);
-      st.px=p.clientX; st.py=p.clientY;
-      st.dx+=dxp; st.dy+=dyp;
-      __cropClamp(st);
-      __cropDraw();
-    };
-    const onUp=()=>{
-      const st=window.__cropState; if(!st) return;
-      st.drag=false;
-    };
-
-    canvas.addEventListener("mousedown", onDown, {passive:false});
-    canvas.addEventListener("mousemove", onMove, {passive:false});
-    window.addEventListener("mouseup", onUp, {passive:true});
-
-    canvas.addEventListener("touchstart", onDown, {passive:false});
-    canvas.addEventListener("touchmove", onMove, {passive:false});
-    window.addEventListener("touchend", onUp, {passive:true});
-    window.addEventListener("touchcancel", onUp, {passive:true});
-
-    canvas.__cropHandlers=true;
-  }
-
-  __cropClamp(window.__cropState);
-  __cropDraw();
-}
-
-// Garde le cadre toujours "couvert" par l'image
-function __cropClamp(st){
-  const dw=st.iw*st.scale;
-  const dh=st.ih*st.scale;
-
-  // contraintes pour que le cadre (frame) reste dans l'image
-  const minX=st.frame.x + st.frame.w - dw;
-  const maxX=st.frame.x;
-  const minY=st.frame.y + st.frame.h - dh;
-  const maxY=st.frame.y;
-
-  st.dx=Math.max(minX, Math.min(maxX, st.dx));
-  st.dy=Math.max(minY, Math.min(maxY, st.dy));
-}
-
-function __cropDraw(){
-  const canvas=document.getElementById("crop-canvas");
-  const img=document.getElementById("crop-img");
-  const st=window.__cropState;
-  if(!canvas||!img||!st) return;
+  if(!canvas||!img) return;
+  // Dessine l'image dans le canvas (recadrage simplifié pour l'instant)
+  canvas.width=img.naturalWidth||900;
+  canvas.height=img.naturalHeight||1200;
   const ctx=canvas.getContext("2d");
-
-  ctx.clearRect(0,0,st.cw,st.ch);
-  ctx.imageSmoothingEnabled=true;
-  ctx.imageSmoothingQuality="high";
-  ctx.drawImage(img, st.dx, st.dy, st.iw*st.scale, st.ih*st.scale);
-
-  // voile sombre hors cadre
-  ctx.save();
-  ctx.fillStyle="rgba(0,0,0,0.55)";
-  ctx.beginPath();
-  ctx.rect(0,0,st.cw,st.ch);
-  ctx.rect(st.frame.x, st.frame.y, st.frame.w, st.frame.h);
-  ctx.fill("evenodd");
-  ctx.restore();
-
-  // outline cadre (renforce le .crop-frame)
-  ctx.save();
-  ctx.strokeStyle="rgba(255,255,255,0.65)";
-  ctx.lineWidth=Math.max(2, Math.round(2*st.dpr));
-  ctx.strokeRect(st.frame.x+0.5, st.frame.y+0.5, st.frame.w-1, st.frame.h-1);
-  ctx.restore();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
 }
 
 async function saveCard(){
@@ -2094,6 +1960,22 @@ function showToast(msg){const t=document.getElementById("toast");t.textContent=m
 
 /* INIT */
 populateYears("f-annee");populateYears("e-annee");
-loadFromDB();</script>
+loadFromDB();
+/* ═══════ CLICK DELEGATION (backup for mobile Safari / overlay quirks) ═══════ */
+(function(){
+  // Open card from any element carrying data-card-id
+  document.addEventListener("click", (e)=>{
+    const el = e.target.closest("[data-card-id]");
+    if(!el) return;
+    const id = el.getAttribute("data-card-id");
+    // Avoid interfering with explicit buttons inside detail overlay
+    if(e.target.closest(".card-detail")) return;
+    // If bulk mode, let existing handler manage thumbs
+    if(el.classList.contains("coll-thumb") && typeof bulkMode !== "undefined" && bulkMode) return;
+    if(typeof openCard === "function") openCard(id);
+  }, {capture:true});
+})();
+
+</script>
 </body>
 </html>
