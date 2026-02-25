@@ -530,6 +530,26 @@ body{ background:var(--bg) !important; color:var(--text) !important; }
 }
 input::placeholder,textarea::placeholder{ color:rgba(255,255,255,.55) !important; }
 .form-label,.sec-sub{ color:var(--muted) !important; }
+
+/* UI tweaks (requested) */
+:root{ --bg:#00111E !important; }
+body{ background:#00111E !important; }
+
+/* Remove outlines on tab bar buttons */
+.footerbar button, .tabbar button, .tab-bar button, .tabbar .btn, .footerbar .btn{
+  border:0 !important;
+}
+
+/* Remove outlines on search inputs */
+#home-search, #coll-search, input[type="search"], .search input{
+  border-color: transparent !important;
+}
+
+/* home-hero top padding */
+.home-hero{ padding-top:22px !important; }
+
+/* Hide/remove collection total block */
+#collection-total-block{ display:none !important; }
 </style>
 </head>
 <body>
@@ -2050,7 +2070,7 @@ function renderCollection(){
   // Pie chart
   renderPie();
 
-  unifyCollectionTotalBlock();
+  const _ctb = document.getElementById('collection-total-block'); if(_ctb) _ctb.remove();
 }
 
 function renderPie(){
@@ -2324,28 +2344,7 @@ loadFromDB();
 
 
 // --- unify collection total block (pie + value + count) ---
-function unifyCollectionTotalBlock(){
-  try{
-    const page = document.getElementById('page-collection');
-    if(!page) return;
-
-    // Find candidates
-    const kpi = page.querySelector('#kpi-total, .kpi-total, [data-kpi="total"], .collection-total');
-    const pie = page.querySelector('#brandPie, canvas[data-chart="brandPie"], .brand-pie canvas, #chart-pie, canvas.pie');
-    const countEl = page.querySelector('#totalCards, .total-cards, [data-total-cards]');
-    const valueEl = page.querySelector('#totalValue, .total-value, [data-total-value]');
-
-    // Create wrapper
-    let wrap = page.querySelector('#collection-total-block');
-    if(!wrap){
-      wrap = document.createElement('div');
-      wrap.id = 'collection-total-block';
-      wrap.className = 'panel collection-total-block';
-      // Insert near top of collection page (before "Toutes les cartes" section if exists)
-      const anchor = page.querySelector('#section-all-cards, .section-all-cards, [data-section="allcards"]') || page.firstElementChild;
-      if(anchor && anchor.parentNode === page) page.insertBefore(wrap, anchor);
-      else page.prepend(wrap);
-    }
+function unifyCollectionTotalBlock(){ const el=document.getElementById('collection-total-block'); if(el) el.remove(); }
     wrap.innerHTML = '';
 
     const left = document.createElement('div');
@@ -2613,7 +2612,6 @@ function parseOcrText(raw){
   const lines = text.replace(/\r/g,"\n").split("\n").map(l=>l.trim()).filter(Boolean);
   const U = lines.map(l=>l.toUpperCase());
 
-  // Brand
   const brandMap = [
     {re:/\bTOPPS\b/, v:"Topps"},
     {re:/\bPANINI\b/, v:"Panini"},
@@ -2621,12 +2619,12 @@ function parseOcrText(raw){
     {re:/\bFUTERA\b/, v:"Futera"},
     {re:/\bDAKA\b/, v:"Daka"},
   ];
+
   let marque = "";
   for(const b of brandMap){
     if(U.some(l=>b.re.test(l))){ marque=b.v; break; }
   }
 
-  // Year (pick most recent plausible)
   const years = [];
   for(const l of U){
     const m = l.match(/\b(19[5-9]\d|20[0-4]\d|2050)\b/g);
@@ -2635,14 +2633,12 @@ function parseOcrText(raw){
   years.sort((a,b)=>b-a);
   const annee = years[0] ? String(years[0]) : "";
 
-  // Card number (e.g. #123, No 123)
   let num = "";
   for(const l of U){
     const m = l.match(/(?:#|NO\.?|N°)\s*([0-9]{1,4})\b/);
     if(m){ num = m[1]; break; }
   }
 
-  // Sport
   let sport = "";
   const sportRules = [
     {re:/\bNBA\b|\bBASKETBALL\b/, v:"basketball"},
@@ -2651,14 +2647,13 @@ function parseOcrText(raw){
     {re:/\bNHL\b|\bHOCKEY\b/, v:"nhl"},
     {re:/\bFORMULA\s*1\b|\bF1\b/, v:"f1"},
     {re:/\bTENNIS\b/, v:"tennis"},
-    {re:/\bSOCCER\b|\bFOOTBALL\s*CLUB\b|\bUEFA\b|\bFIFA\b|\bCHAMPIONS\b|\bFC\b|\bCF\b/, v:"football"},
+    {re:/\bSOCCER\b|\bUEFA\b|\bFIFA\b|\bCHAMPIONS\b|\bLEAGUE\b|\bUCL\b|\bLALIGA\b|\bSERIE\s*A\b|\bBUNDESLIGA\b|\bLIGUE\s*1\b/, v:"football"},
   ];
   for(const r of sportRules){
     if(U.some(l=>r.re.test(l))){ sport=r.v; break; }
   }
   if(!sport && (marque==="Topps" || marque==="Panini")) sport="football";
 
-  // Set keywords
   const setKeywords = [
     "CHROME","FINEST","MERLIN","MUSEUM","SELECT","PRIZM","MOSAIC","OBSIDIAN",
     "STADIUM CLUB","MATCH ATTAX","REVOLUTION","IMPECCABLE","NATIONAL TREASURES",
@@ -2670,63 +2665,96 @@ function parseOcrText(raw){
     if(lines.some(l=>re.test(l))){ setName = kw; break; }
   }
 
-  // Club / team heuristic: lines with FC/CF/SC/AC or known separators
-  let club = "";
-  for(const l of lines){
-    const u = l.toUpperCase();
-    if(/\b(FC|CF|SC|AC|AFC|BSC|SSC)\b/.test(u) && u.length<=40 && u.length>=4){
-      // avoid catching "FIFA" etc
-      if(!/\bFIFA\b/.test(u)){ club = l; break; }
-    }
-  }
-  // fallback: look for "PARIS SAINT-GERMAIN" style
-  if(!club){
-    const cand = lines.find(l=>{
-      const u=l.toUpperCase();
-      return (u.includes("SAINT") || u.includes("UNITED") || u.includes("CITY") || u.includes("REAL ") || u.includes("BARCELONA") || u.includes("JUVENTUS") || u.includes("BAYERN") || u.includes("PSG"));
-    });
-    if(cand) club = cand;
-  }
-
-  // Player name heuristic: choose best line with 2-3 words, letters only, not brand/set/common noise.
-  const stop = new Set([
+  const STOP = new Set([
     "TOPPS","PANINI","LEAF","FUTERA","DAKA","ROOKIE","RC","AUTOGRAPH","AUTO","SIGNATURE",
     "CHROME","FINEST","MERLIN","SELECT","PRIZM","MOSAIC","OBSIDIAN","STADIUM","CLUB","MATCH","ATTAX",
-    "UEFA","FIFA","CHAMPIONS","LEAGUE","UCL","COPA","MUNDIAL","WORLD","CUP","TEAM","CLUB",
-    "EDITION","LIMITED","SERIAL","NUMBERED","BASE","CARD"
+    "UEFA","FIFA","CHAMPIONS","LEAGUE","UCL","COPA","WORLD","CUP","TEAM","EDITION","LIMITED","SERIAL",
+    "NUMBERED","BASE","CARD","TRADING","COLLECTION","OFFICIAL","LICENSED","SEASON"
   ]);
 
-  function scoreName(line){
-    const u = line.toUpperCase().replace(/[^A-ZÀ-ÖØ-Ý' -]/g,"").trim();
-    if(u.length<5 || u.length>28) return -1;
+  function cleanLetters(s){
+    return String(s||"")
+      .replace(/[0-9]/g," ")
+      .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g," ")
+      .replace(/\s+/g," ")
+      .trim();
+  }
+
+  const clubHints = [
+    "PARIS","SAINT","GERMAIN","PSG","REAL","BARCELONA","ATLETICO","MANCHESTER","UNITED","CITY",
+    "LIVERPOOL","CHELSEA","ARSENAL","TOTTENHAM","INTER","MILAN","JUVENTUS","NAPOLI","ROMA","LAZIO",
+    "BAYERN","DORTMUND","LEIPZIG","BENFICA","PORTO","SPORTING","AJAX","FEYENOORD","CELTIC","RANGERS",
+    "MARSEILLE","LYON","LILLE","MONACO","RENNES","NICE","SEVILLA","VALENCIA","VILLARREAL","PSV",
+    "GALATASARAY","FENERBAHCE","BESIKTAS"
+  ];
+
+  function scoreClub(line){
+    const u = line.toUpperCase();
+    if(u.length < 3 || u.length > 45) return -1;
     if(/\d/.test(u)) return -1;
-    const parts = u.split(/\s+/).filter(Boolean);
-    if(parts.length<2 || parts.length>3) return -1;
-    if(parts.some(p=>stop.has(p))) return -1;
-    // penalize if looks like club (contains FC etc)
-    if(parts.some(p=>["FC","CF","SC","AC"].includes(p))) return -1;
+    if(/\b(CLUB|TEAM)\b\s*[:\-]/.test(u)) return 30;
     let s = 0;
-    s += 10;
-    s += Math.min(8, u.length/3);
-    // prefer lines that are mostly uppercase in OCR
-    if(line === line.toUpperCase()) s += 3;
-    // prefer no punctuation
-    if(/[.,;:]/.test(line)) s -= 2;
+    if(/\b(FC|CF|SC|AC|AFC|SSC|BSC)\b/.test(u)) s += 10;
+    for(const h of clubHints){ if(u.includes(h)) s += 4; }
+    const parts = cleanLetters(line).split(" ").filter(Boolean);
+    if(parts.length>=2 && parts.length<=6) s += 6;
+    if(s < 10 && parts.length<=3) s -= 2;
+    return s;
+  }
+
+  let club = "";
+  let bestClubScore = -1;
+  for(const l of lines){
+    const sc = scoreClub(l);
+    if(sc > bestClubScore){ bestClubScore=sc; club=l; }
+  }
+  if(club){
+    const m = club.match(/(?:CLUB|TEAM)\s*[:\-]\s*(.+)$/i);
+    if(m) club = m[1].trim();
+  }
+  if(bestClubScore < 8) club = "";
+
+  function scorePlayer(line){
+    const cleaned = cleanLetters(line);
+    const u = cleaned.toUpperCase();
+    if(!cleaned) return -1;
+    if(cleaned.length < 4 || cleaned.length > 30) return -1;
+    if(/\d/.test(line)) return -1;
+    const parts = cleaned.split(" ").filter(Boolean);
+    if(parts.length > 3) return -1;
+
+    const upperParts = parts.map(p=>p.toUpperCase());
+    if(upperParts.some(p=>STOP.has(p))) return -1;
+    if(brandMap.some(b=>b.re.test(u))) return -1;
+    if(setKeywords.some(kw=>u.includes(kw))) return -1;
+    if(club && u === cleanLetters(club).toUpperCase()) return -1;
+
+    let s = 0;
+    if(parts.length===2) s += 16;
+    if(parts.length===3) s += 12;
+    if(parts.length===1) s += 9;
+
+    if(line === line.toUpperCase()) s += 4;
+    if(/\b(FC|CF|SC|AC)\b/i.test(u)) s -= 6;
+    if(/^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/.test(cleaned)) s += 3;
+
+    const idx = lines.indexOf(line);
+    if(idx >= 0) s += Math.max(0, 6 - idx);
+
     return s;
   }
 
   let bestName = "";
   let bestScore = -1;
   for(const l of lines){
-    const sc = scoreName(l);
+    const sc = scorePlayer(l);
     if(sc > bestScore){ bestScore=sc; bestName=l; }
   }
 
-  // Split first/last
   let prenom = "", nom = "";
-  if(bestName){
-    const cleaned = bestName.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g," ").replace(/\s+/g," ").trim();
-    const parts = cleaned.split(" ");
+  if(bestScore >= 10 && bestName){
+    const cleaned = cleanLetters(bestName);
+    const parts = cleaned.split(" ").filter(Boolean);
     if(parts.length>=2){
       prenom = parts[0];
       nom = parts.slice(1).join(" ");
@@ -2735,17 +2763,15 @@ function parseOcrText(raw){
     }
   }
 
-  // Collection: if setName exists, use it; else try a descriptive line (3-5 words) excluding name/club
   let collection = setName ? setName : "";
   if(!collection){
     const cand = lines.find(l=>{
       const u=l.toUpperCase();
-      if(u===bestName.toUpperCase()) return false;
+      if(bestName && u===bestName.toUpperCase()) return false;
       if(club && u===club.toUpperCase()) return false;
       if(u.length<8 || u.length>40) return false;
       if(/\d{4}/.test(u)) return false;
       if(brandMap.some(b=>b.re.test(u))) return false;
-      // looks like a set line if contains one of keywords fragments
       return /(CHROME|FINEST|MERLIN|SELECT|PRIZM|MOSAIC|STADIUM|ATTAX|DONRUSS|OPTIC|IMPECCABLE|TREASURES)/.test(u);
     });
     if(cand) collection = cand;
