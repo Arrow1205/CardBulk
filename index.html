@@ -558,6 +558,22 @@ body{ background:#00111E !important; }
 #home-search, #coll-search, input[type="search"], .search input{
   background:#000C15 !important;
 }
+
+/* Requested color tweaks */
+body{ background:#00111E !important; }
+.search-bar{ background:#000C15 !important; }
+.footerbar, .tabbar{ background:#000C15 !important; }
+#home-search, #coll-search, input[type="search"]{ background:#000C15 !important; border-color:transparent !important; }
+
+/* Remove background on card 3d scene animated */
+.card-3d-scene.card-animated{ background:transparent !important; }
+
+/* Crop: make frame inset controllable */
+.crop-wrap{ --cropInset: 16px; }
+.crop-frame{ inset: var(--cropInset) !important; }
+.crop-controls{ display:flex; gap:10px; width:100%; margin-top:10px; align-items:center; }
+.crop-controls label{ font-size:12px; opacity:.8; }
+.crop-controls input[type="range"]{ flex:1; }
 </style>
 </head>
 <body>
@@ -2670,6 +2686,9 @@ function parseOcrText(raw){
   }
 
   let club = "";
+  // club from DB
+  const clubFromDb = matchClubFromText(lines);
+  if(clubFromDb) club = clubFromDb;
   let bestClubScore = -1;
   for(const l of lines){
     const sc = scoreClub(l);
@@ -2791,11 +2810,159 @@ function fillScanForm(parsed, rawText){
       _setValue('f-collection', parsed.set);
     }
   }
-  if(parsed.collection){
+  if(parsed.col
+
+// --- Crop controls (size + contrast/brightness) ---
+function _getCropControls(){
+  return {
+    size: document.getElementById('crop-size'),
+    contrast: document.getElementById('crop-contrast'),
+    brightness: document.getElementById('crop-brightness'),
+    wrap: document.querySelector('#crop-overlay .crop-wrap')
+  };
+}
+
+function _applyCropUi(){
+  const {size, contrast, brightness, wrap} = _getCropControls();
+  if(!wrap) return;
+  const inset = size ? Number(size.value||16) : 16;
+  wrap.style.setProperty('--cropInset', inset+'px');
+
+  // live preview filter on canvas
+  const c = document.getElementById('crop-canvas');
+  if(c){
+    const con = contrast ? Number(contrast.value||100) : 100;
+    const bri = brightness ? Number(brightness.value||100) : 100;
+    c.style.filter = `contrast(${con}%) brightness(${bri}%)`;
+  }
+}
+
+document.addEventListener('input', (e)=>{
+  if(e.target && (e.target.id==='crop-size' || e.target.id==='crop-contrast' || e.target.id==='crop-brightness')){
+    _applyCropUi();
+  }
+}, true);
+
+// call when opening crop
+const _origInitCrop = (typeof initCrop === 'function') ? initCrop : null;
+if(_origInitCrop){
+  window.initCrop = function(){
+    _origInitCrop();
+    _applyCropUi();
+  }
+}
+
+// patch applyCrop to export with filters + variable frame
+const _origApplyCrop = (typeof applyCrop === 'function') ? applyCrop : null;
+if(_origApplyCrop){
+  window.applyCrop = function(){
+    // Re-implement export to respect crop frame + filters, but keep your existing drag logic
+    try{
+      const canvas = document.getElementById('crop-canvas');
+      const wrap = document.querySelector('#crop-overlay .crop-wrap');
+      const frame = document.querySelector('#crop-overlay .crop-frame');
+      if(!canvas || !wrap || !frame){ return _origApplyCrop(); }
+
+      // Source is current canvas bitmap (already drawn)
+      const srcW = canvas.width, srcH = canvas.height;
+      // Compute frame rect relative to wrap, map to canvas pixels
+      const wrapRect = wrap.getBoundingClientRect();
+      const frameRect = frame.getBoundingClientRect();
+
+      const fx = (frameRect.left - wrapRect.left) / wrapRect.width;
+      const fy = (frameRect.top - wrapRect.top) / wrapRect.height;
+      const fw = (frameRect.width) / wrapRect.width;
+      const fh = (frameRect.height) / wrapRect.height;
+
+      const sx = Math.max(0, Math.round(fx * srcW));
+      const sy = Math.max(0, Math.round(fy * srcH));
+      const sw = Math.min(srcW - sx, Math.round(fw * srcW));
+      const sh = Math.min(srcH - sy, Math.round(fh * srcH));
+
+      // Output canvas
+      const out = document.createElement('canvas');
+      out.width = sw; out.height = sh;
+      const ctx = out.getContext('2d');
+
+      // Apply enhancement filters
+      const con = Number(document.getElementById('crop-contrast')?.value || 100);
+      const bri = Number(document.getElementById('crop-brightness')?.value || 100);
+      ctx.filter = `contrast(${con}%) brightness(${bri}%)`;
+
+      ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      const croppedDataUrl = out.toDataURL('image/jpeg', 0.92);
+
+      // Update preview image used in app
+      const preview = document.getElementById('photo-preview-img');
+      if(preview){
+        preview.src = croppedDataUrl;
+        window._lastScanDataUrl = croppedDataUrl;
+      }
+      closeCrop?.();
+      return;
+    }catch(e){
+      console.error(e);
+      return _origApplyCrop();
+    }
+  }
+}
+// --- end crop controls ---
+
+lection){
     _setValue('f-collection', parsed.collection);
   }
 }
 // --- end OCR.space + parser ---
+
+
+
+// --- Clubs DB (optimized) ---
+const CLUBS_DB = [{"club_id": "angers-sco", "name": "Angers SCO", "aliases": "ANGERS SCO|Angers SCO|Angers Sco"}, {"club_id": "aj-auxerre", "name": "AJ Auxerre", "aliases": "AJ AUXERRE|AJ Auxerre|AUXERRE|Auxerre"}, {"club_id": "stade-brestois-29", "name": "Stade Brestois 29", "aliases": "BRESTOIS 29|Brestois 29|STADE BRESTOIS 29|Stade Brestois 29"}, {"club_id": "le-havre-ac", "name": "Le Havre AC", "aliases": "LE HAVRE AC|Le Havre AC|Le Havre Ac"}, {"club_id": "rc-lens", "name": "RC Lens", "aliases": "LENS|Lens|RC LENS|RC Lens"}, {"club_id": "losc-lille", "name": "LOSC Lille", "aliases": "LILLE|LILLE OSC|LOSC LILLE|LOSC Lille|Lille"}, {"club_id": "fc-lorient", "name": "FC Lorient", "aliases": "FC LORIENT|FC Lorient|LORIENT|Lorient"}, {"club_id": "olympique-lyonnais", "name": "Olympique Lyonnais", "aliases": "LYON|LYONNAIS|Lyonnais|OL|OLYMPIQUE LYONNAIS|Olympique Lyonnais"}, {"club_id": "olympique-de-marseille", "name": "Olympique de Marseille", "aliases": "DE MARSEILLE|De Marseille|MARSEILLE|OLYMPIQUE DE MARSEILLE|OM|Olympique de Marseille"}, {"club_id": "fc-metz", "name": "FC Metz", "aliases": "FC METZ|FC Metz|METZ|Metz"}, {"club_id": "as-monaco", "name": "AS Monaco", "aliases": "AS MONACO|AS Monaco|MONACO|Monaco"}, {"club_id": "fc-nantes", "name": "FC Nantes", "aliases": "FC NANTES|FC Nantes|NANTES|Nantes"}, {"club_id": "ogc-nice", "name": "OGC Nice", "aliases": "NICE|Nice|OGC NICE|OGC Nice"}, {"club_id": "paris-fc", "name": "Paris FC", "aliases": "PARIS FC|Paris FC|Paris Fc"}, {"club_id": "paris-saint-germain", "name": "Paris Saint-Germain", "aliases": "PARIS SAINT GERMAIN|PARIS SAINT-GERMAIN|Paris Saint Germain|Paris Saint-Germain"}, {"club_id": "stade-rennais-fc", "name": "Stade Rennais FC", "aliases": "RENNAIS FC|Rennais Fc|STADE RENNAIS FC|Stade Rennais FC"}, {"club_id": "rc-strasbourg", "name": "RC Strasbourg", "aliases": "RC STRASBOURG|RC Strasbourg|STRASBOURG|Strasbourg"}, {"club_id": "toulouse-fc", "name": "Toulouse FC", "aliases": "TOULOUSE FC|Toulouse FC|Toulouse Fc"}, {"club_id": "arsenal-fc", "name": "Arsenal FC", "aliases": "ARSENAL FC|Arsenal FC|Arsenal Fc"}, {"club_id": "aston-villa", "name": "Aston Villa", "aliases": "ASTON VILLA|Aston Villa"}, {"club_id": "afc-bournemouth", "name": "AFC Bournemouth", "aliases": "AFC BOURNEMOUTH|AFC Bournemouth|Afc Bournemouth"}, {"club_id": "brentford-fc", "name": "Brentford FC", "aliases": "BRENTFORD FC|Brentford FC|Brentford Fc"}, {"club_id": "brighton-hove-albion", "name": "Brighton & Hove Albion", "aliases": "BRIGHTON & HOVE ALBION|BRIGHTON HOVE ALBION|Brighton & Hove Albion|Brighton Hove Albion"}, {"club_id": "burnley-fc", "name": "Burnley FC", "aliases": "BURNLEY FC|Burnley FC|Burnley Fc"}, {"club_id": "chelsea-fc", "name": "Chelsea FC", "aliases": "CHELSEA FC|Chelsea FC|Chelsea Fc"}, {"club_id": "crystal-palace", "name": "Crystal Palace", "aliases": "CRYSTAL PALACE|Crystal Palace"}, {"club_id": "everton-fc", "name": "Everton FC", "aliases": "EVERTON FC|Everton FC|Everton Fc"}, {"club_id": "fulham-fc", "name": "Fulham FC", "aliases": "FULHAM FC|Fulham FC|Fulham Fc"}, {"club_id": "leeds-united", "name": "Leeds United", "aliases": "LEEDS UNITED|Leeds United"}, {"club_id": "liverpool-fc", "name": "Liverpool FC", "aliases": "LIVERPOOL FC|Liverpool FC|Liverpool Fc"}, {"club_id": "manchester-city", "name": "Manchester City", "aliases": "MANCHESTER CITY|Manchester City"}, {"club_id": "manchester-united", "name": "Manchester United", "aliases": "MANCHESTER UNITED|Manchester United"}, {"club_id": "newcastle-united", "name": "Newcastle United", "aliases": "NEWCASTLE UNITED|Newcastle United"}, {"club_id": "nottingham-forest", "name": "Nottingham Forest", "aliases": "NOTTINGHAM FOREST|Nottingham Forest"}, {"club_id": "sunderland-afc", "name": "Sunderland AFC", "aliases": "SUNDERLAND AFC|Sunderland AFC|Sunderland Afc"}, {"club_id": "tottenham-hotspur", "name": "Tottenham Hotspur", "aliases": "TOTTENHAM HOTSPUR|Tottenham Hotspur"}, {"club_id": "west-ham-united", "name": "West Ham United", "aliases": "WEST HAM UNITED|West Ham United"}, {"club_id": "wolverhampton-wanderers", "name": "Wolverhampton Wanderers", "aliases": "WOLVERHAMPTON WANDERERS|Wolverhampton Wanderers"}, {"club_id": "ajax-amsterdam", "name": "Ajax Amsterdam", "aliases": "AJAX AMSTERDAM|Ajax Amsterdam"}, {"club_id": "az-alkmaar", "name": "AZ Alkmaar", "aliases": "AZ ALKMAAR|AZ Alkmaar|Az Alkmaar"}, {"club_id": "excelsior-rotterdam", "name": "Excelsior Rotterdam", "aliases": "EXCELSIOR ROTTERDAM|Excelsior Rotterdam"}, {"club_id": "feyenoord-rotterdam", "name": "Feyenoord Rotterdam", "aliases": "FEYENOORD ROTTERDAM|Feyenoord Rotterdam"}, {"club_id": "fortuna-sittard", "name": "Fortuna Sittard", "aliases": "FORTUNA SITTARD|Fortuna Sittard"}, {"club_id": "go-ahead-eagles", "name": "Go Ahead Eagles", "aliases": "GO AHEAD EAGLES|Go Ahead Eagles"}, {"club_id": "fc-groningen", "name": "FC Groningen", "aliases": "FC GRONINGEN|FC Groningen|GRONINGEN|Groningen"}, {"club_id": "sc-heerenveen", "name": "SC Heerenveen", "aliases": "HEERENVEEN|Heerenveen|SC HEERENVEEN|SC Heerenveen"}, {"club_id": "heracles-almelo", "name": "Heracles Almelo", "aliases": "HERACLES ALMELO|Heracles Almelo"}, {"club_id": "nac-breda", "name": "NAC Breda", "aliases": "NAC BREDA|NAC Breda|Nac Breda"}, {"club_id": "nec-nim-gue", "name": "NEC Nimgue", "aliases": "NEC NIM GUE|NEC NIMGUE|NEC Nimgue|Nec Nim Gue"}, {"club_id": "pec-zwolle", "name": "PEC Zwolle", "aliases": "PEC ZWOLLE|PEC Zwolle|Pec Zwolle"}, {"club_id": "psv-eindhoven", "name": "PSV Eindhoven", "aliases": "PSV EINDHOVEN|PSV Eindhoven|Psv Eindhoven"}, {"club_id": "sparta-rotterdam", "name": "Sparta Rotterdam", "aliases": "SPARTA ROTTERDAM|Sparta Rotterdam"}, {"club_id": "telstar", "name": "Telstar", "aliases": "TELSTAR|Telstar"}, {"club_id": "fc-twente", "name": "FC Twente", "aliases": "FC TWENTE|FC Twente|TWENTE|Twente"}, {"club_id": "fc-utrecht", "name": "FC Utrecht", "aliases": "FC UTRECHT|FC Utrecht|UTRECHT|Utrecht"}, {"club_id": "fc-volendam", "name": "FC Volendam", "aliases": "FC VOLENDAM|FC Volendam|VOLENDAM|Volendam"}, {"club_id": "fc-augsbourg", "name": "FC Augsbourg", "aliases": "AUGSBOURG|Augsbourg|FC AUGSBOURG|FC Augsbourg"}, {"club_id": "union-berlin", "name": "Union Berlin", "aliases": "UNION BERLIN|Union Berlin"}, {"club_id": "werder-br-me", "name": "Werder Brme", "aliases": "WERDER BR ME|WERDER BRME|Werder Br Me|Werder Brme"}, {"club_id": "borussia-dortmund", "name": "Borussia Dortmund", "aliases": "BORUSSIA DORTMUND|Borussia Dortmund"}, {"club_id": "eintracht-francfort", "name": "Eintracht Francfort", "aliases": "EINTRACHT FRANCFORT|Eintracht Francfort"}, {"club_id": "sc-fribourg", "name": "SC Fribourg", "aliases": "FRIBOURG|Fribourg|SC FRIBOURG|SC Fribourg"}, {"club_id": "hambourg-sv", "name": "Hambourg SV", "aliases": "HAMBOURG SV|Hambourg SV|Hambourg Sv"}, {"club_id": "1", "name": "1", "aliases": "1"}, {"club_id": "tsg-hoffenheim", "name": "TSG Hoffenheim", "aliases": "TSG HOFFENHEIM|TSG Hoffenheim|Tsg Hoffenheim"}, {"club_id": "1", "name": "1", "aliases": "1"}, {"club_id": "rb-leipzig", "name": "RB Leipzig", "aliases": "RB LEIPZIG|RB Leipzig|Rb Leipzig"}, {"club_id": "bayer-leverkusen", "name": "Bayer Leverkusen", "aliases": "BAYER LEVERKUSEN|Bayer Leverkusen"}, {"club_id": "fsv-mayence-05", "name": "FSV Mayence 05", "aliases": "FSV MAYENCE 05|FSV Mayence 05|Fsv Mayence 05"}, {"club_id": "borussia-m-nchengladbach", "name": "Borussia Mnchengladbach", "aliases": "BORUSSIA M NCHENGLADBACH|BORUSSIA MNCHENGLADBACH|Borussia M Nchengladbach|Borussia Mnchengladbach"}, {"club_id": "bayern-munich", "name": "Bayern Munich", "aliases": "BAYERN MUNICH|Bayern Munich"}, {"club_id": "fc-st", "name": "FC St", "aliases": "FC ST|FC St|ST|St"}, {"club_id": "vfb-stuttgart", "name": "VfB Stuttgart", "aliases": "VFB STUTTGART|VfB Stuttgart|Vfb Stuttgart"}, {"club_id": "vfl-wolfsburg", "name": "VfL Wolfsburg", "aliases": "VFL WOLFSBURG|VfL Wolfsburg|Vfl Wolfsburg"}, {"club_id": "deportivo-alav-s", "name": "Deportivo Alavs", "aliases": "DEPORTIVO ALAV S|DEPORTIVO ALAVS|Deportivo Alav S|Deportivo Alavs"}, {"club_id": "athletic-bilbao", "name": "Athletic Bilbao", "aliases": "ATHLETIC BILBAO|Athletic Bilbao"}, {"club_id": "atl-tico-de-madrid", "name": "Atltico de Madrid", "aliases": "ATL TICO DE MADRID|ATLTICO DE MADRID|Atl Tico De Madrid|Atltico de Madrid"}, {"club_id": "fc-barcelone", "name": "FC Barcelone", "aliases": "BARCELONE|Barcelone|FC BARCELONE|FC Barcelone"}, {"club_id": "real-betis", "name": "Real Betis", "aliases": "REAL BETIS|Real Betis"}, {"club_id": "celta-de-vigo", "name": "Celta de Vigo", "aliases": "CELTA DE VIGO|Celta De Vigo|Celta de Vigo"}, {"club_id": "elche-cf", "name": "Elche CF", "aliases": "ELCHE CF|Elche CF|Elche Cf"}, {"club_id": "rcd-espanyol", "name": "RCD Espanyol", "aliases": "RCD ESPANYOL|RCD Espanyol|Rcd Espanyol"}, {"club_id": "getafe-cf", "name": "Getafe CF", "aliases": "GETAFE CF|Getafe CF|Getafe Cf"}, {"club_id": "girona-fc", "name": "Girona FC", "aliases": "GIRONA FC|Girona FC|Girona Fc"}, {"club_id": "levante-ud", "name": "Levante UD", "aliases": "LEVANTE UD|Levante UD|Levante Ud"}, {"club_id": "rcd-majorque", "name": "RCD Majorque", "aliases": "RCD MAJORQUE|RCD Majorque|Rcd Majorque"}, {"club_id": "ca-osasuna", "name": "CA Osasuna", "aliases": "CA OSASUNA|CA Osasuna|Ca Osasuna"}, {"club_id": "rayo-vallecano", "name": "Rayo Vallecano", "aliases": "RAYO VALLECANO|Rayo Vallecano"}, {"club_id": "real-madrid", "name": "Real Madrid", "aliases": "REAL MADRID|Real Madrid"}, {"club_id": "real-oviedo", "name": "Real Oviedo", "aliases": "REAL OVIEDO|Real Oviedo"}, {"club_id": "real-sociedad", "name": "Real Sociedad", "aliases": "REAL SOCIEDAD|Real Sociedad"}, {"club_id": "s-ville-fc", "name": "Sville FC", "aliases": "S VILLE FC|S Ville Fc|SVILLE FC|Sville FC"}, {"club_id": "valence-cf", "name": "Valence CF", "aliases": "VALENCE CF|Valence CF|Valence Cf"}, {"club_id": "villarreal-cf", "name": "Villarreal CF", "aliases": "VILLARREAL CF|Villarreal CF|Villarreal Cf"}, {"club_id": "atalanta-bergame", "name": "Atalanta Bergame", "aliases": "ATALANTA BERGAME|Atalanta Bergame"}, {"club_id": "bologne-fc", "name": "Bologne FC", "aliases": "BOLOGNE FC|Bologne FC|Bologne Fc"}, {"club_id": "cagliari-calcio", "name": "Cagliari Calcio", "aliases": "CAGLIARI CALCIO|Cagliari Calcio"}, {"club_id": "c-me-1907", "name": "Cme 1907", "aliases": "C ME 1907|C Me 1907|CME 1907|Cme 1907"}, {"club_id": "us-cremonese", "name": "US Cremonese", "aliases": "CREMONESE|Cremonese|US CREMONESE|US Cremonese"}, {"club_id": "ac-fiorentina", "name": "AC Fiorentina", "aliases": "AC FIORENTINA|AC Fiorentina|FIORENTINA|Fiorentina"}, {"club_id": "genoa-cfc", "name": "Genoa CFC", "aliases": "GENOA CFC|Genoa CFC|Genoa Cfc"}, {"club_id": "hellas-v-rone", "name": "Hellas Vrone", "aliases": "HELLAS V RONE|HELLAS VRONE|Hellas V Rone|Hellas Vrone"}, {"club_id": "inter-milan", "name": "Inter Milan", "aliases": "INTER MILAN|Inter Milan"}, {"club_id": "juventus-turin", "name": "Juventus Turin", "aliases": "JUVENTUS TURIN|Juventus Turin"}, {"club_id": "ss-lazio", "name": "SS Lazio", "aliases": "SS LAZIO|SS Lazio|Ss Lazio"}, {"club_id": "us-lecce", "name": "US Lecce", "aliases": "LECCE|Lecce|US LECCE|US Lecce"}, {"club_id": "ac-milan", "name": "AC Milan", "aliases": "AC MILAN|AC Milan|MILAN|Milan"}, {"club_id": "ssc-naples", "name": "SSC Naples", "aliases": "SSC NAPLES|SSC Naples|Ssc Naples"}, {"club_id": "parme-calcio", "name": "Parme Calcio", "aliases": "PARME CALCIO|Parme Calcio"}, {"club_id": "pise-sc", "name": "Pise SC", "aliases": "PISE SC|Pise SC|Pise Sc"}, {"club_id": "as-roma", "name": "AS Roma", "aliases": "AS ROMA|AS Roma|ROMA|Roma"}, {"club_id": "sassuolo", "name": "Sassuolo", "aliases": "SASSUOLO|Sassuolo"}, {"club_id": "torino-fc", "name": "Torino FC", "aliases": "TORINO FC|Torino FC|Torino Fc"}, {"club_id": "udinese-calcio", "name": "Udinese Calcio", "aliases": "UDINESE CALCIO|Udinese Calcio"}, {"club_id": "fc-alverca", "name": "FC Alverca", "aliases": "ALVERCA|Alverca|FC ALVERCA|FC Alverca"}, {"club_id": "fc-arouca", "name": "FC Arouca", "aliases": "AROUCA|Arouca|FC AROUCA|FC Arouca"}, {"club_id": "avs-futebol-sad", "name": "AVS Futebol SAD", "aliases": "AVS FUTEBOL SAD|AVS Futebol SAD|Avs Futebol Sad"}, {"club_id": "sl-benfica", "name": "SL Benfica", "aliases": "SL BENFICA|SL Benfica|Sl Benfica"}, {"club_id": "sc-braga", "name": "SC Braga", "aliases": "BRAGA|Braga|SC BRAGA|SC Braga"}, {"club_id": "casa-pia-ac", "name": "Casa Pia AC", "aliases": "CASA PIA AC|Casa Pia AC|Casa Pia Ac"}, {"club_id": "gd-estoril-praia", "name": "GD Estoril Praia", "aliases": "GD ESTORIL PRAIA|GD Estoril Praia|Gd Estoril Praia"}, {"club_id": "cf-estrela-da-amadora", "name": "CF Estrela da Amadora", "aliases": "CF ESTRELA DA AMADORA|CF Estrela da Amadora|Cf Estrela Da Amadora"}, {"club_id": "fc-famalic-o", "name": "FC Famalico", "aliases": "FAMALIC O|FC FAMALICO|FC Famalico|Famalic O"}, {"club_id": "gil-vicente-fc", "name": "Gil Vicente FC", "aliases": "GIL VICENTE FC|Gil Vicente FC|Gil Vicente Fc"}, {"club_id": "moreirense-fc", "name": "Moreirense FC", "aliases": "MOREIRENSE FC|Moreirense FC|Moreirense Fc"}, {"club_id": "cd-nacional", "name": "CD Nacional", "aliases": "CD NACIONAL|CD Nacional|Cd Nacional"}, {"club_id": "fc-porto", "name": "FC Porto", "aliases": "FC PORTO|FC Porto|PORTO|Porto"}, {"club_id": "rio-ave-fc", "name": "Rio Ave FC", "aliases": "RIO AVE FC|Rio Ave FC|Rio Ave Fc"}, {"club_id": "cd-santa-clara", "name": "CD Santa Clara", "aliases": "CD SANTA CLARA|CD Santa Clara|Cd Santa Clara"}, {"club_id": "sporting-cp", "name": "Sporting CP", "aliases": "SPORTING CP|Sporting CP|Sporting Cp"}, {"club_id": "cd-tondela", "name": "CD Tondela", "aliases": "CD TONDELA|CD Tondela|Cd Tondela"}, {"club_id": "vit-ria-sc", "name": "Vitria SC", "aliases": "VIT RIA SC|VITRIA SC|Vit Ria Sc|Vitria SC"}];
+const CLUBS_ALIAS_INDEX = {"angers sco": ["angers-sco"], "aj auxerre": ["aj-auxerre"], "auxerre": ["aj-auxerre"], "brestois 29": ["stade-brestois-29"], "stade brestois 29": ["stade-brestois-29"], "le havre ac": ["le-havre-ac"], "lens": ["rc-lens"], "rc lens": ["rc-lens"], "lille": ["losc-lille"], "lille osc": ["losc-lille"], "losc lille": ["losc-lille"], "fc lorient": ["fc-lorient"], "lorient": ["fc-lorient"], "lyon": ["olympique-lyonnais"], "lyonnais": ["olympique-lyonnais"], "ol": ["olympique-lyonnais"], "olympique lyonnais": ["olympique-lyonnais"], "de marseille": ["olympique-de-marseille"], "marseille": ["olympique-de-marseille"], "olympique de marseille": ["olympique-de-marseille"], "om": ["olympique-de-marseille"], "fc metz": ["fc-metz"], "metz": ["fc-metz"], "as monaco": ["as-monaco"], "monaco": ["as-monaco"], "fc nantes": ["fc-nantes"], "nantes": ["fc-nantes"], "nice": ["ogc-nice"], "ogc nice": ["ogc-nice"], "paris fc": ["paris-fc"], "paris saint germain": ["paris-saint-germain"], "rennais fc": ["stade-rennais-fc"], "stade rennais fc": ["stade-rennais-fc"], "rc strasbourg": ["rc-strasbourg"], "strasbourg": ["rc-strasbourg"], "toulouse fc": ["toulouse-fc"], "arsenal fc": ["arsenal-fc"], "aston villa": ["aston-villa"], "afc bournemouth": ["afc-bournemouth"], "brentford fc": ["brentford-fc"], "brighton hove albion": ["brighton-hove-albion"], "burnley fc": ["burnley-fc"], "chelsea fc": ["chelsea-fc"], "crystal palace": ["crystal-palace"], "everton fc": ["everton-fc"], "fulham fc": ["fulham-fc"], "leeds united": ["leeds-united"], "liverpool fc": ["liverpool-fc"], "manchester city": ["manchester-city"], "manchester united": ["manchester-united"], "newcastle united": ["newcastle-united"], "nottingham forest": ["nottingham-forest"], "sunderland afc": ["sunderland-afc"], "tottenham hotspur": ["tottenham-hotspur"], "west ham united": ["west-ham-united"], "wolverhampton wanderers": ["wolverhampton-wanderers"], "ajax amsterdam": ["ajax-amsterdam"], "az alkmaar": ["az-alkmaar"], "excelsior rotterdam": ["excelsior-rotterdam"], "feyenoord rotterdam": ["feyenoord-rotterdam"], "fortuna sittard": ["fortuna-sittard"], "go ahead eagles": ["go-ahead-eagles"], "fc groningen": ["fc-groningen"], "groningen": ["fc-groningen"], "heerenveen": ["sc-heerenveen"], "sc heerenveen": ["sc-heerenveen"], "heracles almelo": ["heracles-almelo"], "nac breda": ["nac-breda"], "nec nim gue": ["nec-nim-gue"], "pec zwolle": ["pec-zwolle"], "psv eindhoven": ["psv-eindhoven"], "sparta rotterdam": ["sparta-rotterdam"], "telstar": ["telstar"], "fc twente": ["fc-twente"], "twente": ["fc-twente"], "fc utrecht": ["fc-utrecht"], "utrecht": ["fc-utrecht"], "fc volendam": ["fc-volendam"], "volendam": ["fc-volendam"], "augsbourg": ["fc-augsbourg"], "fc augsbourg": ["fc-augsbourg"], "union berlin": ["union-berlin"], "werder br me": ["werder-br-me"], "borussia dortmund": ["borussia-dortmund"], "eintracht francfort": ["eintracht-francfort"], "fribourg": ["sc-fribourg"], "sc fribourg": ["sc-fribourg"], "hambourg sv": ["hambourg-sv"], "1": ["1"], "tsg hoffenheim": ["tsg-hoffenheim"], "rb leipzig": ["rb-leipzig"], "bayer leverkusen": ["bayer-leverkusen"], "fsv mayence 05": ["fsv-mayence-05"], "borussia m nchengladbach": ["borussia-m-nchengladbach"], "bayern munich": ["bayern-munich"], "fc st": ["fc-st"], "st": ["fc-st"], "vfb stuttgart": ["vfb-stuttgart"], "vfl wolfsburg": ["vfl-wolfsburg"], "deportivo alav s": ["deportivo-alav-s"], "athletic bilbao": ["athletic-bilbao"], "atl tico de madrid": ["atl-tico-de-madrid"], "barcelone": ["fc-barcelone"], "fc barcelone": ["fc-barcelone"], "real betis": ["real-betis"], "celta de vigo": ["celta-de-vigo"], "elche cf": ["elche-cf"], "rcd espanyol": ["rcd-espanyol"], "getafe cf": ["getafe-cf"], "girona fc": ["girona-fc"], "levante ud": ["levante-ud"], "rcd majorque": ["rcd-majorque"], "ca osasuna": ["ca-osasuna"], "rayo vallecano": ["rayo-vallecano"], "real madrid": ["real-madrid"], "real oviedo": ["real-oviedo"], "real sociedad": ["real-sociedad"], "s ville fc": ["s-ville-fc"], "valence cf": ["valence-cf"], "villarreal cf": ["villarreal-cf"], "atalanta bergame": ["atalanta-bergame"], "bologne fc": ["bologne-fc"], "cagliari calcio": ["cagliari-calcio"], "c me 1907": ["c-me-1907"], "cremonese": ["us-cremonese"], "us cremonese": ["us-cremonese"], "ac fiorentina": ["ac-fiorentina"], "fiorentina": ["ac-fiorentina"], "genoa cfc": ["genoa-cfc"], "hellas v rone": ["hellas-v-rone"], "inter milan": ["inter-milan"], "juventus turin": ["juventus-turin"], "ss lazio": ["ss-lazio"], "lecce": ["us-lecce"], "us lecce": ["us-lecce"], "ac milan": ["ac-milan"], "milan": ["ac-milan"], "ssc naples": ["ssc-naples"], "parme calcio": ["parme-calcio"], "pise sc": ["pise-sc"], "as roma": ["as-roma"], "roma": ["as-roma"], "sassuolo": ["sassuolo"], "torino fc": ["torino-fc"], "udinese calcio": ["udinese-calcio"], "alverca": ["fc-alverca"], "fc alverca": ["fc-alverca"], "arouca": ["fc-arouca"], "fc arouca": ["fc-arouca"], "avs futebol sad": ["avs-futebol-sad"], "sl benfica": ["sl-benfica"], "braga": ["sc-braga"], "sc braga": ["sc-braga"], "casa pia ac": ["casa-pia-ac"], "gd estoril praia": ["gd-estoril-praia"], "cf estrela da amadora": ["cf-estrela-da-amadora"], "famalic o": ["fc-famalic-o"], "fc famalic o": ["fc-famalic-o"], "gil vicente fc": ["gil-vicente-fc"], "moreirense fc": ["moreirense-fc"], "cd nacional": ["cd-nacional"], "fc porto": ["fc-porto"], "porto": ["fc-porto"], "rio ave fc": ["rio-ave-fc"], "cd santa clara": ["cd-santa-clara"], "sporting cp": ["sporting-cp"], "cd tondela": ["cd-tondela"], "vit ria sc": ["vit-ria-sc"]};
+
+function _normKey(s){
+  return String(s||"")
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function matchClubFromText(lines){
+  // Try exact/alias lookup first
+  const candidates = new Map(); // id -> score
+  for(const line of lines){
+    const k = _normKey(line);
+    if(!k) continue;
+    // direct lookup
+    const hits = CLUBS_ALIAS_INDEX[k];
+    if(hits){
+      for(const id of hits) candidates.set(id, (candidates.get(id)||0) + 40);
+    }
+    // token-based: try dropping short tokens
+    const parts = k.split(' ');
+    if(parts.length>=2){
+      const k2 = parts.filter(p=>p.length>2).join(' ');
+      const hits2 = CLUBS_ALIAS_INDEX[k2];
+      if(hits2) for(const id of hits2) candidates.set(id, (candidates.get(id)||0) + 22);
+    }
+    // acronym-like (e.g., "psg", "om")
+    if(k.length<=4){
+      const hits3 = CLUBS_ALIAS_INDEX[k];
+      if(hits3) for(const id of hits3) candidates.set(id, (candidates.get(id)||0) + 30);
+    }
+  }
+  if(candidates.size===0) return "";
+
+  // choose best
+  let bestId="", bestScore=-1;
+  for(const [id,sc] of candidates.entries()){ if(sc>bestScore){ bestScore=sc; bestId=id; } }
+  const club = CLUBS_DB.find(c=>c.club_id===bestId);
+  return club ? club.name : "";
+}
+// --- end clubs DB ---
 
 </script>
 
