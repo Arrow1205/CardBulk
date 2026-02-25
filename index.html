@@ -2800,7 +2800,10 @@ function fillScanForm(parsed, rawText){
       _setValue('f-collection', parsed.set);
     }
   }
-  if(parsed.col
+  if(parsed.collection){
+    _setValue('f-collection', parsed.collection);
+  }
+}
 
 // --- Crop controls (size + contrast/brightness) ---
 function _getCropControls(){
