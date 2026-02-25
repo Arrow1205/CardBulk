@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#00111E;--surface:#111114;--surface2:#18181d;--surface3:#1f1f26;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--accent:#AFFF25;--text:#f4f4f6;--text-dim:rgba(244,244,246,0.38);--text-mid:rgba(244,244,246,0.62);--gold:#AFFF25;--tab-h:72px;--safe:env(safe-area-inset-bottom,12px);}
+:root{--bg:#00111E;--surface:#000C15;--surface2:#18181d;--surface3:#1f1f26;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--accent:#AFFF25;--text:#f4f4f6;--text-dim:rgba(244,244,246,0.38);--text-mid:rgba(244,244,246,0.62);--gold:#AFFF25;--tab-h:72px;--safe:env(safe-area-inset-bottom,12px);}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Barlow",sans-serif;}
 .page{position:absolute;inset:0;bottom:var(--tab-h);overflow-y:auto;overflow-x:hidden;display:none;-webkit-overflow-scrolling:touch;}
@@ -550,6 +550,14 @@ body{ background:#00111E !important; }
 
 /* Hide/remove collection total block */
 #collection-total-block{ display:none !important; }
+
+/* Color fix: replace legacy #000C15 areas */
+.footerbar, .tabbar, .tab-bar, .navbar, .topbar{
+  background:#000C15 !important;
+}
+#home-search, #coll-search, input[type="search"], .search input{
+  background:#000C15 !important;
+}
 </style>
 </head>
 <body>
@@ -2341,47 +2349,6 @@ loadFromDB();
     if(typeof openCard === "function") openCard(id);
   }, {capture:true});
 })();
-
-
-// --- unify collection total block (pie + value + count) ---
-function unifyCollectionTotalBlock(){ const el=document.getElementById('collection-total-block'); if(el) el.remove(); }
-    wrap.innerHTML = '';
-
-    const left = document.createElement('div');
-    left.className = 'ctb-left';
-    const right = document.createElement('div');
-    right.className = 'ctb-right';
-
-    if(pie){
-      const pieBox = document.createElement('div');
-      pieBox.className = 'ctb-pie';
-      pieBox.appendChild(pie);
-      left.appendChild(pieBox);
-    }
-
-    const title = document.createElement('div');
-    title.className = 'ctb-title';
-    title.textContent = 'Valeur de la collection';
-    right.appendChild(title);
-
-    // Prefer existing value/count nodes if exist; else create placeholders that your render can fill
-    const val = valueEl ? valueEl : document.createElement('div');
-    if(!valueEl){ val.id='totalValue'; val.className='total-value'; }
-    val.classList.add('ctb-value');
-    right.appendChild(val);
-
-    const cnt = countEl ? countEl : document.createElement('div');
-    if(!countEl){ cnt.id='totalCards'; cnt.className='total-cards'; }
-    cnt.classList.add('ctb-count');
-    right.appendChild(cnt);
-
-    wrap.appendChild(left);
-    wrap.appendChild(right);
-  }catch(e){
-    console.warn('unifyCollectionTotalBlock failed', e);
-  }
-}
-// --- end unify ---
 
 
 // --- fullscreen image viewer (tap card photo) ---
