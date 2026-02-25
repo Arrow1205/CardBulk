@@ -505,6 +505,31 @@ body.no-scroll{overflow:hidden !important;}
 
 /* Drag-to-tilt (finger) */
 .card-tilt-drag{transform-style:preserve-3d;transition:transform .12s ease-out;will-change:transform;}
+
+/* Theme: dark background + outline panels */
+:root{
+  --bg:#07033A;
+  --text:#FFFFFF;
+  --muted:rgba(255,255,255,.75);
+  --stroke:rgba(255,255,255,.16);
+  --stroke-strong:rgba(255,255,255,.26);
+}
+body{ background:var(--bg) !important; color:var(--text) !important; }
+.section,.panel,.card,.tile,.kpi,.stats,.sheet,.modal,.drawer,
+.navbar,.topbar,header,.footerbar{
+  background:transparent !important;
+  box-shadow:none !important;
+  border:1px solid var(--stroke) !important;
+}
+.navbar,.topbar,header,.footerbar{ border-bottom:1px solid var(--stroke) !important; }
+.btn,button,.chip,select,input,textarea{
+  background:transparent !important;
+  color:var(--text) !important;
+  border:1px solid var(--stroke-strong) !important;
+  box-shadow:none !important;
+}
+input::placeholder,textarea::placeholder{ color:rgba(255,255,255,.55) !important; }
+.form-label,.sec-sub{ color:var(--muted) !important; }
 </style>
 </head>
 <body>
@@ -568,6 +593,7 @@ body.no-scroll{overflow:hidden !important;}
           </div>
         </div>
         <button class="crop-btn" id="crop-btn" style="display:none;" onclick="openCrop('recto')">Recadrer</button>
+        <button class="crop-btn" id="ocr-btn" style="margin-top:10px;" type="button" onclick="ocrCard()">Analyser (OCR)</button>
 </div>
       <div id="add-verso-zone" style="display:none;">
         <div class="photo-upload" id="photo-upload-zone-v">
@@ -2137,6 +2163,8 @@ function openCrop(side){
 function closeCrop(){document.getElementById("crop-overlay").classList.remove("open");}
 
 function applyCrop(){
+  // Keep latest recto image for OCR
+
   const canvas=document.getElementById("crop-canvas");
   if(!canvas){closeCrop();return;}
   const data=canvas.toDataURL("image/jpeg",0.88);
@@ -2523,6 +2551,258 @@ function enableDragTilt(el){
   el.addEventListener("pointerleave", ()=>{ if(active) onUp({pointerId:0}); });
 }
 // --- end drag tilt ---
+
+
+
+// --- OCR.space + parser (prefill fields) ---
+async function ocrCard(){
+  try{
+    const img = document.getElementById('photo-preview-img');
+    const dataUrl = (window._lastScanDataUrl) || (img && img.src) || "";
+    if(!dataUrl || !String(dataUrl).startsWith('data:image')){
+      showToast?.("Ajoute une image (recto) d'abord", "warn");
+      return;
+    }
+
+    // NOTE: API key in client is public. For production, proxy server-side.
+    const form = new FormData();
+    form.append('apikey', 'K83627129088957');
+    form.append('base64Image', dataUrl);
+    form.append('language', 'fre');
+    form.append('OCREngine', '2');
+    form.append('isOverlayRequired', 'false');
+
+    showToast?.("Analyse OCR…", "info");
+
+    const res = await fetch('https://api.ocr.space/parse/image', { method:'POST', body: form });
+    const json = await res.json();
+
+    if(!res.ok){
+      console.error('OCR.space HTTP', res.status, json);
+      showToast?.("OCR: erreur réseau", "error");
+      return;
+    }
+    if(json.IsErroredOnProcessing){
+      console.error('OCR.space processing', json);
+      const msg = (json.ErrorMessage && json.ErrorMessage[0]) ? json.ErrorMessage[0] : "OCR: erreur de traitement";
+      showToast?.(msg, "error");
+      return;
+    }
+
+    const text = (json.ParsedResults && json.ParsedResults[0] && json.ParsedResults[0].ParsedText) ? json.ParsedResults[0].ParsedText : "";
+    if(!text.trim()){
+      showToast?.("OCR: aucun texte détecté", "warn");
+      return;
+    }
+
+    applyOcrToForm(text);
+    showToast?.("OCR OK : champs pré-remplis", "success");
+  }catch(e){
+    console.error(e);
+    showToast?.("OCR: erreur", "error");
+  }
+}
+
+function applyOcrToForm(text){
+  const parsed = parseOcrText(text);
+  fillScanForm(parsed, text);
+}
+
+function parseOcrText(raw){
+  const text = String(raw||"");
+  const lines = text.replace(/\r/g,"\n").split("\n").map(l=>l.trim()).filter(Boolean);
+  const U = lines.map(l=>l.toUpperCase());
+
+  // Brand
+  const brandMap = [
+    {re:/\bTOPPS\b/, v:"Topps"},
+    {re:/\bPANINI\b/, v:"Panini"},
+    {re:/\bLEAF\b/, v:"Leaf"},
+    {re:/\bFUTERA\b/, v:"Futera"},
+    {re:/\bDAKA\b/, v:"Daka"},
+  ];
+  let marque = "";
+  for(const b of brandMap){
+    if(U.some(l=>b.re.test(l))){ marque=b.v; break; }
+  }
+
+  // Year (pick most recent plausible)
+  const years = [];
+  for(const l of U){
+    const m = l.match(/\b(19[5-9]\d|20[0-4]\d|2050)\b/g);
+    if(m) m.forEach(y=>years.push(parseInt(y,10)));
+  }
+  years.sort((a,b)=>b-a);
+  const annee = years[0] ? String(years[0]) : "";
+
+  // Card number (e.g. #123, No 123)
+  let num = "";
+  for(const l of U){
+    const m = l.match(/(?:#|NO\.?|N°)\s*([0-9]{1,4})\b/);
+    if(m){ num = m[1]; break; }
+  }
+
+  // Sport
+  let sport = "";
+  const sportRules = [
+    {re:/\bNBA\b|\bBASKETBALL\b/, v:"basketball"},
+    {re:/\bNFL\b|\bAMERICAN\s+FOOTBALL\b/, v:"nfl"},
+    {re:/\bMLB\b|\bBASEBALL\b/, v:"baseball"},
+    {re:/\bNHL\b|\bHOCKEY\b/, v:"nhl"},
+    {re:/\bFORMULA\s*1\b|\bF1\b/, v:"f1"},
+    {re:/\bTENNIS\b/, v:"tennis"},
+    {re:/\bSOCCER\b|\bFOOTBALL\s*CLUB\b|\bUEFA\b|\bFIFA\b|\bCHAMPIONS\b|\bFC\b|\bCF\b/, v:"football"},
+  ];
+  for(const r of sportRules){
+    if(U.some(l=>r.re.test(l))){ sport=r.v; break; }
+  }
+  if(!sport && (marque==="Topps" || marque==="Panini")) sport="football";
+
+  // Set keywords
+  const setKeywords = [
+    "CHROME","FINEST","MERLIN","MUSEUM","SELECT","PRIZM","MOSAIC","OBSIDIAN",
+    "STADIUM CLUB","MATCH ATTAX","REVOLUTION","IMPECCABLE","NATIONAL TREASURES",
+    "DONRUSS","OPTIC","SCORE","THREADS","PATCH","AUTO","AUTOGRAPH"
+  ];
+  let setName = "";
+  for(const kw of setKeywords){
+    const re = new RegExp("\\b"+kw.replace(/ /g,"\\s+")+"\\b","i");
+    if(lines.some(l=>re.test(l))){ setName = kw; break; }
+  }
+
+  // Club / team heuristic: lines with FC/CF/SC/AC or known separators
+  let club = "";
+  for(const l of lines){
+    const u = l.toUpperCase();
+    if(/\b(FC|CF|SC|AC|AFC|BSC|SSC)\b/.test(u) && u.length<=40 && u.length>=4){
+      // avoid catching "FIFA" etc
+      if(!/\bFIFA\b/.test(u)){ club = l; break; }
+    }
+  }
+  // fallback: look for "PARIS SAINT-GERMAIN" style
+  if(!club){
+    const cand = lines.find(l=>{
+      const u=l.toUpperCase();
+      return (u.includes("SAINT") || u.includes("UNITED") || u.includes("CITY") || u.includes("REAL ") || u.includes("BARCELONA") || u.includes("JUVENTUS") || u.includes("BAYERN") || u.includes("PSG"));
+    });
+    if(cand) club = cand;
+  }
+
+  // Player name heuristic: choose best line with 2-3 words, letters only, not brand/set/common noise.
+  const stop = new Set([
+    "TOPPS","PANINI","LEAF","FUTERA","DAKA","ROOKIE","RC","AUTOGRAPH","AUTO","SIGNATURE",
+    "CHROME","FINEST","MERLIN","SELECT","PRIZM","MOSAIC","OBSIDIAN","STADIUM","CLUB","MATCH","ATTAX",
+    "UEFA","FIFA","CHAMPIONS","LEAGUE","UCL","COPA","MUNDIAL","WORLD","CUP","TEAM","CLUB",
+    "EDITION","LIMITED","SERIAL","NUMBERED","BASE","CARD"
+  ]);
+
+  function scoreName(line){
+    const u = line.toUpperCase().replace(/[^A-ZÀ-ÖØ-Ý' -]/g,"").trim();
+    if(u.length<5 || u.length>28) return -1;
+    if(/\d/.test(u)) return -1;
+    const parts = u.split(/\s+/).filter(Boolean);
+    if(parts.length<2 || parts.length>3) return -1;
+    if(parts.some(p=>stop.has(p))) return -1;
+    // penalize if looks like club (contains FC etc)
+    if(parts.some(p=>["FC","CF","SC","AC"].includes(p))) return -1;
+    let s = 0;
+    s += 10;
+    s += Math.min(8, u.length/3);
+    // prefer lines that are mostly uppercase in OCR
+    if(line === line.toUpperCase()) s += 3;
+    // prefer no punctuation
+    if(/[.,;:]/.test(line)) s -= 2;
+    return s;
+  }
+
+  let bestName = "";
+  let bestScore = -1;
+  for(const l of lines){
+    const sc = scoreName(l);
+    if(sc > bestScore){ bestScore=sc; bestName=l; }
+  }
+
+  // Split first/last
+  let prenom = "", nom = "";
+  if(bestName){
+    const cleaned = bestName.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g," ").replace(/\s+/g," ").trim();
+    const parts = cleaned.split(" ");
+    if(parts.length>=2){
+      prenom = parts[0];
+      nom = parts.slice(1).join(" ");
+    }else{
+      nom = cleaned;
+    }
+  }
+
+  // Collection: if setName exists, use it; else try a descriptive line (3-5 words) excluding name/club
+  let collection = setName ? setName : "";
+  if(!collection){
+    const cand = lines.find(l=>{
+      const u=l.toUpperCase();
+      if(u===bestName.toUpperCase()) return false;
+      if(club && u===club.toUpperCase()) return false;
+      if(u.length<8 || u.length>40) return false;
+      if(/\d{4}/.test(u)) return false;
+      if(brandMap.some(b=>b.re.test(u))) return false;
+      // looks like a set line if contains one of keywords fragments
+      return /(CHROME|FINEST|MERLIN|SELECT|PRIZM|MOSAIC|STADIUM|ATTAX|DONRUSS|OPTIC|IMPECCABLE|TREASURES)/.test(u);
+    });
+    if(cand) collection = cand;
+  }
+
+  return { prenom, nom, sport, club, marque, annee, set:setName, collection, num };
+}
+
+function _setValue(id, val){
+  const el = document.getElementById(id);
+  if(!el) return false;
+  el.value = val ?? "";
+  el.dispatchEvent(new Event('input', {bubbles:true}));
+  el.dispatchEvent(new Event('change', {bubbles:true}));
+  return true;
+}
+
+function fillScanForm(parsed, rawText){
+  // Always store raw OCR in notes (keeps trace)
+  const notesEl = document.getElementById('f-notes');
+  if(notesEl){
+    const header = "OCR:\\n";
+    const existing = String(notesEl.value||"");
+    notesEl.value = existing.includes(header) ? existing : (header + rawText.trim() + "\\n\\n" + existing).trim();
+    notesEl.dispatchEvent(new Event('input', {bubbles:true}));
+  }
+
+  if(parsed.prenom) _setValue('f-prenom', parsed.prenom);
+  if(parsed.nom) _setValue('f-nom', parsed.nom);
+  if(parsed.sport) _setValue('f-sport', parsed.sport);
+  if(parsed.marque) _setValue('f-marque', parsed.marque);
+  if(parsed.annee) _setValue('f-annee', parsed.annee);
+  if(parsed.num) _setValue('f-num', parsed.num);
+
+  // Club: depends on your UI (search input)
+  if(parsed.club){
+    const clubSearch = document.getElementById('f-club-search');
+    if(clubSearch){
+      clubSearch.value = parsed.club;
+      clubSearch.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+  }
+
+  // Set / collection
+  if(parsed.set){
+    // your UI uses f-set (select) shown depending on brand
+    const ok = _setValue('f-set', parsed.set);
+    if(!ok){
+      // fallback: store in collection field
+      _setValue('f-collection', parsed.set);
+    }
+  }
+  if(parsed.collection){
+    _setValue('f-collection', parsed.collection);
+  }
+}
+// --- end OCR.space + parser ---
 
 </script>
 
