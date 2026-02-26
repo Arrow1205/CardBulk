@@ -33,24 +33,15 @@ body{ overflow-y:auto; }
 <!-- Club view (full page) -->
 <section class="view" id="view-club" style="display:block">
   <div class="hero-top">
-    <div class="hero-row">
-      <div class="hero-right">
-        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
-        <div class="hero-name">
-          <div class="first" id="club-title-small">Club</div>
-          <div class="last" id="club-title-big">—</div>
-        </div>
-        <div class="hero-chips" style="margin-top:14px">
-          <div class="chip-pill">
-            <span class="club-badge" id="club-badge">CL</span>
-            <span id="club-text">—</span>
-          </div>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img id="club-hero-img" alt="" onclick="triggerClubLogo()" style="cursor:pointer;">
+    <div class="hero-row" style="flex-direction:column;align-items:flex-start;">
+      <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back" style="margin-bottom:16px;">←</button>
+      <div class="hero-media" style="width:120px;height:120px;background:transparent;border-radius:0;overflow:visible;margin-bottom:14px;">
+        <img id="club-hero-img" alt="" onclick="triggerClubLogo()" style="cursor:pointer;width:100%;height:100%;object-fit:contain;display:block;">
         <button class="hero-photo-btn" type="button" onclick="triggerClubLogo()" aria-label="Ajouter un logo">＋</button>
         <input id="club-logo-input" type="file" accept="image/*" style="display:block" onchange="onClubLogoPicked(event)">
+      </div>
+      <div class="hero-name" style="margin-top:0;">
+        <div class="last" id="club-title-big" style="font-size:42px;">—</div>
       </div>
     </div>
 </div>
@@ -87,10 +78,6 @@ async function _pageClub(){
 
   const el_title = document.getElementById('club-title-big');
   if(el_title) el_title.textContent = String(club||'—').toUpperCase();
-  const el_text = document.getElementById('club-text');
-  if(el_text) el_text.textContent = club || 'Club';
-  const el_badge = document.getElementById('club-badge');
-  if(el_badge) el_badge.textContent = _clubBadge(club);
 
   // Club hero logo
   const img = document.getElementById('club-hero-img');
