@@ -58,14 +58,14 @@ body { overflow: hidden; }
   <div class="card-detail-bottom">
     <div class="player-identity">
       <div>
-        <div class="player-first" id="detail-prenom"></div>
-        <div class="player-last" id="detail-nom" onclick="openPlayerStats()">—</div>
+        <div class="player-first" id="detail-prenom" onclick="openPlayer(curCardId)" style="cursor:pointer;"></div>
+        <div class="player-last" id="detail-nom" onclick="openPlayer(curCardId)" style="cursor:pointer;">—</div>
         <div class="player-meta">
           <span id="detail-flag" class="player-flag" style="display:none;"></span>
-          <span id="detail-club-logo-wrap" onclick="filterByClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
-          <span class="player-club" id="detail-club-n" onclick="filterByClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
+          <span id="detail-club-logo-wrap" onclick="openClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')"" style="cursor:pointer;"></span>
+          <span class="player-club" id="detail-club-n" onclick="openClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')"" style="cursor:pointer;"></span>
           <span class="sep" id="detail-sep" style="display:none;"></span>
-          <span class="player-sport-label" id="detail-sport-label"></span>
+          <span class="player-sport-label" id="detail-sport-label" onclick="openSport(db.cards.find(x=>String(x.id)===String(curCardId))?.sport||'')" style="cursor:pointer;"></span>
         </div>
       </div>
       <div class="player-right" style="display:none;"><div id="detail-num" style="display:none;"></div><div id="detail-badges"></div></div>
