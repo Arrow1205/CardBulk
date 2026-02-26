@@ -52,6 +52,205 @@
 </div>
 
 
+<!-- COLLECTION -->
+<div class="page" id="page-collection">
+  <div class="page-inner">
+    <div class="coll-header">
+      <div><div class="coll-eyebrow"></div><div class="coll-big">Collection</div></div>
+      <div class="hdr-btns">
+        <div class="btn-icon" onclick="toggleBulk()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <div class="btn-icon" onclick="openNewFolder()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg></div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input id="coll-search" type="text" placeholder="Rechercher…" oninput="collSearch(this.value)" autocomplete="off"></div>
+      <div class="search-dropdown" id="coll-search-dropdown"></div>
+    </div>
+    <!-- Pie chart Valeur par marque -->
+    <div class="home-pie-wrap" id="home-pie-wrap" style="display:none;margin:0 20px 16px;">
+      <div class="home-pie-title" id="coll-value-title">Valeur de la collection</div>
+      <div class="pie-container">
+        <div class="pie-svg-wrap"><svg id="pie-svg" width="90" height="90" viewBox="0 0 90 90"></svg></div>
+        <div class="pie-legend" id="pie-legend"></div>
+      </div>
+    </div>
+    <div style="padding:0 20px 9px;display:flex;align-items:center;justify-content:space-between;"><div class="sec-title" style="font-size:15px;">Dossiers</div><div id="total-val" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--accent);"></div>
+      <div id="total-cards" style="font-size:12px;opacity:.7;text-align:right;margin-top:-2px;"></div></div>
+    <div class="folders-grid" id="folders-grid"></div>
+    <div style="padding:0 20px 9px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div class="sec-title" style="font-size:15px;">Toutes les cartes</div>
+      <div class="sport-dd" id="sport-dd" style="position:relative;flex-shrink:0;">
+  <button class="sport-dd-btn" id="sport-dd-btn" type="button" onclick="toggleSportDD(event)" style="display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:12px;border-radius:99px;background:var(--surface2);border:1px solid rgba(255,255,255,.10);color:var(--text);">
+    <span class="sport-dd-ico" id="sport-dd-ico" style="width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;overflow:hidden;"></span>
+    <span id="sport-dd-label">Tous les sports</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+  <div class="sport-dd-menu" id="sport-dd-menu" style="position:absolute;right:0;top:calc(100% + 6px);min-width:190px;background:var(--surface);border:1px solid rgba(255,255,255,.10);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:6px;display:none;z-index:50;">
+    <!-- items injected -->
+  </div>
+</div>
+
+<select class="form-select" id="sport-filter-sel" onchange="setSportFilter(this.value)" style="display:none;">
+  <option value="">Tous les sports</option>
+  <option value="football">Football</option>
+  <option value="basketball">Basketball</option>
+  <option value="baseball">Baseball</option>
+  <option value="nfl">NFL</option>
+  <option value="nhl">NHL</option>
+  <option value="tennis">Tennis</option>
+  <option value="f1">F1</option>
+  <option value="autre">Autre</option>
+</select>
+    </div>
+        <!-- Row 1: Brands -->
+    <div class="filters-row" id="brand-filters-row" style="padding-bottom:4px;gap:8px;">
+      <div class="filter-tag brand-filter-btn active" onclick="setBrandFilter('all',this)" style="font-size:12px;">Tout</div>
+      <div class="filter-tag brand-filter-btn" onclick="setBrandFilter('Topps',this)" style="padding:4px 10px;"></div>
+      <div class="filter-tag brand-filter-btn" onclick="setBrandFilter('Panini',this)" style="padding:4px 10px;"></div>
+      <div class="filter-tag brand-filter-btn" onclick="setBrandFilter('Leaf',this)" style="padding:5px 10px;"></div>
+      <div class="filter-tag brand-filter-btn" onclick="setBrandFilter('Daka',this)" style="padding:5px 10px;"></div>
+      <div class="filter-tag brand-filter-btn" onclick="setBrandFilter('Futera',this)" style="font-size:12px;">Futera</div>
+    </div>
+    <!-- Row 2: Types -->
+    <div class="filters-row" id="coll-filters-row" style="padding-top:2px;">
+      <div class="filter-tag type-filter active" onclick="setTypeFilter('all',this)">Tout</div>
+      <div class="filter-tag type-filter" onclick="setTypeFilter('auto',this)">Auto</div>
+      <div class="filter-tag type-filter" onclick="setTypeFilter('patch',this)">Patch</div>
+      <div class="filter-tag type-filter" onclick="setTypeFilter('rookie',this)">Rookie</div>
+      <div class="filter-tag type-filter" onclick="setTypeFilter('num',this)">Numérotée</div>
+    </div>
+    <div class="colls-grid" id="coll-grid"></div>
+    <div id="coll-empty" class="empty-state" style="display:none;"><div class="empty-icon"></div><div class="empty-title">Aucun résultat</div><div class="empty-sub">Essaie d'autres filtres</div></div>
+  </div>
+</div>
+
+
+
+
+<!-- SCANNER -->
+<div class="page" id="page-scanner">
+  <div class="page-inner">
+    <div class="scanner-hdr"><div class="scanner-title">Ajouter</div><div class="scanner-sub">Scanne ou uploade ta carte</div></div>
+    <div style="padding:0 20px;">
+      <div class="side-tabs">
+        <div class="side-tab active" id="add-tab-recto" onclick="switchAddSide('recto')">Recto</div>
+        <div class="side-tab" id="add-tab-verso" onclick="switchAddSide('verso')">Verso</div>
+      </div>
+      <div id="add-recto-zone">
+        <div class="photo-upload" id="photo-upload-zone"><div class="scan-frame-overlay"><div class="sf-corner sf-tl"></div><div class="sf-corner sf-tr"></div><div class="sf-corner sf-bl"></div><div class="sf-corner sf-br"></div><div class="scan-line"></div></div>
+          <input type="file" id="card-photo-lib" accept="image/*" style="display:none" onchange="handlePhoto(this,'recto')">
+          <input type="file" id="card-photo-cam" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'recto')">
+          <div id="photo-preview-wrap" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib').click()">
+            <img id="photo-preview-img" style="width:100%;height:100%;object-fit:cover;">
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+          </div>
+          <div id="photo-placeholder-ui"><div style="font-size:28px;"></div>
+            <div class="photo-btns">
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam').click()">Caméra</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib').click()">Bibliothèque</button>
+            </div>
+          </div>
+        </div>
+        <button class="crop-btn" id="crop-btn" style="display:none;" onclick="openCrop('recto')">Recadrer</button>
+        <button class="crop-btn" id="ocr-btn" style="margin-top:10px;" type="button" onclick="ocrCard()">Analyser (OCR)</button>
+</div>
+      <div id="add-verso-zone" style="display:none;">
+        <div class="photo-upload" id="photo-upload-zone-v">
+          <input type="file" id="card-photo-lib-v" accept="image/*" style="display:none" onchange="handlePhoto(this,'verso')">
+          <input type="file" id="card-photo-cam-v" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'verso')">
+          <div id="photo-preview-wrap-v" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib-v').click()">
+            <img id="photo-preview-img-v" style="width:100%;height:100%;object-fit:cover;">
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+          </div>
+          <div id="photo-placeholder-ui-v"><div style="font-size:28px;"></div>
+            <div class="photo-btns">
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam-v').click()">Caméra</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib-v').click()">Bibliothèque</button>
+            </div>
+          </div>
+        </div>
+        <button class="crop-btn" id="crop-btn-v" style="display:none;" onclick="openCrop('verso')">Recadrer verso</button>
+      </div>
+      <div style="height:14px;"></div>
+      <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="f-prenom" type="text" placeholder="Kylian" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="f-nom" type="text" placeholder="Mbappé" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">Sport</label>
+        <div class="sport-select-wrap"><span id="f-sport-icon" class="sport-icon"></span><select class="form-select" id="f-sport" onchange="onSportChange();updateSportIcon()">
+          <option value="">Sélectionner</option>
+          <option value="football">Football / Soccer</option>
+          <option value="basketball">Basketball</option>
+          <option value="baseball">Baseball</option>
+          <option value="nfl">NFL</option>
+          <option value="nhl">NHL</option>
+          <option value="tennis">Tennis</option>
+          <option value="f1">Formule 1</option>
+          <option value="autre">Autre</option>
+          <option value="marvel">Marvel</option>
+          <option value="pokemon">Pokémon</option>
+        </select></div>
+      </div>
+      <div class="form-group" id="club-group" style="display:none;">
+        <label class="form-label">Club / Équipe</label>
+        <div class="club-search-wrap">
+          <input class="form-input" id="f-club-search" type="text" placeholder="Rechercher un club… (ex: Ars)" oninput="clubSearch(this.value,'f')" onfocus="clubSearch(this.value,'f')" autocomplete="off">
+          <div class="club-dropdown" id="f-club-dropdown"></div>
+        </div>
+        <div id="sel-club-disp" style="display:none;margin-top:9px;align-items:center;gap:8px;"></div>
+        <button class="club-create-btn" id="club-create-show" style="display:none;" onclick="showCreateClubForm('f')"></button>
+        <div id="club-create-form" style="display:none;margin-top:8px;">
+          <input class="form-input" id="new-club-name" type="text" placeholder="Nom du club" style="margin-bottom:6px;">
+          <input class="form-input" id="new-club-full" type="text" placeholder="Nom complet" style="margin-bottom:6px;">
+          <input class="form-input" id="new-club-emoji" type="text" placeholder="Emoji" style="margin-bottom:6px;width:70px;">
+          <button class="btn-primary" style="padding:9px;" onclick="createClub('f')">Créer</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numérotée</label>
+        <div style="display:flex;gap:7px;align-items:center;">
+          <div class="toggle-row" style="flex:1;"><button class="toggle-btn on" id="num-non" onclick="toggleNum(false)">Non</button><button class="toggle-btn" id="num-oui" onclick="toggleNum(true)">Oui</button></div>
+          <input class="form-input" id="f-num" type="text" placeholder="/25" style="width:76px;display:none;">
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Spécificités</label><div class="toggle-row"><button class="toggle-btn" id="tog-auto" onclick="toggleTag('auto')">Auto</button><button class="toggle-btn" id="tog-patch" onclick="toggleTag('patch')">Patch</button><button class="toggle-btn" id="tog-rookie" onclick="toggleTag('rookie')">Rookie</button></div></div>
+
+      <!-- MARQUE -->
+      <div class="form-group"><label class="form-label">Marque</label>
+        <select class="form-select" id="f-marque" onchange="onMarqueChange('f')">
+          <option value="">Sélectionner</option>
+          <option value="Topps">Topps</option>
+          <option value="Panini">Panini</option>
+          <option value="Leaf">Leaf</option>
+          <option value="Futera">Futera</option>
+          <option value="Daka">Daka</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+      <!-- ANNÉE -->
+      <div class="form-group"><label class="form-label">Année</label>
+        <select class="form-select" id="f-annee">
+          <option value="">Sélectionner</option>
+        </select>
+      </div>
+      <!-- COLLECTION/SET cascade -->
+      <div class="form-group" id="f-set-group" style="display:none;"><label class="form-label">Collection / Set</label>
+        <select class="form-select" id="f-set"></select>
+      </div>
+
+      <div class="form-group"><label class="form-label">Dossier</label><select class="form-select" id="f-collection"></select></div>
+      <div id="new-coll-wrap" style="display:none;margin-top:7px;"><input class="form-input" id="f-new-coll" type="text" placeholder="Nom de la collection"></div>
+      <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="f-price" type="number" placeholder="0.00" step="0.01" min="0"></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="3" placeholder="État, remarques…"></textarea></div>
+      <button class="btn-primary" id="save-card-btn" onclick="saveCard()">Enregistrer la carte</button>
+      <div style="height:22px;"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
 
 <!-- TABBAR -->
 <div class="tabbar">
