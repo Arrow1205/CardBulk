@@ -100,8 +100,10 @@ async function _pagePlayer(){
   const parts = name.split(' ');
   const prenom = parts.slice(0, -1).join(' ') || '';
   const nom = parts[parts.length-1] || name;
-  const pname = document.getElementById('player-name');
-  if(pname){ pname.innerHTML = prenom ? `<span style="font-weight:300;font-size:.65em;display:block;opacity:.65">${prenom}</span>${nom.toUpperCase()}` : nom.toUpperCase(); }
+  const pfirst = document.getElementById('player-first');
+  const plast  = document.getElementById('player-last');
+  if(pfirst) pfirst.textContent = prenom;
+  if(plast)  plast.textContent  = nom.toUpperCase();
 
   const psport = document.getElementById('player-sport-text');
   if(psport) psport.textContent = sportL(_ctxPlayer.sport)||'';
@@ -110,10 +112,7 @@ async function _pagePlayer(){
 
   renderPlayerPage();
 
-  // Player stats (Wikipedia/Claude)
-  if(c0 && typeof openPlayerStats === 'function') {
-    try{ openPlayerStats(); }catch(e){}
-  }
+  // Player stats via Claude available via Stats button
 }
 
 // Back button: go to referring card or collection
