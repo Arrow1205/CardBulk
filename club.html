@@ -33,13 +33,9 @@ body{ overflow-y:auto; }
 <!-- Club view (full page) -->
 <section class="view" id="view-club" style="display:block">
   <div class="hero-top">
-    <div class="hero-row" style="flex-direction:column;align-items:flex-start;">
-      <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back" style="margin-bottom:16px;">←</button>
-      <div class="hero-media" style="width:120px;height:120px;background:transparent;border-radius:0;overflow:visible;margin-bottom:14px;">
-        <img id="club-hero-img" alt="" onclick="triggerClubLogo()" style="cursor:pointer;width:100%;height:100%;object-fit:contain;display:block;">
-        <button class="hero-photo-btn" type="button" onclick="triggerClubLogo()" aria-label="Ajouter un logo">＋</button>
-        <input id="club-logo-input" type="file" accept="image/*" style="display:block" onchange="onClubLogoPicked(event)">
-      </div>
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back" style="margin-bottom:16px;">←</button>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:14px;">
+      <img id="club-hero-img" alt="" style="width:110px;height:110px;object-fit:contain;display:none;">
       <div class="hero-name" style="margin-top:0;">
         <div class="last" id="club-title-big" style="font-size:42px;">—</div>
       </div>
@@ -59,9 +55,6 @@ body{ overflow-y:auto; }
 </section>
 
 <div class="toast" id="toast"></div>
-
-<!-- Club logo upload input -->
-<input type="file" id="club-logo-input" accept="image/*" style="display:none" onchange="onClubLogoPicked(event)">
 
 <script src="assets/app.js"></script>
 <script>
