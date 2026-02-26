@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Fugaz+One&display=swap" rel="stylesheet">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CardVault">
+<meta name="theme-color" content="#0c0c0e">
+<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAMAEBAAAAEAIABoBAAANgAAAICAgAAABACAAoAkAAMYAAAA=">
+<link rel="stylesheet" href="assets/app.css">
+<title>CardVault — Club</title>
+<style>
+.view{ display:block!important; position:relative; min-height:100vh; }
+body{ overflow-y:auto; }
+</style>
+</head>
+<body>
+
+<!-- Fullscreen image viewer -->
+<div id="img-viewer" class="img-viewer" style="display:none" aria-hidden="true">
+  <button id="img-viewer-close" class="img-viewer-close" aria-label="Fermer"></button>
+  <img id="img-viewer-img" alt="Carte" />
+</div>
+
+
+
+
+<!-- Club view (full page) -->
+<section class="view" id="view-club" style="display:block">
+  <div class="hero-top">
+    <div class="hero-row">
+      <div class="hero-right">
+        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+        <div class="hero-name">
+          <div class="first" id="club-title-small">Club</div>
+          <div class="last" id="club-title-big">—</div>
+        </div>
+        <div class="hero-chips" style="margin-top:14px">
+          <div class="chip-pill">
+            <span class="club-badge" id="club-badge">CL</span>
+            <span id="club-text">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img id="club-hero-img" alt="" onclick="triggerClubLogo()" style="cursor:pointer;">
+        <button class="hero-photo-btn" type="button" onclick="triggerClubLogo()" aria-label="Ajouter un logo">＋</button>
+        <input id="club-logo-input" type="file" accept="image/*" style="display:block" onchange="onClubLogoPicked(event)">
+      </div>
+    </div>
+</div>
+  <div class="info-section">
+    <div class="section-title">Filtres</div>
+    <div class="pills-row" id="club-brand-row"></div>
+    <div class="pills-row" style="margin-top:10px" id="club-spec-row"></div>
+
+    <div class="section-title">Joueurs du club</div>
+    <div class="pills-row" id="club-players-row"></div>
+
+    <div class="section-title">Cartes</div>
+    <div class="cards-grid" id="club-cards-grid"></div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<!-- Club logo upload input -->
+<input type="file" id="club-logo-input" accept="image/*" style="display:none" onchange="onClubLogoPicked(event)">
+
+<script src="assets/app.js"></script>
+<script>
+/* PAGE: club */
+async function _pageClub(){
+  const params = new URLSearchParams(location.search);
+  const club = decodeURIComponent(params.get('name') || '');
+  if(!club){ location.href='index.html'; return; }
+
+  _ctxClub.club = club;
+  _ctxClub.brand = '';
+  _ctxClub.spec = {auto:false,patch:false,rookie:false,numbered:false};
+  _ctxClub.player = '';
+
+  const el_title = document.getElementById('club-title-big');
+  if(el_title) el_title.textContent = String(club||'—').toUpperCase();
+  const el_text = document.getElementById('club-text');
+  if(el_text) el_text.textContent = club || 'Club';
+  const el_badge = document.getElementById('club-badge');
+  if(el_badge) el_badge.textContent = _clubBadge(club);
+
+  // Club hero logo
+  const img = document.getElementById('club-hero-img');
+  if(img){
+    const logos = _loadClubLogos();
+    const override = logos[club] || '';
+    const base = (typeof getClubLogoB64==='function') ? getClubLogoB64({name:club, full:club, logo:''}) : '';
+    const src = override || base || '';
+    img.src = src;
+    img.style.display = src ? 'block' : 'none';
+  }
+
+  renderClubPage();
+}
+
+function navBack(){
+  if(document.referrer && document.referrer.includes(location.host)){ history.back(); }
+  else{ location.href='collection.html'; }
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadFromDB();
+  setupImageViewer && setupImageViewer();
+});
+</script>
+</body>
+</html>
