@@ -2872,26 +2872,34 @@ function _displayCard(c){
   const fl = document.getElementById('detail-flag');
   if(fl){ fl.textContent = c.drapeauEmoji || ''; fl.style.display = c.drapeauEmoji ? '' : 'none'; }
 
-  // Logo club
-  const clw = document.getElementById('detail-club-logo-wrap');
-  if(clw){
-    const cl = typeof getClub === 'function' ? getClub(c.club) : null;
-    const src = cl && typeof getClubLogoB64 === 'function' ? getClubLogoB64(cl) : (c.clubLogo||'');
-    if(src){ clw.innerHTML = `<img src="${src}" style="height:18px;width:auto;object-fit:contain;" alt="">`; }
-    else { clw.innerHTML = ''; }
+  // Chip CLUB
+  const clubChip = document.getElementById('detail-club-chip');
+  const clubLogo = document.getElementById('detail-club-logo');
+  const cn = document.getElementById('detail-club-n');
+  if(c.club){
+    if(cn) cn.textContent = c.club;
+    if(clubLogo && typeof getClubLogoB64 === 'function'){
+      const src = getClubLogoB64(c.club);
+      if(src) clubLogo.src = src;
+    }
+    if(clubChip) clubChip.style.display = '';
+  } else {
+    if(clubChip) clubChip.style.display = 'none';
   }
 
-  // Nom du club
-  const cn = document.getElementById('detail-club-n');
-  if(cn) cn.textContent = c.club || '';
-
-  // Séparateur
-  const sep = document.getElementById('detail-sep');
-  if(sep) sep.style.display = (c.club && c.sport) ? '' : 'none';
-
-  // Sport label
+  // Chip SPORT
+  const sportChip = document.getElementById('detail-sport-chip');
+  const sportIcon = document.getElementById('detail-sport-icon');
   const sl = document.getElementById('detail-sport-label');
-  if(sl) sl.textContent = c.sport ? (typeof sportL === 'function' ? sportL(c.sport) : c.sport) : '';
+  if(c.sport){
+    if(sl) sl.textContent = typeof sportL === 'function' ? sportL(c.sport) : c.sport;
+    if(sportIcon && typeof SPORT_ICONS !== 'undefined' && SPORT_ICONS[c.sport]){
+      sportIcon.src = SPORT_ICONS[c.sport];
+    }
+    if(sportChip) sportChip.style.display = '';
+  } else {
+    if(sportChip) sportChip.style.display = 'none';
+  }
 
   // Numérotée
   const numWrap = document.querySelector('#detail-num')?.parentElement;
@@ -2932,12 +2940,6 @@ function _displayCard(c){
   // Prix
   const dpr = document.getElementById('d-price');
   if(dpr) dpr.textContent = typeof fmtPrice === 'function' ? fmtPrice(c.price) : (c.price ? c.price+'€' : '—');
-
-  // Notes
-  const notesWrap = document.getElementById('d-notes-wrap');
-  const notesVal  = document.getElementById('d-notes-val');
-  if(notesVal) notesVal.textContent = c.notes || '';
-  if(notesWrap) notesWrap.style.display = c.notes ? '' : 'none';
 
   // Gyro/swipe
   try{ if(typeof initGyroAndSwipe === 'function') initGyroAndSwipe(); }catch(e){}
