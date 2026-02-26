@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Fugaz+One&display=swap" rel="stylesheet">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CardVault">
+<meta name="theme-color" content="#0c0c0e">
+<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAMAEBAAAAEAIABoBAAANgAAAICAgAAABACAAoAkAAMYAAAA=">
+<link rel="stylesheet" href="assets/app.css">
+<title>CardVault — Sport</title>
+<style>
+.view{ display:block!important; position:relative; min-height:100vh; }
+body{ overflow-y:auto; }
+</style>
+</head>
+<body>
+
+<!-- Fullscreen image viewer -->
+<div id="img-viewer" class="img-viewer" style="display:none" aria-hidden="true">
+  <button id="img-viewer-close" class="img-viewer-close" aria-label="Fermer"></button>
+  <img id="img-viewer-img" alt="Carte" />
+</div>
+
+
+
+
+<!-- Sport view (full page) -->
+<section class="view" id="view-sport" style="display:block">
+  <div class="hero-top">
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+    <div class="hero-name">
+      <div class="first" id="sport-title-small">Sport</div>
+      <div class="last" id="sport-title-big">—</div>
+    </div>
+    <div class="hero-chips" style="margin-top:14px">
+      <div class="chip-pill">
+        <img id="sport-icon" alt="" />
+        <span id="sport-text">—</span>
+      </div>
+    </div>
+  </div>
+  <div class="info-section">
+    <div class="section-title">Filtres</div>
+    <div class="pills-row" id="sport-brand-row"></div>
+    <div class="pills-row" style="margin-top:10px" id="sport-spec-row"></div>
+
+    <div class="section-title">Cartes</div>
+    <div class="cards-grid" id="sport-cards-grid"></div>
+  </div>
+</section>
+
+
+
+<div class="toast" id="toast"></div>
+<script src="assets/app.js"></script>
+<script>
+/* PAGE: sports */
+async function _pageSports(){
+  const params = new URLSearchParams(location.search);
+  const sport = decodeURIComponent(params.get('key') || '');
+  if(!sport){ location.href='index.html'; return; }
+
+  _ctxSport.sport = sport;
+  _ctxSport.brand = '';
+  _ctxSport.spec = {auto:false,patch:false,rookie:false,numbered:false};
+
+  const label = sportL(sport) || sport;
+  const el_title = document.getElementById('sport-title-big');
+  if(el_title) el_title.textContent = label.toUpperCase();
+  const el_text = document.getElementById('sport-text');
+  if(el_text) el_text.textContent = label;
+  const el_icon = document.getElementById('sport-icon');
+  if(el_icon) el_icon.src = SPORT_ICONS[sport] || '';
+
+  renderSportPage();
+}
+
+function navBack(){
+  if(document.referrer && document.referrer.includes(location.host)){ history.back(); }
+  else{ location.href='collection.html'; }
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadFromDB();
+  setupImageViewer && setupImageViewer();
+});
+</script>
+</body>
+</html>
