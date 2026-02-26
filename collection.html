@@ -18,18 +18,21 @@
 <body>
 
 <!-- COLLECTION -->
-<div class="page" id="page-collection">
+<div class="page active" id="page-collection">
   <div class="page-inner">
     <div class="coll-header">
       <div><div class="coll-eyebrow"></div><div class="coll-big">Collection</div></div>
       <div class="hdr-btns">
-        <div class="btn-icon" onclick="toggleBulk()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-        <div class="btn-icon" onclick="openNewFolder()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg></div>
       </div>
     </div>
     <div class="search-wrap">
       <div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input id="coll-search" type="text" placeholder="Rechercher…" oninput="collSearch(this.value)" autocomplete="off"></div>
       <div class="search-dropdown" id="coll-search-dropdown"></div>
+    </div>
+    <!-- Total + count ligne sous la recherche -->
+    <div style="padding:6px 20px 10px;display:flex;align-items:center;gap:12px;">
+      <div id="total-val" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--accent);"></div>
+      <div id="total-cards" style="font-size:13px;opacity:.65;"></div>
     </div>
     <!-- Pie chart Valeur par marque -->
     <div class="home-pie-wrap" id="home-pie-wrap" style="display:none;margin:0 20px 16px;">
@@ -39,9 +42,16 @@
         <div class="pie-legend" id="pie-legend"></div>
       </div>
     </div>
-    <div style="padding:0 20px 9px;display:flex;align-items:center;justify-content:space-between;"><div class="sec-title" style="font-size:15px;">Dossiers</div><div id="total-val" style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--accent);"></div>
-      <div id="total-cards" style="font-size:12px;opacity:.7;text-align:right;margin-top:-2px;"></div></div>
-    <div class="folders-grid" id="folders-grid"></div>
+    <!-- Dossiers row: titre + bouton inline -->
+    <div style="padding:0 20px 10px;display:flex;align-items:center;justify-content:space-between;">
+      <div class="sec-title" style="font-size:15px;">Dossiers</div>
+      <button onclick="openNewFolder()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.3px;padding:0;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nouveau dossier
+      </button>
+    </div>
+    <!-- Folders: scroll horizontal sur une ligne -->
+    <div id="folders-grid" style="display:flex;flex-direction:row;overflow-x:auto;gap:10px;padding:0 20px 18px;-webkit-overflow-scrolling:touch;scrollbar-width:none;"></div>
     <div style="padding:0 20px 9px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
       <div class="sec-title" style="font-size:15px;">Toutes les cartes</div>
       <div class="sport-dd" id="sport-dd" style="position:relative;flex-shrink:0;">
@@ -153,13 +163,8 @@
       <div class="chip"><div class="chip-label">Dossier</div><div class="chip-val" id="d-coll">—</div></div>
       <div class="chip"><div class="chip-label">Prix</div><div class="chip-val price-val" id="d-price">—</div></div>
     </div>
-    <div class="detail-notes-wrap" id="d-notes-wrap" style="display:none;">
-      <div class="detail-notes-label">Notes</div>
-      <div class="detail-notes-val" id="d-notes-val"></div>
-    </div>
     <div class="detail-actions">
-      <button class="btn-secondary" onclick="editCurrentCard()">Modifier</button>
-      <button class="btn-accent" onclick="openPlayerStats()">Stats Joueur</button>
+      <button class="btn-secondary" style="flex:1;" onclick="editCurrentCard()">Modifier</button>
     </div>
   </div>
 </div>
@@ -176,12 +181,6 @@
 </div>
 
 
-<!-- BULK -->
-<div class="bulk-bar" id="bulk-bar">
-  <button class="btn-secondary" style="flex:0 0 auto;padding:9px 13px;" onclick="cancelBulk()">Annuler</button>
-  <select class="form-select" id="bulk-dest" style="flex:1;"></select>
-  <button class="btn-accent" style="flex:0 0 auto;padding:9px 13px;" onclick="executeBulk()"></button>
-</div>
 
 
 <!-- EDIT SHEET -->
@@ -285,17 +284,30 @@
 </div>
 
 
-<!-- FOLDER SHEET -->
+<!-- FOLDER SHEET: sport + nom -->
 <div class="sheet-overlay" id="folder-sheet" onclick="closeSheet('folder-sheet',event)">
   <div class="sheet" onclick="event.stopPropagation()">
-    <div class="sheet-handle"></div><div class="sheet-title">Nouveau dossier</div>
-    <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="new-folder-name" type="text" placeholder="ex: Rookies 2024"></div>
-    <div class="form-group"><label class="form-label">Icône</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)">⭐</span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)"></span><span style="cursor:pointer;font-size:22px;" onclick="selEmoji(this)">🃏</span>
-      </div>
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Nouveau dossier</div>
+    <div class="form-group">
+      <label class="form-label">Sport</label>
+      <select class="form-select" id="new-folder-sport">
+        <option value="">Tous sports</option>
+        <option value="football">Football</option>
+        <option value="basketball">Basketball</option>
+        <option value="baseball">Baseball</option>
+        <option value="nfl">NFL</option>
+        <option value="nhl">NHL</option>
+        <option value="tennis">Tennis</option>
+        <option value="f1">F1</option>
+        <option value="autre">Autre</option>
+      </select>
     </div>
-    <button class="btn-primary" onclick="createFolder()">Créer le dossier</button>
+    <div class="form-group">
+      <label class="form-label">Nom du dossier</label>
+      <input class="form-input" id="new-folder-name" type="text" placeholder="ex: Rookies 2024">
+    </div>
+    <button class="btn-primary" onclick="createFolder()">Valider</button>
   </div>
 </div>
 
@@ -440,6 +452,57 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initSportDD && initSportDD();
   setupLiveSearch && setupLiveSearch();
 });
+
+/* ── Folder functions ── */
+function openNewFolder(){
+  document.getElementById('new-folder-name').value = '';
+  const sel = document.getElementById('new-folder-sport');
+  if(sel) sel.value = '';
+  document.getElementById('folder-sheet').classList.add('open');
+}
+
+async function createFolder(){
+  const name = document.getElementById('new-folder-name').value.trim();
+  if(!name){ showToast('Saisis un nom de dossier'); return; }
+  const sport = document.getElementById('new-folder-sport')?.value || '';
+  // Pick emoji from sport
+  const sportEmojis = {football:'⚽',basketball:'🏀',baseball:'⚾',nfl:'🏈',nhl:'🏒',tennis:'🎾',f1:'🏎️',autre:'🃏','':`📁`};
+  const emoji = sportEmojis[sport] || '📁';
+  const id = Date.now()+'';
+  const folder = {id, name, emoji, sport};
+  db.folders = db.folders || [];
+  db.folders.push(folder);
+  // Save to Supabase
+  try{
+    if(typeof sbInsert === 'function') await sbInsert('folders', folder);
+  }catch(e){ console.warn('Folder save error', e); }
+  closeSheet('folder-sheet');
+  renderFolders();
+  showToast('📁 Dossier créé !');
+}
+
+function openFolder(folderId){
+  const f = (db.folders||[]).find(x=>x.id===folderId);
+  if(!f) return;
+  location.href = `dossier.html?id=${encodeURIComponent(folderId)}&name=${encodeURIComponent(f.name)}`;
+}
+
+function deleteCurrentFolder(){
+  const title = document.getElementById('coll-view-title');
+  const fname = title ? title.textContent : '';
+  if(!fname) return;
+  if(!confirm(`Supprimer le dossier "${fname}" ?`)) return;
+  db.folders = (db.folders||[]).filter(f=>f.name!==fname);
+  try{ if(typeof sbDelete==='function') sbDelete('folders', fname); }catch(e){}
+  closeCollView();
+  renderFolders();
+  showToast('Dossier supprimé');
+}
+
+function closeCollView(){
+  const v = document.getElementById('coll-view');
+  if(v) v.classList.remove('open');
+}
 </script>
 </body>
 </html>
