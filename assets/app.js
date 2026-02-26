@@ -641,7 +641,32 @@ function setBrandFilter(b,el){curBrandFilter=b;document.querySelectorAll(".brand
 function setTypeFilter(f,el){curTypeFilter=f;document.querySelectorAll(".type-filter").forEach(t=>t.classList.remove("active"));el.classList.add("active");renderCG2(getFiltered());}
 function setFilter(f,el){setBrandFilter(f,el);}
 function totalVal(cards){return cards.reduce((s,c)=>s+(c.price||0),0);}
-function renderFolders(){console.log("[CardVault] renderFolders()"); const g=document.getElementById("folders-grid"); if(!g){ console.warn("[CardVault] folders-grid not found"); return; }const totalAll=totalVal(db.cards);const tv=document.getElementById("total-val");if(tv)tv.textContent=totalAll>0?`Total : ${fmtPrice(totalAll)}`:"";g.innerHTML=db.folders.map(f=>{const cards=db.cards.filter(c=>c.collection===f.name);const n=cards.length;const val=totalVal(cards);return`<div class="folder-card" onclick="openFolder('${f.id}')"><div class="folder-top"><div class="folder-emoji">${f.emoji}</div><div class="folder-n">${n}</div></div><div class="folder-name">${f.name}</div><div class="folder-sub">carte${n>1?"s":""}</div>${val>0?`<div class="folder-val">${fmtPrice(val)}</div>`:""}</div>`;}).join("")+'<div class="folder-card folder-add" onclick="openNewFolder()"><span style="font-size:20px;"></span><span>Nouveau</span></div>';const bd=document.getElementById("bulk-dest"); if(bd) bd.innerHTML='<option value="">Déplacer vers…</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji} ${f.name}</option>`).join("");}
+function renderFolders(){
+  const g=document.getElementById("folders-grid");
+  if(!g){ return; }
+  const totalAll=totalVal(db.cards);
+  const tv=document.getElementById("total-val");
+  if(tv) tv.textContent=totalAll>0?`Total : ${fmtPrice(totalAll)}`:"";
+  const tc=document.getElementById("total-cards");
+  if(tc) tc.textContent=`${db.cards.length} carte${db.cards.length!==1?'s':''}`;
+  if(!db.folders||!db.folders.length){
+    g.innerHTML='<div style="color:var(--text-dim);font-size:13px;padding:4px 0;">Aucun dossier</div>';
+    return;
+  }
+  g.innerHTML=db.folders.map(f=>{
+    const cards=db.cards.filter(c=>c.collection===f.name);
+    const n=cards.length;
+    const val=totalVal(cards);
+    return`<div class="folder-card" style="flex:0 0 auto;min-width:140px;max-width:160px;" onclick="openFolder('${f.id}')">
+      <div class="folder-top"><div class="folder-emoji">${f.emoji||'📁'}</div><div class="folder-n">${n}</div></div>
+      <div class="folder-name">${f.name}</div>
+      <div class="folder-sub">carte${n>1?"s":""}</div>
+      ${val>0?`<div class="folder-val">${fmtPrice(val)}</div>`:""}
+    </div>`;
+  }).join("");
+  const bd=document.getElementById("bulk-dest");
+  if(bd) bd.innerHTML='<option value="">Déplacer vers…</option>'+db.folders.map(f=>`<option value="${f.name}">${f.emoji||'📁'} ${f.name}</option>`).join("");
+}
 function renderCG2(cards){const g=document.getElementById("coll-grid"); if(!g) return; const em=document.getElementById("coll-empty");if(!cards.length){g.innerHTML="";em.style.display="block";return;}em.style.display="none";g.innerHTML=cards.map(c=>`<div class="coll-thumb" data-card-id="${c.id}" onclick="handleThumb(\'${c.id}\')">${c.photo?`<img src="${c.photo}" alt="">`:`<div class="coll-thumb-empty">${c.clubEmoji||"🃏"}</div>`}</div>`).join("");}
 function handleThumb(id){const sid=String(id);if(bulkMode){if(false)bulkSel=bulkSel.filter(x=>x!==sid);else bulkSel.push(sid);renderCG2(getFiltered());}else openCard(sid);}
 
@@ -2777,8 +2802,8 @@ function navigate(p){
     if(p==='collection'){ location.href='collection.html'; return; }
     return;
   }
-  // Pages info (card, player, sports, club) → toujours aller vers l'accueil pour home/collection/scanner
-  if(_PAGE === 'card' || _PAGE === 'player' || _PAGE === 'sports' || _PAGE === 'club'){
+  // Pages info (card, player, sports, club, dossier) → toujours aller vers l'accueil pour home/collection/scanner
+  if(_PAGE === 'card' || _PAGE === 'player' || _PAGE === 'sports' || _PAGE === 'club' || _PAGE === 'dossier'){
     const map = {home:'index.html', collection:'collection.html', scanner:'scanner.html'};
     if(map[p]) location.href = map[p];
     return;
@@ -2922,11 +2947,13 @@ window._displayCard = _displayCard;
 
 // Override openPlayer: go to player.html?name=...
 function openPlayer(key){
-  let playerName = key;
-  let c0 = (db?.cards||[]).find(c=>c.id===key) || null;
-  if(c0){ playerName = ((c0.prenom||'')+' '+(c0.nom||'')).trim() || (c0.player||''); }
-  else { c0 = (db?.cards||[]).find(c=>(((c.prenom||'')+' '+(c.nom||'')).trim())===playerName) || null; }
-  if(!playerName){ showToast('Joueur introuvable'); return; }
+  // key peut être un id de carte OU un nom de joueur
+  const sid = String(key||'');
+  let c0 = (db?.cards||[]).find(c=>String(c.id)===sid) || null;
+  let playerName = c0 ? (((c0.prenom||'')+' '+(c0.nom||'')).trim()||c0.player||'') : sid;
+  // Si on a passé directement un nom (pas un id), vérifier
+  if(!c0){ c0 = (db?.cards||[]).find(c=>(((c.prenom||'')+' '+(c.nom||'')).trim())===sid) || null; }
+  if(!playerName || playerName === sid && !c0){ showToast('Joueur introuvable'); return; }
   location.href = 'player.html?name=' + encodeURIComponent(playerName);
 }
 window.openPlayer = openPlayer;
@@ -2976,6 +3003,9 @@ async function loadFromDB(){
   }
   else if(pg==='sports'){
     if(typeof _pageSports==='function') _pageSports();
+  }
+  else if(pg==='dossier'){
+    if(typeof _pageDossier==='function') _pageDossier();
   }
 }
 window.loadFromDB = loadFromDB;
