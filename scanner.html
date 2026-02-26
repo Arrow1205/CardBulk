@@ -18,7 +18,7 @@
 <body>
 
 <!-- SCANNER -->
-<div class="page" id="page-scanner">
+<div class="page active" id="page-scanner">
   <div class="page-inner">
     <div class="scanner-hdr"><div class="scanner-title">Ajouter</div><div class="scanner-sub">Scanne ou uploade ta carte</div></div>
     <div style="padding:0 20px;">
@@ -140,13 +140,13 @@
 
 <!-- TABBAR -->
 <div class="tabbar">
-  <button class="tab-btn active" onclick="navigate('home')" id="tab-home">
+  <button class="tab-btn active" onclick="location.href='index.html'" id="tab-home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
   </button>
-  <button class="tab-btn scan-btn" onclick="navigate('scanner')" id="tab-scanner">
+  <button class="tab-btn scan-btn" onclick="location.href='scanner.html'" id="tab-scanner">
     <div class="scan-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="22" height="22" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
   </button>
-  <button class="tab-btn" onclick="navigate('collection')" id="tab-collection">
+  <button class="tab-btn" onclick="location.href='collection.html'" id="tab-collection">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Collection
   </button>
 </div>
