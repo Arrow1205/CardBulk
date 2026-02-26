@@ -40,14 +40,14 @@ body{ overflow-y:auto; }
           <div class="first" id="player-first">—</div>
           <div class="last" id="player-last">—</div>
         </div>
-        <div class="hero-chips">
-          <div class="chip-pill" id="player-sport-chip" onclick="openSportFromChip()">
-            <img id="player-sport-icon" alt="" style="width:18px;height:18px;object-fit:contain;display:none;" />
-            <span id="player-sport-text">Sport</span>
+        <div class="hero-chips" style="margin-top:12px;">
+          <div class="chip-pill" id="player-sport-chip" onclick="openSportFromChip()" style="cursor:pointer;display:none;">
+            <img id="player-sport-icon" alt="" style="width:18px;height:18px;object-fit:contain;" />
+            <span id="player-sport-text"></span>
           </div>
-          <div class="chip-pill" id="player-club-chip" onclick="openClubFromChip()">
-            <img id="player-club-logo" alt="" style="width:18px;height:18px;object-fit:contain;display:none;" />
-            <span id="player-club-text">Club</span>
+          <div class="chip-pill" id="player-club-chip" onclick="openClubFromChip()" style="cursor:pointer;display:none;">
+            <img id="player-club-logo" alt="" style="width:18px;height:18px;object-fit:contain;" />
+            <span id="player-club-text"></span>
           </div>
         </div>
       </div>
@@ -106,19 +106,25 @@ async function _pagePlayer(){
   if(plast)  plast.textContent  = nom.toUpperCase();
 
   const psport = document.getElementById('player-sport-text');
-  if(psport) psport.textContent = sportL(_ctxPlayer.sport)||'';
+  const psportChip = document.getElementById('player-sport-chip');
   const psportIcon = document.getElementById('player-sport-icon');
+  if(psport) psport.textContent = sportL(_ctxPlayer.sport)||_ctxPlayer.sport||'';
   if(psportIcon && _ctxPlayer.sport && typeof SPORT_ICONS!=='undefined' && SPORT_ICONS[_ctxPlayer.sport]){
     psportIcon.src = SPORT_ICONS[_ctxPlayer.sport];
-    psportIcon.style.display = 'block';
+    if(psportChip) psportChip.style.display = '';
   }
+
   const pclub = document.getElementById('player-club-text');
-  if(pclub) pclub.textContent = _ctxPlayer.club||'';
+  const pclubChip = document.getElementById('player-club-chip');
   const pclubLogo = document.getElementById('player-club-logo');
+  if(pclub) pclub.textContent = _ctxPlayer.club||'';
   if(pclubLogo && _ctxPlayer.club && typeof getClubLogoB64==='function'){
     const logoSrc = getClubLogoB64({name:_ctxPlayer.club, full:_ctxPlayer.club, logo:''});
-    if(logoSrc){ pclubLogo.src = logoSrc; pclubLogo.style.display = 'block'; }
-  }textContent = _ctxPlayer.club||'';
+    if(logoSrc){ pclubLogo.src = logoSrc; if(pclubChip) pclubChip.style.display = ''; }
+    else if(_ctxPlayer.club && pclubChip){ pclubChip.style.display = ''; }
+  } else if(_ctxPlayer.club && pclubChip){
+    pclubChip.style.display = '';
+  }
 
   renderPlayerPage();
 
