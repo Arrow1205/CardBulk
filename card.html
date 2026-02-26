@@ -360,123 +360,36 @@ body { overflow: hidden; }
 
 <script src="assets/app.js"></script>
 <script>
-/* PAGE: card — load card from URL ?id= */
+/* PAGE: card */
 async function _pageCard(){
   const params = new URLSearchParams(location.search);
   const id = params.get('id') || sessionStorage.getItem('cv_card_id') || '';
   if(!id){ location.href='index.html'; return; }
 
-  // Open the card detail overlay immediately
+  const c = (db?.cards||[]).find(x=>String(x.id)===String(id));
+  if(!c){
+    showToast('Carte introuvable');
+    setTimeout(()=>location.href='index.html', 1500);
+    return;
+  }
+
+  // Ouvrir l'overlay card-detail
   const detail = document.getElementById('card-detail');
   if(detail) detail.classList.add('open');
 
-  // Wait for DB then open
-  const c = db.cards.find(x=>String(x.id)===String(id));
-  if(c){
-    curCardId = String(id);
-    isFlipped = false;
-    _renderCardDetail(c);
-  } else {
-    showToast('Carte introuvable');
-    setTimeout(()=>location.href='index.html', 1500);
+  // Afficher toutes les infos via la fonction centralisée
+  if(typeof _displayCard === 'function'){
+    _displayCard(c);
   }
 }
 
-function _renderCardDetail(c){
-  // Reuse existing openCard internals but without navigation
-  const sid = String(c.id);
-  curCardId = sid;
-  isFlipped = false;
-  const frontSrc = c.photoRecto || c.img || c.photo || '';
-  const backSrcRaw = c.photoVerso || c.verso || c.img_v || c.back || c.back_img || c.photo_v || '';
-  const backSrc = (!backSrcRaw || /placeholder|none/i.test(String(backSrcRaw))) ? '' : String(backSrcRaw);
-
-  const bgT = document.getElementById('card-bg-name-text');
-  if(bgT){ if(!frontSrc){ bgT.textContent=(c.nom||'').toUpperCase(); bgT.style.opacity='1'; } else bgT.style.opacity='0'; }
-
-  const fi = document.getElementById('card-front-img');
-  if(fi){ fi.src=frontSrc; fi.style.display=frontSrc?'block':'none'; }
-  const bi = document.getElementById('card-back-img');
-  if(bi){ bi.src=backSrc; bi.style.display=backSrc?'block':'none'; }
-  const bk = document.getElementById('card-back-placeholder');
-  if(bk) bk.style.display=backSrc?'none':'flex';
-
-  // Name
-  const dn = document.getElementById('detail-name');
-  if(dn) dn.textContent=((c.prenom||'')+' '+(c.nom||'')).trim()||'Sans nom';
-  const ds = document.getElementById('detail-sub');
-  if(ds){
-    const parts=[];
-    if(c.club) parts.push(c.clubEmoji?c.clubEmoji+' '+c.club:c.club);
-    if(c.sport) parts.push(sportL(c.sport));
-    ds.textContent=parts.join(' · ');
-  }
-
-  // Fav
-  const fb = document.getElementById('detail-fav-btn');
-  if(fb) fb.textContent = c.fav ? '' : '';
-
-  // Price/tags
-  const dp = document.getElementById('detail-price');
-  if(dp) dp.textContent = fmtPrice(c.price);
-  const dt = document.getElementById('detail-tags');
-  if(dt){
-    dt.innerHTML='';
-    if(c.isNum && c.num){ const s=document.createElement('span'); s.className='detail-tag num'; s.textContent='/'+c.num; dt.appendChild(s); }
-    (c.tags||[]).forEach(tag=>{ const s=document.createElement('span'); s.className='detail-tag'; s.textContent=tag; dt.appendChild(s); });
-  }
-
-  // Brand/year/set
-  const dm = document.getElementById('detail-marque'); if(dm) dm.textContent=c.marque||'';
-  const dy = document.getElementById('detail-annee');  if(dy) dy.textContent=c.annee||'';
-  const dset = document.getElementById('detail-set');  if(dset) dset.textContent=c.setName||'';
-
-  // Club logo
-  const clubLogoEl = document.getElementById('detail-club-logo');
-  if(clubLogoEl){
-    const cl = getClub(c.club);
-    const src = cl ? getClubLogoB64(cl) : '';
-    if(src){ clubLogoEl.src=src; clubLogoEl.style.display='block'; } else clubLogoEl.style.display='none';
-  }
-  // Flag
-  const fl = document.getElementById('detail-flag');
-  if(fl) fl.textContent = c.drapeauEmoji||'';
-
-  // Notes
-  const no = document.getElementById('detail-notes-txt');
-  if(no) no.textContent = c.notes||'';
-  const nw = document.getElementById('detail-notes-wrap');
-  if(nw) nw.style.display = c.notes ? 'block' : 'none';
-
-  // Collection
-  const dc = document.getElementById('detail-collection');
-  if(dc) dc.textContent = c.collection||'';
-
-  // Gyro
-  try{ initGyroAndSwipe && initGyroAndSwipe(); }catch(e){}
-  try{ setupImageViewer && setupImageViewer(); }catch(e){}
-}
-
-// Override closeDetail to go back to collection
+// Retour : aller à collection ou page précédente
 function closeDetail(){
-  const ref = document.referrer;
-  if(ref && ref.includes(location.host)){ history.back(); }
-  else{ location.href='collection.html'; }
-}
-
-// Override editCurrentCard
-function editCurrentCard(){
-  // For multi-page: redirect to scanner with edit mode
-  try{ sessionStorage.setItem('cv_edit_id', curCardId); }catch(e){}
-  // Show edit sheet inline if it exists
-  const es = document.getElementById('edit-sheet');
-  if(!es){ showToast('Édition non disponible ici'); return; }
-  // populate and open
-  const c = db.cards.find(x=>String(x.id)===String(curCardId));
-  if(!c) return;
-  // ... populate edit form (reuse existing logic)
-  es.classList.add('open');
-  document.body.classList.add('modal-open');
+  if(document.referrer && document.referrer.includes(location.host)){
+    history.back();
+  } else {
+    location.href = 'collection.html';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
