@@ -144,7 +144,7 @@
     <div class="player-identity">
       <div>
         <div class="player-first" id="detail-prenom"></div>
-        <div class="player-last" id="detail-nom" onclick="openPlayerStats()">—</div>
+        <div class="player-last" id="detail-nom" >—</div>
         <div class="player-meta">
           <span id="detail-flag" class="player-flag" style="display:none;"></span>
           <span id="detail-club-logo-wrap" onclick="filterByClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
@@ -469,13 +469,18 @@ async function createFolder(){
   const sportEmojis = {football:'⚽',basketball:'🏀',baseball:'⚾',nfl:'🏈',nhl:'🏒',tennis:'🎾',f1:'🏎️',autre:'🃏','':`📁`};
   const emoji = sportEmojis[sport] || '📁';
   const id = Date.now()+'';
-  const folder = {id, name, emoji, sport};
+  const folder = {id, name, emoji, sport};   // sport kept in local db only
+  const folderDB = {id, name, emoji};         // only columns that exist in Supabase
   db.folders = db.folders || [];
   db.folders.push(folder);
   // Save to Supabase
   try{
-    if(typeof sbInsert === 'function') await sbInsert('folders', folder);
-  }catch(e){ console.warn('Folder save error', e); }
+    await sbInsert('folders', folderDB);
+  }catch(e){
+    console.error('Folder save error', e);
+    showToast('⚠️ Erreur sauvegarde dossier');
+    return;
+  }
   closeSheet('folder-sheet');
   renderFolders();
   showToast('📁 Dossier créé !');
