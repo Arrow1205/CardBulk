@@ -1060,7 +1060,7 @@ function renderHome(){
           </div>
         </div>`).join("");
       if(dots)dots.innerHTML=favs.map((_,i)=>`<div class="hero-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join("");
-      setTimeout(()=>_initCarousel3D(carousel, favs), 50);
+      setTimeout(()=>_initCarousel3D(carousel), 50);
     }
   }
 
@@ -1092,25 +1092,25 @@ function renderHome(){
   },50);
 }
 
+// ── Carousel 3D ──────────────────────────────────────────────────
 function goSlide(i){
-  const slides=document.querySelectorAll(".hero-slide");
-  const dots=document.querySelectorAll(".hero-dot");
-  if(!slides.length)return;
-  carouselPos=Math.max(0,Math.min(i,slides.length-1));
-  _updateCarousel3D(carouselPos);
-  dots.forEach((d,j)=>d.classList.toggle("active",j===carouselPos));
+  const slides = document.querySelectorAll('.hero-slide');
+  if(!slides.length) return;
+  carouselPos = Math.max(0, Math.min(i, slides.length - 1));
+  _updateCarousel();
 }
 
-function _initCarousel3D(carousel, cards){
+function _initCarousel3D(carousel){
   if(!carousel) return;
   const slides = carousel.querySelectorAll('.hero-slide');
   if(!slides.length) return;
-  carouselPos = 0;
-  
-  // Click on slide to open card, centered slide gets opened, others go to that slide
+
+  // Start on centre slide
+  carouselPos = Math.floor(slides.length / 2);
+
+  // Click: centre → open card, side → go to that slide
   slides.forEach((slide, idx) => {
-    slide.style.cursor = 'pointer';
-    slide.addEventListener('click', ()=>{
+    slide.addEventListener('click', () => {
       if(idx === carouselPos){
         const cid = slide.dataset.cardId;
         if(cid) openCard(cid);
@@ -1120,61 +1120,44 @@ function _initCarousel3D(carousel, cards){
     });
   });
 
-  // Touch/drag swipe
+  // Swipe support
   let startX = 0;
-  carousel.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; }, {passive:true});
-  carousel.addEventListener('touchend', e=>{
+  carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+  carousel.addEventListener('touchend',   e => {
     const dx = e.changedTouches[0].clientX - startX;
-    if(Math.abs(dx) > 40){
-      goSlide(dx < 0 ? carouselPos + 1 : carouselPos - 1);
-    }
+    if(Math.abs(dx) > 40) goSlide(dx < 0 ? carouselPos + 1 : carouselPos - 1);
   }, {passive:true});
 
-  _updateCarousel3D(0);
+  _updateCarousel();
 }
 
-function _updateCarousel3D(active){
+function _updateCarousel(){
   const slides = document.querySelectorAll('.hero-slide');
   const dots   = document.querySelectorAll('.hero-dot');
-  carouselPos  = Math.max(0, Math.min(active, slides.length-1));
-  // Layout: centre=100%, ±1=80%, ±2=60%
-  // translateX offsets so cards overlap centered:
-  //  diff -2: far left,  -1: left,  0: centre,  +1: right,  +2: far right
-  const scaleMap   = [0.60, 0.80, 1.00, 0.80, 0.60];
-  const opacityMap = [0.50, 0.75, 1.00, 0.75, 0.50];
-  // translateX in vw: centre at 0, adjacent at ±32vw, far at ±56vw
-  const txMap      = [-56, -30, 0, 30, 56];
+  if(!slides.length) return;
 
-  slides.forEach((s, i) => {
-    const diff = i - carouselPos;
-    const idx  = diff + 2;   // map diff[-2..+2] → index[0..4]
-    s.classList.toggle('active', diff === 0);
+  slides.forEach((card, index) => {
+    const offset    = index - carouselPos;
+    const absOffset = Math.abs(offset);
 
-    if(Math.abs(diff) > 2){
-      // Hidden slides beyond ±2
-      s.style.opacity   = '0';
-      s.style.zIndex    = '0';
-      s.style.pointerEvents = 'none';
-      return;
-    }
+    const translateX = offset * 130;
+    const scale      = Math.max(0.55, 1 - absOffset * 0.15);
+    const zIndex     = slides.length - absOffset;
+    const brightness = absOffset === 0 ? 1 : 0.5;
+    const opacity    = absOffset > 2 ? 0 : 1;
 
-    const scale   = scaleMap[idx];
-    const opacity = opacityMap[idx];
-    const tx      = txMap[idx];
-
-    s.style.transform     = `translateX(${tx}vw) scale(${scale})`;
-    s.style.opacity       = opacity;
-    s.style.zIndex        = 10 - Math.abs(diff);
-    s.style.pointerEvents = 'auto';
-    s.style.transition    = 'transform .4s cubic-bezier(.25,.8,.25,1), opacity .4s, box-shadow .4s';
-    s.style.boxShadow     = diff === 0
-      ? '0 20px 60px rgba(0,0,0,.8)'
-      : Math.abs(diff) === 1
-        ? '0 8px 24px rgba(0,0,0,.5)'
-        : '0 4px 12px rgba(0,0,0,.3)';
+    card.style.transform     = `translateX(${translateX}px) scale(${scale})`;
+    card.style.zIndex        = zIndex;
+    card.style.filter        = `brightness(${brightness})`;
+    card.style.opacity       = opacity;
+    card.style.transition    = 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
+    card.style.pointerEvents = absOffset > 2 ? 'none' : 'auto';
+    card.classList.toggle('active', offset === 0);
   });
-  dots.forEach((d,j)=>d.classList.toggle("active",j===carouselPos));
+
+  dots.forEach((d,j) => d.classList.toggle('active', j === carouselPos));
 }
+// ── end Carousel 3D ──────────────────────────────────────────────
 
 /* — Collection — */
 let collSearchTimer=null;
@@ -1634,16 +1617,39 @@ function applyCrop(){
   octx.filter = "none";
 
   const data = out.toDataURL("image/jpeg", getCropQuality());
-  addCrop[cropTarget] = data;
-  if(cropTarget==="recto"){
+
+  if(cropTarget === 'edit-recto'){
+    // Edit mode - recto
+    editCrop.recto = data;
+    editPhoto.recto = data;
+    const prev = document.getElementById('e-preview-img');
+    if(prev){ prev.src = data; }
+    const wrap = document.getElementById('e-preview-wrap');
+    if(wrap) wrap.style.display = 'block';
+    const ph = document.getElementById('e-placeholder');
+    if(ph) ph.style.display = 'none';
+  } else if(cropTarget === 'edit-verso'){
+    // Edit mode - verso
+    editCrop.verso = data;
+    editPhoto.verso = data;
+    const prev = document.getElementById('e-preview-img-v');
+    if(prev){ prev.src = data; }
+    const wrap = document.getElementById('e-preview-wrap-v');
+    if(wrap) wrap.style.display = 'block';
+    const ph = document.getElementById('e-placeholder-v');
+    if(ph) ph.style.display = 'none';
+  } else if(cropTarget === 'recto'){
+    addCrop.recto = data;
     document.getElementById("photo-preview-img").src = data;
     window._lastScanDataUrl = data;
-  }else{
+  } else {
+    addCrop.verso = data;
     document.getElementById("photo-preview-img-v").src = data;
     updateVersoTabState();
   }
+
   closeCrop();
-  showToast(" Recadré !");
+  showToast("✅ Recadré !");
 }
 // ===== end Crop v2 =====
 
