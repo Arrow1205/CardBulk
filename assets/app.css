@@ -51,9 +51,8 @@ html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:
 
 /* ══ CAROUSEL HERO FAVORIS (style Pinterest typographic) ══ */
 .hero-carousel-wrap{position:relative;padding:0 0 20px;overflow:hidden;margin-bottom:8px;}
-.hero-carousel{display:flex;gap:12px;padding:0 20px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;}
+.hero-carousel{display:flex;align-items:center;justify-content:center;padding:12px 0;overflow:hidden;position:relative;min-height:280px;}
 .hero-carousel::-webkit-scrollbar{display:none;}
-.hero-carousel:active{cursor:grabbing;}
 .hero-slide-bg{position:absolute;inset:0;background-size:cover;background-position:center top;}
 .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.15) 55%,transparent 100%);}
 .hero-slide-name{position:absolute;bottom:0;left:0;right:0;padding:0 14px 12px;overflow:hidden;}
@@ -70,9 +69,8 @@ html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:
 .hero-dot.active{background:var(--accent);width:14px;border-radius:2px;}
 .hero-counter{position:absolute;top:12px;left:12px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;background:rgba(0,0,0,.35);border-radius:99px;padding:2px 8px;}
 .hero-empty{display:flex;align-items:center;justify-content:center;height:160px;color:var(--text-dim);font-size:15px;}
-.hero-slide{flex-shrink:0;width:calc(100vw - 80px);aspect-ratio:9/14;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:center;transition:transform .35s,opacity .35s,box-shadow .35s;box-shadow:0 4px 20px rgba(0,0,0,.4);}
-.hero-slide:not(.active){transform:scale(.91);opacity:.65;}
-.hero-slide.active{transform:scale(1);opacity:1;box-shadow:0 8px 32px rgba(0,0,0,.55);}
+.hero-slide{position:absolute;width:58%;aspect-ratio:9/14;border-radius:16px;overflow:hidden;cursor:pointer;will-change:transform,opacity;transform-origin:center center;}
+.hero-slide.active{z-index:10;}
 /* Big name fills width */
 /* Club + flag bottom left */
 /* Dots */
@@ -581,7 +579,7 @@ body{ background:#00111E !important; }
 .crop-img{ opacity:0; pointer-events:none; }
 
 /* Fix hero slide opacity */
-.hero-slide:not(.active){ opacity:1 !important; }
+
 
 /* Remove strokes globally on controls */
 .btn, button, .chip, select, input, textarea{ border:0 !important; }
