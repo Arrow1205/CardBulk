@@ -1376,12 +1376,20 @@ function openCrop(side){
   img.onload = ()=>{ requestAnimationFrame(()=>initCrop()); };
   img.onerror = ()=>{ showToast(" Impossible de charger l'image"); };
 
+  // crossOrigin must be set BEFORE src to avoid tainted canvas (Supabase URLs)
+  // Skip for data: URIs and blob: URLs (already local)
+  if(src && !src.startsWith('data:') && !src.startsWith('blob:')){
+    img.crossOrigin = "anonymous";
+  } else {
+    img.crossOrigin = "";
+  }
+
   // Force reload even if same src (iOS Safari/Chrome)
   img.src = "";
   img.src = src;
 
   // If already cached/complete, init immediately
-  if(img.complete){
+  if(img.complete && img.naturalWidth > 0){
     requestAnimationFrame(()=>initCrop());
   }
 }
@@ -1425,6 +1433,10 @@ function initCrop(){
 
   // Build Image() for correct sizing
   const img = new Image();
+  // crossOrigin must be set before src to avoid tainted canvas (Supabase CDN URLs)
+  if(imgEl.src && !imgEl.src.startsWith('data:') && !imgEl.src.startsWith('blob:')){
+    img.crossOrigin = "anonymous";
+  }
   img.onload = ()=>{
     _cropState.img = img;
     _cropState.loaded = true;
