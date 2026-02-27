@@ -1048,7 +1048,6 @@ function renderHome(){
       carousel.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:160px;color:var(--text-dim);font-size:13px;">Aucun favori ⭐</div>`;
       if(dots)dots.innerHTML="";
     } else {
-    } else {
       carousel.innerHTML=favs.map((c,i)=>`
         <div class="hero-slide${i===0?' active':''}" data-card-id="${c.id}" style="position:relative;background:${c.photo?'transparent':'var(--surface2)'}">
           ${c.photo
@@ -1062,6 +1061,7 @@ function renderHome(){
         </div>`).join("");
       if(dots)dots.innerHTML=favs.map((_,i)=>`<div class="hero-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join("");
       setTimeout(()=>_initCarousel3D(carousel, favs), 50);
+    }
   }
 
   // Derniers ajouts
