@@ -1043,35 +1043,30 @@ function renderHome(){
   const tot=db.cards.reduce((s,c)=>s+(c.price||0),0);
   const tv=document.getElementById("home-total");
   if(tv)tv.textContent=tot>0?fmtPrice(tot):"";
+  // Carousel favoris (nouveau)
+  const favs = db.cards.filter(c => c.fav && c.photo);
+  const favCarousel = document.getElementById("fav-carousel");
+  const favsCount = document.getElementById("favs-count");
+  if (favsCount) favsCount.textContent = favs.length;
 
-  // Carousel favoris
-  const favs=db.cards.filter(c=>c.fav);
-  const carousel=document.getElementById("hero-carousel");
-  const dots=document.getElementById("hero-dots");
-  const favsCount=document.getElementById("favs-count");
-  if(favsCount)favsCount.textContent=favs.length;
-  if(carousel){
-    if(favs.length===0){
-      carousel.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:160px;color:var(--text-dim);font-size:13px;">Aucun favori ⭐</div>`;
-      if(dots)dots.innerHTML="";
+  if (favCarousel){
+    if (favs.length === 0){
+      favCarousel.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:200px;color:var(--text-dim);font-size:13px;">Aucun favori ⭐</div>`;
+      _destroyFavCarousel();
     } else {
-      carousel.innerHTML=favs.map((c,i)=>`
-        <div class="hero-slide${i===0?' active':''}" data-card-id="${c.id}" style="position:relative;background:${c.photo?'transparent':'var(--surface2)'}">
-          ${c.photo
-            ? `<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" alt="">`
-            : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;"><div style="font-size:44px;opacity:.2;">🃏</div><div style="font-size:15px;font-weight:800;">${(c.nom||'').toUpperCase()}</div></div>`}
-          <div style="position:absolute;inset:0;border-radius:inherit;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 55%);pointer-events:none;"></div>
-          <div style="position:absolute;bottom:14px;left:14px;right:14px;pointer-events:none;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:.7;text-transform:uppercase;">${c.prenom||''}</div>
-            <div style="font-size:19px;font-weight:900;letter-spacing:.5px;line-height:1.1;">${(c.nom||'').toUpperCase()}</div>
-          </div>
-        </div>`).join("");
-      if(dots)dots.innerHTML=favs.map((_,i)=>`<div class="hero-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join("");
-      setTimeout(()=>_initCarousel3D(carousel), 50);
+      favCarousel.innerHTML = favs.map(c => `
+        <div class="fav-card" data-card-id="${c.id}">
+          <img src="${c.photo}" alt="">
+          <div class="fav-card-dim"></div>
+        </div>
+      `).join("");
+
+      _initFavCarousel3D(favCarousel);
     }
   }
 
   // Derniers ajouts
+
   const recent=document.getElementById("recent-list");
   if(recent){
     const last=db.cards.slice(0,8);
@@ -1099,78 +1094,6 @@ function renderHome(){
   },50);
 }
 
-// ── Carousel 3D ──────────────────────────────────────────────────
-function goSlide(i){
-  const slides = document.querySelectorAll('.hero-slide');
-  if(!slides.length) return;
-  carouselPos = Math.max(0, Math.min(i, slides.length - 1));
-  _updateCarousel();
-}
-
-function _initCarousel3D(carousel){
-  if(!carousel) return;
-  const slides = carousel.querySelectorAll('.hero-slide');
-  if(!slides.length) return;
-
-  // Start on centre slide
-  carouselPos = Math.floor(slides.length / 2);
-
-  // Click: centre → open card, side → go to that slide
-  slides.forEach((slide, idx) => {
-    slide.addEventListener('click', () => {
-      if(idx === carouselPos){
-        const cid = slide.dataset.cardId;
-        if(cid) openCard(cid);
-      } else {
-        goSlide(idx);
-      }
-    });
-  });
-
-  // Swipe support
-  let startX = 0;
-  carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
-  carousel.addEventListener('touchend',   e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if(Math.abs(dx) > 40) goSlide(dx < 0 ? carouselPos + 1 : carouselPos - 1);
-  }, {passive:true});
-
-  _updateCarousel();
-}
-
-function _updateCarousel(){
-  const slides = document.querySelectorAll('.hero-slide');
-  const dots   = document.querySelectorAll('.hero-dot');
-  if(!slides.length) return;
-
-  // Responsive: centre card = min(294, 65vw), step = ~75% of card width
-  const cardW  = Math.min(294, window.innerWidth * 0.65);
-  const txStep = Math.round(cardW * 0.75);
-
-  const scaleMap = [1, 0.80, 0.60];
-  const briMap   = [1, 0.55, 0.40];
-
-  slides.forEach((card, index) => {
-    const offset    = index - carouselPos;
-    const absOffset = Math.abs(offset);
-    const ab        = Math.min(absOffset, 2);
-    const scale     = scaleMap[ab];
-    const bri       = briMap[ab];
-    const opacity   = absOffset > 2 ? 0 : 1;
-    const tx        = offset * txStep;
-
-    card.style.transform     = `translateX(${tx}px) scale(${scale})`;
-    card.style.zIndex        = 10 - absOffset;
-    card.style.filter        = `brightness(${bri})`;
-    card.style.opacity       = opacity;
-    card.style.transition    = 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
-    card.style.pointerEvents = absOffset > 2 ? 'none' : 'auto';
-    card.classList.toggle('active', offset === 0);
-  });
-
-  dots.forEach((d,j) => d.classList.toggle('active', j === carouselPos));
-}
-// ── end Carousel 3D ──────────────────────────────────────────────
 
 /* — Collection — */
 let collSearchTimer=null;
@@ -2578,6 +2501,137 @@ function updateVersoTabState(){
   t.style.opacity = has ? '1' : '.35';
   t.style.pointerEvents = has ? 'auto' : 'none';
 }
+
+// ── Favoris Carousel 3D (nouveau) ────────────────────────────────
+let _favCarouselState = null;
+
+function _destroyFavCarousel(){
+  if(!_favCarouselState) return;
+  const s = _favCarouselState;
+  try{
+    if(s.timer) clearInterval(s.timer);
+    if(s.carousel && s.onTouchStart) s.carousel.removeEventListener('touchstart', s.onTouchStart);
+    if(s.carousel && s.onTouchEnd)   s.carousel.removeEventListener('touchend', s.onTouchEnd);
+    if(s.onResize) window.removeEventListener('resize', s.onResize);
+    if(s.cards && s.onCardClick){
+      s.cards.forEach((card, idx) => {
+        card.removeEventListener('click', s.onCardClick[idx]);
+      });
+    }
+  }catch(e){}
+  _favCarouselState = null;
+}
+
+function _initFavCarousel3D(carousel){
+  if(!carousel) return;
+  const cards = Array.from(carousel.querySelectorAll('.fav-card'));
+  if(!cards.length) return;
+
+  _destroyFavCarousel();
+
+  let currentIndex = Math.floor(cards.length / 2);
+
+  const scaleMap = [1, 0.85, 0.65];
+  const dimMap   = [0, 0.25, 0.45];
+
+  const wrapIndex = (i) => {
+    const n = cards.length;
+    return (i % n + n) % n;
+  };
+
+  // shortest circular offset in range [-half..half]
+  const circularOffset = (index) => {
+    const n = cards.length;
+    const half = Math.floor(n / 2);
+    const raw = index - currentIndex;
+    return ((raw + half) % n) - half;
+  };
+
+  const update = () => {
+    const cardW = cards[0].getBoundingClientRect().width || Math.min(240, window.innerWidth * 0.78);
+    const isMobile = window.innerWidth <= 768;
+    const txStep = Math.round(cardW * (isMobile ? 0.62 : 0.70));
+
+    cards.forEach((card, index) => {
+      const offset    = circularOffset(index);
+      const absOffset = Math.abs(offset);
+      const ab        = Math.min(absOffset, 2);
+
+      const scale   = scaleMap[ab];
+      const dim     = dimMap[ab];
+      const opacity = absOffset > 2 ? 0 : 1;
+      const tx      = offset * txStep;
+
+      card.style.transform = `translate3d(${tx}px,0,0) scale(${scale})`;
+      card.style.zIndex    = 10 - absOffset;
+      card.style.opacity   = opacity;
+      card.style.pointerEvents = absOffset > 2 ? 'none' : 'auto';
+      card.style.setProperty('--dim', dim);
+
+      card.classList.toggle('active', offset === 0);
+    });
+  };
+
+  const resetAuto = () => {
+    if(_favCarouselState && _favCarouselState.timer){
+      clearInterval(_favCarouselState.timer);
+      _favCarouselState.timer = null;
+    }
+    if(_favCarouselState){
+      _favCarouselState.timer = setInterval(() => {
+        onNext(false);
+      }, 5000);
+    }
+  };
+
+  // Next/Prev (infinite loop)
+  const onNext = (reset=true) => {
+    currentIndex = wrapIndex(currentIndex + 1);
+    update();
+    if(reset) resetAuto();
+  };
+  const onPrev = (reset=true) => {
+    currentIndex = wrapIndex(currentIndex - 1);
+    update();
+    if(reset) resetAuto();
+  };
+
+  // Click: centre → open card, side → centre that card
+  const onCardClick = cards.map((card, idx) => () => {
+    if(idx === currentIndex){
+      const cid = card.dataset.cardId;
+      if(cid) openCard(cid);
+    } else {
+      currentIndex = idx;
+      update();
+    }
+    resetAuto();
+  });
+  cards.forEach((card, idx) => card.addEventListener('click', onCardClick[idx]));
+
+  // Swipe
+  let startX = 0;
+  const onTouchStart = (e) => { startX = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if(Math.abs(dx) > 40){
+      if(dx < 0) onNext();
+      else onPrev();
+    }
+  };
+  carousel.addEventListener('touchstart', onTouchStart, {passive:true});
+  carousel.addEventListener('touchend', onTouchEnd, {passive:true});
+
+  const onResize = () => update();
+  window.addEventListener('resize', onResize);
+
+  _favCarouselState = {carousel, cards, onPrev, onNext, onTouchStart, onTouchEnd, onResize, onCardClick, timer:null};
+
+  update();
+  resetAuto();
+}
+// ── end Favoris Carousel 3D ─────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', ()=>{ try{updateVersoTabState();}catch(e){} });
 
 
