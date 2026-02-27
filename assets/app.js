@@ -1137,18 +1137,41 @@ function _updateCarousel3D(active){
   const slides = document.querySelectorAll('.hero-slide');
   const dots   = document.querySelectorAll('.hero-dot');
   carouselPos  = Math.max(0, Math.min(active, slides.length-1));
+  // Layout: centre=100%, ±1=80%, ±2=60%
+  // translateX offsets so cards overlap centered:
+  //  diff -2: far left,  -1: left,  0: centre,  +1: right,  +2: far right
+  const scaleMap   = [0.60, 0.80, 1.00, 0.80, 0.60];
+  const opacityMap = [0.50, 0.75, 1.00, 0.75, 0.50];
+  // translateX in vw: centre at 0, adjacent at ±32vw, far at ±56vw
+  const txMap      = [-56, -30, 0, 30, 56];
+
   slides.forEach((s, i) => {
     const diff = i - carouselPos;
+    const idx  = diff + 2;   // map diff[-2..+2] → index[0..4]
     s.classList.toggle('active', diff === 0);
-    // Scale + translateX for depth effect
-    const scale   = diff === 0 ? 1 : diff === -1 || diff === 1 ? 0.88 : 0.78;
-    const opacity = diff === 0 ? 1 : Math.abs(diff) === 1 ? 0.65 : 0.4;
-    const tx      = diff * 82;   // % overlap offset
-    s.style.transform   = `translateX(${tx}%) scale(${scale})`;
-    s.style.opacity     = opacity;
-    s.style.zIndex      = 10 - Math.abs(diff);
-    s.style.transition  = 'transform .4s cubic-bezier(.25,.8,.25,1), opacity .4s, box-shadow .4s';
-    s.style.boxShadow   = diff === 0 ? '0 16px 48px rgba(0,0,0,.7)' : '0 4px 16px rgba(0,0,0,.35)';
+
+    if(Math.abs(diff) > 2){
+      // Hidden slides beyond ±2
+      s.style.opacity   = '0';
+      s.style.zIndex    = '0';
+      s.style.pointerEvents = 'none';
+      return;
+    }
+
+    const scale   = scaleMap[idx];
+    const opacity = opacityMap[idx];
+    const tx      = txMap[idx];
+
+    s.style.transform     = `translateX(${tx}vw) scale(${scale})`;
+    s.style.opacity       = opacity;
+    s.style.zIndex        = 10 - Math.abs(diff);
+    s.style.pointerEvents = 'auto';
+    s.style.transition    = 'transform .4s cubic-bezier(.25,.8,.25,1), opacity .4s, box-shadow .4s';
+    s.style.boxShadow     = diff === 0
+      ? '0 20px 60px rgba(0,0,0,.8)'
+      : Math.abs(diff) === 1
+        ? '0 8px 24px rgba(0,0,0,.5)'
+        : '0 4px 12px rgba(0,0,0,.3)';
   });
   dots.forEach((d,j)=>d.classList.toggle("active",j===carouselPos));
 }
@@ -1383,12 +1406,13 @@ let _cropState = {
 
 function getCropEl(id){ return document.getElementById(id); }
 function getCropQuality(){
-  const q = parseFloat(getCropEl('crop-quality')?.value || "0.88");
+  const raw = parseFloat(getCropEl('crop-quality')?.value || "88");
+  const q = raw > 1 ? raw / 100 : raw;
   return Math.min(1, Math.max(0.55, q));
 }
 function cropResetEnhance(){
-  const b = getCropEl('crop-brightness'); if(b) b.value = "1";
-  const c = getCropEl('crop-contrast'); if(c) c.value = "1";
+  const b = getCropEl('crop-brightness'); if(b){ b.value = "100"; } const bpct=document.getElementById('crop-brightness-pct'); if(bpct) bpct.textContent='100%';
+  const c = getCropEl('crop-contrast'); if(c){ c.value = "100"; } const cpct=document.getElementById('crop-contrast-pct'); if(cpct) cpct.textContent='100%';
   _cropState.brightness = 1; _cropState.contrast = 1;
   drawCrop();
 }
@@ -1418,8 +1442,8 @@ function initCrop(){
     _cropState.panX = 0; _cropState.panY = 0;
     _cropState.zoom = parseFloat(getCropEl('crop-zoom')?.value || "1");
     _cropState.frameRatio = parseFloat(getCropEl('crop-size')?.value || "0.78");
-    _cropState.brightness = parseFloat(getCropEl('crop-brightness')?.value || "1");
-    _cropState.contrast = parseFloat(getCropEl('crop-contrast')?.value || "1");
+    _cropState.brightness = (parseFloat(getCropEl('crop-brightness')?.value || "100")) / 100;
+    _cropState.contrast = (parseFloat(getCropEl('crop-contrast')?.value || "100")) / 100;
 
     computeBaseScale();
     bindCropControls();
@@ -1459,8 +1483,8 @@ function bindCropControls(){
     el.addEventListener("input", ()=>{
       if(id==="crop-size"){ _cropState.frameRatio = parseFloat(el.value||"0.78"); computeBaseScale(); clampPan(); }
       if(id==="crop-zoom"){ _cropState.zoom = parseFloat(el.value||"1"); clampPan(); }
-      if(id==="crop-brightness"){ _cropState.brightness = parseFloat(el.value||"1"); }
-      if(id==="crop-contrast"){ _cropState.contrast = parseFloat(el.value||"1"); }
+      if(id==="crop-brightness"){ _cropState.brightness = parseFloat(el.value||"100")/100; const p=document.getElementById('crop-brightness-pct'); if(p) p.textContent=el.value+'%'; }
+      if(id==="crop-contrast"){ _cropState.contrast = parseFloat(el.value||"100")/100; const p=document.getElementById('crop-contrast-pct'); if(p) p.textContent=el.value+'%'; }
       drawCrop();
     });
   });
@@ -2357,7 +2381,7 @@ if(_origApplyCrop){
       // Apply enhancement filters
       const con = Number(document.getElementById('crop-contrast')?.value || 100);
       const bri = Number(document.getElementById('crop-brightness')?.value || 100);
-      ctx.filter = `contrast(${con}%) brightness(${bri}%)`;
+      ctx.filter = `contrast(${con}%) brightness(${bri}%)`;  // values are already in %
 
       ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
 
