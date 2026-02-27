@@ -225,26 +225,37 @@ body { overflow: hidden; }
 
 <!-- CROP -->
 <div class="crop-overlay" id="crop-overlay">
-  <div class="crop-label" id="crop-label">Ajuste le cadrage</div>
-  <div class="crop-wrap">
+  <!-- Image + cadre -->
+  <div class="crop-wrap" id="crop-wrap">
     <canvas id="crop-canvas" class="crop-canvas"></canvas>
     <img id="crop-img" class="crop-img" draggable="false" style="display:none;">
-    <div class="crop-frame"></div>
-</div>
-  <div class="crop-hint">Glisse pour repositionner</div>
+    <div class="crop-frame" id="crop-frame"></div>
+  </div>
+  <!-- Sliders -->
   <div class="crop-controls" id="crop-controls">
-    <div class="cc-row"><span class="cc-lbl">Taille</span><input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78"></div>
-    <div class="cc-row"><span class="cc-lbl">Zoom</span><input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Lumière <span id="crop-brightness-pct">100%</span></span><input id="crop-brightness" type="range" min="70" max="140" step="1" value="100"></div>
-    <div class="cc-row"><span class="cc-lbl">Contraste <span id="crop-contrast-pct">100%</span></span><input id="crop-contrast" type="range" min="70" max="160" step="1" value="100"></div>
-    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="55" max="100" step="1" value="88"></div>
-    <div class="cc-actions">
-      <button class="crop-btn-a" type="button" onclick="cropResetEnhance()">Reset</button>
+    <div class="cc-row">
+      <span class="cc-lbl">Taille</span>
+      <input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78">
+    </div>
+    <div class="cc-row">
+      <span class="cc-lbl">Zoom</span>
+      <input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1">
+    </div>
+    <div class="cc-row">
+      <span class="cc-lbl">Lumière</span>
+      <input id="crop-brightness" type="range" min="70" max="140" step="1" value="100">
+      <span id="crop-brightness-pct" class="cc-pct">100%</span>
+    </div>
+    <div class="cc-row">
+      <span class="cc-lbl">Contraste</span>
+      <input id="crop-contrast" type="range" min="70" max="160" step="1" value="100">
+      <span id="crop-contrast-pct" class="cc-pct">100%</span>
     </div>
   </div>
+  <!-- Boutons -->
   <div class="crop-actions">
-    <button class="crop-btn-a" style="background:var(--surface2);color:var(--text);" onclick="closeCrop()">Annuler</button>
-    <button class="crop-btn-a" style="background:var(--accent);color:var(--bg);" onclick="applyCrop()">Appliquer</button>
+    <button class="crop-btn-a crop-btn-cancel" onclick="closeCrop()">Annuler</button>
+    <button class="crop-btn-a crop-btn-apply" onclick="applyCrop()">Appliquer</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
