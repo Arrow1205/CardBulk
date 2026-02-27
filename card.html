@@ -235,9 +235,9 @@ body { overflow: hidden; }
   <div class="crop-controls" id="crop-controls">
     <div class="cc-row"><span class="cc-lbl">Taille</span><input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78"></div>
     <div class="cc-row"><span class="cc-lbl">Zoom</span><input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Lumière</span><input id="crop-brightness" type="range" min="0.7" max="1.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Contraste</span><input id="crop-contrast" type="range" min="0.7" max="1.6" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="0.55" max="1" step="0.01" value="0.88"></div>
+    <div class="cc-row"><span class="cc-lbl">Lumière <span id="crop-brightness-pct">100%</span></span><input id="crop-brightness" type="range" min="70" max="140" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Contraste <span id="crop-contrast-pct">100%</span></span><input id="crop-contrast" type="range" min="70" max="160" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="55" max="100" step="1" value="88"></div>
     <div class="cc-actions">
       <button class="crop-btn-a" type="button" onclick="cropResetEnhance()">Reset</button>
     </div>
