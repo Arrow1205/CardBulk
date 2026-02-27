@@ -915,13 +915,20 @@ async function saveEdit(){
   else{c.collection=eCollVal;}c.price=parseFloat(document.getElementById("e-price").value)||0;
   c.marque=document.getElementById("e-marque").value;c.annee=document.getElementById("e-annee").value;c.setName=document.getElementById("e-set").value;
   const rawR=editCrop.recto||editPhoto.recto;const rawV=editCrop.verso||editPhoto.verso;
-  if(rawR){const url=await uploadPhoto(rawR,c.id,"recto");if(url)c.photo=url;}
-  if(rawV){const url=await uploadPhoto(rawV,c.id,"verso");if(url)c.photoVerso=url;}
-  await sbUpdate("cards",c.id,toSB(c));
+  // Show new image immediately in UI (before CDN propagation)
+  if(rawR){ c.photo = rawR; }
+  if(rawV){ c.photoVerso = rawV; }
   document.getElementById("edit-sheet").classList.remove("open");
   openCard(curCardId);
   renderHome();renderCollection();
-  showToast(" Carte modifiée !");
+  showToast("Sauvegarde en cours…");
+  // Upload in background
+  if(rawR){const url=await uploadPhoto(rawR,c.id,"recto");if(url)c.photo=url;}
+  if(rawV){const url=await uploadPhoto(rawV,c.id,"verso");if(url)c.photoVerso=url;}
+  await sbUpdate("cards",c.id,toSB(c));
+  showToast("✅ Carte modifiée !");
+  // Refresh display with final CDN URL
+  openCard(curCardId);renderHome();renderCollection();
 }
 function closeSheet(id,e){if(!e||e.target===document.getElementById(id))document.getElementById(id).classList.remove("open");}
 
@@ -1136,25 +1143,24 @@ function _updateCarousel(){
   const dots   = document.querySelectorAll('.hero-dot');
   if(!slides.length) return;
 
-  // Centre: 294×411px  |  ±1: 80% = 235×329px  |  ±2: 60% = 176×247px
-  // translateX = distance between card centres
-  // centre card half-width=147, adj card half-width=117.5 → gap = 147+117.5 = 265 → use 220px offset
-  const W0 = 294; // centre card width px
-  const scales     = { 0: 1,    1: 0.80,  2: 0.60 };
-  const brightness = { 0: 1,    1: 0.55,  2: 0.40 };
-  const txStep     = 220; // px between card centres
+  // Responsive: centre card = min(294, 65vw), step = ~75% of card width
+  const cardW  = Math.min(294, window.innerWidth * 0.65);
+  const txStep = Math.round(cardW * 0.75);
+
+  const scaleMap = [1, 0.80, 0.60];
+  const briMap   = [1, 0.55, 0.40];
 
   slides.forEach((card, index) => {
     const offset    = index - carouselPos;
     const absOffset = Math.abs(offset);
-    const scale     = scales[Math.min(absOffset, 2)] ?? 0.60;
-    const bri       = brightness[Math.min(absOffset, 2)] ?? 0.40;
+    const ab        = Math.min(absOffset, 2);
+    const scale     = scaleMap[ab];
+    const bri       = briMap[ab];
     const opacity   = absOffset > 2 ? 0 : 1;
     const tx        = offset * txStep;
-    const zIdx      = 10 - absOffset;
 
     card.style.transform     = `translateX(${tx}px) scale(${scale})`;
-    card.style.zIndex        = zIdx;
+    card.style.zIndex        = 10 - absOffset;
     card.style.filter        = `brightness(${bri})`;
     card.style.opacity       = opacity;
     card.style.transition    = 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
