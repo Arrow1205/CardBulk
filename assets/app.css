@@ -51,7 +51,7 @@ html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:
 
 /* ══ CAROUSEL HERO FAVORIS (style Pinterest typographic) ══ */
 .hero-carousel-wrap{position:relative;padding:0 0 20px;overflow:hidden;margin-bottom:8px;}
-.hero-carousel{position:relative;width:100%;height:450px;display:flex;justify-content:center;align-items:center;perspective:1200px;overflow:hidden;}
+.hero-carousel{position:relative;width:100%;height:450px;display:flex;justify-content:center;align-items:center;perspective:1200px;overflow:visible;}
 .hero-carousel::-webkit-scrollbar{display:none;}
 .hero-slide-bg{position:absolute;inset:0;background-size:cover;background-position:center top;}
 .hero-slide-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.15) 55%,transparent 100%);}
@@ -69,7 +69,7 @@ html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:
 .hero-dot.active{background:var(--accent);width:14px;border-radius:2px;}
 .hero-counter{position:absolute;top:12px;left:12px;font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;background:rgba(0,0,0,.35);border-radius:99px;padding:2px 8px;}
 .hero-empty{display:flex;align-items:center;justify-content:center;height:160px;color:var(--text-dim);font-size:15px;}
-.hero-slide{position:absolute;width:294px;height:411px;border-radius:16px;overflow:hidden;cursor:pointer;will-change:transform,opacity,filter;transform-origin:center center;box-shadow:0 10px 30px rgba(0,0,0,.6);background:#000;}
+.hero-slide{position:absolute;width:min(294px,65vw);height:min(411px,calc(65vw * 1.4));border-radius:16px;overflow:hidden;cursor:pointer;will-change:transform,opacity,filter;transform-origin:center center;box-shadow:0 10px 30px rgba(0,0,0,.6);background:#000;}
 .hero-slide.active{box-shadow:0 0 0 3px var(--accent),0 15px 35px rgba(0,0,0,.8);}
 /* Big name fills width */
 /* Club + flag bottom left */
