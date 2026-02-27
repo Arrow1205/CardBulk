@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -41,10 +41,11 @@
 
     <!-- Carousel HERO favoris -->
     <div class="sec-row"><div class="sec-title">Favoris</div><div class="sec-sub" id="favs-count">0</div></div>
-    <div class="hero-carousel-wrap">
-      <div class="hero-carousel" id="hero-carousel"></div>
-      <div class="hero-dots" id="hero-dots"></div>
-    </div>
+
+    <div class="fav-carousel-container">
+      <div class="fav-carousel" id="fav-carousel" aria-label="Carrousel favoris"></div>
+</div>
+</div>
 
     <div class="sec-row"><div class="sec-title">Derniers ajouts</div></div>
     <div class="cards-list" id="recent-list"></div>
@@ -473,9 +474,9 @@
   <div class="crop-controls" id="crop-controls">
     <div class="cc-row"><span class="cc-lbl">Taille</span><input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78"></div>
     <div class="cc-row"><span class="cc-lbl">Zoom</span><input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Lumière</span><input id="crop-brightness" type="range" min="0.7" max="1.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Contraste</span><input id="crop-contrast" type="range" min="0.7" max="1.6" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="0.55" max="1" step="0.01" value="0.88"></div>
+    <div class="cc-row"><span class="cc-lbl">Lumière <span id="crop-brightness-pct">100%</span></span><input id="crop-brightness" type="range" min="70" max="140" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Contraste <span id="crop-contrast-pct">100%</span></span><input id="crop-contrast" type="range" min="70" max="160" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="55" max="100" step="1" value="88"></div>
     <div class="cc-actions">
       <button class="crop-btn-a" type="button" onclick="cropResetEnhance()">Reset</button>
     </div>
