@@ -1136,19 +1136,26 @@ function _updateCarousel(){
   const dots   = document.querySelectorAll('.hero-dot');
   if(!slides.length) return;
 
+  // Centre: 294×411px  |  ±1: 80% = 235×329px  |  ±2: 60% = 176×247px
+  // translateX = distance between card centres
+  // centre card half-width=147, adj card half-width=117.5 → gap = 147+117.5 = 265 → use 220px offset
+  const W0 = 294; // centre card width px
+  const scales     = { 0: 1,    1: 0.80,  2: 0.60 };
+  const brightness = { 0: 1,    1: 0.55,  2: 0.40 };
+  const txStep     = 220; // px between card centres
+
   slides.forEach((card, index) => {
     const offset    = index - carouselPos;
     const absOffset = Math.abs(offset);
+    const scale     = scales[Math.min(absOffset, 2)] ?? 0.60;
+    const bri       = brightness[Math.min(absOffset, 2)] ?? 0.40;
+    const opacity   = absOffset > 2 ? 0 : 1;
+    const tx        = offset * txStep;
+    const zIdx      = 10 - absOffset;
 
-    const translateX = offset * 130;
-    const scale      = Math.max(0.55, 1 - absOffset * 0.15);
-    const zIndex     = slides.length - absOffset;
-    const brightness = absOffset === 0 ? 1 : 0.5;
-    const opacity    = absOffset > 2 ? 0 : 1;
-
-    card.style.transform     = `translateX(${translateX}px) scale(${scale})`;
-    card.style.zIndex        = zIndex;
-    card.style.filter        = `brightness(${brightness})`;
+    card.style.transform     = `translateX(${tx}px) scale(${scale})`;
+    card.style.zIndex        = zIdx;
+    card.style.filter        = `brightness(${bri})`;
     card.style.opacity       = opacity;
     card.style.transition    = 'all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
     card.style.pointerEvents = absOffset > 2 ? 'none' : 'auto';
@@ -1330,51 +1337,57 @@ function handlePhoto(inp,side){
 }
 
 function openCrop(side){
-  cropTarget=side;
-  // Edit mode: side is 'edit-recto' or 'edit-verso'
+  cropTarget = side;
   let src;
-  if(side==='edit-recto'){
+  if(side === 'edit-recto'){
     src = editPhoto.recto;
     if(!src){
-      // Fall back to existing card photo shown in preview
-      const img = document.getElementById('e-preview-img');
-      src = img && img.style.display!=='none' ? img.src : null;
+      const el = document.getElementById('e-preview-img');
+      src = el ? el.src : null;
     }
-  } else if(side==='edit-verso'){
+  } else if(side === 'edit-verso'){
     src = editPhoto.verso;
     if(!src){
-      const img = document.getElementById('e-preview-img-v');
-      src = img && img.style.display!=='none' ? img.src : null;
+      const el = document.getElementById('e-preview-img-v');
+      src = el ? el.src : null;
     }
   } else {
     src = addPhoto[side];
   }
-  if(!src){showToast(" Ajoute d'abord une photo");return;}
-  const overlay = document.getElementById("crop-overlay");
-  const img = document.getElementById("crop-img");
+  if(!src){ showToast("Ajoute d'abord une photo"); return; }
 
-  // Show overlay first so measurements work
+  const overlay = document.getElementById("crop-overlay");
   overlay.classList.add("open");
 
-  img.onload = ()=>{ requestAnimationFrame(()=>initCrop()); };
-  img.onerror = ()=>{ showToast(" Impossible de charger l'image"); };
-
-  // crossOrigin must be set BEFORE src to avoid tainted canvas (Supabase URLs)
-  // Skip for data: URIs and blob: URLs (already local)
-  if(src && !src.startsWith('data:') && !src.startsWith('blob:')){
-    img.crossOrigin = "anonymous";
-  } else {
-    img.crossOrigin = "";
+  // If it's already a dataURL or blob → load directly (no CORS issue)
+  if(src.startsWith('data:') || src.startsWith('blob:')){
+    _loadCropImg(src);
+    return;
   }
 
-  // Force reload even if same src (iOS Safari/Chrome)
+  // External URL (Supabase CDN) → fetch as blob to avoid tainted canvas
+  showToast("Chargement…");
+  fetch(src)
+    .then(r => r.blob())
+    .then(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      _loadCropImg(blobUrl);
+    })
+    .catch(() => {
+      // fetch blocked → try direct load with crossOrigin
+      _loadCropImg(src, true);
+    });
+}
+
+function _loadCropImg(src, withCORS){
+  const img = document.getElementById("crop-img");
+  img.onload  = () => requestAnimationFrame(() => initCrop());
+  img.onerror = () => showToast("Impossible de charger l'image");
+  if(withCORS) img.crossOrigin = "anonymous";
+  else img.crossOrigin = "";
   img.src = "";
   img.src = src;
-
-  // If already cached/complete, init immediately
-  if(img.complete && img.naturalWidth > 0){
-    requestAnimationFrame(()=>initCrop());
-  }
+  if(img.complete && img.naturalWidth > 0) requestAnimationFrame(() => initCrop());
 }
 
 
@@ -1414,12 +1427,8 @@ function initCrop(){
   const imgEl = getCropEl("crop-img");
   if(!canvas || !wrap || !imgEl) return;
 
-  // Build Image() for correct sizing
+  // Build Image() for correct sizing - src is always blob/dataURL at this point
   const img = new Image();
-  // crossOrigin must be set before src to avoid tainted canvas (Supabase CDN URLs)
-  if(imgEl.src && !imgEl.src.startsWith('data:') && !imgEl.src.startsWith('blob:')){
-    img.crossOrigin = "anonymous";
-  }
   img.onload = ()=>{
     _cropState.img = img;
     _cropState.loaded = true;
@@ -2364,61 +2373,6 @@ if(_origInitCrop){
   }
 }
 
-// patch applyCrop to export with filters + variable frame
-const _origApplyCrop = (typeof applyCrop === 'function') ? applyCrop : null;
-if(_origApplyCrop){
-  window.applyCrop = function(){
-    // Re-implement export to respect crop frame + filters, but keep your existing drag logic
-    try{
-      const canvas = document.getElementById('crop-canvas');
-      const wrap = document.querySelector('#crop-overlay .crop-wrap');
-      const frame = document.querySelector('#crop-overlay .crop-frame');
-      if(!canvas || !wrap || !frame){ return _origApplyCrop(); }
-
-      // Source is current canvas bitmap (already drawn)
-      const srcW = canvas.width, srcH = canvas.height;
-      // Compute frame rect relative to wrap, map to canvas pixels
-      const wrapRect = wrap.getBoundingClientRect();
-      const frameRect = frame.getBoundingClientRect();
-
-      const fx = (frameRect.left - wrapRect.left) / wrapRect.width;
-      const fy = (frameRect.top - wrapRect.top) / wrapRect.height;
-      const fw = (frameRect.width) / wrapRect.width;
-      const fh = (frameRect.height) / wrapRect.height;
-
-      const sx = Math.max(0, Math.round(fx * srcW));
-      const sy = Math.max(0, Math.round(fy * srcH));
-      const sw = Math.min(srcW - sx, Math.round(fw * srcW));
-      const sh = Math.min(srcH - sy, Math.round(fh * srcH));
-
-      // Output canvas
-      const out = document.createElement('canvas');
-      out.width = sw; out.height = sh;
-      const ctx = out.getContext('2d');
-
-      // Apply enhancement filters
-      const con = Number(document.getElementById('crop-contrast')?.value || 100);
-      const bri = Number(document.getElementById('crop-brightness')?.value || 100);
-      ctx.filter = `contrast(${con}%) brightness(${bri}%)`;  // values are already in %
-
-      ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
-
-      const croppedDataUrl = out.toDataURL('image/jpeg', 0.92);
-
-      // Update preview image used in app
-      const preview = document.getElementById('photo-preview-img');
-      if(preview){
-        preview.src = croppedDataUrl;
-        window._lastScanDataUrl = croppedDataUrl;
-      }
-      closeCrop?.();
-      return;
-    }catch(e){
-      console.error(e);
-      return _origApplyCrop();
-    }
-  }
-}
 // --- end crop controls ---
 
 // --- end OCR.space + parser ---
