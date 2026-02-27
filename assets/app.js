@@ -1048,12 +1048,20 @@ function renderHome(){
       carousel.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:160px;color:var(--text-dim);font-size:13px;">Aucun favori ⭐</div>`;
       if(dots)dots.innerHTML="";
     } else {
+    } else {
       carousel.innerHTML=favs.map((c,i)=>`
-        <div class="hero-slide" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}" style="background:${c.photo?'transparent':'var(--surface2)'}">
-          ${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`:`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;"><div style="font-size:42px;opacity:.2;">🃏</div><div style="font-size:16px;font-weight:800;">${(c.nom||"").toUpperCase()}</div></div>`}
+        <div class="hero-slide${i===0?' active':''}" data-card-id="${c.id}" style="position:relative;background:${c.photo?'transparent':'var(--surface2)'}">
+          ${c.photo
+            ? `<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" alt="">`
+            : `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;"><div style="font-size:44px;opacity:.2;">🃏</div><div style="font-size:15px;font-weight:800;">${(c.nom||'').toUpperCase()}</div></div>`}
+          <div style="position:absolute;inset:0;border-radius:inherit;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 55%);pointer-events:none;"></div>
+          <div style="position:absolute;bottom:14px;left:14px;right:14px;pointer-events:none;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:.7;text-transform:uppercase;">${c.prenom||''}</div>
+            <div style="font-size:19px;font-weight:900;letter-spacing:.5px;line-height:1.1;">${(c.nom||'').toUpperCase()}</div>
+          </div>
         </div>`).join("");
-      if(dots)dots.innerHTML=favs.map((_,i)=>`<div class="hero-dot${i===0?" active":""}" onclick="goSlide(${i})"></div>`).join("");
-    }
+      if(dots)dots.innerHTML=favs.map((_,i)=>`<div class="hero-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join("");
+      setTimeout(()=>_initCarousel3D(carousel, favs), 50);
   }
 
   // Derniers ajouts
@@ -1089,8 +1097,59 @@ function goSlide(i){
   const dots=document.querySelectorAll(".hero-dot");
   if(!slides.length)return;
   carouselPos=Math.max(0,Math.min(i,slides.length-1));
-  const carousel=document.getElementById("hero-carousel");
-  if(carousel)carousel.scrollTo({left:carouselPos*carousel.offsetWidth,behavior:"smooth"});
+  _updateCarousel3D(carouselPos);
+  dots.forEach((d,j)=>d.classList.toggle("active",j===carouselPos));
+}
+
+function _initCarousel3D(carousel, cards){
+  if(!carousel) return;
+  const slides = carousel.querySelectorAll('.hero-slide');
+  if(!slides.length) return;
+  carouselPos = 0;
+  
+  // Click on slide to open card, centered slide gets opened, others go to that slide
+  slides.forEach((slide, idx) => {
+    slide.style.cursor = 'pointer';
+    slide.addEventListener('click', ()=>{
+      if(idx === carouselPos){
+        const cid = slide.dataset.cardId;
+        if(cid) openCard(cid);
+      } else {
+        goSlide(idx);
+      }
+    });
+  });
+
+  // Touch/drag swipe
+  let startX = 0;
+  carousel.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; }, {passive:true});
+  carousel.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - startX;
+    if(Math.abs(dx) > 40){
+      goSlide(dx < 0 ? carouselPos + 1 : carouselPos - 1);
+    }
+  }, {passive:true});
+
+  _updateCarousel3D(0);
+}
+
+function _updateCarousel3D(active){
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  carouselPos  = Math.max(0, Math.min(active, slides.length-1));
+  slides.forEach((s, i) => {
+    const diff = i - carouselPos;
+    s.classList.toggle('active', diff === 0);
+    // Scale + translateX for depth effect
+    const scale   = diff === 0 ? 1 : diff === -1 || diff === 1 ? 0.88 : 0.78;
+    const opacity = diff === 0 ? 1 : Math.abs(diff) === 1 ? 0.65 : 0.4;
+    const tx      = diff * 82;   // % overlap offset
+    s.style.transform   = `translateX(${tx}%) scale(${scale})`;
+    s.style.opacity     = opacity;
+    s.style.zIndex      = 10 - Math.abs(diff);
+    s.style.transition  = 'transform .4s cubic-bezier(.25,.8,.25,1), opacity .4s, box-shadow .4s';
+    s.style.boxShadow   = diff === 0 ? '0 16px 48px rgba(0,0,0,.7)' : '0 4px 16px rgba(0,0,0,.35)';
+  });
   dots.forEach((d,j)=>d.classList.toggle("active",j===carouselPos));
 }
 
@@ -1266,7 +1325,24 @@ function handlePhoto(inp,side){
 
 function openCrop(side){
   cropTarget=side;
-  const src=addPhoto[side];
+  // Edit mode: side is 'edit-recto' or 'edit-verso'
+  let src;
+  if(side==='edit-recto'){
+    src = editPhoto.recto;
+    if(!src){
+      // Fall back to existing card photo shown in preview
+      const img = document.getElementById('e-preview-img');
+      src = img && img.style.display!=='none' ? img.src : null;
+    }
+  } else if(side==='edit-verso'){
+    src = editPhoto.verso;
+    if(!src){
+      const img = document.getElementById('e-preview-img-v');
+      src = img && img.style.display!=='none' ? img.src : null;
+    }
+  } else {
+    src = addPhoto[side];
+  }
   if(!src){showToast(" Ajoute d'abord une photo");return;}
   const overlay = document.getElementById("crop-overlay");
   const img = document.getElementById("crop-img");
@@ -2413,7 +2489,12 @@ function renderSearchResults(box, cards){
 
     row.addEventListener("click", ()=>{
       box.style.display="none";
-      openCard(c.id);
+      const playerName = ((c.prenom||'')+' '+(c.nom||'')).trim();
+      if(playerName){
+        location.href = 'player.html?name=' + encodeURIComponent(playerName);
+      } else {
+        openCard(c.id);
+      }
     });
     frag.appendChild(row);
   });
