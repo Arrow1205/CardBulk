@@ -33,22 +33,23 @@ body{ overflow-y:auto; padding-bottom:var(--tab-h); }
 <!-- Club view (full page) -->
 <section class="view" id="view-club" style="display:block">
   <div class="hero-top" style="position:relative;">
+    <div class="club-watermark"><img id="club-watermark-img" alt="" /></div>
+
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
     <img id="club-hero-img" alt="" style="display:none;">
-    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div class="hero-name" style="margin-top:8px; padding-right:130px;">
+
+    <div class="hero-name" style="margin-top:6px;">
       <div class="last" id="club-title-big">—</div>
     </div>
-    <div class="hero-chips" style="margin-top:14px;" id="club-sport-chips"></div>
   </div>
   <div class="info-section">
-    <div class="section-title">Filtres</div>
+    <div class="section-title">TOUTES LES CARTES</div>
     <div class="pills-row" id="club-brand-row"></div>
     <div class="pills-row" style="margin-top:10px" id="club-spec-row"></div>
 
-    <div class="section-title">Joueurs du club</div>
-    <div class="pills-row" id="club-players-row"></div>
-
-    <div class="section-title">Cartes</div>
     <div class="colls-grid" id="club-cards-grid"></div>
   </div>
 </section>
@@ -80,6 +81,9 @@ async function _pageClub(){
     const src = override || base || '';
     img.src = src;
     img.style.display = src ? 'block' : 'none';
+    const wm = document.getElementById('club-watermark-img');
+    if(wm){ wm.src = src; wm.style.display = src ? 'block' : 'none'; }
+
   }
 
   // Club sport chip
