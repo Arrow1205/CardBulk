@@ -401,7 +401,7 @@ body *{font-size:inherit;}
 
 /* Collection tabs (Cartes / Valeur) */
 .coll-tab{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:999px;background:var(--surface2);border:1px solid rgba(255,255,255,.10);color:var(--text-dim);font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-size:12px;cursor:pointer;transition:all .12s ease;}
-.coll-tab.active{background:transparent;border-color:var(--accent);color:var(--accent);}
+.coll-tab.active{background:transparent;border-color:var(--accent);color:var(--accent);;color:var(--accent) !important;border-color:var(--accent) !important;}
 .badge{font-size:11px !important;padding:3px 10px !important;}
 /* EMPTY */
 .empty-state{text-align:center;padding:38px 22px;color:var(--text-dim);}
@@ -704,6 +704,56 @@ html, body{ font-family:var(--font-body) !important; }
 .info-section{ padding:12px 18px 84px; }
 .section-title{ font-size:12px; letter-spacing:1px; opacity:.7; font-weight:800; margin:16px 0 10px; text-transform:uppercase; }
 .pills-row{ display:flex; gap:10px; flex-wrap:wrap; }
+
+/* Horizontal scroll row (clubs on sport page) */
+.pills-row.scroll-x{
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+}
+.pills-row.scroll-x > *{ flex: 0 0 auto; }
+
+/* Brand logos inside filter pills */
+.brand-logo{
+  height: 14px;
+  width: auto;
+  display: block;
+}
+
+/* Ellipse background (player + sport hero) */
+.hero-top.hero-ellipse{ position:relative; overflow:hidden; }
+.hero-top.hero-ellipse::after{
+  content:"";
+  position:absolute;
+  top:-110px;
+  right:-90px;
+  width:420px;
+  height:420px;
+  background: url('Ellipse.svg') no-repeat;
+  background-size: contain;
+  pointer-events:none;
+  z-index:0;
+}
+.hero-top.hero-ellipse > *{ position:relative; z-index:1; }
+
+/* Club chips (player/sport filters) */
+.club-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:transparent;
+  border:1px solid rgba(184,255,60,.75);
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.club-chip img{ width:16px; height:16px; object-fit:contain; display:block; }
+.club-chip.on{ background:var(--accent, #b8ff3c); color:#00111E; border-color:transparent; }
 .pill-tag{ padding:7px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); font-size:12px; font-weight:800; cursor:pointer; }
 .pill-tag.on{ background:#AFFF25; color:#00111E; border-color:transparent; }
 
@@ -861,7 +911,7 @@ html, body{ font-family:var(--font-body) !important; }
 
 #view-sport .hero-name .last {
   font-size: 64px;
-  color: #b8ff3c;
+  color: #fff;
   font-style: italic;
 }
 
@@ -873,19 +923,22 @@ html, body{ font-family:var(--font-body) !important; }
 }
 
 #view-club .hero-name .last {
-  font-size: 48px;
-  color: #fff;
+  font-size: 56px;
+  color: var(--accent, #b8ff3c);
   font-style: italic;
+  letter-spacing: -1px;
 }
+#view-club .hero-top{ padding-bottom: 18px; }
+#view-club .club-watermark{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:.18; filter: blur(.2px); }
+#view-club .club-watermark img{ width: 120%; max-width: 520px; height:auto; object-fit:contain; }
+
 
 #club-hero-img {
-  position: absolute !important;
-  top: 40px;
-  right: 16px;
-  width: 110px !important;
-  height: 110px !important;
+  width: 180px !important;
+  height: 180px !important;
   object-fit: contain;
   display: block;
+  margin: 6px auto 10px;
 }
 
 
