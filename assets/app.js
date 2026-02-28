@@ -4,7 +4,7 @@ var _PAGE = (()=>{
 })();
 
 // --- GEMINI OCR ---
-window.GEMINI_API_KEY = window.GEMINI_API_KEY || "AIzaSyCEg4l-iP0y84G27bHUnDWvtN1HSJRmWn8";
+// Clé Gemini côté serveur (Vercel /api/ocr). Ne rien mettre côté client.
 
 /* ═══════════ SUPABASE ═══════════ */
 window.SB_URL = window.SB_URL || "https://tykayvplynkysqwmhkyt.supabase.co";
