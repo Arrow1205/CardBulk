@@ -42,7 +42,7 @@
   .segYN button.active{background:var(--accent); color:#06120a; border-color:transparent;}
   .chips3{display:flex; gap:12px; margin-top:10px;}
   .chip{flex:1; border-radius:999px; padding:12px 0; text-align:center; font-weight:900; font-family:"Barlow Condensed",system-ui; text-transform:uppercase; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); color:rgba(255,255,255,.65); cursor:pointer;}
-  .chip.active{background:rgba(184,255,60,.18); border-color:rgba(184,255,60,.35); color:var(--accent);}
+  .chip.active{background:var(--accent); color:#06120a; border-color:transparent;}
   .select{appearance:none; -webkit-appearance:none; width:100%; background:transparent; border:0; outline:none; color:rgba(255,255,255,.92); font-size:16px; padding:0 28px 10px 0; border-bottom:1px solid rgba(255,255,255,.14);}
   .select-wrap{position:relative;}
   .select-wrap:after{content:""; position:absolute; right:4px; top:6px; width:14px; height:14px; border-right:2px solid rgba(255,255,255,.5); border-bottom:2px solid rgba(255,255,255,.5); transform:rotate(45deg); pointer-events:none;}
@@ -99,6 +99,11 @@
           <option value="Hockey">Hockey</option>
           <option value="Tennis">Tennis</option>
         </select>
+      </div>
+
+      <div id="clubGroup" class="hidden">
+        <div class="label">CLUB</div>
+        <input class="field" id="fClub" placeholder="Sélectionner" autocomplete="off"/>
       </div>
 
       <div class="label">NUMÉROTÉE</div>
@@ -161,7 +166,9 @@
 
 <script src="assets/app.js"></script>
 <script>
-  // OCR via Vercel API route: POST /api/ocr (Gemini key stays server-side)
+  // NOTE: Putting API keys client-side is insecure. For production, proxy via Vercel function.
+  // If you still want client-side, define window.GEMINI_API_KEY somewhere (or paste here).
+  const GEMINI_API_KEY = (window.GEMINI_API_KEY || "").trim();
 
   const tabRecto = document.getElementById('tab-recto');
   const tabVerso = document.getElementById('tab-verso');
@@ -182,9 +189,21 @@
   const fSetName = document.getElementById('fSetName');
 
   const fSport = document.getElementById('fSport');
+  const clubGroup = document.getElementById('clubGroup');
+  const fClub = document.getElementById('fClub');
   const fAnnee = document.getElementById('fAnnee');
   const fCollection = document.getElementById('fCollection');
   const fPrice = document.getElementById('fPrice');
+
+  function sportNeedsClubLocal(s){
+    return ["Football","Basketball","Baseball"].includes(String(s||""));
+  }
+  function updateClubVisibility(){
+    if(!clubGroup) return;
+    clubGroup.classList.toggle('hidden', !sportNeedsClubLocal(fSport.value));
+    if(!sportNeedsClubLocal(fSport.value) && fClub) fClub.value = "";
+  }
+  fSport.addEventListener('change', updateClubVisibility);
 
   const numNon = document.getElementById('numNon');
   const numOui = document.getElementById('numOui');
@@ -231,10 +250,16 @@
     previewVerso.style.display = (activeSide==='verso') ? 'block' : 'none';
   }
 
-  function handleFile(file){
+  async function handleFile(file){
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = ()=> setPreview(reader.result);
+    reader.onload = async ()=>{
+      setPreview(reader.result);
+      // Auto OCR when uploading RECTO
+      if(activeSide==='recto'){
+        try{ await analyserOCR(); }catch(_e){}
+      }
+    };
     reader.readAsDataURL(file);
   }
 
@@ -264,16 +289,29 @@
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Brands: static list (no DB dependency)
-  (function populateBrands(){
-    const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
-    for(const n of brands){
-      const opt = document.createElement('option');
-      opt.value = n;
-      opt.textContent = n;
-      fMarque.appendChild(opt);
-    }
-  })();
+  // Load brand list from Supabase (same source as collection)
+  async function populateBrands(){
+    try{
+      await loadBrandLogos(); // fills window.BRAND_LOGOS
+      // fetch brands rows for labels
+      const r = await fetch(`${SB_URL}/rest/v1/brands?select=*`,{headers:SB_HDR});
+      if(!r.ok) return;
+      const rows = await r.json();
+      const names = [];
+      for(const row of (Array.isArray(rows)?rows:[])){
+        const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
+        if(name) names.push(name);
+      }
+      names.sort((a,b)=>a.localeCompare(b,'fr'));
+      for(const n of names){
+        const opt = document.createElement('option');
+        opt.value = n;
+        opt.textContent = n;
+        fMarque.appendChild(opt);
+      }
+    }catch(e){ console.warn("populateBrands",e); }
+  }
+  populateBrands();
 
   function uiBusy(on, msg){
     btnOCR.disabled = on;
@@ -281,75 +319,67 @@
     statusEl.textContent = msg || "";
   }
 
-
-  async function blobToJpegBase64(blob, maxSide=1280, quality=0.82){
-    const bmp = await createImageBitmap(blob);
-    let w = bmp.width, h = bmp.height;
-    const scale = Math.min(1, maxSide / Math.max(w,h));
-    w = Math.round(w*scale); h = Math.round(h*scale);
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bmp,0,0,w,h);
-    const dataUrl = canvas.toDataURL('image/jpeg', quality);
-    return { mimeType: 'image/jpeg', base64Data: dataUrl.split(',')[1] || '', dataUrl };
-  }
-
   async function analyserOCR(){
     const dataUrl = rectoDataUrl || "";
     if(!dataUrl){ alert("Ajoute une image (recto) avant l'analyse."); return; }
+    if(!GEMINI_API_KEY || GEMINI_API_KEY.length < 20){
+      alert("Clé OCR manquante. Ajoute window.GEMINI_API_KEY (ou une API route Vercel).");
+      return;
+    }
 
     uiBusy(true, "Analyse en cours…");
 
-    try{
-      // Convert + compress recto image to a small JPEG payload (avoid 413)
-      const resImg = await fetch(dataUrl);
-      const blob = await resImg.blob();
-      const packed = await blobToJpegBase64(blob, 1280, 0.82);
-      const mimeType = packed.mimeType;
-      const base64Data = packed.base64Data;
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const mimeType = blob.type || "image/jpeg";
+    const base64Data = await new Promise((resolve)=>{
+      const fr = new FileReader();
+      fr.onloadend = ()=> resolve(String(fr.result).split(',')[1] || "");
+      fr.readAsDataURL(blob);
+    });
 
-      // Call serverless proxy (keeps GEMINI_API_KEY hidden)
-      const r = await fetch("/api/ocr",{
+    const prompt = `
+Analyse cette image de carte de sport.
+Extrais les informations et renvoie-les UNIQUEMENT sous la forme d'un objet JSON valide avec ces clés exactes :
+- "prenom"
+- "nom"
+- "editeur" (marque/brand : Topps, Panini, Leaf, Futera, etc.)
+- "collection" (nom de la collection / set sur la carte)
+Ne rajoute aucun texte avant ou après le JSON.
+`;
+
+    const body = {
+      contents: [{
+        parts: [
+          { text: prompt },
+          { inlineData: { mimeType: mimeType, data: base64Data } }
+        ]
+      }]
+    };
+
+    try{
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`,{
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ base64Data, mimeType })
+        body: JSON.stringify(body)
       });
+      const data = await r.json();
+      if(data.error) throw new Error(data.error.message || "Erreur API");
 
-      const data = await r.json().catch(()=> ({}));
-      if(!r.ok){
-        const msg = data?.error || ("Erreur OCR ("+r.status+")");
-        throw new Error(msg);
-      }
+      let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      raw = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
+      const o = JSON.parse(raw);
 
-      // Accept either {prenom, nom, marque, collection} or legacy {editeur}
-      const prenom = (data.prenom || "").trim();
-      const nom = (data.nom || "").trim();
-      const marque = (data.marque || data.editeur || "").trim();
-      const collection = (data.collection || "").trim();
-
-      if(prenom) fPrenom.value = prenom;
-      if(nom) fNom.value = nom;
-
-      if(marque){
-        // If brand exists in select, pick it; otherwise add it
-        const opts = Array.from(fMarque.options).map(o=>o.value);
-        if(!opts.includes(marque)){
-          const opt = document.createElement('option');
-          opt.value = marque;
-          opt.textContent = marque;
-          fMarque.appendChild(opt);
-        }
-        fMarque.value = marque;
-      }
-
-      if(collection) fSetName.value = collection;
+      if(o.prenom) fPrenom.value = o.prenom;
+      if(o.nom) fNom.value = o.nom;
+      if(o.editeur) fMarque.value = o.editeur;
+      if(o.collection) fSetName.value = o.collection;
 
       uiBusy(false, "OCR OK");
     }catch(e){
       console.error(e);
       uiBusy(false, "");
-      alert("Erreur OCR : " + (e?.message || e));
+      alert("Erreur OCR : " + e.message);
     }
   }
 
@@ -361,10 +391,10 @@
     try{
       // Build card object consistent with app schema
       const card = {
-        id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (String(Date.now())+Math.random().toString(16).slice(2)),
         prenom: (fPrenom.value || "").trim(),
         nom: (fNom.value || "").trim(),
         sport: (fSport.value || "").trim(),
+        club: sportNeedsClubLocal(fSport.value) ? ((fClub?.value || "").trim()) : "",
         isNum: !!isNum,
         tags: Array.from(activeTags),
         marque: (fMarque.value || "").trim(),
@@ -408,6 +438,7 @@
   // init
   setActiveSide('recto');
   setNum(false);
+  updateClubVisibility();
 </script>
 
 </body>
