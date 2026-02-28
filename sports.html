@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -35,13 +35,7 @@ body{ overflow-y:auto; }
   <div class="hero-top">
     <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
     <div class="hero-name">
-      <div class="last" id="sport-title-big">—</div>
-    </div>
-    <div class="hero-chips" style="margin-top:14px">
-      <div class="chip-pill">
-        <img id="sport-icon" alt="" />
-        <span id="sport-text">—</span>
-      </div>
+      <div class="last" id="sport-title-big" style="color:#fff;">—</div>
     </div>
   </div>
   <div class="info-section">
@@ -87,6 +81,7 @@ function navBack(){
 
 document.addEventListener('DOMContentLoaded', ()=>{
   loadFromDB();
+  try{ _pageSports(); }catch(e){}
   setupImageViewer && setupImageViewer();
 });
 </script>
