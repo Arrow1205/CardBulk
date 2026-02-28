@@ -234,13 +234,7 @@
   function handleFile(file){
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = ()=> {
-      setPreview(reader.result);
-      // Auto OCR when recto is selected
-      if(activeSide==='recto'){
-        setTimeout(()=>{ try{ analyserOCR(); }catch(_){} }, 50);
-      }
-    };
+    reader.onload = ()=> setPreview(reader.result);
     reader.readAsDataURL(file);
   }
 
@@ -270,25 +264,48 @@
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Brand list (static). We don't depend on a Supabase "brands" table.
-  (function populateBrands(){
-    const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck","Autre"];
-    // keep the first placeholder option if present
-    const first = fMarque.querySelector('option');
-    fMarque.innerHTML = '';
-    if(first) fMarque.appendChild(first);
-    for(const n of brands){
-      const opt = document.createElement('option');
-      opt.value = n;
-      opt.textContent = n;
-      fMarque.appendChild(opt);
-    }
-  })();
+  // Load brand list from Supabase (same source as collection)
+  async function populateBrands(){
+    try{
+      await loadBrandLogos(); // fills window.BRAND_LOGOS
+      // fetch brands rows for labels
+      const r = await fetch(`${SB_URL}/rest/v1/brands?select=*`,{headers:SB_HDR});
+      if(!r.ok) return;
+      const rows = await r.json();
+      const names = [];
+      for(const row of (Array.isArray(rows)?rows:[])){
+        const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
+        if(name) names.push(name);
+      }
+      names.sort((a,b)=>a.localeCompare(b,'fr'));
+      for(const n of names){
+        const opt = document.createElement('option');
+        opt.value = n;
+        opt.textContent = n;
+        fMarque.appendChild(opt);
+      }
+    }catch(e){ console.warn("populateBrands",e); }
+  }
+  populateBrands();
 
   function uiBusy(on, msg){
     btnOCR.disabled = on;
     btnSave.disabled = on;
     statusEl.textContent = msg || "";
+  }
+
+
+  async function blobToJpegBase64(blob, maxSide=1280, quality=0.82){
+    const bmp = await createImageBitmap(blob);
+    let w = bmp.width, h = bmp.height;
+    const scale = Math.min(1, maxSide / Math.max(w,h));
+    w = Math.round(w*scale); h = Math.round(h*scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bmp,0,0,w,h);
+    const dataUrl = canvas.toDataURL('image/jpeg', quality);
+    return { mimeType: 'image/jpeg', base64Data: dataUrl.split(',')[1] || '', dataUrl };
   }
 
   async function analyserOCR(){
@@ -298,15 +315,12 @@
     uiBusy(true, "Analyse en cours…");
 
     try{
-      // Convert current recto image to base64 payload
+      // Convert + compress recto image to a small JPEG payload (avoid 413)
       const resImg = await fetch(dataUrl);
       const blob = await resImg.blob();
-      const mimeType = blob.type || "image/jpeg";
-      const base64Data = await new Promise((resolve)=>{
-        const fr = new FileReader();
-        fr.onloadend = ()=> resolve(String(fr.result).split(',')[1] || "");
-        fr.readAsDataURL(blob);
-      });
+      const packed = await blobToJpegBase64(blob, 1280, 0.82);
+      const mimeType = packed.mimeType;
+      const base64Data = packed.base64Data;
 
       // Call serverless proxy (keeps GEMINI_API_KEY hidden)
       const r = await fetch("/api/ocr",{
@@ -360,6 +374,7 @@
     try{
       // Build card object consistent with app schema
       const card = {
+        id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (String(Date.now())+Math.random().toString(16).slice(2)),
         prenom: (fPrenom.value || "").trim(),
         nom: (fNom.value || "").trim(),
         sport: (fSport.value || "").trim(),
