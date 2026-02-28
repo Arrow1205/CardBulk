@@ -264,29 +264,16 @@
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Load brand list from Supabase (same source as collection)
-  async function populateBrands(){
-    try{
-      await loadBrandLogos(); // fills window.BRAND_LOGOS
-      // fetch brands rows for labels
-      const r = await fetch(`${SB_URL}/rest/v1/brands?select=*`,{headers:SB_HDR});
-      if(!r.ok) return;
-      const rows = await r.json();
-      const names = [];
-      for(const row of (Array.isArray(rows)?rows:[])){
-        const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
-        if(name) names.push(name);
-      }
-      names.sort((a,b)=>a.localeCompare(b,'fr'));
-      for(const n of names){
-        const opt = document.createElement('option');
-        opt.value = n;
-        opt.textContent = n;
-        fMarque.appendChild(opt);
-      }
-    }catch(e){ console.warn("populateBrands",e); }
-  }
-  populateBrands();
+  // Brands: static list (no DB dependency)
+  (function populateBrands(){
+    const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
+    for(const n of brands){
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      fMarque.appendChild(opt);
+    }
+  })();
 
   function uiBusy(on, msg){
     btnOCR.disabled = on;
