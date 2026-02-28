@@ -687,19 +687,33 @@ function _escapeHtml(str){
 
 function brandLogoHtml(brand, size){
   const label = String(brand ?? "").trim();
-  if(!label) return "—";
+  if(!label) return "";
   const px = Number.isFinite(+size) ? Math.max(12, +size) : 16;
-  // Prefer real logo when available
-  const key = label in BRANDS_DB ? label : (label.charAt(0).toUpperCase()+label.slice(1).toLowerCase());
-  const src = (typeof BRANDS_DB!=="undefined" && BRANDS_DB[key]) ? BRANDS_DB[key] : null;
-  if(src){
-    return `<img src="${src}" alt="${_escapeHtml(label)}" style="height:${px}px;max-width:${Math.round(px*3)}px;object-fit:contain;display:inline-block;vertical-align:middle;">`;
+
+  const k = label.toLowerCase();
+  const map = {
+    "topps": "assets/brands/topps.svg",
+    "panini": "assets/brands/panini.svg",
+    "leaf": "assets/brands/leaf.svg",
+    "daka": "assets/brands/daka.svg",
+    "futera": "assets/brands/futera.svg",
+  };
+
+  // match substrings too (ex: "Topps Chrome")
+  let src = "";
+  for(const key of Object.keys(map)){
+    if(k.includes(key)){ src = map[key]; break; }
   }
-  const b = label.toLowerCase();
-  const cls = (b.includes("topps")) ? "brand-topps" : (b.includes("panini")) ? "brand-panini" : "brand-generic";
-  return `<span class="brand-pill ${cls}" style="font-size:${px}px;line-height:1;">${_escapeHtml(label)}</span>`;
+
+  if(src){
+    return `<img class="brand-logo" src="${src}" alt="${_escapeHtml(label)}" style="height:${px}px">`;
+  }
+
+  // fallback: text
+  return `<span class="brand-pill brand-generic" style="font-size:${px}px;line-height:1;">${_escapeHtml(label)}</span>`;
 }
 // --- end helpers ---
+
 
 
 function closeDetail(){
@@ -2691,19 +2705,27 @@ function _sportLabel(s){
 }
 function _renderFilterPills(el, items, current, onPick){
   el.innerHTML = "";
+  const isBrandRow = (el && typeof el.id === "string" && el.id.toLowerCase().includes("brand"));
+
   const all = document.createElement("div");
   all.className = "pill-tag"+(!current?" on":"");
   all.textContent = "TOUT";
   all.onclick = ()=>onPick("");
   el.appendChild(all);
+
   items.forEach(it=>{
     const d=document.createElement("div");
     d.className="pill-tag"+(current===it?" on":"");
-    d.textContent=it.toUpperCase();
+    if(isBrandRow){
+      d.innerHTML = brandLogoHtml(it, 14);
+    }else{
+      d.textContent = String(it||"").toUpperCase();
+    }
     d.onclick=()=>onPick(it);
     el.appendChild(d);
   });
 }
+
 function _renderSpecPills(el, spec, onToggle){
   const defs = [["auto","AUTO"],["patch","PATCH"],["rookie","ROOKIE"],["numbered","NUMÉROTÉE"]];
   el.innerHTML="";
@@ -2760,26 +2782,28 @@ function renderPlayerPage(){
   const brands=_uniq(cardsAll.map(c=>c.marque));
   _renderFilterPills(document.getElementById("player-brand-row"), brands, _ctxPlayer.brand, (b)=>{_ctxPlayer.brand=b; renderPlayerPage();});
   _renderSpecPills(document.getElementById("player-spec-row"), _ctxPlayer.spec, (k)=>{_ctxPlayer.spec[k]=!_ctxPlayer.spec[k]; renderPlayerPage();});
-  const clubs=_uniq(cardsAll.map(c=>c.club));
+  const clubs=_uniq(cardsAll.map(c=>c.club)).filter(Boolean);
   const row=document.getElementById("player-clubs-row");
-  row.innerHTML="";
-  const all=document.createElement("div");
-  all.className="pill-tag"+(!_ctxPlayer.club?" on":"");
-  all.textContent="TOUS";
-  all.onclick=()=>{_ctxPlayer.club=""; renderPlayerPage();};
-  row.appendChild(all);
-  clubs.forEach(cl=>{
-    const d=document.createElement("div");
-    d.className="pill-tag"+(_ctxPlayer.club===cl?" on":"");
-    d.textContent=cl;
-    d.onclick=()=>{_ctxPlayer.club=cl; renderPlayerPage();};
-    row.appendChild(d);
-  });
+  if(row){
+    row.innerHTML="";
+    clubs.forEach(cl=>{
+      const d=document.createElement("div");
+      d.className="club-chip"+(_ctxPlayer.club===cl?" on":"");
+      const logo = (typeof getClubLogoB64==="function") ? (getClubLogoB64(cl) || "") : "";
+      d.innerHTML = `${logo?`<img src="${logo}" alt="">`:''}<span>${cl}</span>`;
+      d.onclick=()=>{
+        _ctxPlayer.club = (_ctxPlayer.club===cl) ? "" : cl;
+        renderPlayerPage();
+      };
+      row.appendChild(d);
+    });
+  }
   renderCardsGrid(document.getElementById("player-cards-grid"), cards);
 }
 function renderSportPage(){
   const cardsAll=(db?.cards||[]).filter(c=>c.sport===_ctxSport.sport);
   const cards=cardsAll.filter(c=>{
+    if(_ctxSport.club && c.club!==_ctxSport.club) return false;
     if(_ctxSport.brand && c.marque!==_ctxSport.brand) return false;
     if(!_cardHasSpec(c,_ctxSport.spec)) return false;
     return true;
@@ -2787,6 +2811,24 @@ function renderSportPage(){
   const brands=_uniq(cardsAll.map(c=>c.marque));
   _renderFilterPills(document.getElementById("sport-brand-row"), brands, _ctxSport.brand, (b)=>{_ctxSport.brand=b; renderSportPage();});
   _renderSpecPills(document.getElementById("sport-spec-row"), _ctxSport.spec, (k)=>{_ctxSport.spec[k]=!_ctxSport.spec[k]; renderSportPage();});
+
+  const clubs=_uniq(cardsAll.map(c=>c.club)).filter(Boolean);
+  const row=document.getElementById("sport-clubs-row");
+  if(row){
+    row.innerHTML="";
+    clubs.forEach(cl=>{
+      const d=document.createElement("div");
+      d.className="club-chip"+(_ctxSport.club===cl?" on":"");
+      const logo = (typeof getClubLogoB64==="function") ? (getClubLogoB64(cl) || "") : "";
+      d.innerHTML = `${logo?`<img src="${logo}" alt="">`:''}<span>${cl}</span>`;
+      d.onclick=()=>{
+        _ctxSport.club = (_ctxSport.club===cl) ? "" : cl;
+        renderSportPage();
+      };
+      row.appendChild(d);
+    });
+  }
+
   renderCardsGrid(document.getElementById("sport-cards-grid"), cards);
 }
 function renderClubPage(){
@@ -2805,19 +2847,21 @@ function renderClubPage(){
   _renderSpecPills(document.getElementById("club-spec-row"), _ctxClub.spec, (k)=>{_ctxClub.spec[k]=!_ctxClub.spec[k]; renderClubPage();});
   const players=_uniq(cardsAll.map(c=>(((c.prenom||"")+" "+(c.nom||"")).trim()) || (c.player||"")));
   const row=document.getElementById("club-players-row");
-  row.innerHTML="";
-  const all=document.createElement("div");
-  all.className="pill-tag"+(!_ctxClub.player?" on":"");
-  all.textContent="TOUS";
-  all.onclick=()=>{_ctxClub.player=""; renderClubPage();};
-  row.appendChild(all);
-  players.forEach(p=>{
-    const d=document.createElement("div");
-    d.className="pill-tag"+(_ctxClub.player===p?" on":"");
-    d.textContent=p;
-    d.onclick=()=>{_ctxClub.player=p; renderClubPage();};
-    row.appendChild(d);
-  });
+  if(row){
+    row.innerHTML="";
+    const all=document.createElement("div");
+    all.className="pill-tag"+(!_ctxClub.player?" on":"");
+    all.textContent="TOUS";
+    all.onclick=()=>{_ctxClub.player=""; renderClubPage();};
+    row.appendChild(all);
+    players.forEach(p=>{
+      const d=document.createElement("div");
+      d.className="pill-tag"+(_ctxClub.player===p?" on":"");
+      d.textContent=p;
+      d.onclick=()=>{_ctxClub.player=p; renderClubPage();};
+      row.appendChild(d);
+    });
+  }
   renderCardsGrid(document.getElementById("club-cards-grid"), cards);
 }
 // ===== end Player / Sport / Club Info Pages =====
