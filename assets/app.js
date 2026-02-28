@@ -17,22 +17,20 @@ var _SB_HDR = window.SB_HDR;
 // BRAND LOGOS (loaded from Supabase when available)
 window.BRAND_LOGOS = window.BRAND_LOGOS || {};
 async function loadBrandLogos(){
-  // Local fallback: use static PNGs stored in /brands (GitHub)
-  // Filenames expected: topps.png, panini.png, leaf.png, futera.png, daka.png, upper-deck.png
-  const known = [
-    {name:'Topps', slug:'topps'},
-    {name:'Panini', slug:'panini'},
-    {name:'Leaf', slug:'leaf'},
-    {name:'Futera', slug:'futera'},
-    {name:'Daka', slug:'daka'},
-    {name:'Upper Deck', slug:'upper-deck'},
-  ];
-  const map = {};
-  for(const b of known){
-    map[b.name] = `brands/${b.slug}.png`;
-  }
-  window.BRAND_LOGOS = map;
-  return map;
+  try{
+    const url = `${_SB_URL}/rest/v1/brands?select=*`;
+    const r = await fetch(url,{headers:_SB_HDR});
+    if(!r.ok){ return; }
+    const rows = await r.json();
+    const map = {};
+    for(const row of (Array.isArray(rows)?rows:[])){
+      const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
+      const raw = row.logo_url ?? row.logo ?? row.url ?? row.image_url ?? row.src ?? "";
+      if(!name || !raw) continue;
+      map[name.toLowerCase()] = raw;
+    }
+    window.BRAND_LOGOS = map;
+  }catch(e){ /* silent */ }
 }
 
 /* ═══════════ SPORT ICONS (embedded) ═══════════ */
@@ -69,7 +67,8 @@ async function sbDelete(t,id){const r=await fetch(`https://tykayvplynkysqwmhkyt.
 async function uploadPhoto(dataUrl,cardId,side){try{const res=await fetch(dataUrl);const blob=await res.blob();const ext=blob.type.includes("png")?"png":"jpg";const path=`cards/${cardId}_${side}.${ext}`;const r=await fetch(`https://tykayvplynkysqwmhkyt.supabase.co/storage/v1/object/card-photos/${path}`,{method:"PUT",headers:{"apikey":_SB_KEY,"Authorization":"Bearer "+_SB_KEY,"Content-Type":blob.type,"cache-control":"3600","x-upsert":"true"},body:blob});if(!r.ok)throw new Error("upload "+r.status);return`https://tykayvplynkysqwmhkyt.supabase.co/storage/v1/object/public/card-photos/${path}`;}catch(e){console.error("uploadPhoto",e);return"";}}
 
 function fromSB(c){return{id:String(c.id),prenom:c.prenom||"",nom:c.nom||"",club:c.club||"",clubEmoji:c.club_emoji||"",sport:c.sport||"",num:c.num||"",isNum:c.is_num||false,tags:c.tags||[],collection:c.collection||"",notes:c.notes||"",photo:c.photo_url||"",photoVerso:c.photo_verso_url||"",fav:c.fav||false,date:c.date||"",price:c.price||0,marque:c.marque||"",annee:c.annee||"",setName:c.set_name||"",nationalite:c.nationalite||"",drapeauEmoji:c.drapeau_emoji||""};}
-function toSB(c){return{id:c.id,prenom:c.prenom||"",nom:c.nom||"",club:c.club||"",club_emoji:c.clubEmoji||"",sport:c.sport||"",num:c.num||"",is_num:c.isNum||false,tags:Array.isArray(c.tags)?c.tags:[],collection:c.collection||"",notes:c.notes||"",photo_url:c.photo||"",photo_verso_url:c.photoVerso||"",fav:c.fav||false,date:c.date||"",price:c.price||0,marque:c.marque||"",annee:c.annee||"",set_name:c.setName||"",nationalite:c.nationalite||"",drapeau_emoji:c.drapeauEmoji||""};}
+function genId(){try{return (crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2);}catch(e){return String(Date.now())+Math.random().toString(16).slice(2);}}
+function toSB(c){return{id:(c.id||genId()),prenom:c.prenom||"",nom:c.nom||"",club:c.club||"",club_emoji:c.clubEmoji||"",sport:c.sport||"",num:c.num||"",is_num:c.isNum||false,tags:Array.isArray(c.tags)?c.tags:[],collection:c.collection||"",notes:c.notes||"",photo_url:c.photo||"",photo_verso_url:c.photoVerso||"",fav:c.fav||false,date:c.date||"",price:c.price||0,marque:c.marque||"",annee:c.annee||"",set_name:c.setName||"",nationalite:c.nationalite||"",drapeau_emoji:c.drapeauEmoji||""};}
 
 /* ═══════ LOGOS DB ═══════ */
 const LOGOS_DB={
