@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Fugaz+One&display=swap" rel="stylesheet">
@@ -32,15 +32,14 @@ body{ overflow-y:auto; }
 
 <!-- Club view (full page) -->
 <section class="view" id="view-club" style="display:block">
-  <div class="hero-top">
-    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back" style="margin-bottom:16px;">←</button>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:14px;">
-      <img id="club-hero-img" alt="" style="width:110px;height:110px;object-fit:contain;display:none;">
-      <div class="hero-name" style="margin-top:0;">
-        <div class="last" id="club-title-big" style="font-size:42px;">—</div>
-      </div>
+  <div class="hero-top" style="position:relative;">
+    <img id="club-hero-img" alt="" style="display:none;">
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+    <div class="hero-name" style="margin-top:8px; padding-right:130px;">
+      <div class="last" id="club-title-big">—</div>
     </div>
-</div>
+    <div class="hero-chips" style="margin-top:14px;" id="club-sport-chips"></div>
+  </div>
   <div class="info-section">
     <div class="section-title">Filtres</div>
     <div class="pills-row" id="club-brand-row"></div>
@@ -83,6 +82,19 @@ async function _pageClub(){
     img.style.display = src ? 'block' : 'none';
   }
 
+  // Club sport chip
+  const clubChipsEl = document.getElementById('club-sport-chips');
+  if(clubChipsEl){
+    // Trouver le sport associé au club
+    const clubCards = db.cards.filter(c=> (c.club||'')===club);
+    const clubSport = clubCards[0]?.sport || '';
+    if(clubSport){
+      const label = (typeof sportL==='function') ? sportL(clubSport)||clubSport : clubSport;
+      const iconSrc = (typeof SPORT_ICONS!=='undefined') ? SPORT_ICONS[clubSport]||'' : '';
+      clubChipsEl.innerHTML = `<div class="chip-pill">${iconSrc?`<img src="${iconSrc}" alt="" style="width:16px;height:16px;">`:''}  <span>${label}</span></div>`;
+    }
+  }
+
   renderClubPage();
 }
 
@@ -93,6 +105,7 @@ function navBack(){
 
 document.addEventListener('DOMContentLoaded', ()=>{
   loadFromDB();
+  try{ _pageClub(); }catch(e){}
   setupImageViewer && setupImageViewer();
 });
 </script>
