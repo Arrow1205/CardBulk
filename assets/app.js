@@ -553,10 +553,13 @@ async function homeSearch(v){
     return;
   }
   dd.classList.add("open");
-  dd.innerHTML = `<div class="drop-item" style="opacity:.7;pointer-events:none;">Recherche…</div>`;
+  dd.innerHTML = `<div class="search-drop-item" style="opacity:.7;pointer-events:none;">Recherche…</div>`;
   homeSearchTimer=setTimeout(async ()=>{
     const results=await sbSearchCards(q,12);
-    dd.innerHTML = results.slice(0,8).map(c=>`<div class="drop-item" onclick="openCard('${c.id}')">${(c.prenom||"")+" "+(c.nom||"")}<span style="opacity:.55;"> · ${c.club||""}</span></div>`).join("") || `<div class="drop-item" style="opacity:.7;pointer-events:none;">Aucun résultat</div>`;
+    dd.innerHTML = results.length
+        ? `<div class="search-drop-grid">` + results.slice(0,8).map(c=>`<div class="search-thumb" onclick="openCard('${c.id}')">${c.photo?`<img src="${c.photo}" alt="">`:""}</div>`).join("") + `</div>`
+            + `<div class="search-drop-item" onclick="openResults('${q.replace(/'/g,"\'")}')"><div class="search-drop-name">Voir tous les résultats</div><div class="search-drop-sub" style="margin-left:auto;">→</div></div>`
+        : `<div class="search-drop-item" style="opacity:.7;pointer-events:none;">Aucun résultat</div>`;
   },240);
 }
 function getFiltered(){
@@ -851,8 +854,24 @@ function stopGyro(){
   tRX=0;tRY=0;cRX=0;cRY=0;
 }
 
+/* Fav star icon (outline -> filled accent) */
+const FAV_STAR_SVG = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="fav-star" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>`;
+function setFavBtn(el, active){
+  if(!el) return;
+  el.innerHTML = FAV_STAR_SVG;
+  el.classList.toggle('active', !!active);
+}
+
 /* FAV */
-async function toggleFav(){const c=db.cards.find(x=>x.id===curCardId);if(!c)return;c.fav=!c.fav;await sbUpdate("cards",c.id,{fav:c.fav});const b=document.getElementById("detail-fav-btn");b.textContent=c.fav?"⭐":"";b.style.color=c.fav?"var(--gold)":"";showToast(c.fav?"Ajouté aux favoris":"Retiré des favoris");renderHome();}
+async function toggleFav(){
+  const c=db.cards.find(x=>x.id===curCardId);
+  if(!c) return;
+  c.fav=!c.fav;
+  await sbUpdate("cards",c.id,{fav:c.fav});
+  setFavBtn(document.getElementById("detail-fav-btn"), c.fav);
+  showToast(c.fav?"Ajouté aux favoris":"Retiré des favoris");
+  renderHome();
+}
 
 /* DELETE */
 async function deleteCurrentCard(){
@@ -1069,7 +1088,7 @@ function renderHome(){
 
   const recent=document.getElementById("recent-list");
   if(recent){
-    const last=db.cards.slice(0,8);
+    const last=db.cards.slice(0,5);
     if(last.length===0){
       recent.innerHTML=`<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">Aucune carte — appuie sur ＋ pour commencer !</div>`;
     } else {
@@ -1105,7 +1124,7 @@ async function collSearch(v){
   const dd=document.getElementById("coll-search-dropdown");
   if(dd){
     dd.classList.toggle("open", !!q);
-    dd.innerHTML = q ? `<div class="drop-item" style="opacity:.7;pointer-events:none;">Recherche…</div>` : "";
+    dd.innerHTML = q ? `<div class="search-drop-item" style="opacity:.7;pointer-events:none;">Recherche…</div>` : "";
   }
   if(!q){
     db._searchResults=null;
@@ -1121,7 +1140,7 @@ async function collSearch(v){
     // Dropdown quick picks
     if(dd){
       dd.classList.add("open");
-      dd.innerHTML = results.slice(0,8).map(c=>`<div class="drop-item" onclick="openCard('${c.id}')">${(c.prenom||"")+" "+(c.nom||"")}<span style="opacity:.55;"> · ${c.club||""}</span></div>`).join("") || `<div class="drop-item" style="opacity:.7;pointer-events:none;">Aucun résultat</div>`;
+      dd.innerHTML = results.slice(0,8).map(c=>`<div class="search-drop-item" onclick="openCard('${c.id}')">${(c.prenom||"")+" "+(c.nom||"")}<span style="opacity:.55;"> · ${c.club||""}</span></div>`).join("") || `<div class="search-drop-item" style="opacity:.7;pointer-events:none;">Aucun résultat</div>`;
     }
   },220);
 }
@@ -1132,7 +1151,7 @@ function homeSearch(v){
   if(!q){if(dd)dd.innerHTML="";return;}
   const hits=db.cards.filter(c=>(c.nom+c.prenom+c.club).toLowerCase().includes(q)).slice(0,8);
   if(!dd)return;
-  dd.innerHTML=hits.map(c=>`<div class="drop-item" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}">${c.prenom?c.prenom+" ":""}${c.nom||""} <span style="opacity:.5;">${c.club||""}</span></div>`).join("") || `<div class="drop-item" style="opacity:.5;">Aucun résultat</div>`;
+  dd.innerHTML=hits.map(c=>`<div class="search-drop-item" onclick="openCard(\'${c.id}\')" data-card-id="${c.id}">${c.prenom?c.prenom+" ":""}${c.nom||""} <span style="opacity:.5;">${c.club||""}</span></div>`).join("") || `<div class="search-drop-item" style="opacity:.5;">Aucun résultat</div>`;
 }
 
 function renderCollection(){
@@ -2997,7 +3016,7 @@ function _displayCard(c){
 
   // Favori
   const fb = document.getElementById('detail-fav-btn');
-  if(fb) fb.textContent = c.fav ? '★' : '☆';
+  setFavBtn(fb, !!c.fav);
 
   // Prénom / Nom
   const dp = document.getElementById('detail-prenom');
@@ -3066,8 +3085,23 @@ function _displayCard(c){
     tagsVal.textContent = specParts.join(' · ') || '—';
   }
 
-  // Marque / Année / Set
-  const dm = document.getElementById('d-marque'); if(dm) dm.textContent = c.marque || '—';
+  // Marque (logo si dispo)
+  const dmLogo = document.getElementById('d-marque-logo');
+  const dmText = document.getElementById('d-marque-text');
+  // Fallback for pages that still use #d-marque
+  const dmLegacy = document.getElementById('d-marque');
+
+  if(dmLogo && typeof BRANDS_DB !== 'undefined' && c.marque && BRANDS_DB[c.marque]){
+    dmLogo.src = BRANDS_DB[c.marque];
+    dmLogo.style.display = '';
+    if(dmText) dmText.style.display = 'none';
+  } else {
+    if(dmLogo) dmLogo.style.display = 'none';
+    if(dmText){ dmText.style.display = ''; dmText.textContent = c.marque || '—'; }
+  }
+  if(dmLegacy) dmLegacy.textContent = c.marque || '—';
+
+  // Année / Set
   const dy = document.getElementById('d-annee');  if(dy) dy.textContent = c.annee  || '—';
   const ds = document.getElementById('d-set');    if(ds) ds.textContent = c.setName || c.set || '—';
 
@@ -3102,6 +3136,14 @@ function openSport(sport){
   if(!sport) return;
   location.href = 'sports.html?key=' + encodeURIComponent(sport);
 }
+
+// Open results page (cross-sport search)
+function openResults(q){
+  const term = String(q||'').trim();
+  if(!term) return;
+  location.href = 'resultats.html?q=' + encodeURIComponent(term);
+}
+window.openResults = openResults;
 window.openSport = openSport;
 
 // Override openClub: go to club.html?name=...
@@ -3156,4 +3198,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const active = {index:'tab-home','':'tab-home',collection:'tab-collection',scanner:'tab-scanner'};
   const tabId = active[pg];
   if(tabId){ const el=document.getElementById(tabId); if(el) el.classList.add('active'); }
+
+  // Collection page: default tab is "Cartes"
+  if(pg==='collection' && document.getElementById('coll-panel-cards')){
+    try{ switchCollectionTab('cards'); }catch(e){}
+  }
 });
+
+// Collection tabs
+function switchCollectionTab(which){
+  const cardsBtn = document.getElementById('coll-tab-cards');
+  const valBtn = document.getElementById('coll-tab-value');
+  const cardsPanel = document.getElementById('coll-panel-cards');
+  const valPanel = document.getElementById('coll-panel-value');
+  if(!cardsPanel || !valPanel) return;
+
+  const isCards = (which==='cards');
+  cardsPanel.style.display = isCards ? '' : 'none';
+  valPanel.style.display = isCards ? 'none' : '';
+  if(cardsBtn) cardsBtn.classList.toggle('active', isCards);
+  if(valBtn) valBtn.classList.toggle('active', !isCards);
+}
