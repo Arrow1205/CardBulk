@@ -4,7 +4,7 @@ var _PAGE = (()=>{
 })();
 
 // --- GEMINI OCR ---
-// Clé Gemini côté serveur (Vercel /api/ocr). Ne rien mettre côté client.
+window.GEMINI_API_KEY = window.GEMINI_API_KEY || "AIzaSyCEg4l-iP0y84G27bHUnDWvtN1HSJRmWn8";
 
 /* ═══════════ SUPABASE ═══════════ */
 window.SB_URL = window.SB_URL || "https://tykayvplynkysqwmhkyt.supabase.co";
@@ -17,20 +17,22 @@ var _SB_HDR = window.SB_HDR;
 // BRAND LOGOS (loaded from Supabase when available)
 window.BRAND_LOGOS = window.BRAND_LOGOS || {};
 async function loadBrandLogos(){
-  try{
-    const url = `${_SB_URL}/rest/v1/brands?select=*`;
-    const r = await fetch(url,{headers:_SB_HDR});
-    if(!r.ok){ return; }
-    const rows = await r.json();
-    const map = {};
-    for(const row of (Array.isArray(rows)?rows:[])){
-      const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
-      const raw = row.logo_url ?? row.logo ?? row.url ?? row.image_url ?? row.src ?? "";
-      if(!name || !raw) continue;
-      map[name.toLowerCase()] = raw;
-    }
-    window.BRAND_LOGOS = map;
-  }catch(e){ /* silent */ }
+  // Local fallback: use static PNGs stored in /brands (GitHub)
+  // Filenames expected: topps.png, panini.png, leaf.png, futera.png, daka.png, upper-deck.png
+  const known = [
+    {name:'Topps', slug:'topps'},
+    {name:'Panini', slug:'panini'},
+    {name:'Leaf', slug:'leaf'},
+    {name:'Futera', slug:'futera'},
+    {name:'Daka', slug:'daka'},
+    {name:'Upper Deck', slug:'upper-deck'},
+  ];
+  const map = {};
+  for(const b of known){
+    map[b.name] = `brands/${b.slug}.png`;
+  }
+  window.BRAND_LOGOS = map;
+  return map;
 }
 
 /* ═══════════ SPORT ICONS (embedded) ═══════════ */
