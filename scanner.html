@@ -15,130 +15,75 @@
 <link rel="stylesheet" href="assets/app.css">
 <title>CardVault — Ajouter</title>
 </head>
+
 <body>
+  <div class="page">
+    <header class="topbar">
+      <div class="topbar-title">Scanner</div>
+    </header>
 
-<!-- SCANNER -->
-<div class="page active" id="page-scanner">
-  <div class="page-inner">
-    <div class="scanner-hdr"><div class="scanner-title">Ajouter</div><div class="scanner-sub">Scanne ou uploade ta carte</div></div>
-    <div style="padding:0 20px;">
-      <div class="side-tabs">
-        <div class="side-tab active" id="add-tab-recto" onclick="switchAddSide('recto')">Recto</div>
-        <div class="side-tab" id="add-tab-verso" onclick="switchAddSide('verso')">Verso</div>
-      </div>
-      <div id="add-recto-zone">
-        <div class="photo-upload" id="photo-upload-zone"><div class="scan-frame-overlay"><div class="sf-corner sf-tl"></div><div class="sf-corner sf-tr"></div><div class="sf-corner sf-bl"></div><div class="sf-corner sf-br"></div><div class="scan-line"></div></div>
-          <input type="file" id="card-photo-lib" accept="image/*" style="display:none" onchange="handlePhoto(this,'recto')">
-          <input type="file" id="card-photo-cam" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'recto')">
-          <div id="photo-preview-wrap" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib').click()">
-            <img id="photo-preview-img" style="width:100%;height:100%;object-fit:cover;">
-            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
-          </div>
-          <div id="photo-placeholder-ui"><div style="font-size:28px;"></div>
-            <div class="photo-btns">
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam').click()">Caméra</button>
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib').click()">Bibliothèque</button>
+    <main class="content" style="padding:16px;">
+      <div class="container-ocrv3">
+        <h2 style="text-align:center;margin:0 0 14px 0;">🤖 Scanner Intelligent v3</h2>
+
+        <div class="upload-area">
+          <input type="file" id="imageInput" accept="image/*">
+          <img id="preview" alt="Aperçu de la carte" />
+        </div>
+
+        <div id="loading" style="display:none;text-align:center;padding:16px;font-style:italic;font-weight:600;color:var(--accent);">
+          ✨ Analyse de l'image, détection des textes, logos, patchs et signatures en cours...
+        </div>
+
+        <div id="resultBox" class="result-box" style="display:none;">
+          <h3 style="margin:0 0 14px 0;font-size:16px;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:10px;">
+            ✅ Résultats de l'analyse :
+          </h3>
+
+          <form id="cardForm">
+            <div class="form-group">
+              <label for="inputPrenom">Prénom</label>
+              <input type="text" id="inputPrenom">
             </div>
-          </div>
-        </div>
-        <button class="crop-btn" id="crop-btn" style="display:none;" onclick="openCrop('recto')">Recadrer</button>
-        <button class="crop-btn" id="ocr-btn" style="margin-top:10px;" type="button" onclick="ocrCard()">Analyser (OCR)</button>
-</div>
-      <div id="add-verso-zone" style="display:none;">
-        <div class="photo-upload" id="photo-upload-zone-v">
-          <input type="file" id="card-photo-lib-v" accept="image/*" style="display:none" onchange="handlePhoto(this,'verso')">
-          <input type="file" id="card-photo-cam-v" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'verso')">
-          <div id="photo-preview-wrap-v" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib-v').click()">
-            <img id="photo-preview-img-v" style="width:100%;height:100%;object-fit:cover;">
-            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
-          </div>
-          <div id="photo-placeholder-ui-v"><div style="font-size:28px;"></div>
-            <div class="photo-btns">
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam-v').click()">Caméra</button>
-              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib-v').click()">Bibliothèque</button>
+            <div class="form-group">
+              <label for="inputNom">Nom</label>
+              <input type="text" id="inputNom">
             </div>
-          </div>
-        </div>
-        <button class="crop-btn" id="crop-btn-v" style="display:none;" onclick="openCrop('verso')">Recadrer verso</button>
-      </div>
-      <div style="height:14px;"></div>
-      <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="f-prenom" type="text" placeholder="Kylian" autocomplete="off"></div>
-      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="f-nom" type="text" placeholder="Mbappé" autocomplete="off"></div>
-      <div class="form-group"><label class="form-label">Sport</label>
-        <div class="sport-select-wrap"><span id="f-sport-icon" class="sport-icon"></span><select class="form-select" id="f-sport" onchange="onSportChange();updateSportIcon()">
-          <option value="">Sélectionner</option>
-          <option value="football">Football / Soccer</option>
-          <option value="basketball">Basketball</option>
-          <option value="baseball">Baseball</option>
-          <option value="nfl">NFL</option>
-          <option value="nhl">NHL</option>
-          <option value="tennis">Tennis</option>
-          <option value="f1">Formule 1</option>
-          <option value="autre">Autre</option>
-          <option value="marvel">Marvel</option>
-          <option value="pokemon">Pokémon</option>
-        </select></div>
-      </div>
-      <div class="form-group" id="club-group" style="display:none;">
-        <label class="form-label">Club / Équipe</label>
-        <div class="club-search-wrap">
-          <input class="form-input" id="f-club-search" type="text" placeholder="Rechercher un club… (ex: Ars)" oninput="clubSearch(this.value,'f')" onfocus="clubSearch(this.value,'f')" autocomplete="off">
-          <div class="club-dropdown" id="f-club-dropdown"></div>
-        </div>
-        <div id="sel-club-disp" style="display:none;margin-top:9px;align-items:center;gap:8px;"></div>
-        <button class="club-create-btn" id="club-create-show" style="display:none;" onclick="showCreateClubForm('f')"></button>
-        <div id="club-create-form" style="display:none;margin-top:8px;">
-          <input class="form-input" id="new-club-name" type="text" placeholder="Nom du club" style="margin-bottom:6px;">
-          <input class="form-input" id="new-club-full" type="text" placeholder="Nom complet" style="margin-bottom:6px;">
-          <input class="form-input" id="new-club-emoji" type="text" placeholder="Emoji" style="margin-bottom:6px;width:70px;">
-          <button class="btn-primary" style="padding:9px;" onclick="createClub('f')">Créer</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Numérotée</label>
-        <div style="display:flex;gap:7px;align-items:center;">
-          <div class="toggle-row" style="flex:1;"><button class="toggle-btn on" id="num-non" onclick="toggleNum(false)">Non</button><button class="toggle-btn" id="num-oui" onclick="toggleNum(true)">Oui</button></div>
-          <input class="form-input" id="f-num" type="text" placeholder="/25" style="width:76px;display:none;">
-        </div>
-      </div>
-      <div class="form-group"><label class="form-label">Spécificités</label><div class="toggle-row"><button class="toggle-btn" id="tog-auto" onclick="toggleTag('auto')">Auto</button><button class="toggle-btn" id="tog-patch" onclick="toggleTag('patch')">Patch</button><button class="toggle-btn" id="tog-rookie" onclick="toggleTag('rookie')">Rookie</button></div></div>
+            <div class="form-group">
+              <label for="inputClub">Club / Équipe</label>
+              <input type="text" id="inputClub">
+            </div>
+            <div class="form-group">
+              <label for="inputEditeur">Éditeur</label>
+              <input type="text" id="inputEditeur" placeholder="Topps / Panini / ...">
+            </div>
+            <div class="form-group">
+              <label for="inputCollection">Collection / Set</label>
+              <input type="text" id="inputCollection">
+            </div>
 
-      <!-- MARQUE -->
-      <div class="form-group"><label class="form-label">Marque</label>
-        <select class="form-select" id="f-marque" onchange="onMarqueChange('f')">
-          <option value="">Sélectionner</option>
-          <option value="Topps">Topps</option>
-          <option value="Panini">Panini</option>
-          <option value="Leaf">Leaf</option>
-          <option value="Futera">Futera</option>
-          <option value="Daka">Daka</option>
-          <option value="Autre">Autre</option>
-        </select>
-      </div>
-      <!-- ANNÉE -->
-      <div class="form-group"><label class="form-label">Année</label>
-        <select class="form-select" id="f-annee">
-          <option value="">Sélectionner</option>
-        </select>
-      </div>
-      <!-- COLLECTION/SET cascade -->
-      <div class="form-group" id="f-set-group" style="display:none;"><label class="form-label">Collection / Set</label>
-        <select class="form-select" id="f-set"></select>
-      </div>
+            <div class="form-group checkbox-group">
+              <label for="inputPatch">
+                <input type="checkbox" id="inputPatch"> Contient un Patch / Memorabilia 👕
+              </label>
+            </div>
+            <div class="form-group checkbox-group">
+              <label for="inputAuto">
+                <input type="checkbox" id="inputAuto"> Contient un Autographe ✍️
+              </label>
+            </div>
 
-      <div class="form-group"><label class="form-label">Dossier</label><select class="form-select" id="f-collection"></select></div>
-      <div id="new-coll-wrap" style="display:none;margin-top:7px;"><input class="form-input" id="f-new-coll" type="text" placeholder="Nom de la collection"></div>
-      <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="f-price" type="number" placeholder="0.00" step="0.01" min="0"></div>
-      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="3" placeholder="État, remarques…"></textarea></div>
-      <button class="btn-primary" id="save-card-btn" onclick="saveCard()">Enregistrer la carte</button>
-      <div style="height:22px;"></div>
-    </div>
+            <div class="button-group">
+              <button type="button" id="resetBtn">Annuler / Recommencer</button>
+              <button type="submit" id="saveBtn">Sauvegarder</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
   </div>
-</div>
 
-
-
-<!-- TABBAR -->
+  <!-- TABBAR -->
 <div class="tabbar">
   <button class="tab-btn active" onclick="location.href='index.html'" id="tab-home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
@@ -155,7 +100,7 @@
 <!-- CARD DETAIL -->
 <div class="card-detail" id="card-detail">
   <div class="card-detail-hdr">
-    <button class="back-btn" onclick="closeDetail()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <button class="back-btn" onclick="closeDetail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div style="display:flex;gap:8px;">
       
       <button class="detail-fav-btn" id="detail-fav-btn" onclick="toggleFav()"></button>
@@ -180,14 +125,14 @@
   <div class="card-detail-bottom">
     <div class="player-identity">
       <div>
-        <div class="player-first" id="detail-prenom"></div>
-        <div class="player-last" id="detail-nom" onclick="openPlayerStats()">—</div>
+        <div class="player-first" id="detail-prenom" onclick="openPlayer(curCardId)" style="cursor:pointer;"></div>
+        <div class="player-last" id="detail-nom" onclick="openPlayer(curCardId)" style="cursor:pointer;">—</div>
         <div class="player-meta">
           <span id="detail-flag" class="player-flag" style="display:none;"></span>
-          <span id="detail-club-logo-wrap" onclick="filterByClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
-          <span class="player-club" id="detail-club-n" onclick="filterByClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
+          <span id="detail-club-logo-wrap" onclick="openClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
+          <span class="player-club" id="detail-club-n" onclick="openClub(db.cards.find(x=>String(x.id)===String(curCardId))?.club||'')" style="cursor:pointer;"></span>
           <span class="sep" id="detail-sep" style="display:none;"></span>
-          <span class="player-sport-label" id="detail-sport-label"></span>
+          <span class="player-sport-label" id="detail-sport-label" onclick="openSport(db.cards.find(x=>String(x.id)===String(curCardId))?.sport||'')" style="cursor:pointer;"></span>
         </div>
       </div>
       <div class="player-right" style="display:none;"><div id="detail-num" style="display:none;"></div><div id="detail-badges"></div></div>
@@ -215,7 +160,7 @@
 <!-- COLL VIEW -->
 <div class="coll-view" id="coll-view">
   <div class="coll-view-hdr">
-    <button class="back-btn" onclick="closeCollView()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <button class="back-btn" onclick="closeCollView()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="coll-view-title" id="coll-view-title">Dossier</div>
     <div class="btn-icon" onclick="deleteCurrentFolder()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div>
   </div>
@@ -359,9 +304,9 @@
   <div class="crop-controls" id="crop-controls">
     <div class="cc-row"><span class="cc-lbl">Taille</span><input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78"></div>
     <div class="cc-row"><span class="cc-lbl">Zoom</span><input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Lumière</span><input id="crop-brightness" type="range" min="0.7" max="1.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Contraste</span><input id="crop-contrast" type="range" min="0.7" max="1.6" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="0.55" max="1" step="0.01" value="0.88"></div>
+    <div class="cc-row"><span class="cc-lbl">Lumière <span id="crop-brightness-pct">100%</span></span><input id="crop-brightness" type="range" min="70" max="140" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Contraste <span id="crop-contrast-pct">100%</span></span><input id="crop-contrast" type="range" min="70" max="160" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="55" max="100" step="1" value="88"></div>
     <div class="cc-actions">
       <button class="crop-btn-a" type="button" onclick="cropResetEnhance()">Reset</button>
     </div>
@@ -372,15 +317,403 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<!-- Fullscreen image viewer -->
+<div id="img-viewer" class="img-viewer" style="display:none" aria-hidden="true">
+  <button id="img-viewer-close" class="img-viewer-close" aria-label="Fermer"></button>
+  <img id="img-viewer-img" alt="Carte" />
+</div>
+
+
+<section class="view" id="view-player" style="display:none">
+  <div class="hero-top">
+    <div class="hero-row">
+      <div class="hero-right">
+        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="hero-name">
+          <div class="first" id="player-first">—</div>
+          <div class="last" id="player-last">—</div>
+        </div>
+        <div class="hero-chips">
+          <div class="chip-pill" id="player-sport-chip" onclick="openSportFromChip()">
+            <img id="player-sport-icon" alt="" />
+            <span id="player-sport-text">Sport</span>
+          </div>
+          <div class="chip-pill" id="player-club-chip" onclick="openClubFromChip()">
+            <span class="club-badge" id="player-club-badge">CL</span>
+            <span id="player-club-text">Club</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-media">
+          <img id="player-hero-img" alt="" onclick="triggerPlayerPhoto()" style="cursor:pointer;">
+          <button class="hero-photo-btn" type="button" onclick="triggerPlayerPhoto()" aria-label="Ajouter une photo">＋</button>
+          <input id="player-photo-input" type="file" accept="image/*" style="display:none" onchange="onPlayerPhotoPicked(event)">
+        </div>
+    </div>
+  </div>
+  <div class="info-section">
+    <div class="section-title">Clubs</div>
+    <div class="pills-row" id="player-clubs-row"></div>
+
+    <div class="section-title">Filtres</div>
+    <div class="pills-row" id="player-brand-row"></div>
+    <div class="pills-row" style="margin-top:10px" id="player-spec-row"></div>
+
+    <div class="section-title">Cartes</div>
+    <div class="cards-grid" id="player-cards-grid"></div>
+  </div>
+</section>
+
+<section class="view" id="view-sport" style="display:none">
+  <div class="hero-top">
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="hero-name">
+      <div class="first" id="sport-title-small">Sport</div>
+      <div class="last" id="sport-title-big">—</div>
+    </div>
+    <div class="hero-chips" style="margin-top:14px">
+      <div class="chip-pill">
+        <img id="sport-icon" alt="" />
+        <span id="sport-text">—</span>
+      </div>
+    </div>
+  </div>
+  <div class="info-section">
+    <div class="section-title">Filtres</div>
+    <div class="pills-row" id="sport-brand-row"></div>
+    <div class="pills-row" style="margin-top:10px" id="sport-spec-row"></div>
+
+    <div class="section-title">Cartes</div>
+    <div class="cards-grid" id="sport-cards-grid"></div>
+  </div>
+</section>
+
+<section class="view" id="view-club" style="display:none">
+  <div class="hero-top">
+    <div class="hero-row">
+      <div class="hero-right">
+        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="hero-name">
+          <div class="first" id="club-title-small">Club</div>
+          <div class="last" id="club-title-big">—</div>
+        </div>
+        <div class="hero-chips" style="margin-top:14px">
+          <div class="chip-pill">
+            <span class="club-badge" id="club-badge">CL</span>
+            <span id="club-text">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img id="club-hero-img" alt="" onclick="triggerClubLogo()" style="cursor:pointer;">
+        <button class="hero-photo-btn" type="button" onclick="triggerClubLogo()" aria-label="Ajouter un logo">＋</button>
+        <input id="club-logo-input" type="file" accept="image/*" style="display:none" onchange="onClubLogoPicked(event)">
+      </div>
+    </div>
+</div>
+  <div class="info-section">
+    <div class="section-title">Filtres</div>
+    <div class="pills-row" id="club-brand-row"></div>
+    <div class="pills-row" style="margin-top:10px" id="club-spec-row"></div>
+
+    <div class="section-title">Joueurs du club</div>
+    <div class="pills-row" id="club-players-row"></div>
+
+    <div class="section-title">Cartes</div>
+    <div class="cards-grid" id="club-cards-grid"></div>
+  </div>
+</section>
 <script src="assets/app.js"></script>
 <script>
-/* PAGE: scanner */
+/* PAGE: index — init */
 document.addEventListener('DOMContentLoaded', ()=>{
   populateYears('f-annee'); populateYears('e-annee');
   loadFromDB();
-  updateSportIcon && updateSportIcon();
-  initCrop && initCrop();
+  setupImageViewer && setupImageViewer();
+  initSportDD && initSportDD();
+  setupLiveSearch && setupLiveSearch();
 });
 </script>
+</body>
+</html>
+  <div class="toast" id="toast"></div>
+
+  <style>
+    /* Wrapper aligned with app theme */
+    .container-ocrv3 {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .upload-area { position: relative; margin-bottom: 14px; }
+    #imageInput {
+      display:block; width:100%;
+      padding: 14px;
+      border: 2px dashed rgba(255,255,255,.25);
+      border-radius: 12px;
+      cursor: pointer;
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-weight: 600;
+    }
+    #imageInput:disabled { opacity:.6; cursor:not-allowed; }
+    #preview {
+      max-width:100%;
+      width:100%;
+      height:auto;
+      border-radius: 12px;
+      margin-top: 12px;
+      display:none;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    }
+    .result-box {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group label {
+      display:block; font-size: 13px; margin-bottom: 6px; font-weight: 700; color: rgba(255,255,255,.85);
+    }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.15);
+      color: var(--text);
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-group input[type="text"]:focus { border-color: rgba(255,255,255,.28); }
+    .checkbox-group {
+      display:flex; align-items:center;
+      background: rgba(0,0,0,.12);
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .checkbox-group label {
+      margin:0; cursor:pointer; display:flex; align-items:center; width:100%;
+      font-weight: 600;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.15);
+      accent-color: var(--accent);
+    }
+    .button-group { display:flex; gap:10px; margin-top: 14px; }
+    .button-group button {
+      flex:1; padding: 12px 12px;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    #saveBtn { background: var(--accent); color: var(--bg); }
+    #resetBtn { background: rgba(255,255,255,.10); color: var(--text); border:1px solid rgba(255,255,255,.12); }
+    #saveBtn:disabled { opacity:.6; cursor:not-allowed; }
+  </style>
+
+  <script src="assets/app.js"></script>
+  <script>
+    // --- 🚨 Mets ta clé Gemini ici pour tester (ou remplace par une variable d'env en prod) 🚨 ---
+    const GEMINI_API_KEY = "TA_CLE_API_ICI";
+    // ---------------------------------------------------------------------------
+
+    const imageInput = document.getElementById('imageInput');
+    const preview = document.getElementById('preview');
+    const loading = document.getElementById('loading');
+    const resultBox = document.getElementById('resultBox');
+    const cardForm = document.getElementById('cardForm');
+    const resetBtn = document.getElementById('resetBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    let base64Data = null;
+    let mimeType = null;
+
+    function setTabActive(){
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      const s = document.getElementById('tab-scanner');
+      if(s) s.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      setTabActive();
+      // utile si tu veux réutiliser db plus tard
+      try{ loadFromDB && loadFromDB(); }catch(e){}
+    });
+
+    imageInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      resultBox.style.display = 'none';
+      mimeType = file.type;
+
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+
+      const reader = new FileReader();
+      reader.onloadend = function() {
+        base64Data = reader.result.split(',')[1];
+        analyserCarte();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    async function analyserCarte() {
+      if (!base64Data) return;
+      if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 20) {
+        alert("Clé Gemini manquante.");
+        return;
+      }
+
+      loading.style.display = 'block';
+      imageInput.disabled = true;
+
+      const prompt = `
+Analyse cette image de carte de sport.
+Extrais les informations et renvoie-les UNIQUEMENT sous la forme d'un objet JSON valide avec ces clés exactes :
+- "prenom"
+- "nom"
+- "club" (Nom de l'équipe ou du club. Détecte-le via le texte écrit OU via le logo de l'équipe s'il est présent. Si sport individuel sans club, laisse vide).
+- "editeur"
+- "collection"
+- "hasPatch" (booléen true/false : y a-t-il un morceau de maillot, tissu ou memorabilia intégré dans la carte ?)
+- "hasAutograph" (booléen true/false : y a-t-il une signature manuscrite sur la carte ?)
+
+Ne rajoute aucun texte avant ou après le JSON.
+      `;
+
+      const requestBody = {
+        contents: [{
+          parts: [
+            { text: prompt },
+            { inlineData: { mimeType: mimeType, data: base64Data } }
+          ]
+        }]
+      };
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
+
+        let rawText = data.candidates[0].content.parts[0].text;
+        rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+        const cardData = JSON.parse(rawText);
+
+        document.getElementById('inputPrenom').value = cardData.prenom || '';
+        document.getElementById('inputNom').value = cardData.nom || '';
+        document.getElementById('inputClub').value = cardData.club || '';
+        document.getElementById('inputEditeur').value = cardData.editeur || '';
+        document.getElementById('inputCollection').value = cardData.collection || '';
+
+        document.getElementById('inputPatch').checked = cardData.hasPatch === true;
+        document.getElementById('inputAuto').checked = cardData.hasAutograph === true;
+
+        resultBox.style.display = 'block';
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        console.error(error);
+        alert("Erreur d'analyse : " + error.message);
+      } finally {
+        loading.style.display = 'none';
+        imageInput.disabled = false;
+      }
+    }
+
+    resetBtn.addEventListener('click', function() {
+      resultBox.style.display = 'none';
+      preview.style.display = 'none';
+      loading.style.display = 'none';
+      imageInput.value = '';
+      imageInput.disabled = false;
+      cardForm.reset();
+      base64Data = null;
+      mimeType = null;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    cardForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const prenom = document.getElementById('inputPrenom').value.trim();
+      const nom = document.getElementById('inputNom').value.trim();
+      if(!prenom && !nom) {
+        showToast && showToast("Saisis au moins un nom");
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Sauvegarde…";
+
+      try {
+        const id = String(Date.now());
+        const dataUrl = mimeType && base64Data ? `data:${mimeType};base64,${base64Data}` : "";
+        let photoUrl = "";
+        if(dataUrl) {
+          photoUrl = await uploadPhoto(dataUrl, id, "recto");
+        }
+
+        const tags = [];
+        if(document.getElementById('inputPatch').checked) tags.push("patch");
+        if(document.getElementById('inputAuto').checked) tags.push("auto");
+
+        const card = {
+          id,
+          prenom,
+          nom,
+          club: document.getElementById('inputClub').value.trim(),
+          clubEmoji: "",
+          sport: "",
+          num: "",
+          isNum: false,
+          tags,
+          collection: "",
+          notes: "",
+          photo: photoUrl,
+          photoVerso: "",
+          fav: false,
+          date: new Date().toLocaleDateString("fr-FR"),
+          price: 0,
+          marque: document.getElementById('inputEditeur').value.trim(),
+          annee: "",
+          setName: document.getElementById('inputCollection').value.trim(),
+          nationalite: "",
+          drapeauEmoji: ""
+        };
+
+        await sbInsert("cards", toSB(card));
+        // push local db if exists
+        try {
+          if(window.db && Array.isArray(db.cards)) db.cards.unshift(card);
+        } catch(e){}
+
+        showToast && showToast("Carte enregistrée !");
+        // retour collection
+        setTimeout(()=>location.href="collection.html", 350);
+      } catch(err) {
+        console.error(err);
+        showToast && showToast("Erreur : " + (err.message || err));
+        alert("Erreur Supabase : " + (err.message || err));
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Sauvegarder";
+      }
+    });
+  </script>
 </body>
 </html>
