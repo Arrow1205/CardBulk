@@ -159,7 +159,9 @@
   </button>
 </div>
 
-<script src="assets/app.js"></script>
+<script src="assets/app.js">
+  function escapeHtml(str){return String(str??'').replace(/[&<>"']/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[s]));}
+</script>
 <script>
   // OCR via Vercel API route: POST /api/ocr (Gemini key stays server-side)
 
@@ -231,12 +233,6 @@
     previewVerso.style.display = (activeSide==='verso') ? 'block' : 'none';
   }
 
-    // Auto OCR on recto upload
-    if(activeSide==='recto'){
-      // small delay to allow UI to paint
-      setTimeout(()=>{ try{ analyserOCR(); }catch(e){} }, 50);
-    }
-
   function handleFile(file){
     if(!file) return;
     const reader = new FileReader();
@@ -271,22 +267,28 @@
   numOui.addEventListener('click', ()=>setNum(true));
 
   // Load brand list from Supabase (same source as collection)
-  async function populateBrands(){
-  const defaults = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
-  try{
-    // Optional: fetch brands from Supabase if table exists
-    const rows = await sbSelect('brands');
-    const list = (Array.isArray(rows) && rows.length)
-      ? rows.map(r => (r.name || r.marque || r.id || '').toString()).filter(Boolean)
-      : defaults;
-
-    fMarque.innerHTML = '<option value="">Sélectionner</option>' + list.map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
-  }catch(e){
-    // Fallback: static list (no dependency on DB)
-    fMarque.innerHTML = '<option value="">Sélectionner</option>' + defaults.map(n=>`<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+  async async function populateBrands(){
+    // Use local known brands (no Supabase dependency)
+    await (typeof loadBrandLogos==='function' ? loadBrandLogos() : Promise.resolve());
+    const known = ['Topps','Panini','Leaf','Futera','Daka','Upper Deck'];
+    const sel = document.getElementById('inputMarque') || document.getElementById('marque') || document.getElementById('brandSelect');
+    if(!sel) return;
+    // keep first option if any
+    const firstOpt = sel.querySelector('option[value=""]') || sel.querySelector('option');
+    sel.innerHTML = '';
+    // default empty
+    const opt0 = document.createElement('option');
+    opt0.value = '';
+    opt0.textContent = 'Sélectionner';
+    sel.appendChild(opt0);
+    for(const name of known){
+      const opt=document.createElement('option');
+      opt.value=name;
+      opt.textContent=name;
+      sel.appendChild(opt);
+    }
   }
-}
-populateBrands();
+  populateBrands();
 
   function uiBusy(on, msg){
     btnOCR.disabled = on;
@@ -386,8 +388,8 @@ populateBrands();
       // 2) upload photos
       let rectoUrl = "";
       let versoUrl = "";
-      if(rectoDataUrl){ try{ rectoUrl = await uploadPhoto(rectoDataUrl, id, "recto"); }catch(e){ console.warn("Upload recto failed", e); } }
-      if(versoDataUrl){ try{ versoUrl = await uploadPhoto(versoDataUrl, id, "verso"); }catch(e){ console.warn("Upload verso failed", e); } }
+      if(rectoDataUrl) rectoUrl = await uploadPhoto(rectoDataUrl, id, "recto");
+      if(versoDataUrl) versoUrl = await uploadPhoto(versoDataUrl, id, "verso");
 
       // 3) patch card
       const patch = {};
