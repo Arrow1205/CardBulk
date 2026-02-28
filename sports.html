@@ -32,18 +32,18 @@ body{ overflow-y:auto; padding-bottom:var(--tab-h); }
 
 <!-- Sport view (full page) -->
 <section class="view" id="view-sport" style="display:block">
-  <div class="hero-top">
+  <div class="hero-top hero-ellipse">
     <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="hero-name">
       <div class="last" id="sport-title-big" style="color:#fff;">—</div>
     </div>
   </div>
   <div class="info-section">
-    <div class="section-title">Filtres</div>
+    <div class="section-title">TOUTES LES CARTES</div>
     <div class="pills-row" id="sport-brand-row"></div>
     <div class="pills-row" style="margin-top:10px" id="sport-spec-row"></div>
+    <div class="pills-row scroll-x" style="margin-top:14px" id="sport-clubs-row"></div>
 
-    <div class="section-title">Cartes</div>
     <div class="colls-grid" id="sport-cards-grid"></div>
   </div>
 </section>
@@ -60,6 +60,7 @@ async function _pageSports(){
   if(!sport){ location.href='index.html'; return; }
 
   _ctxSport.sport = sport;
+  _ctxSport.club = '';
   _ctxSport.brand = '';
   _ctxSport.spec = {auto:false,patch:false,rookie:false,numbered:false};
 
