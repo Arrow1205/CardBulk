@@ -78,7 +78,7 @@ html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:
   position:absolute;
   width: 240px;
   aspect-ratio: 2.5 / 3.5;
-  border-radius: 18px;
+  border-radius: 12px;
   overflow:hidden;
   cursor:pointer;
   transition: all .5s cubic-bezier(0.25,0.8,0.25,1);
@@ -256,9 +256,15 @@ html,body{font-size:14px;height:100%;overflow:hidden;background:var(--bg);color:
 .card-detail{position:fixed;inset:0;z-index:150;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .card-detail.open{display:flex;}
 .card-detail-hdr{position:sticky;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 12px;}
-.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
-.detail-fav-btn{background:none;border:none;font-size:22px;cursor:pointer;padding:4px;}
+.back-btn{width:34px;height:34px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;}
+.detail-fav-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;}
+.detail-fav-btn svg{width:22px;height:22px;display:block;}
+.detail-fav-btn .fav-star{fill:transparent;stroke:rgba(255,255,255,.95);stroke-width:1.8;}
+.detail-fav-btn.active .fav-star{fill:var(--accent);stroke:none;}
 .fullscreen-btn{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);backdrop-filter:blur(4px);}
+
+/* card-detail should not hide content behind the tabbar */
+.card-detail{padding-bottom:var(--tab-h);}
 
 /* 3D Scene */
 .card-3d-scene{width:100%;height:58vh;min-height:280px;flex-shrink:0;display:flex;align-items:center;justify-content:center;perspective:1200px;background:var(--surface);position:sticky;top:0;overflow:hidden;cursor:pointer;z-index:1;}
@@ -392,6 +398,10 @@ body *{font-size:inherit;}
 .card-club-row{font-size:14px !important;}
 .chip-label{font-size:12px !important;}
 .filter-tag{font-size:13px !important;}
+
+/* Collection tabs (Cartes / Valeur) */
+.coll-tab{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:999px;background:var(--surface2);border:1px solid rgba(255,255,255,.10);color:var(--text-dim);font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-size:12px;cursor:pointer;transition:all .12s ease;}
+.coll-tab.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 .badge{font-size:11px !important;padding:3px 10px !important;}
 /* EMPTY */
 .empty-state{text-align:center;padding:38px 22px;color:var(--text-dim);}
@@ -744,14 +754,16 @@ html, body{ font-family:var(--font-body) !important; }
   justify-content: center;
   width: 38px; height: 38px;
   border-radius: 50%;
-  background: rgba(255,255,255,.10);
-  border: none;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.9);
   color: #fff;
   font-size: 18px;
   cursor: pointer;
   margin-bottom: 12px;
   flex-shrink: 0;
 }
+
+.icon-btn svg{width:16px;height:16px;display:block;}
 
 /* ── PLAYER : hero-row = flex, nom à gauche, photo à droite ── */
 .hero-row {
@@ -872,3 +884,18 @@ html, body{ font-family:var(--font-body) !important; }
   display: block;
 }
 
+
+
+/* --- Fix: titles accent + uppercase (player/club/sports) --- */
+#club-title-big,
+#sport-title-big,
+#player-first,
+#player-last{
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+/* --- Fix: disable text-only search dropdown layer on collection page --- */
+#coll-search-dropdown{
+  display:none !important;
+}
