@@ -16,9 +16,9 @@
 <title>CardVault — Dossier</title>
 <style>
 .view{ display:block!important; position:relative; min-height:100vh; }
-body{ overflow-y:auto; }
+body{ overflow-y:auto; padding-bottom:var(--tab-h); }
 .dossier-hero{ padding:22px 20px 0; }
-.dossier-back{ background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:0;margin-bottom:16px;display:flex;align-items:center;gap:6px; }
+.dossier-back{ margin-bottom:16px; }
 .dossier-meta{ display:flex;align-items:center;gap:10px;margin-bottom:4px; }
 .dossier-emoji{ font-size:32px; }
 .dossier-title{ font-family:"Barlow Condensed",sans-serif;font-size:42px;font-weight:900;text-transform:uppercase;color:var(--accent);line-height:1; }
@@ -37,7 +37,9 @@ body{ overflow-y:auto; }
 
 <section class="view" id="view-dossier">
   <div class="dossier-hero">
-    <button class="dossier-back" onclick="navBack()">←</button>
+    <button class="back-btn dossier-back" onclick="navBack()" aria-label="Retour">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
     <div class="dossier-meta">
       <div class="dossier-emoji" id="dossier-emoji">📁</div>
       <div class="dossier-title" id="dossier-title">—</div>
@@ -71,7 +73,7 @@ body{ overflow-y:auto; }
 <!-- CARD DETAIL (reused from collection) -->
 <div class="card-detail" id="card-detail">
   <div class="card-detail-hdr">
-    <button class="back-btn" onclick="closeDetail()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <button class="back-btn" onclick="closeDetail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div style="display:flex;gap:8px;">
       <button class="detail-fav-btn" id="detail-fav-btn" onclick="toggleFav()"></button>
     </div>
@@ -216,9 +218,9 @@ body{ overflow-y:auto; }
   <div class="crop-controls" id="crop-controls">
     <div class="cc-row"><span class="cc-lbl">Taille</span><input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78"></div>
     <div class="cc-row"><span class="cc-lbl">Zoom</span><input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Lumière</span><input id="crop-brightness" type="range" min="0.7" max="1.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Contraste</span><input id="crop-contrast" type="range" min="0.7" max="1.6" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="0.55" max="1" step="0.01" value="0.88"></div>
+    <div class="cc-row"><span class="cc-lbl">Lumière <span id="crop-brightness-pct">100%</span></span><input id="crop-brightness" type="range" min="70" max="140" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Contraste <span id="crop-contrast-pct">100%</span></span><input id="crop-contrast" type="range" min="70" max="160" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="55" max="100" step="1" value="88"></div>
     <div class="cc-actions">
       <button class="crop-btn-a" type="button" onclick="cropResetEnhance()">Reset</button>
     </div>
@@ -331,5 +333,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
   setupImageViewer && setupImageViewer();
 });
 </script>
+
+<!-- TABBAR -->
+<div class="tabbar">
+  <button class="tab-btn" onclick="location.href='index.html'" id="tab-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
+  </button>
+  <button class="tab-btn scan-btn" onclick="location.href='scanner.html'" id="tab-scanner">
+    <div class="scan-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="22" height="22" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+  </button>
+  <button class="tab-btn active" onclick="location.href='collection.html'" id="tab-collection">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Collection
+  </button>
+</div>
 </body>
 </html>
