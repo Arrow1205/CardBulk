@@ -3,8 +3,8 @@ var _PAGE = (()=>{
   return p;
 })();
 
-// --- GEMINI OCR ---
-window.GEMINI_API_KEY = window.GEMINI_API_KEY || "AIzaSyCEg4l-iP0y84G27bHUnDWvtN1HSJRmWn8";
+// Gemini key must NEVER be exposed client-side.
+// OCR calls go through /api/ocr (Vercel serverless).
 
 /* ═══════════ SUPABASE ═══════════ */
 window.SB_URL = window.SB_URL || "https://tykayvplynkysqwmhkyt.supabase.co";
@@ -14,23 +14,23 @@ var _SB_URL = window.SB_URL;
 var _SB_KEY = window.SB_KEY;
 var _SB_HDR = window.SB_HDR;
 
-// BRAND LOGOS (loaded from Supabase when available)
-window.BRAND_LOGOS = window.BRAND_LOGOS || {};
+// BRAND LOGOS
+// We don't rely on a Supabase "brands" table (it may not exist).
+// Logos are served from the repo /brands/*.png
+window.BRAND_LOGOS = window.BRAND_LOGOS || {
+  "topps": "/brands/topps.png",
+  "panini": "/brands/panini.png",
+  "leaf": "/brands/leaf.png",
+  "futera": "/brands/futera.png",
+  "daka": "/brands/daka.png",
+  "upper deck": "/brands/upper-deck.png",
+  "upperdeck": "/brands/upper-deck.png",
+  "upper-deck": "/brands/upper-deck.png",
+};
+
 async function loadBrandLogos(){
-  try{
-    const url = `${_SB_URL}/rest/v1/brands?select=*`;
-    const r = await fetch(url,{headers:_SB_HDR});
-    if(!r.ok){ return; }
-    const rows = await r.json();
-    const map = {};
-    for(const row of (Array.isArray(rows)?rows:[])){
-      const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
-      const raw = row.logo_url ?? row.logo ?? row.url ?? row.image_url ?? row.src ?? "";
-      if(!name || !raw) continue;
-      map[name.toLowerCase()] = raw;
-    }
-    window.BRAND_LOGOS = map;
-  }catch(e){ /* silent */ }
+  // Backward-compatible no-op (some pages may call it)
+  return window.BRAND_LOGOS;
 }
 
 /* ═══════════ SPORT ICONS (embedded) ═══════════ */
