@@ -25,22 +25,18 @@
       <div class="hdr-btns">
       </div>
     </div>
+
+    <!-- Tabs: Cartes / Valeur -->
+    <div class="coll-tabs" style="padding:0 20px 10px;display:flex;gap:10px;">
+      <button class="coll-tab active" id="coll-tab-cards" type="button" onclick="switchCollectionTab('cards')">Cartes</button>
+      <button class="coll-tab" id="coll-tab-value" type="button" onclick="switchCollectionTab('value')">Valeur</button>
+    </div>
+
+    <!-- PANEL: Cartes (default) -->
+    <div id="coll-panel-cards">
     <div class="search-wrap">
       <div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input id="coll-search" type="text" placeholder="Rechercher…" oninput="collSearch(this.value)" autocomplete="off"></div>
       <div class="search-dropdown" id="coll-search-dropdown"></div>
-    </div>
-    <!-- Total + count ligne sous la recherche -->
-    <div style="padding:6px 20px 10px;display:flex;align-items:center;gap:12px;">
-      <div id="total-val" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--accent);"></div>
-      <div id="total-cards" style="font-size:13px;opacity:.65;"></div>
-    </div>
-    <!-- Pie chart Valeur par marque -->
-    <div class="home-pie-wrap" id="home-pie-wrap" style="display:none;margin:0 20px 16px;">
-      <div class="home-pie-title" id="coll-value-title">Valeur de la collection</div>
-      <div class="pie-container">
-        <div class="pie-svg-wrap"><svg id="pie-svg" width="90" height="90" viewBox="0 0 90 90"></svg></div>
-        <div class="pie-legend" id="pie-legend"></div>
-      </div>
     </div>
     <!-- Dossiers row: titre + bouton inline -->
     <div style="padding:0 20px 10px;display:flex;align-items:center;justify-content:space-between;">
@@ -96,6 +92,26 @@
     </div>
     <div class="colls-grid" id="coll-grid"></div>
     <div id="coll-empty" class="empty-state" style="display:none;"><div class="empty-icon"></div><div class="empty-title">Aucun résultat</div><div class="empty-sub">Essaie d'autres filtres</div></div>
+
+    </div>
+
+    <!-- PANEL: Valeur -->
+    <div id="coll-panel-value" style="display:none;">
+      <!-- Total + count -->
+      <div style="padding:6px 20px 10px;display:flex;align-items:center;gap:12px;">
+        <div id="total-val" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:var(--accent);"></div>
+        <div id="total-cards" style="font-size:13px;opacity:.65;"></div>
+      </div>
+
+      <!-- Pie chart Valeur par marque -->
+      <div class="home-pie-wrap" id="home-pie-wrap" style="display:none;margin:0 20px 16px;">
+        <div class="home-pie-title" id="coll-value-title">Valeur de la collection</div>
+        <div class="pie-container">
+          <div class="pie-svg-wrap"><svg id="pie-svg" width="90" height="90" viewBox="0 0 90 90"></svg></div>
+          <div class="pie-legend" id="pie-legend"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -118,7 +134,7 @@
 <!-- CARD DETAIL -->
 <div class="card-detail" id="card-detail">
   <div class="card-detail-hdr">
-    <button class="back-btn" onclick="closeDetail()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <button class="back-btn" onclick="closeDetail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div style="display:flex;gap:8px;">
       
       <button class="detail-fav-btn" id="detail-fav-btn" onclick="toggleFav()"></button>
@@ -173,7 +189,7 @@
 <!-- COLL VIEW -->
 <div class="coll-view" id="coll-view">
   <div class="coll-view-hdr">
-    <button class="back-btn" onclick="closeCollView()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <button class="back-btn" onclick="closeCollView()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="coll-view-title" id="coll-view-title">Dossier</div>
     <div class="btn-icon" onclick="deleteCurrentFolder()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div>
   </div>
@@ -324,9 +340,9 @@
   <div class="crop-controls" id="crop-controls">
     <div class="cc-row"><span class="cc-lbl">Taille</span><input id="crop-size" type="range" min="0.45" max="0.95" step="0.01" value="0.78"></div>
     <div class="cc-row"><span class="cc-lbl">Zoom</span><input id="crop-zoom" type="range" min="1" max="2.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Lumière</span><input id="crop-brightness" type="range" min="0.7" max="1.4" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Contraste</span><input id="crop-contrast" type="range" min="0.7" max="1.6" step="0.01" value="1"></div>
-    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="0.55" max="1" step="0.01" value="0.88"></div>
+    <div class="cc-row"><span class="cc-lbl">Lumière <span id="crop-brightness-pct">100%</span></span><input id="crop-brightness" type="range" min="70" max="140" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Contraste <span id="crop-contrast-pct">100%</span></span><input id="crop-contrast" type="range" min="70" max="160" step="1" value="100"></div>
+    <div class="cc-row"><span class="cc-lbl">Qualité</span><input id="crop-quality" type="range" min="55" max="100" step="1" value="88"></div>
     <div class="cc-actions">
       <button class="crop-btn-a" type="button" onclick="cropResetEnhance()">Reset</button>
     </div>
@@ -348,7 +364,7 @@
   <div class="hero-top">
     <div class="hero-row">
       <div class="hero-right">
-        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <div class="hero-name">
           <div class="first" id="player-first">—</div>
           <div class="last" id="player-last">—</div>
@@ -386,7 +402,7 @@
 
 <section class="view" id="view-sport" style="display:none">
   <div class="hero-top">
-    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="hero-name">
       <div class="first" id="sport-title-small">Sport</div>
       <div class="last" id="sport-title-big">—</div>
@@ -412,7 +428,7 @@
   <div class="hero-top">
     <div class="hero-row">
       <div class="hero-right">
-        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <div class="hero-name">
           <div class="first" id="club-title-small">Club</div>
           <div class="last" id="club-title-big">—</div>
