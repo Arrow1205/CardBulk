@@ -159,9 +159,7 @@
   </button>
 </div>
 
-<script src="assets/app.js">
-  function escapeHtml(str){return String(str??'').replace(/[&<>"']/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[s]));}
-</script>
+<script src="assets/app.js"></script>
 <script>
   // OCR via Vercel API route: POST /api/ocr (Gemini key stays server-side)
 
@@ -236,7 +234,13 @@
   function handleFile(file){
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = ()=> setPreview(reader.result);
+    reader.onload = ()=> {
+      setPreview(reader.result);
+      // Auto OCR when recto is selected
+      if(activeSide==='recto'){
+        setTimeout(()=>{ try{ analyserOCR(); }catch(_){} }, 50);
+      }
+    };
     reader.readAsDataURL(file);
   }
 
@@ -266,29 +270,20 @@
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Load brand list from Supabase (same source as collection)
-  async async function populateBrands(){
-    // Use local known brands (no Supabase dependency)
-    await (typeof loadBrandLogos==='function' ? loadBrandLogos() : Promise.resolve());
-    const known = ['Topps','Panini','Leaf','Futera','Daka','Upper Deck'];
-    const sel = document.getElementById('inputMarque') || document.getElementById('marque') || document.getElementById('brandSelect');
-    if(!sel) return;
-    // keep first option if any
-    const firstOpt = sel.querySelector('option[value=""]') || sel.querySelector('option');
-    sel.innerHTML = '';
-    // default empty
-    const opt0 = document.createElement('option');
-    opt0.value = '';
-    opt0.textContent = 'Sélectionner';
-    sel.appendChild(opt0);
-    for(const name of known){
-      const opt=document.createElement('option');
-      opt.value=name;
-      opt.textContent=name;
-      sel.appendChild(opt);
+  // Brand list (static). We don't depend on a Supabase "brands" table.
+  (function populateBrands(){
+    const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck","Autre"];
+    // keep the first placeholder option if present
+    const first = fMarque.querySelector('option');
+    fMarque.innerHTML = '';
+    if(first) fMarque.appendChild(first);
+    for(const n of brands){
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      fMarque.appendChild(opt);
     }
-  }
-  populateBrands();
+  })();
 
   function uiBusy(on, msg){
     btnOCR.disabled = on;
