@@ -401,7 +401,7 @@ body *{font-size:inherit;}
 
 /* Collection tabs (Cartes / Valeur) */
 .coll-tab{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:999px;background:var(--surface2);border:1px solid rgba(255,255,255,.10);color:var(--text-dim);font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-size:12px;cursor:pointer;transition:all .12s ease;}
-.coll-tab.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+.coll-tab.active{background:transparent;border-color:var(--accent);color:var(--accent);}
 .badge{font-size:11px !important;padding:3px 10px !important;}
 /* EMPTY */
 .empty-state{text-align:center;padding:38px 22px;color:var(--text-dim);}
@@ -638,6 +638,10 @@ body{ background:#00111E !important; }
 /* Remove strokes globally on controls */
 .btn, button, .chip, select, input, textarea{ border:0 !important; }
 
+/* Restore borders for back buttons */
+.back-btn,.icon-btn{border:1.5px solid rgba(255,255,255,.9) !important;}
+
+
 /* Selected state color */
 .toggle-btn.on, .toggle-btn.selected, .chip.on, .chip.selected, .side-tab.active{
   background:#AFFF25 !important;
@@ -741,7 +745,7 @@ html, body{ font-family:var(--font-body) !important; }
 /* Zone hero commune */
 .hero-top {
   position: relative;
-  background: #0c0c0e;
+  background: transparent;
   padding: 52px 20px 24px;
   overflow: hidden;
   min-height: 200px;
@@ -857,7 +861,7 @@ html, body{ font-family:var(--font-body) !important; }
 
 #view-sport .hero-name .last {
   font-size: 64px;
-  color: #fff;
+  color: #b8ff3c;
   font-style: italic;
 }
 
@@ -886,12 +890,11 @@ html, body{ font-family:var(--font-body) !important; }
 
 
 
-/* --- Fix: titles accent + uppercase (player/club/sports) --- */
+/* --- Fix: titles uppercase (player/club/sports) --- */
 #club-title-big,
 #sport-title-big,
 #player-first,
 #player-last{
-  color: var(--accent);
   text-transform: uppercase;
 }
 
