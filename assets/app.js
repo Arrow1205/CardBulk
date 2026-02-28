@@ -3,11 +3,32 @@ var _PAGE = (()=>{
   return p;
 })();
 
+// --- GEMINI OCR ---
+window.GEMINI_API_KEY = "AIzaSyCEg4l-iP0y84G27bHUnDWvtN1HSJRmWn8";
 
 /* ═══════════ SUPABASE ═══════════ */
 const SB_URL="https://tykayvplynkysqwmhkyt.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5a2F5dnBseW5reXNxd21oa3l0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MzQxNzYsImV4cCI6MjA4NzQxMDE3Nn0.sbRIHt_qvIBODeLLKS5DWULGmxaghUPYFtBvfFyA85o";
 const SB_HDR={"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Prefer":"return=representation"};
+
+// BRAND LOGOS (loaded from Supabase when available)
+window.BRAND_LOGOS = window.BRAND_LOGOS || {};
+async function loadBrandLogos(){
+  try{
+    const url = `${SB_URL}/rest/v1/brands?select=*`;
+    const r = await fetch(url,{headers:SB_HDR});
+    if(!r.ok){ return; }
+    const rows = await r.json();
+    const map = {};
+    for(const row of (Array.isArray(rows)?rows:[])){
+      const name = String(row.name ?? row.brand ?? row.label ?? row.title ?? "").trim();
+      const raw = row.logo_url ?? row.logo ?? row.url ?? row.image_url ?? row.src ?? "";
+      if(!name || !raw) continue;
+      map[name.toLowerCase()] = raw;
+    }
+    window.BRAND_LOGOS = map;
+  }catch(e){ /* silent */ }
+}
 
 /* ═══════════ SPORT ICONS (embedded) ═══════════ */
 const SPORT_ICONS={
@@ -690,135 +711,26 @@ function brandLogoHtml(brand, size){
   if(!label) return "";
   const px = Number.isFinite(+size) ? Math.max(12, +size) : 16;
 
-  const k = label.toLowerCase();
-  const map = {
-    "topps": "assets/brands/topps.svg",
-    "panini": "assets/brands/panini.svg",
-    "leaf": "assets/brands/leaf.svg",
-    "daka": "assets/brands/daka.svg",
-    "futera": "assets/brands/futera.svg",
-  };
-
-  // match substrings too (ex: "Topps Chrome")
+  const key = label.toLowerCase();
+  // BRAND_LOGOS is loaded from Supabase (table "brands") when available
   let src = "";
-  for(const key of Object.keys(map)){
-    if(k.includes(key)){ src = map[key]; break; }
+  if(window.BRAND_LOGOS){
+    // exact match first
+    if(window.BRAND_LOGOS[key]) src = window.BRAND_LOGOS[key];
+    // substring match (ex: "Topps Chrome")
+    if(!src){
+      for(const k of Object.keys(window.BRAND_LOGOS)){
+        if(key.includes(k)){ src = window.BRAND_LOGOS[k]; break; }
+      }
+    }
   }
 
   if(src){
-    return `<img class="brand-logo" src="${src}" alt="${_escapeHtml(label)}" style="height:${px}px">`;
+    return `<img class="brand-logo" src="${src}" alt="${_escapeHtml(label)}" style="height:${px}px;max-width:${px*3}px;object-fit:contain;">`;
   }
 
   // fallback: text
-  return `<span class="brand-pill brand-generic" style="font-size:${px}px;line-height:1;">${_escapeHtml(label)}</span>`;
-}
-// --- end helpers ---
-
-
-
-function closeDetail(){
-  const cd=document.getElementById("card-detail");
-  const wasOpen = cd && cd.classList.contains("open");
-  if(cd) cd.classList.remove("open");
-  try{ stopGyro(); }catch(e){}
-  if(isFullscreen) exitFullscreen();
-  if(_PAGE==='card'){ history.back(); return; }
-  // Ne re-render que si la modal était vraiment ouverte
-  if(!wasOpen) return;
-  try{ if(curPage==='home' || _PAGE==='index') renderHome(); }catch(e){}
-  try{ if(curPage==='collection') renderCollection(); }catch(e){}
-}
-
-/* FLIP */
-function flipCard(){const c=db.cards.find(x=>String(x.id)===String(curCardId));if(!c)return;isFlipped=!isFlipped;document.getElementById("card-flip-inner").classList.toggle("flipped",isFlipped);}
-
-/* FULLSCREEN */
-function toggleFullscreen(){isFullscreen?exitFullscreen():enterFullscreen();}
-function enterFullscreen(){
-  isFullscreen=true;
-  const detail=document.getElementById("card-detail");
-  const scene=document.getElementById("card-3d-scene");
-  const bottom=document.getElementById("card-detail-bottom-wrap")||document.querySelector(".card-detail-bottom");
-  detail.classList.add("fullscreen");
-  scene.style.height="100dvh";
-  scene.style.position="fixed";
-  scene.style.inset="0";
-  scene.style.zIndex="200";
-  if(bottom)bottom.style.display="none";
-}
-function exitFullscreen(){
-  isFullscreen=false;
-  const detail=document.getElementById("card-detail");
-  const scene=document.getElementById("card-3d-scene");
-  const bottom=document.getElementById("card-detail-bottom-wrap")||document.querySelector(".card-detail-bottom");
-  detail.classList.remove("fullscreen");
-  scene.style.height="";
-  scene.style.position="";
-  scene.style.inset="";
-  scene.style.zIndex="";
-  if(bottom)bottom.style.display="";
-}
-
-/* ═══════ TILT MANUEL (DeviceOrientation) + DOUBLE TAP FLIP ═══════ */
-let gyroH=null,gyroRef={b:null,g:null},rafTilt=null,tRX=0,tRY=0,cRX=0,cRY=0;
-
-function initGyroAndSwipe(){
-  const sc=document.getElementById("card-3d-scene");
-  if(!sc)return;
-  // Remove CSS float animation when we have live tilt
-  sc.classList.add("card-animated");
-  const fi=document.getElementById("card-flip-inner");
-
-  // RAF loop for smooth interpolation
-  if(rafTilt)cancelAnimationFrame(rafTilt);
-  function loop(){
-    cRX+=(tRX-cRX)*.12;
-    cRY+=(tRY-cRY)*.12;
-    if(fi&&!isFlipped){
-      fi.style.transform=`rotateX(${cRX}deg) rotateY(${cRY}deg)`;
-      fi.style.transition="none";
-    } else if(fi&&isFlipped){
-      fi.style.transform="rotateY(180deg)";
-      fi.style.transition="transform .5s cubic-bezier(.4,0,.2,1)";
-    }
-    rafTilt=requestAnimationFrame(loop);
-  }
-  loop();
-
-  // Mouse tilt (desktop)
-  sc.onmousemove=e=>{
-    if(isFlipped)return;
-    const r=sc.getBoundingClientRect();
-    tRX=((e.clientY-r.top-r.height/2)/r.height)*-22;
-    tRY=((e.clientX-r.left-r.width/2)/r.width)*22;
-  };
-  sc.onmouseleave=()=>{tRX=0;tRY=0;};
-
-
-
-  // Tap to fullscreen (distinguish from tilt drag)
-  let touchStartX=0,touchStartY=0,touchStartTime=0;
-  sc.addEventListener("touchstart",e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;touchStartTime=Date.now();},{passive:true});
-  sc.addEventListener("touchend",e=>{
-    const dx=Math.abs(e.changedTouches[0].clientX-touchStartX);
-    const dy=Math.abs(e.changedTouches[0].clientY-touchStartY);
-    const dt=Date.now()-touchStartTime;
-    if(dx<8&&dy<8&&dt<300)toggleFullscreen();
-  },{passive:true});
-
-  // Request DeviceOrientation
-  if(typeof DeviceOrientationEvent!=="undefined"){
-    if(typeof DeviceOrientationEvent.requestPermission==="function"){
-      // iOS 13+ — auto-request on first gesture
-      document.getElementById("card-3d-scene").addEventListener("touchstart",async function tryGyro(){
-        try{const p=await DeviceOrientationEvent.requestPermission();if(p==="granted")startGyro();}catch(e){startGyro();}
-        document.getElementById("card-3d-scene").removeEventListener("touchstart",tryGyro);
-      },{once:true});
-      startGyro(); // also try immediately (works on some iOS)
-    } else {
-      startGyro();
-    }
-  }
+  return `<span class="brand-pill brand-generic" style="font-size:${Math.min(14, px)}px;line-height:1;">${_escapeHtml(label)}</span>`;
 }
 
 function showGyroBtn(){
@@ -1181,8 +1093,8 @@ function renderCollection(){
     document.querySelectorAll("#brand-filters-row .brand-filter-btn").forEach(btn=>{
       const fn=btn.getAttribute("onclick")||"";
       const m=fn.match(/setBrandFilter\('([^']+)'/) || fn.match(/setFilter\('([^']+)'/);
-      if(m&&m[1]&&m[1]!=="all"&&BRANDS_DB[m[1]]){
-        btn.innerHTML=`<img src="${BRANDS_DB[m[1]]}" style="height:20px;max-width:60px;object-fit:contain;display:block;">`;
+      if(m&&m[1]&&m[1]!=="all"){
+        btn.innerHTML=brandLogoHtml(m[1],20);
         btn.style.padding="4px 10px";
       }
     });
@@ -3214,6 +3126,7 @@ const _origLoadFromDB = loadFromDB;
 async function loadFromDB(){
   showLoader(true);
   try{
+    await loadBrandLogos();
     const[cards,folders]=await Promise.all([sbGet('cards'),sbGet('folders')]);
     db.cards=Array.isArray(cards)?cards.map(fromSB):[];
     db.folders=Array.isArray(folders)?folders:[];
