@@ -2716,17 +2716,29 @@ function _renderSpecPills(el, spec, onToggle){
   });
 }
 function renderCardsGrid(container, cards){
-  container.innerHTML="";
-  const frag=document.createDocumentFragment();
+  // Match Collection grid style (colls-grid / coll-thumb)
+  container.innerHTML = "";
+  const frag = document.createDocumentFragment();
   cards.forEach(c=>{
-    const item=document.createElement("div");
-    item.className="card-thumb";
-    item.innerHTML = `<img src="${(c.photoRecto||c.img||c.photo||c.recto||c.front||c.image||"")}" alt="" onerror="this.style.display='none';this.parentNode.classList.add('card-3d-placeholder');">`;
+    const item = document.createElement("div");
+    item.className = "coll-thumb";
+    item.dataset.cardId = c.id;
+    const src = (c.photoRecto||c.img||c.photo||c.recto||c.front||c.image||"");
+    item.innerHTML = src
+      ? `<img src="${src}" alt="">`
+      : `<div class="coll-thumb-empty">${c.clubEmoji||"🃏"}</div>`;
     item.onclick = ()=>openCard(c.id);
     frag.appendChild(item);
   });
   container.appendChild(frag);
+
+  // empty state if available
+  const empty = container.parentElement?.querySelector?.(".empty-state") || null;
+  if(empty){
+    empty.style.display = cards.length ? "none" : "block";
+  }
 }
+
 
 
 
