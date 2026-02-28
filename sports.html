@@ -16,7 +16,7 @@
 <title>CardVault — Sport</title>
 <style>
 .view{ display:block!important; position:relative; min-height:100vh; }
-body{ overflow-y:auto; }
+body{ overflow-y:auto; padding-bottom:var(--tab-h); }
 </style>
 </head>
 <body>
@@ -33,7 +33,7 @@ body{ overflow-y:auto; }
 <!-- Sport view (full page) -->
 <section class="view" id="view-sport" style="display:block">
   <div class="hero-top">
-    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">←</button>
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="hero-name">
       <div class="last" id="sport-title-big" style="color:#fff;">—</div>
     </div>
@@ -85,5 +85,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
   setupImageViewer && setupImageViewer();
 });
 </script>
+
+<!-- TABBAR -->
+<div class="tabbar">
+  <button class="tab-btn" onclick="location.href='index.html'" id="tab-home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
+  </button>
+  <button class="tab-btn scan-btn" onclick="location.href='scanner.html'" id="tab-scanner">
+    <div class="scan-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="22" height="22" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+  </button>
+  <button class="tab-btn active" onclick="location.href='collection.html'" id="tab-collection">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Collection
+  </button>
+</div>
 </body>
 </html>
