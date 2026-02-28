@@ -27,45 +27,25 @@ body{ overflow-y:auto; padding-bottom:var(--tab-h); }
 </div>
 
 <section class="view" id="view-player" style="display:block">
-  <div class="hero-top">
-    <div class="hero-row">
-      <div class="hero-right">
-        <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="hero-name">
-          <div class="first" id="player-first">—</div>
-          <div class="last" id="player-last">—</div>
-        </div>
-        <!-- Chips sport + club identiques aux autres pages -->
-        <div class="hero-chips" style="margin-top:12px;">
-          <div class="chip-pill" id="player-sport-chip" onclick="openSportFromChip()" style="cursor:pointer;display:none;">
-            <img id="player-sport-icon" alt="" />
-            <span id="player-sport-text"></span>
-          </div>
-          <div class="chip-pill" id="player-club-chip" onclick="openClubFromChip()" style="cursor:pointer;display:none;">
-            <img id="player-club-logo" alt="" />
-            <span id="player-club-text"></span>
-          </div>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img id="player-hero-img" alt="" onclick="triggerPlayerPhoto()" style="cursor:pointer;">
-        <button class="hero-photo-btn" type="button" onclick="triggerPlayerPhoto()" aria-label="Ajouter une photo">＋</button>
-        <input id="player-photo-input" type="file" accept="image/*" style="display:none" onchange="onPlayerPhotoPicked(event)">
-      </div>
+  <div class="hero-top hero-ellipse">
+    <button class="icon-btn" type="button" onclick="navBack()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="hero-name">
+      <div class="first" id="player-first">—</div>
+      <div class="last" id="player-last">—</div>
     </div>
   </div>
 
   <div class="info-section">
-    <div class="section-title">Clubs</div>
-    <div class="pills-row" id="player-clubs-row"></div>
-
-    <div class="section-title">Filtres</div>
+    <div class="section-title">TOUTES LES CARTES</div>
     <div class="pills-row" id="player-brand-row"></div>
     <div class="pills-row" style="margin-top:10px" id="player-spec-row"></div>
+    <div class="pills-row" style="margin-top:14px" id="player-clubs-row"></div>
 
-    <div class="section-title">Cartes</div>
     <div class="colls-grid" id="player-cards-grid"></div>
   </div>
+
 </section>
 
 <div class="toast" id="toast"></div>
