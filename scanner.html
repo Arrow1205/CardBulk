@@ -35,71 +35,6 @@
 
 <script src="assets/app.js"></script>
 <script>
-  let rectoDataUrl = "";
-  const urlParams = new URLSearchParams(window.location.search);
-  const editId = urlParams.get('edit');
-
-  document.addEventListener('DOMContentLoaded', async () => {
-      await loadFromDB();
-      if (editId) {
-          const c = window.db.cards.find(x => String(x.id) === String(editId));
-          if (c) {
-              document.getElementById('f-prenom').value = c.prenom || "";
-              document.getElementById('f-nom').value = c.nom || "";
-              document.getElementById('f-sport').value = c.sport || "";
-              document.getElementById('f-marque').value = c.marque || "";
-              document.getElementById('f-price').value = c.price || 0;
-              if(c.photo_url) {
-                rectoDataUrl = c.photo_url;
-                document.getElementById('photo-preview-img').src = c.photo_url;
-                document.getElementById('photo-preview-wrap').style.display = 'block';
-              }
-              document.getElementById('scanner-main-title').textContent = "Modifier";
-              document.getElementById('save-card-btn').textContent = "Mettre à jour la carte";
-          }
-      }
-  });
-
-  function handlePhoto(input) {
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      rectoDataUrl = reader.result;
-      document.getElementById('photo-preview-img').src = reader.result;
-      document.getElementById('photo-preview-wrap').style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  }
-
-  async function saveCard(){
-    const btn = document.getElementById('save-card-btn');
-    btn.disabled = true;
-    try {
-      const data = {
-        prenom: document.getElementById('f-prenom').value,
-        nom: document.getElementById('f-nom').value,
-        sport: document.getElementById('f-sport').value,
-        marque: document.getElementById('f-marque').value,
-        price: parseFloat(document.getElementById('f-price').value) || 0
-      };
-
-      let finalId = editId || crypto.randomUUID();
-      if (editId) {
-        await sbUpdate("cards", editId, toSB(data));
-      } else {
-        await sbInsert("cards", { id: finalId, ...toSB(data) });
-      }
-
-      if(rectoDataUrl.startsWith('data:')) {
-        const url = await uploadPhoto(rectoDataUrl, finalId, "recto");
-        await sbUpdate("cards", finalId, { photo_url: url });
-      }
-
-      location.href = `card.html?id=${finalId}`;
-    } catch(e) { alert(e.message); btn.disabled = false; }
-  }
-  <script src="assets/app.js"></script>
-<script>
     const urlParams = new URLSearchParams(window.location.search);
     const editId = urlParams.get('edit');
 
@@ -147,7 +82,6 @@
             btn.disabled = false;
         }
     }
-</script>
 </script>
 </body>
 </html>
