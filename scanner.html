@@ -42,7 +42,7 @@
   .segYN button.active{background:var(--accent); color:#06120a; border-color:transparent;}
   .chips3{display:flex; gap:12px; margin-top:10px;}
   .chip{flex:1; border-radius:999px; padding:12px 0; text-align:center; font-weight:900; font-family:"Barlow Condensed",system-ui; text-transform:uppercase; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); color:rgba(255,255,255,.65); cursor:pointer;}
-  .chip.active{background:rgba(184,255,60,.18); border-color:rgba(184,255,60,.35); color:var(--accent);}
+  .chip.active{background:var(--accent);color:#06120a;border-color:transparent;}
   .select{appearance:none; -webkit-appearance:none; width:100%; background:transparent; border:0; outline:none; color:rgba(255,255,255,.92); font-size:16px; padding:0 28px 10px 0; border-bottom:1px solid rgba(255,255,255,.14);}
   .select-wrap{position:relative;}
   .select-wrap:after{content:""; position:absolute; right:4px; top:6px; width:14px; height:14px; border-right:2px solid rgba(255,255,255,.5); border-bottom:2px solid rgba(255,255,255,.5); transform:rotate(45deg); pointer-events:none;}
@@ -100,6 +100,14 @@
           <option value="Tennis">Tennis</option>
         </select>
       </div>
+
+<div id="clubGroup" class="fieldGroup hidden">
+  <div class="label">CLUB</div>
+  <div class="clubWrap">
+    <input class="field" id="fClub" placeholder="Rechercher un club" autocomplete="off"/>
+    <div id="clubDropdown" class="clubDropdown"></div>
+  </div>
+</div>
 
       <div class="label">NUMÉROTÉE</div>
       <div class="segYN">
@@ -161,7 +169,9 @@
 
 <script src="assets/app.js"></script>
 <script>
-  // NOTE: Putting API keys client-side is insecure. For production, proxy via Vercel function.
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
+
+  // OCR via Vercel API route: POST /api/ocr (Gemini key stays server-side)
 
   const tabRecto = document.getElementById('tab-recto');
   const tabVerso = document.getElementById('tab-verso');
@@ -182,15 +192,69 @@
   const fSetName = document.getElementById('fSetName');
 
   const fSport = document.getElementById('fSport');
-  const clubGroup = document.getElementById('clubGroup');
+let CLUBS_DATA = null;
 
-  function updateClubVisibility(){
-    const s = String(fSport.value||"");
-    const show = (s==="Football" || s==="Basketball" || s==="Baseball");
-    if(clubGroup) clubGroup.style.display = show ? "block" : "none";
+async function loadClubsJson(){
+  if(CLUBS_DATA) return CLUBS_DATA;
+  const r = await fetch("/clubs.json", { cache: "force-cache" });
+  if(!r.ok) throw new Error("clubs.json introuvable");
+  CLUBS_DATA = await r.json();
+  return CLUBS_DATA;
+}
+
+function isTeamSport(s){
+  const v = String(s||"").toLowerCase();
+  return ["football","basketball","baseball"].includes(v);
+}
+
+async function updateClubVisibility(){
+  const s = fSport.value;
+  const show = isTeamSport(s);
+  const g = document.getElementById("clubGroup");
+  if(g) g.classList.toggle("hidden", !show);
+  if(!show){
+    document.getElementById("fClub").value = "";
+    const dd = document.getElementById("clubDropdown");
+    dd.classList.remove("open"); dd.innerHTML="";
   }
-  fSport.addEventListener('change', updateClubVisibility);
+}
 
+function norm(str){ return String(str||"").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,""); }
+
+async function clubSearch(q){
+  const dd = document.getElementById("clubDropdown");
+  const term = norm(q).trim();
+  if(!term){ dd.classList.remove("open"); dd.innerHTML=""; return; }
+  let data;
+  try{ data = await loadClubsJson(); }catch(e){ dd.classList.remove("open"); return; }
+  const list = (data[fSport.value] || []);
+  const hits = list.filter(c=>{
+    const n = norm(c.name);
+    if(n.includes(term)) return true;
+    return (c.aliases||[]).some(a=>norm(a).includes(term));
+  }).slice(0,10);
+
+  dd.innerHTML = hits.map(c=>{
+    const logo = c.logo ? `<img src="${c.logo}" alt="">` : `<span style="font-size:18px;">🏟️</span>`;
+    const meta = [c.country, c.league].filter(Boolean).join(" • ");
+    return `<div class="clubItem" data-name="${c.name.replace(/"/g,'&quot;')}">
+      <div class="clubLogo">${logo}</div>
+      <div>
+        <div class="clubName">${escapeHtml(c.name)}</div>
+        <div class="clubMeta">${escapeHtml(meta)}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  dd.classList.toggle("open", hits.length>0);
+
+  dd.querySelectorAll(".clubItem").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      document.getElementById("fClub").value = el.getAttribute("data-name") || "";
+      dd.classList.remove("open"); dd.innerHTML="";
+    });
+  });
+}
   const fAnnee = document.getElementById('fAnnee');
   const fCollection = document.getElementById('fCollection');
   const fPrice = document.getElementById('fPrice');
@@ -228,6 +292,8 @@
   tabVerso.addEventListener('click', ()=>setActiveSide('verso'));
 
   function setPreview(dataUrl){
+  imgDataUrl = dataUrl;
+
     if(activeSide==='recto'){
       rectoDataUrl = dataUrl;
       previewRecto.src = dataUrl;
@@ -243,7 +309,7 @@
   function handleFile(file){
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = ()=> setPreview(reader.result);
+    reader.onload = async ()=>{ setPreview(reader.result); if(activeSide==="recto"){ try{ await analyserOCR(); }catch(e){} } };
     reader.readAsDataURL(file);
   }
 
@@ -273,7 +339,7 @@
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Brands (static list, same labels as collection)
+  // Brands: static list (no DB dependency)
   (function populateBrands(){
     const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
     for(const n of brands){
@@ -282,8 +348,6 @@
       opt.textContent = n;
       fMarque.appendChild(opt);
     }
-    // Ensure BRAND_LOGOS exists for other pages; local mapping in app.js
-    if(typeof loadBrandLogos === "function") loadBrandLogos();
   })();
 
   function uiBusy(on, msg){
@@ -291,6 +355,7 @@
     btnSave.disabled = on;
     statusEl.textContent = msg || "";
   }
+
 
   async function blobToJpegBase64(blob, maxSide=1280, quality=0.82){
     const bmp = await createImageBitmap(blob);
@@ -302,56 +367,43 @@
     const ctx = canvas.getContext('2d');
     ctx.drawImage(bmp,0,0,w,h);
     const dataUrl = canvas.toDataURL('image/jpeg', quality);
-    return { mimeType: 'image/jpeg', base64Data: dataUrl.split(',')[1] || '' };
+    return { mimeType: 'image/jpeg', base64Data: dataUrl.split(',')[1] || '', dataUrl };
   }
 
   async function analyserOCR(){
-    const dataUrl = rectoDataUrl || "";
-    if(!dataUrl){ return; }
-
-    uiBusy(true, "Analyse (OCR)…");
-    try{
-      const resImg = await fetch(dataUrl);
-      const blob = await resImg.blob();
-      const packed = await blobToJpegBase64(blob, 1280, 0.82);
-
-      const r = await fetch("/api/ocr",{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ base64Data: packed.base64Data, mimeType: packed.mimeType })
-      });
-
-      const data = await r.json().catch(()=> ({}));
-      if(!r.ok){
-        throw new Error(data?.error || ("Erreur OCR ("+r.status+")"));
+  if(!imgDataUrl){ alert("Ajoute une image recto"); return; }
+  try{
+    setLoading(true);
+    const payload = await dataUrlToCompressedPayload(imgDataUrl);
+    const r = await fetch("/api/ocr",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data?.error || `Erreur OCR (${r.status})`);
+    // prefill
+    fPrenom.value = (data.prenom||"").trim();
+    fNom.value = (data.nom||"").trim();
+    const b = (data.marque||"").trim();
+    if(b){
+      const opt = [...fMarque.options].find(o=>o.value.toLowerCase()===b.toLowerCase());
+      if(opt) fMarque.value = opt.value;
+      else {
+        const o = document.createElement("option");
+        o.value = b; o.textContent = b;
+        fMarque.appendChild(o);
+        fMarque.value = b;
       }
-
-      const prenom = (data.prenom || "").trim();
-      const nom = (data.nom || "").trim();
-      const marque = (data.marque || data.editeur || "").trim();
-      const collection = (data.collection || "").trim();
-
-      if(prenom) fPrenom.value = prenom;
-      if(nom) fNom.value = nom;
-      if(marque){
-        const opts = Array.from(fMarque.options).map(o=>o.value);
-        if(!opts.includes(marque)){
-          const opt = document.createElement('option');
-          opt.value = marque;
-          opt.textContent = marque;
-          fMarque.appendChild(opt);
-        }
-        fMarque.value = marque;
-      }
-      if(collection) fSetName.value = collection;
-
-      uiBusy(false, "OCR OK");
-    }catch(e){
-      console.error(e);
-      uiBusy(false, "");
-      alert("Erreur OCR : " + (e?.message || e));
     }
+    fSet.value = (data.collection||"").trim();
+  }catch(e){
+    console.error(e);
+    alert(e.message || "Erreur OCR");
+  }finally{
+    setLoading(false);
   }
+}
 
   btnOCR.addEventListener('click', analyserOCR);
 
@@ -365,8 +417,6 @@
         prenom: (fPrenom.value || "").trim(),
         nom: (fNom.value || "").trim(),
         sport: (fSport.value || "").trim(),
-        club: (window.selClub && selClub.f ? selClub.f.name : (document.getElementById('f-club-search')?.value || "")).trim(),
-        clubEmoji: (window.selClub && selClub.f ? (selClub.f.emoji||"") : ""),
         isNum: !!isNum,
         tags: Array.from(activeTags),
         marque: (fMarque.value || "").trim(),
@@ -410,7 +460,6 @@
   // init
   setActiveSide('recto');
   setNum(false);
-  updateClubVisibility();
 </script>
 
 </body>
