@@ -1,4 +1,4 @@
-/* CardVault — app.js (Moteur interactif complet avec UI 3D et Sous-pages) */
+/* CardVault — app.js (Moteur interactif complet et ultra-robuste) */
 
 // ==========================================
 // 1. CONFIGURATION SUPABASE
@@ -75,7 +75,6 @@ window.db = { cards: [], folders: [] };
 window.activeBrand = 'all';
 window.activeType = 'all';
 
-// Contextes pour les sous-pages
 window._ctxPlayer = { key: '', club: '', sport: '', brand: 'all', spec: 'all' };
 window._ctxClub = { club: '', brand: 'all', spec: 'all' };
 window._ctxSport = { sport: '', brand: 'all', spec: 'all' };
@@ -131,7 +130,6 @@ window.renderHome = function() {
     `).join('');
   }
   
-  // MOTEUR CARROUSEL 3D
   const carousel = document.getElementById('fav-carousel');
   if (carousel) {
     const favs = cards.filter(c => c.fav);
@@ -144,7 +142,7 @@ window.renderHome = function() {
           <div class="fav-card-dim"></div>
         </div>
       `).join('');
-      setTimeout(() => window.init3DCarousel(), 50); // Lancement de la 3D
+      setTimeout(() => window.init3DCarousel(), 50); 
     }
   }
 };
@@ -154,7 +152,6 @@ window.init3DCarousel = function() {
   if(!container) return;
   const cards = container.querySelectorAll('.fav-card');
   if(!cards.length) return;
-  
   let currentIndex = Math.floor(cards.length / 2);
   
   function update() {
@@ -162,59 +159,93 @@ window.init3DCarousel = function() {
       const diff = i - currentIndex;
       const absDiff = Math.abs(diff);
       const sign = Math.sign(diff);
-      
-      const tx = diff * 70; // translation X (%)
-      const tz = absDiff * -80; // translation Z (profondeur)
-      const ry = sign * -25; // rotation Y (angle 3D)
+      const tx = diff * 70; 
+      const tz = absDiff * -80; 
+      const ry = sign * -25; 
       
       card.style.transform = `translateX(${tx}%) translateZ(${tz}px) rotateY(${ry}deg)`;
       card.style.zIndex = 100 - absDiff;
-      
       const dim = card.querySelector('.fav-card-dim');
-      if(dim) dim.style.setProperty('--dim', absDiff * 0.35); // Assombrit les cartes sur les côtés
+      if(dim) dim.style.setProperty('--dim', absDiff * 0.35); 
       
       if(absDiff === 0) card.classList.add('active');
       else card.classList.remove('active');
     });
   }
   update();
-  
   cards.forEach((card, i) => {
     card.addEventListener('click', (e) => {
-      if(i !== currentIndex) {
-        e.preventDefault();
-        currentIndex = i;
-        update();
-      }
+      if(i !== currentIndex) { e.preventDefault(); currentIndex = i; update(); }
     });
   });
 };
 
 // ==========================================
-// 5. MOTEUR SOUS-PAGES (PLAYER, CLUB, SPORT)
+// 5. AFFICHAGE CARTE INDIVIDUELLE (SÉCURISÉ)
 // ==========================================
+window._displayCard = function(c) {
+  window.curCardId = c.id;
 
-// Fonction générique pour construire les grilles
+  // Fonction sécurisée qui ne plante JAMAIS même si l'ID HTML est absent ou mal nommé
+  const safeText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+  safeText('detail-prenom', c.prenom || "");
+  safeText('detail-nom', c.nom || "INCONNU");
+  safeText('d-marque', c.marque || "—"); 
+  safeText('d-marque-text', c.marque || "—"); // Sécurité pour tes 2 versions HTML
+  safeText('d-set', c.set_name || "—");
+  safeText('d-annee', c.annee || "—");
+  safeText('d-coll', c.collection || "—");
+  safeText('d-price', c.price ? c.price + " €" : "—");
+
+  const imgFront = document.getElementById('card-face-front');
+  if (imgFront && c.photo_url) {
+    imgFront.innerHTML = `<img src="${c.photo_url}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">`;
+  }
+
+  const favBtn = document.getElementById('detail-fav-btn');
+  if (favBtn) {
+    favBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" class="fav-star"></path></svg>`;
+    if (c.fav) favBtn.classList.add('active'); else favBtn.classList.remove('active');
+  }
+
+  const clubChip = document.getElementById('detail-club-chip');
+  const clubN = document.getElementById('detail-club-n') || document.getElementById('detail-club-n-chip');
+  if (c.club && clubChip && clubN) { clubN.textContent = c.club; clubChip.style.display = 'inline-flex'; }
+
+  const sportChip = document.getElementById('detail-sport-chip');
+  const sportL = document.getElementById('detail-sport-label') || document.getElementById('detail-sport-label-chip');
+  if (c.sport && sportChip && sportL) { sportL.textContent = c.sport.toUpperCase(); sportChip.style.display = 'inline-flex'; }
+
+  const tagsVal = document.getElementById('d-tags-val');
+  if (tagsVal) {
+    let tagsHtml = '';
+    if(c.is_num) tagsHtml += '<span class="badge num">NUM</span>';
+    if(c.tags) {
+       if(c.tags.includes('auto')) tagsHtml += '<span class="badge auto">AUTO</span>';
+       if(c.tags.includes('patch')) tagsHtml += '<span class="badge patch">PATCH</span>';
+       if(c.tags.includes('rookie')) tagsHtml += '<span class="badge rookie">RC</span>';
+    }
+    tagsVal.innerHTML = tagsHtml || '—';
+  }
+};
+
+// ==========================================
+// 6. MOTEUR SOUS-PAGES (PLAYER, CLUB, SPORT)
+// ==========================================
 window.renderGenericSubPage = function(ctx, elements) {
   let filtered = window.db.cards || [];
   
-  // Filtre principal (Joueur OU Club OU Sport)
-  if (ctx.type === 'player') {
-      filtered = filtered.filter(c => ((c.prenom||'')+' '+c.nom).trim() === ctx.key);
-  } else if (ctx.type === 'club') {
-      filtered = filtered.filter(c => c.club === ctx.club);
-  } else if (ctx.type === 'sport') {
-      filtered = filtered.filter(c => c.sport === ctx.sport);
-  }
+  if (ctx.type === 'player') filtered = filtered.filter(c => ((c.prenom||'')+' '+c.nom).trim() === ctx.key);
+  else if (ctx.type === 'club') filtered = filtered.filter(c => c.club === ctx.club);
+  else if (ctx.type === 'sport') filtered = filtered.filter(c => c.sport === ctx.sport);
   
-  // Filtres Secondaires (Marques / Spécificités)
   if (ctx.brand !== 'all') filtered = filtered.filter(c => (c.marque||'').toLowerCase() === ctx.brand.toLowerCase());
   if (ctx.spec === 'auto') filtered = filtered.filter(c => c.tags && c.tags.includes('auto'));
   if (ctx.spec === 'patch') filtered = filtered.filter(c => c.tags && c.tags.includes('patch'));
   if (ctx.spec === 'rookie') filtered = filtered.filter(c => c.tags && c.tags.includes('rookie'));
   if (ctx.spec === 'num') filtered = filtered.filter(c => c.is_num);
   
-  // Rendu de la barre des Marques
   const brandRow = document.getElementById(elements.brandRow);
   if (brandRow) {
       const brands = ['all', 'Topps', 'Panini', 'Leaf', 'Daka', 'Futera'];
@@ -226,7 +257,6 @@ window.renderGenericSubPage = function(ctx, elements) {
       }).join('');
   }
   
-  // Rendu de la barre des Spécificités
   const specRow = document.getElementById(elements.specRow);
   if (specRow) {
       const specs = [{k:'all',l:'TOUT'}, {k:'auto',l:'AUTO'}, {k:'patch',l:'PATCH'}, {k:'rookie',l:'ROOKIE'}, {k:'num',l:'NUMÉROTÉE'}];
@@ -236,7 +266,6 @@ window.renderGenericSubPage = function(ctx, elements) {
       }).join('');
   }
   
-  // Rendu des Cartes
   const grid = document.getElementById(elements.grid);
   if (grid) {
       grid.innerHTML = filtered.map(c => `
@@ -247,18 +276,14 @@ window.renderGenericSubPage = function(ctx, elements) {
   }
 };
 
-// Déclencheur des boutons filtres des sous-pages
 window.setSubFilter = function(type, filterType, val) {
   if (type === 'player') { window._ctxPlayer[filterType] = val; window.renderPlayerPage(); }
   if (type === 'club') { window._ctxClub[filterType] = val; window.renderClubPage(); }
   if (type === 'sport') { window._ctxSport[filterType] = val; window.renderSportPage(); }
 };
 
-// --- Player.html ---
 window.renderPlayerPage = function() {
-  renderGenericSubPage({type: 'player', ...window._ctxPlayer}, {
-      brandRow: 'player-brand-row', specRow: 'player-spec-row', grid: 'player-cards-grid'
-  });
+  renderGenericSubPage({type: 'player', ...window._ctxPlayer}, { brandRow: 'player-brand-row', specRow: 'player-spec-row', grid: 'player-cards-grid' });
   const clubsRow = document.getElementById('player-clubs-row');
   if (clubsRow) {
       const baseCards = window.db.cards.filter(c => ((c.prenom||'')+' '+c.nom).trim() === window._ctxPlayer.key);
@@ -267,11 +292,8 @@ window.renderPlayerPage = function() {
   }
 };
 
-// --- Club.html ---
 window.renderClubPage = function() {
-  renderGenericSubPage({type: 'club', ...window._ctxClub}, {
-      brandRow: 'club-brand-row', specRow: 'club-spec-row', grid: 'club-cards-grid'
-  });
+  renderGenericSubPage({type: 'club', ...window._ctxClub}, { brandRow: 'club-brand-row', specRow: 'club-spec-row', grid: 'club-cards-grid' });
   const playersRow = document.getElementById('club-players-row');
   if (playersRow) {
        const baseCards = window.db.cards.filter(c => c.club === window._ctxClub.club);
@@ -280,11 +302,8 @@ window.renderClubPage = function() {
   }
 };
 
-// --- Sports.html ---
 window.renderSportPage = function() {
-  renderGenericSubPage({type: 'sport', ...window._ctxSport}, {
-      brandRow: 'sport-brand-row', specRow: 'sport-spec-row', grid: 'sport-cards-grid'
-  });
+  renderGenericSubPage({type: 'sport', ...window._ctxSport}, { brandRow: 'sport-brand-row', specRow: 'sport-spec-row', grid: 'sport-cards-grid' });
   const clubsRow = document.getElementById('sport-clubs-row');
   if (clubsRow) {
        const baseCards = window.db.cards.filter(c => c.sport === window._ctxSport.sport);
@@ -293,9 +312,8 @@ window.renderSportPage = function() {
   }
 };
 
-
 // ==========================================
-// 6. UTILITAIRES & AUTRES FONCTIONS
+// 7. UTILITAIRES & AUTRES FONCTIONS
 // ==========================================
 window.renderCollection = function() {
   let filtered = window.db.cards || [];
@@ -391,6 +409,15 @@ document.addEventListener('click', (e) => {
 });
 
 // REDIRECTIONS ET BOUCHONS RESTANTS
+window.toggleFav = async function() {
+  const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
+  if (!c) return;
+  c.fav = !c.fav; 
+  const favBtn = document.getElementById('detail-fav-btn');
+  if (favBtn) { if (c.fav) favBtn.classList.add('active'); else favBtn.classList.remove('active'); }
+  try { await sbUpdate("cards", c.id, { fav: c.fav }); } catch (e) { console.error("Erreur save fav", e); }
+};
+
 window.openPlayer = function(id) {
   if(!id && !window.curCardId) return;
   const targetId = id || window.curCardId;
@@ -420,6 +447,6 @@ const stubs = [
   "onEditSportChange", "clubSearch", "eTogTag", "onMarqueChange", "onEditCollChange", "saveEdit", "selEmoji", 
   "cropResetEnhance", "closeCrop", "applyCrop", "triggerPlayerPhoto", "onPlayerPhotoPicked", "openSportFromChip", 
   "openClubFromChip", "triggerClubLogo", "onClubLogoPicked", "toggleBulk", "onSportChange", "updateSportIcon", 
-  "showCreateClubForm", "createClub", "toggleTag", "toggleNum"
+  "showCreateClubForm", "createFolder", "toggleTag", "toggleNum"
 ];
 stubs.forEach(fn => { window[fn] = window[fn] || function() { console.log(`Fonction ${fn}() en cours de dev.`); }; });
