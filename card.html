@@ -21,7 +21,7 @@ body { overflow: hidden; }
 </head>
 <body>
 
-<div class="card-detail" id="card-detail">
+<div class="card-detail open" id="card-detail">
   <div class="card-detail-hdr">
     <button class="back-btn" onclick="closeDetail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div style="display:flex;gap:8px;">
@@ -29,15 +29,12 @@ body { overflow: hidden; }
     </div>
   </div>
   <div class="card-3d-scene card-animated" id="card-3d-scene">
-    <div class="card-bg-name-text" id="card-bg-name-text" style="display:none;"></div>
     <div class="card-flip-container" id="card-flip-container">
       <div class="card-flip-inner" id="card-flip-inner">
         <div class="card-face" id="card-face-front">
           <div class="card-3d-content card-3d-placeholder" id="card-3d-content"><span style="font-size:40px;opacity:.25;">🃏</span></div>
         </div>
-        <div class="card-face card-face-back" id="card-face-back">
-          <div class="card-3d-content card-3d-placeholder" id="card-3d-content-back"><span style="font-size:40px;opacity:.25;"></span></div>
-        </div>
+        <div class="card-face card-face-back" id="card-face-back"></div>
       </div>
     </div>
   </div>
@@ -46,27 +43,18 @@ body { overflow: hidden; }
       <div>
         <div class="player-first" id="detail-prenom" onclick="openPlayer()" style="cursor:pointer;"></div>
         <div class="player-last" id="detail-nom" onclick="openPlayer()" style="cursor:pointer;">—</div>
-        
         <div class="hero-chips" style="margin-top:10px;flex-wrap:wrap;gap:8px;">
           <div class="chip-pill" id="detail-club-chip" onclick="openClub()" style="cursor:pointer;display:none;">
-            <img id="detail-club-logo" alt="" />
-            <span id="detail-club-n-chip"></span>
+            <span id="detail-club-n"></span>
           </div>
           <div class="chip-pill" id="detail-sport-chip" onclick="openSport()" style="cursor:pointer;display:none;">
-            <img id="detail-sport-icon" alt="" />
-            <span id="detail-sport-label-chip"></span>
+            <span id="detail-sport-label"></span>
           </div>
         </div>
       </div>
     </div>
     <div class="chips-grid" id="chips-grid">
-      <div class="chip chip-marque">
-        <div class="chip-label">Marque</div>
-        <div class="chip-val" style="display:flex;align-items:center;gap:8px;">
-          <img id="d-marque-logo" alt="" style="height:18px;max-width:110px;object-fit:contain;display:none;" />
-          <span id="d-marque-text">—</span>
-        </div>
-      </div>
+      <div class="chip chip-marque"><div class="chip-label">Marque</div><div class="chip-val" id="d-marque-text">—</div></div>
       <div class="chip"><div class="chip-label">Set</div><div class="chip-val" id="d-set" style="font-size:13px;">—</div></div>
       <div class="chip"><div class="chip-label">Année</div><div class="chip-val" id="d-annee">—</div></div>
       <div class="chip" id="chip-tags-row"><div class="chip-label">Spécificités</div><div class="chip-val" id="d-tags-val" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding-top:2px;font-size:12px;">—</div></div>
@@ -83,26 +71,11 @@ body { overflow: hidden; }
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
     <div class="sheet-title">Modifier</div>
-    <button class="sheet-delete-btn" onclick="deleteCurrentCard()">Supprimer</button>
-    <div class="side-tabs">
-      <div class="side-tab active" id="edit-tab-recto" onclick="switchEditSide('recto')">Recto</div>
-      <div class="side-tab" id="edit-tab-verso" onclick="switchEditSide('verso')">Verso</div>
-    </div>
-    <div id="edit-recto-zone" style="margin-bottom:10px;">
-      <div class="photo-upload" id="edit-photo-zone" style="max-height:180px;">
-        <div id="e-placeholder"><div style="font-size:22px;"></div></div>
-      </div>
-    </div>
-    <div id="edit-verso-zone" style="display:none;margin-bottom:10px;">
-      <div class="photo-upload" id="edit-photo-zone-v" style="max-height:180px;">
-        <div id="e-placeholder-v"><div style="font-size:22px;"></div></div>
-      </div>
-    </div>
     <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="e-prenom" type="text"></div>
     <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="e-nom" type="text"></div>
     <div class="form-group"><label class="form-label">Marque</label><input class="form-input" id="e-marque" type="text"></div>
     <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="e-price" type="number" step="0.01"></div>
-    <button class="btn-primary" onclick="alert('Sauvegarde de la modification bientôt disponible')">Sauvegarder</button>
+    <button class="btn-primary" onclick="alert('Sauvegarde de la modification en cours de dev')">Sauvegarder</button>
   </div>
 </div>
 
@@ -132,9 +105,6 @@ async function _pageCard(){
     return;
   }
 
-  const detail = document.getElementById('card-detail');
-  if(detail) detail.classList.add('open');
-
   if(typeof _displayCard === 'function'){ _displayCard(c); }
 }
 
@@ -147,6 +117,17 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   await loadFromDB(); 
   _pageCard(); 
 });
+
+window.closeSheet = function(id, event) {
+  if (event && event.target !== document.getElementById(id)) return;
+  const sheet = document.getElementById(id);
+  if (sheet) sheet.classList.remove('open');
+};
+
+window.editCurrentCard = function() {
+  const sheet = document.getElementById('edit-sheet');
+  if (sheet) sheet.classList.add('open');
+};
 </script>
 </body>
 </html>
