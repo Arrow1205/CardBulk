@@ -387,6 +387,7 @@ body { overflow: hidden; }
 </section>
 
 <script src="assets/app.js"></script>
+<script src="assets/app.js"></script>
 <script>
 /* PAGE: card */
 async function _pageCard(){
@@ -420,9 +421,11 @@ function closeDetail(){
   }
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  loadFromDB();
-  setupImageViewer && setupImageViewer();
+document.addEventListener('DOMContentLoaded', async ()=>{
+  // CORRECTION ICI : On attend que la DB charge AVANT de lancer l'affichage
+  await loadFromDB(); 
+  _pageCard(); 
+  if (typeof setupImageViewer === 'function') setupImageViewer();
 });
 </script>
 </body>
