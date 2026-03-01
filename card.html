@@ -128,6 +128,39 @@ window.editCurrentCard = function() {
   const sheet = document.getElementById('edit-sheet');
   if (sheet) sheet.classList.add('open');
 };
+// nouveau script
+
+<script>
+    window.addEventListener('dbReady', () => {
+        const params = new URLSearchParams(window.location.search);
+        const cardId = params.get('id');
+        const c = window.db.cards.find(x => String(x.id) === String(cardId));
+        
+        if(!c) return;
+
+        // Remplissage des champs
+        document.getElementById('detail-nom').textContent = c.nom || "INCONNU";
+        document.getElementById('detail-prenom').textContent = c.prenom || "";
+        document.getElementById('d-marque').textContent = c.marque || "—";
+        document.getElementById('d-price').textContent = (c.price || 0).toFixed(2) + " €";
+        
+        const face = document.getElementById('card-face-front');
+        if(face && c.photo_url) face.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+
+        // Tags Club et Sport cliquables
+        const clubChip = document.getElementById('detail-club-chip');
+        if(c.club && clubChip) {
+            document.getElementById('detail-club-n').textContent = c.club;
+            clubChip.style.display = 'inline-flex';
+            clubChip.onclick = () => location.href = `club.html?name=${encodeURIComponent(c.club)}`;
+        }
+
+        // Action de modification (Redirection vers scanner)
+        window.editCurrentCard = () => {
+            location.href = `scanner.html?edit=${c.id}`;
+        };
+    });
+</script>
 </script>
 </body>
 </html>
