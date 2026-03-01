@@ -1,4 +1,4 @@
-/* CardVault — app.js (Moteur interactif complet) */
+/* CardVault — app.js (Moteur interactif complet et débuggé) */
 
 // ==========================================
 // 1. CONFIGURATION SUPABASE
@@ -12,7 +12,6 @@ const SB_HDR = { "Content-Type": "application/json", "apikey": SB_KEY, "Authoriz
 
 function _safeJsonParse(txt){ try{ return txt ? JSON.parse(txt) : null; }catch{ return { raw: txt }; } }
 
-// --- LOGOS DES MARQUES ---
 window.BRAND_LOGOS = {
   "topps": "/brands/topps.png", "panini": "/brands/panini.png",
   "leaf": "/brands/leaf.png", "futera": "/brands/futera.png",
@@ -21,7 +20,7 @@ window.BRAND_LOGOS = {
 window.loadBrandLogos = async function(){ return window.BRAND_LOGOS; };
 
 // ==========================================
-// 2. REQUÊTES DB & STORAGE
+// 2. REQUÊTES DB
 // ==========================================
 window.sbGet = async function(table, opts={}){
   const params = opts.params || "select=*&order=created_at.desc";
@@ -79,9 +78,9 @@ window.activeType = 'all';
 window.loadFromDB = async function() {
   try {
     window.db.cards = await sbGet("cards");
-    try { window.db.folders = await sbGet("folders"); } catch(e) { window.db.folders = []; } // Charge les dossiers si la table existe
+    try { window.db.folders = await sbGet("folders"); } catch(e) { window.db.folders = []; }
     
-    initFilters(); // Injecte les logos dans les boutons
+    initFilters(); 
 
     if (document.getElementById('page-home')) window.renderHome();
     if (document.getElementById('page-collection')) { window.renderCollection(); window.renderFolders(); }
@@ -117,7 +116,7 @@ window.renderHome = function() {
   if (recentList) {
     recentList.innerHTML = cards.slice(0, 10).map(c => `
       <div class="list-item" onclick="location.href='card.html?id=${encodeURIComponent(c.id)}'">
-        <div class="list-thumb">${c.photo_url ? `<img src="${c.photo_url}">` : `<span>🃏</span>`}</div>
+        <div class="list-thumb">${c.photo_url ? `<img src="${c.photo_url}">` : `<span style="font-size:24px;">🃏</span>`}</div>
         <div class="list-info">
           <div class="list-name">${c.prenom ? c.prenom + ' ' : ''}${c.nom || 'INCONNU'}</div>
           <div class="list-meta">${c.marque || '—'} ${c.set_name ? ' • ' + c.set_name : ''}</div>
@@ -127,7 +126,7 @@ window.renderHome = function() {
     `).join('');
   }
   
-  // Rendu du carrousel Favoris (Scroll horizontal optimisé)
+  // CARROUSEL FAVORIS CORRIGÉ (Scroll Horizontal)
   const carousel = document.getElementById('fav-carousel');
   if (carousel) {
     const favs = cards.filter(c => c.fav);
@@ -137,8 +136,8 @@ window.renderHome = function() {
       carousel.style.display = 'flex'; carousel.style.overflowX = 'auto'; carousel.style.gap = '14px'; 
       carousel.style.justifyContent = 'flex-start'; carousel.style.padding = '10px 20px'; carousel.style.height = 'auto';
       carousel.innerHTML = favs.map(c => `
-        <div style="width:200px; aspect-ratio:2.5/3.5; flex-shrink:0; border-radius:12px; overflow:hidden; background:#18181d; border:1px solid rgba(255,255,255,0.1); cursor:pointer;" onclick="location.href='card.html?id=${c.id}'">
-          ${c.photo_url ? `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:30px;">🃏</div>`}
+        <div style="width:180px; height:240px; flex-shrink:0; border-radius:12px; overflow:hidden; background:#18181d; border:1px solid rgba(255,255,255,0.1); cursor:pointer; position:relative;" onclick="location.href='card.html?id=${c.id}'">
+          ${c.photo_url ? `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;display:block;">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:40px;">🃏</div>`}
         </div>
       `).join('');
     }
@@ -148,7 +147,6 @@ window.renderHome = function() {
 window.renderCollection = function() {
   let filtered = window.db.cards || [];
   
-  // Applique les filtres visuels
   if (window.activeBrand !== 'all') filtered = filtered.filter(c => (c.marque || '').toLowerCase() === window.activeBrand.toLowerCase());
   if (window.activeType === 'auto') filtered = filtered.filter(c => c.tags && c.tags.includes('auto'));
   if (window.activeType === 'patch') filtered = filtered.filter(c => c.tags && c.tags.includes('patch'));
@@ -178,27 +176,24 @@ window._displayCard = function(c) {
   document.getElementById('d-coll').textContent = c.collection || "—";
   document.getElementById('d-price').textContent = c.price ? c.price + " €" : "—";
 
-  // Image 3D Front
   const imgFront = document.getElementById('card-face-front');
   if (imgFront && c.photo_url) imgFront.innerHTML = `<img src="${c.photo_url}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">`;
 
-  // Étoile Favori
   const favBtn = document.getElementById('detail-fav-btn');
   if (favBtn) {
     favBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" class="fav-star"></path></svg>`;
     if (c.fav) favBtn.classList.add('active'); else favBtn.classList.remove('active');
   }
 
-  // Activation dynamique des Gélules (Chips) Club et Sport
+  // Gélules corrigées
   const clubChip = document.getElementById('detail-club-chip');
-  const clubN = document.getElementById('detail-club-n');
+  const clubN = document.getElementById('detail-club-n-chip'); 
   if (c.club && clubChip && clubN) { clubN.textContent = c.club; clubChip.style.display = 'inline-flex'; }
 
   const sportChip = document.getElementById('detail-sport-chip');
-  const sportL = document.getElementById('detail-sport-label');
+  const sportL = document.getElementById('detail-sport-label-chip'); 
   if (c.sport && sportChip && sportL) { sportL.textContent = c.sport.toUpperCase(); sportChip.style.display = 'inline-flex'; }
   
-  // Tags (Auto, Patch, Num...)
   const tagsVal = document.getElementById('d-tags-val');
   if (tagsVal) {
     let tagsHtml = '';
@@ -216,7 +211,6 @@ window._displayCard = function(c) {
 // 5. FONCTIONS INTERACTIVES
 // ==========================================
 
-// Favoris
 window.toggleFav = async function() {
   const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
   if (!c) return;
@@ -226,46 +220,50 @@ window.toggleFav = async function() {
   try { await sbUpdate("cards", c.id, { fav: c.fav }); } catch (e) { console.error("Erreur save fav", e); }
 };
 
-// Bascule Onglets (Cartes / Valeur) sur Collection
 window.switchCollectionTab = function(tab) {
-  document.getElementById('coll-tab-cards').classList.toggle('active', tab === 'cards');
-  document.getElementById('coll-tab-value').classList.toggle('active', tab === 'value');
-  document.getElementById('coll-panel-cards').style.display = tab === 'cards' ? 'block' : 'none';
-  document.getElementById('coll-panel-value').style.display = tab === 'value' ? 'block' : 'none';
+  try {
+    document.getElementById('coll-tab-cards')?.classList.toggle('active', tab === 'cards');
+    document.getElementById('coll-tab-value')?.classList.toggle('active', tab === 'value');
+    const pCards = document.getElementById('coll-panel-cards');
+    const pValue = document.getElementById('coll-panel-value');
+    if(pCards) pCards.style.display = (tab === 'cards') ? 'block' : 'none';
+    if(pValue) pValue.style.display = (tab === 'value') ? 'block' : 'none';
+  } catch(e) { console.error(e); }
 };
 
-// Filtres
 window.initFilters = async function() {
-  const logos = await loadBrandLogos();
-  document.querySelectorAll('.brand-filter-btn').forEach(btn => {
-    const match = btn.getAttribute('onclick').match(/'([^']+)'/);
-    if(match && match[1] !== 'all') {
-      const b = match[1].toLowerCase();
-      if(logos[b]) { btn.innerHTML = `<img src="${logos[b]}" style="height:14px;display:block;">`; btn.style.padding = '4px 10px'; }
-      else btn.textContent = match[1];
-    }
-  });
+  try {
+    const logos = await loadBrandLogos();
+    document.querySelectorAll('.brand-filter-btn').forEach(btn => {
+      const oc = btn.getAttribute('onclick');
+      if(!oc) return;
+      const match = oc.match(/'([^']+)'/);
+      if(match && match[1] !== 'all') {
+        const b = match[1].toLowerCase();
+        if(logos[b]) { btn.innerHTML = `<img src="${logos[b]}" style="height:14px;display:block;">`; btn.style.padding = '4px 10px'; }
+        else btn.textContent = match[1];
+      }
+    });
+  } catch(e) { console.error("Erreur filtres:", e); }
 };
 
 window.setBrandFilter = function(brand, btn) {
   document.querySelectorAll('.brand-filter-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  window.activeBrand = brand;
-  window.renderCollection();
+  window.activeBrand = brand; window.renderCollection();
 };
 
 window.setTypeFilter = function(type, btn) {
   document.querySelectorAll('.type-filter').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  window.activeType = type;
-  window.renderCollection();
+  window.activeType = type; window.renderCollection();
 };
 
-// Menu de recherche AJAX (Accueil et Collection)
+// RECHERCHE AJAX CORRIGÉE
 window.homeSearch = function(val) {
   const ddHome = document.getElementById('home-search-dropdown');
   const ddColl = document.getElementById('coll-search-dropdown');
-  const targetDd = ddHome || ddColl; // Gère les deux pages
+  const targetDd = ddHome || ddColl;
   if (!targetDd) return;
   if (!val) { targetDd.classList.remove('open'); return; }
   
@@ -276,20 +274,30 @@ window.homeSearch = function(val) {
     return fullName.includes(term) || club.includes(term);
   }).slice(0, 5);
 
-  targetDd.innerHTML = hits.map(c => `
-    <div class="search-drop-item" onclick="location.href='card.html?id=${c.id}'">
+  targetDd.innerHTML = hits.map(c => {
+    const playerName = encodeURIComponent(((c.prenom||'')+' '+(c.nom||'')).trim());
+    return `
+    <div class="search-drop-item" onclick="location.href='player.html?name=${playerName}'">
       <div class="search-drop-thumb" style="width:36px;height:48px;overflow:hidden;border-radius:4px;">${c.photo_url ? `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;">` : '🃏'}</div>
       <div>
         <div class="search-drop-name">${c.prenom || ''} ${c.nom || ''}</div>
         <div class="search-drop-sub" style="font-size:12px;opacity:0.6;">${c.marque || '—'} • ${c.club || ''}</div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
   targetDd.classList.toggle('open', hits.length > 0);
 };
 window.collSearch = window.homeSearch;
 
-// Création de Dossiers
+// Fermer la recherche en cliquant à côté
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.search-wrap')) {
+    document.getElementById('home-search-dropdown')?.classList.remove('open');
+    document.getElementById('coll-search-dropdown')?.classList.remove('open');
+  }
+});
+
+// DOSSIERS
 window.openNewFolder = function() {
   const sheet = document.getElementById('folder-sheet');
   if (sheet) sheet.classList.add('open');
@@ -301,8 +309,9 @@ window.createFolder = async function() {
   if (!name) { alert('Saisis un nom de dossier'); return; }
   
   const folder = { id: String(Date.now()), name: name, emoji: '📁' };
+  window.db.folders = window.db.folders || [];
   window.db.folders.push(folder);
-  try { await sbInsert('folders', folder); } catch(e) { console.log("Sauvegarde dossier local."); }
+  try { await sbInsert('folders', folder); } catch(e) { console.log("Sauvegarde dossier local uniquement."); }
   
   if (nameEl) nameEl.value = '';
   window.closeSheet('folder-sheet');
@@ -320,41 +329,59 @@ window.renderFolders = function() {
   `).join('');
 };
 
-// Fenêtres (Sheets)
 window.closeSheet = function(id, event) {
   if (event && event.target !== document.getElementById(id)) return;
   const sheet = document.getElementById(id);
   if (sheet) sheet.classList.remove('open');
 };
 
+// REDIRECTIONS
+window.openPlayer = function() {
+  if(!window.curCardId) return;
+  const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
+  if(c) location.href = `player.html?name=${encodeURIComponent(((c.prenom||'')+' '+(c.nom||'')).trim())}`;
+};
+window.openClub = function() {
+  if(!window.curCardId) return;
+  const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
+  if(c && c.club) location.href = `club.html?name=${encodeURIComponent(c.club)}`;
+};
+window.openSport = function() {
+  if(!window.curCardId) return;
+  const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
+  if(c && c.sport) location.href = `sports.html?key=${encodeURIComponent(c.sport)}`;
+};
+
+// MODIFIER LA CARTE
 window.editCurrentCard = function() {
   const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
   if (!c) return;
-  document.getElementById('e-prenom').value = c.prenom || '';
-  document.getElementById('e-nom').value = c.nom || '';
-  document.getElementById('e-marque').value = c.marque || '';
-  document.getElementById('e-price').value = c.price || 0;
-  document.getElementById('edit-sheet').classList.add('open');
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  setVal('e-prenom', c.prenom || '');
+  setVal('e-nom', c.nom || '');
+  setVal('e-marque', c.marque || '');
+  setVal('e-price', c.price || 0);
+  
+  const sheet = document.getElementById('edit-sheet');
+  if (sheet) sheet.classList.add('open');
+  else alert("Le panneau de modification n'est pas inclus sur cette page.");
 };
 
-// Redirections Pages Gélules
-window.openPlayer = function(id) {
-  const c = window.db.cards.find(x => String(x.id) === String(id));
-  if(c) location.href = `player.html?name=${encodeURIComponent((c.prenom+' '+c.nom).trim())}`;
-};
-window.openClub = function(clubName) {
-  if(clubName) location.href = `club.html?name=${encodeURIComponent(clubName)}`;
-};
-window.openSport = function(sportName) {
-  if(sportName) location.href = `sports.html?key=${encodeURIComponent(sportName)}`;
+window.switchEditSide = function(side) {
+  document.getElementById('edit-tab-recto')?.classList.toggle('active', side === 'recto');
+  document.getElementById('edit-tab-verso')?.classList.toggle('active', side === 'verso');
+  const zRecto = document.getElementById('edit-recto-zone');
+  const zVerso = document.getElementById('edit-verso-zone');
+  if(zRecto) zRecto.style.display = (side === 'recto') ? 'block' : 'none';
+  if(zVerso) zVerso.style.display = (side === 'verso') ? 'block' : 'none';
 };
 
 // ==========================================
-// 6. BOUCHONS (ÉVITE LES PLANTAGES)
+// 6. BOUCHONS RESTANTS (Évite les plantages)
 // ==========================================
 const stubs = [
   "setupImageViewer", "initSportDD", "setupLiveSearch", "toggleSportDD", "flipCard", "openPlayerStats", 
-  "cancelBulk", "executeBulk", "deleteCurrentCard", "switchEditSide", "handleEditPhoto", "openCrop", 
+  "cancelBulk", "executeBulk", "deleteCurrentCard", "handleEditPhoto", "openCrop", 
   "onEditSportChange", "clubSearch", "eTogTag", "onMarqueChange", "onEditCollChange", "saveEdit", "selEmoji", 
   "cropResetEnhance", "closeCrop", "applyCrop", "triggerPlayerPhoto", "onPlayerPhotoPicked", "openSportFromChip", 
   "openClubFromChip", "triggerClubLogo", "onClubLogoPicked", "toggleBulk", "onSportChange", "updateSportIcon", 
