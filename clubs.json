@@ -1,0 +1,61 @@
+{
+  "Football": [
+    {
+      "id": "psg",
+      "name": "Paris Saint-Germain",
+      "country": "France",
+      "league": "Ligue 1",
+      "logo": "/assets/logos/psg.svg",
+      "aliases": [
+        "PSG",
+        "Paris SG"
+      ]
+    },
+    {
+      "id": "arsenal",
+      "name": "Arsenal FC",
+      "country": "England",
+      "league": "Premier League",
+      "logo": "/assets/logos/arsenal.svg",
+      "aliases": [
+        "Arsenal"
+      ]
+    },
+    {
+      "id": "real-madrid",
+      "name": "Real Madrid",
+      "country": "Spain",
+      "league": "La Liga",
+      "logo": "/assets/logos/real-madrid.svg",
+      "aliases": [
+        "Real",
+        "Madrid"
+      ]
+    }
+  ],
+  "Basketball": [
+    {
+      "id": "lakers",
+      "name": "Los Angeles Lakers",
+      "country": "USA",
+      "league": "NBA",
+      "logo": "/assets/logos/lakers.svg",
+      "aliases": [
+        "Lakers",
+        "LA Lakers"
+      ]
+    }
+  ],
+  "Baseball": [
+    {
+      "id": "yankees",
+      "name": "New York Yankees",
+      "country": "USA",
+      "league": "MLB",
+      "logo": "/assets/logos/yankees.svg",
+      "aliases": [
+        "Yankees"
+      ]
+    }
+  ]
+}
