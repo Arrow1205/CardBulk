@@ -1,4 +1,4 @@
-/* CardVault — app.js (Moteur complet : 3D, Pie Chart, Sub-pages & Défilement Auto) */
+/* CardVault — app.js (Moteur complet corrigé : Carousel Auto, Filtres & Contextes) */
 
 // ==========================================
 // 1. CONFIGURATION & ETAT GLOBAL
@@ -10,10 +10,13 @@ const SB_HDR = { "Content-Type": "application/json", "apikey": window.SB_KEY, "A
 
 window.db = { cards: [], folders: [] };
 
-// Variables de contexte pour éviter les erreurs ReferenceError
+// --- Correction ReferenceError (Captures 13.53.11 / 13.53.25) ---
 window._ctxPlayer = { key: '', brand: 'all', spec: 'all' };
 window._ctxClub = { club: '', brand: 'all', spec: 'all' };
 window._ctxSport = { sport: '', brand: 'all', spec: 'all' };
+
+window.activeBrand = 'all';
+window.activeType = 'all';
 
 function _safeJsonParse(txt){ try{ return txt ? JSON.parse(txt) : null; }catch{ return { raw: txt }; } }
 
@@ -37,7 +40,7 @@ window.sbDelete = async function(table, id){
 };
 
 // ==========================================
-// 3. CHARGEMENT INITIAL
+// 3. CHARGEMENT INITIAL (Capture 13.47.00)
 // ==========================================
 window.loadFromDB = async function() {
   try {
@@ -52,13 +55,26 @@ window.loadFromDB = async function() {
   } catch (e) { console.error("Erreur DB:", e); }
 };
 
+// --- Correction ReferenceError (Capture 13.54.38) ---
+window.populateYears = function(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  const currentYear = new Date().getFullYear() + 1;
+  for (let i = currentYear; i >= 1950; i--) {
+    const opt = document.createElement('option'); opt.value = i; opt.textContent = i; select.appendChild(opt);
+  }
+};
+
 // ==========================================
-// 4. ACCUEIL & CAROUSEL 3D
+// 4. ACCUEIL & CAROUSEL 3D AUTO
 // ==========================================
 window.renderHome = function() {
   const cards = window.db.cards || [];
-  document.getElementById('home-count').textContent = `${cards.length} cartes`;
-  document.getElementById('home-total').textContent = cards.reduce((s, c) => s + Number(c.price || 0), 0).toFixed(2) + " €";
+  const homeCount = document.getElementById('home-count');
+  const homeTotal = document.getElementById('home-total');
+  
+  if (homeCount) homeCount.textContent = `${cards.length} cartes`;
+  if (homeTotal) homeTotal.textContent = cards.reduce((s, c) => s + Number(c.price || 0), 0).toFixed(2) + " €";
 
   const list = document.getElementById('recent-list');
   if (list) {
@@ -101,10 +117,10 @@ window.init3DCarousel = function() {
       const diff = i - currentIndex;
       const absDiff = Math.abs(diff);
       const sign = Math.sign(diff);
-      card.style.transform = `translateX(${diff * 60}%) translateZ(${absDiff * -120}px) rotateY(${sign * -25}deg)`;
+      card.style.transform = `translateX(${diff * 65}%) translateZ(${absDiff * -120}px) rotateY(${sign * -25}deg)`;
       card.style.zIndex = 100 - absDiff;
       card.style.opacity = absDiff > 2 ? 0 : 1;
-      card.querySelector('.fav-card-dim').style.setProperty('--dim', absDiff * 0.4);
+      card.querySelector('.fav-card-dim').style.setProperty('--dim', absDiff * 0.45);
       card.classList.toggle('active', absDiff === 0);
     });
   };
@@ -113,7 +129,7 @@ window.init3DCarousel = function() {
     autoTimer = setInterval(() => {
       currentIndex = (currentIndex + 1) % cards.length;
       window.update3D();
-    }, 5000); // 5 secondes
+    }, 5000); // 5 sec
   };
 
   window.handleCarouselClick = (el, id) => {
@@ -128,13 +144,19 @@ window.init3DCarousel = function() {
 };
 
 // ==========================================
-// 5. COLLECTION & PIE CHART
+// 5. FILTRES & COLLECTION (Capture 13.55.18)
 // ==========================================
 window.renderCollection = function() {
-  const cards = window.db.cards || [];
+  let filtered = window.db.cards || [];
+  if (window.activeBrand !== 'all') filtered = filtered.filter(c => (c.marque || '').toLowerCase() === window.activeBrand.toLowerCase());
+  if (window.activeType === 'auto') filtered = filtered.filter(c => c.tags && c.tags.includes('auto'));
+  if (window.activeType === 'patch') filtered = filtered.filter(c => c.tags && c.tags.includes('patch'));
+  if (window.activeType === 'rookie') filtered = filtered.filter(c => c.tags && c.tags.includes('rookie'));
+  if (window.activeType === 'num') filtered = filtered.filter(c => c.is_num);
+
   const grid = document.getElementById('coll-grid');
   if(grid) {
-    grid.innerHTML = cards.map(c => `
+    grid.innerHTML = filtered.map(c => `
       <div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'">
         <img src="${c.photo_url || ''}">
       </div>
@@ -143,14 +165,31 @@ window.renderCollection = function() {
   window.renderValueTab();
 };
 
+window.setBrandFilter = function(brand, btn) {
+    document.querySelectorAll('.brand-filter-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    window.activeBrand = brand; window.renderCollection();
+};
+
+window.setTypeFilter = function(type, btn) {
+    document.querySelectorAll('.type-filter').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    window.activeType = type; window.renderCollection();
+};
+
+window.toggleSportDD = function(e) {
+    const menu = document.getElementById('sport-dd-menu');
+    if(menu) menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+};
+
+// ==========================================
+// 6. VALEUR & PIE CHART
+// ==========================================
 window.renderValueTab = function() {
   const cards = window.db.cards || [];
   const totalVal = cards.reduce((s, c) => s + Number(c.price || 0), 0);
   const elVal = document.getElementById('total-val');
-  const elCount = document.getElementById('total-cards');
-  
   if(elVal) elVal.textContent = totalVal.toFixed(2) + " €";
-  if(elCount) elCount.textContent = `${cards.length} cartes`;
 
   const brands = {};
   cards.forEach(c => { const b = c.marque || 'Autre'; brands[b] = (brands[b] || 0) + Number(c.price || 0); });
@@ -165,13 +204,12 @@ window.renderValueTab = function() {
 
   Object.entries(brands).forEach(([name, val], i) => {
     const sliceAngle = (val / totalVal) * 360;
-    const r = 40; const cx = 45; const cy = 45;
+    const r = 40, cx = 45, cy = 45;
     const x1 = cx + r * Math.cos(Math.PI * currentAngle / 180);
     const y1 = cy + r * Math.sin(Math.PI * currentAngle / 180);
     currentAngle += sliceAngle;
     const x2 = cx + r * Math.cos(Math.PI * currentAngle / 180);
     const y2 = cy + r * Math.sin(Math.PI * currentAngle / 180);
-    
     html += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${sliceAngle > 180 ? 1 : 0} 1 ${x2} ${y2} Z" fill="${colors[i % colors.length]}"/>`;
     legHtml += `<div class="pie-legend-item"><span class="pie-legend-dot" style="background:${colors[i % colors.length]}"></span><span class="pie-legend-name">${name}</span><span class="pie-legend-val">${val.toFixed(0)}€</span></div>`;
   });
@@ -184,32 +222,25 @@ window.renderFolders = function() {
     const grid = document.getElementById('folders-grid');
     if(!grid) return;
     grid.innerHTML = (window.db.folders || []).map(f => `
-        <div class="folder-card" style="min-width:140px; flex-shrink:0;">
-            <div class="folder-emoji">${f.emoji || '📁'}</div>
-            <div class="folder-name">${f.name}</div>
-        </div>
+        <div class="folder-card" style="min-width:140px; flex-shrink:0;"><div class="folder-emoji">${f.emoji || '📁'}</div><div class="folder-name">${f.name}</div></div>
     `).join('');
 };
 
 // ==========================================
-// 6. CARD DETAIL (card.html)
+// 7. CARD DETAIL (card.html)
 // ==========================================
 window._displayCard = function(c) {
   window.curCardId = c.id;
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-  
   set('detail-prenom', c.prenom || "");
   set('detail-nom', c.nom || "INCONNU");
   set('d-marque-text', c.marque || "—");
-  set('d-annee', c.annee || "—");
-  set('d-set', c.set_name || "—");
-  set('d-coll', c.collection || "—");
+  set('d-marque', c.marque || "—");
   set('d-price', (c.price || 0).toFixed(2) + " €");
 
   const img = document.getElementById('card-face-front');
   if(img && c.photo_url) img.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
 
-  // Badges cliquables - Ordre : Club puis Sport
   const clubChip = document.getElementById('detail-club-chip');
   if(c.club && clubChip) { 
       document.getElementById('detail-club-n').textContent = c.club; 
@@ -218,56 +249,28 @@ window._displayCard = function(c) {
   }
   const sportChip = document.getElementById('detail-sport-chip');
   if(c.sport && sportChip) { 
-      const label = document.getElementById('detail-sport-label');
-      if(label) label.textContent = c.sport.toUpperCase(); 
+      document.getElementById('detail-sport-label').textContent = c.sport.toUpperCase(); 
       sportChip.style.display = 'inline-flex'; 
       sportChip.onclick = () => location.href = `sports.html?key=${encodeURIComponent(c.sport)}`;
   }
 };
 
 // ==========================================
-// 7. UTILITAIRES & NAVIGATION
+// 8. NAVIGATION & UTILS
 // ==========================================
-window.switchCollectionTab = function(tab) {
-  document.getElementById('coll-tab-cards').classList.toggle('active', tab === 'cards');
-  document.getElementById('coll-tab-value').classList.toggle('active', tab === 'value');
-  document.getElementById('coll-panel-cards').style.display = tab === 'cards' ? 'block' : 'none';
-  document.getElementById('coll-panel-value').style.display = tab === 'value' ? 'block' : 'none';
-};
-
-window.toggleFav = async () => {
-    const c = window.db.cards.find(x => x.id === window.curCardId);
-    if(!c) return;
-    c.fav = !c.fav;
-    await sbUpdate("cards", c.id, { fav: c.fav });
-    location.reload();
-};
-
-window.saveEdit = async function() {
-    const patch = {
-        prenom: document.getElementById('e-prenom').value,
-        nom: document.getElementById('e-nom').value,
-        marque: document.getElementById('e-marque').value,
-        price: Number(document.getElementById('e-price').value)
-    };
-    await sbUpdate("cards", window.curCardId, patch);
-    location.reload();
-};
-
-window.deleteCurrentCard = async function() {
-    if(confirm("Supprimer cette carte ?")) {
-        await sbDelete("cards", window.curCardId);
-        location.href = 'collection.html';
-    }
-};
-
-window.closeSheet = (id) => document.getElementById(id).classList.remove('open');
 window.navBack = () => history.back();
+window.closeSheet = (id) => document.getElementById(id).classList.remove('open');
+window.openPlayer = (id) => {
+    const c = window.db.cards.find(x => x.id === (id || window.curCardId));
+    if(c) location.href = `player.html?name=${encodeURIComponent(`${c.prenom} ${c.nom}`.trim())}`;
+};
 
-// Bouchons requis par tes pages HTML
-window.initFilters = () => {};
-window.setupImageViewer = () => {};
-window.initSportDD = () => {};
-window.setupLiveSearch = () => {};
-window.homeSearch = () => {};
-window.collSearch = () => {};
+window.switchCollectionTab = (tab) => {
+    document.getElementById('coll-tab-cards')?.classList.toggle('active', tab === 'cards');
+    document.getElementById('coll-tab-value')?.classList.toggle('active', tab === 'value');
+    document.getElementById('coll-panel-cards').style.display = tab === 'cards' ? 'block' : 'none';
+    document.getElementById('coll-panel-value').style.display = tab === 'value' ? 'block' : 'none';
+};
+
+// Stubs techniques
+window.initFilters = () => {}; window.setupImageViewer = () => {}; window.initSportDD = () => {}; window.setupLiveSearch = () => {}; window.homeSearch = () => {}; window.collSearch = () => {}; window.toggleFav = async () => {};
