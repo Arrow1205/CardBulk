@@ -36,7 +36,7 @@ Aucun texte avant/après.
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType, data: base64Data } }] }],
-            // Correction : Force Gemini à retourner du JSON natif strict
+            // LA CORRECTION EST ICI : On force l'IA à répondre en vrai JSON
             generationConfig: { responseMimeType: "application/json" } 
           }),
         }
@@ -55,7 +55,6 @@ Aucun texte avant/après.
 
     if (lastErr) return res.status(502).json({ error: lastErr });
 
-    // Plus besoin de nettoyer les blocs de code (```json), la réponse EST un JSON.
     const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
     const parsed = JSON.parse(raw);
     
