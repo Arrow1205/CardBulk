@@ -47,7 +47,7 @@
   .select-wrap{position:relative;}
   .select-wrap:after{content:""; position:absolute; right:4px; top:6px; width:14px; height:14px; border-right:2px solid rgba(255,255,255,.5); border-bottom:2px solid rgba(255,255,255,.5); transform:rotate(45deg); pointer-events:none;}
   .save-btn{margin-top:22px; width:100%; border:0; border-radius:999px; padding:16px 18px; font-weight:900; font-family:"Barlow Condensed",system-ui; letter-spacing:.06em; text-transform:uppercase; background:var(--accent); color:#06120a; cursor:pointer;}
-  .tiny{font-size:12px; opacity:.6; margin-top:10px;}
+  .tiny{font-size:12px; opacity:.6; margin-top:10px; text-align:center;}
   .hidden{display:none!important;}
 </style>
 </head>
@@ -101,13 +101,13 @@
         </select>
       </div>
 
-<div id="clubGroup" class="fieldGroup hidden">
-  <div class="label">CLUB</div>
-  <div class="clubWrap">
-    <input class="field" id="fClub" placeholder="Rechercher un club" autocomplete="off"/>
-    <div id="clubDropdown" class="clubDropdown"></div>
-  </div>
-</div>
+      <div id="clubGroup" class="fieldGroup hidden">
+        <div class="label">CLUB</div>
+        <div class="clubWrap">
+          <input class="field" id="fClub" placeholder="Rechercher un club" autocomplete="off"/>
+          <div id="clubDropdown" class="clubDropdown"></div>
+        </div>
+      </div>
 
       <div class="label">NUMÉROTÉE</div>
       <div class="segYN">
@@ -154,7 +154,6 @@
   </div>
 </div>
 
-<!-- TABBAR -->
 <div class="tabbar">
   <button class="tab-btn" onclick="location.href='index.html'" id="tab-home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
@@ -170,8 +169,6 @@
 <script src="assets/app.js"></script>
 <script>
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
-
-  // OCR via Vercel API route: POST /api/ocr (Gemini key stays server-side)
 
   const tabRecto = document.getElementById('tab-recto');
   const tabVerso = document.getElementById('tab-verso');
@@ -190,71 +187,75 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
   const fNom = document.getElementById('fNom');
   const fMarque = document.getElementById('fMarque');
   const fSetName = document.getElementById('fSetName');
-
   const fSport = document.getElementById('fSport');
-let CLUBS_DATA = null;
+  
+  // Correction: Écouteur pour afficher/cacher le menu de clubs
+  fSport.addEventListener('change', updateClubVisibility);
 
-async function loadClubsJson(){
-  if(CLUBS_DATA) return CLUBS_DATA;
-  const r = await fetch("/clubs.json", { cache: "force-cache" });
-  if(!r.ok) throw new Error("clubs.json introuvable");
-  CLUBS_DATA = await r.json();
-  return CLUBS_DATA;
-}
+  let CLUBS_DATA = null;
 
-function isTeamSport(s){
-  const v = String(s||"").toLowerCase();
-  return ["football","basketball","baseball"].includes(v);
-}
-
-async function updateClubVisibility(){
-  const s = fSport.value;
-  const show = isTeamSport(s);
-  const g = document.getElementById("clubGroup");
-  if(g) g.classList.toggle("hidden", !show);
-  if(!show){
-    document.getElementById("fClub").value = "";
-    const dd = document.getElementById("clubDropdown");
-    dd.classList.remove("open"); dd.innerHTML="";
+  async function loadClubsJson(){
+    if(CLUBS_DATA) return CLUBS_DATA;
+    const r = await fetch("/clubs.json", { cache: "force-cache" });
+    if(!r.ok) throw new Error("clubs.json introuvable");
+    CLUBS_DATA = await r.json();
+    return CLUBS_DATA;
   }
-}
 
-function norm(str){ return String(str||"").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,""); }
+  function isTeamSport(s){
+    const v = String(s||"").toLowerCase();
+    return ["football","basketball","baseball"].includes(v);
+  }
 
-async function clubSearch(q){
-  const dd = document.getElementById("clubDropdown");
-  const term = norm(q).trim();
-  if(!term){ dd.classList.remove("open"); dd.innerHTML=""; return; }
-  let data;
-  try{ data = await loadClubsJson(); }catch(e){ dd.classList.remove("open"); return; }
-  const list = (data[fSport.value] || []);
-  const hits = list.filter(c=>{
-    const n = norm(c.name);
-    if(n.includes(term)) return true;
-    return (c.aliases||[]).some(a=>norm(a).includes(term));
-  }).slice(0,10);
+  async function updateClubVisibility(){
+    const s = fSport.value;
+    const show = isTeamSport(s);
+    const g = document.getElementById("clubGroup");
+    if(g) g.classList.toggle("hidden", !show);
+    if(!show){
+      document.getElementById("fClub").value = "";
+      const dd = document.getElementById("clubDropdown");
+      if(dd) { dd.classList.remove("open"); dd.innerHTML=""; }
+    }
+  }
 
-  dd.innerHTML = hits.map(c=>{
-    const logo = c.logo ? `<img src="${c.logo}" alt="">` : `<span style="font-size:18px;">🏟️</span>`;
-    const meta = [c.country, c.league].filter(Boolean).join(" • ");
-    return `<div class="clubItem" data-name="${c.name.replace(/"/g,'&quot;')}">
-      <div class="clubLogo">${logo}</div>
-      <div>
-        <div class="clubName">${escapeHtml(c.name)}</div>
-        <div class="clubMeta">${escapeHtml(meta)}</div>
-      </div>
-    </div>`;
-  }).join("");
+  function norm(str){ return String(str||"").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,""); }
 
-  dd.classList.toggle("open", hits.length>0);
+  async function clubSearch(q){
+    const dd = document.getElementById("clubDropdown");
+    const term = norm(q).trim();
+    if(!term){ dd.classList.remove("open"); dd.innerHTML=""; return; }
+    let data;
+    try{ data = await loadClubsJson(); }catch(e){ dd.classList.remove("open"); return; }
+    const list = (data[fSport.value] || []);
+    const hits = list.filter(c=>{
+      const n = norm(c.name);
+      if(n.includes(term)) return true;
+      return (c.aliases||[]).some(a=>norm(a).includes(term));
+    }).slice(0,10);
 
-  dd.querySelectorAll(".clubItem").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      document.getElementById("fClub").value = el.getAttribute("data-name") || "";
-      dd.classList.remove("open"); dd.innerHTML="";
+    dd.innerHTML = hits.map(c=>{
+      const logo = c.logo ? `<img src="${c.logo}" alt="">` : `<span style="font-size:18px;">🏟️</span>`;
+      const meta = [c.country, c.league].filter(Boolean).join(" • ");
+      return `<div class="clubItem" data-name="${c.name.replace(/"/g,'&quot;')}">
+        <div class="clubLogo">${logo}</div>
+        <div>
+          <div class="clubName">${escapeHtml(c.name)}</div>
+          <div class="clubMeta">${escapeHtml(meta)}</div>
+        </div>
+      </div>`;
+    }).join("");
+
+    dd.classList.toggle("open", hits.length>0);
+
+    dd.querySelectorAll(".clubItem").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        document.getElementById("fClub").value = el.getAttribute("data-name") || "";
+        dd.classList.remove("open"); dd.innerHTML="";
+      });
     });
-  });
-}
+  }
+
   const fAnnee = document.getElementById('fAnnee');
   const fCollection = document.getElementById('fCollection');
   const fPrice = document.getElementById('fPrice');
@@ -292,8 +293,7 @@ async function clubSearch(q){
   tabVerso.addEventListener('click', ()=>setActiveSide('verso'));
 
   function setPreview(dataUrl){
-  imgDataUrl = dataUrl;
-
+    // Correction: la variable non déclarée 'imgDataUrl' a été supprimée.
     if(activeSide==='recto'){
       rectoDataUrl = dataUrl;
       previewRecto.src = dataUrl;
@@ -309,7 +309,7 @@ async function clubSearch(q){
   function handleFile(file){
     if(!file) return;
     const reader = new FileReader();
-    reader.onload = async ()=>{ setPreview(reader.result); if(activeSide==="recto"){ try{ await analyserOCR(); }catch(e){} } };
+    reader.onload = ()=>{ setPreview(reader.result); };
     reader.readAsDataURL(file);
   }
 
@@ -339,7 +339,7 @@ async function clubSearch(q){
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Brands: static list (no DB dependency)
+  // Brands
   (function populateBrands(){
     const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
     for(const n of brands){
@@ -356,62 +356,51 @@ async function clubSearch(q){
     statusEl.textContent = msg || "";
   }
 
-
-  async function blobToJpegBase64(blob, maxSide=1280, quality=0.82){
-    const bmp = await createImageBitmap(blob);
-    let w = bmp.width, h = bmp.height;
-    const scale = Math.min(1, maxSide / Math.max(w,h));
-    w = Math.round(w*scale); h = Math.round(h*scale);
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bmp,0,0,w,h);
-    const dataUrl = canvas.toDataURL('image/jpeg', quality);
-    return { mimeType: 'image/jpeg', base64Data: dataUrl.split(',')[1] || '', dataUrl };
-  }
-
-  async function analyserOCR(){
-  if(!imgDataUrl){ alert("Ajoute une image recto"); return; }
-  try{
-    setLoading(true);
-    const payload = await dataUrlToCompressedPayload(imgDataUrl);
-    const r = await fetch("/api/ocr",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(payload)
-    });
-    const data = await r.json().catch(()=>({}));
-    if(!r.ok) throw new Error(data?.error || `Erreur OCR (${r.status})`);
-    // prefill
-    fPrenom.value = (data.prenom||"").trim();
-    fNom.value = (data.nom||"").trim();
-    const b = (data.marque||"").trim();
-    if(b){
-      const opt = [...fMarque.options].find(o=>o.value.toLowerCase()===b.toLowerCase());
-      if(opt) fMarque.value = opt.value;
-      else {
-        const o = document.createElement("option");
-        o.value = b; o.textContent = b;
-        fMarque.appendChild(o);
-        fMarque.value = b;
-      }
+  // CORRECTION MAJEURE: Implémentation du fetch vers l'API OCR
+  btnOCR.addEventListener('click', async () => {
+    if (!rectoDataUrl) {
+      alert("Veuillez d'abord capturer ou uploader le recto de la carte.");
+      return;
     }
-    fSet.value = (data.collection||"").trim();
-  }catch(e){
-    console.error(e);
-    alert(e.message || "Erreur OCR");
-  }finally{
-    setLoading(false);
-  }
-}
+    
+    uiBusy(true, "Analyse OCR en cours...");
+    
+    try {
+      // Extraction du type MIME et du Base64 brut
+      const match = rectoDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+      if (!match) throw new Error("Format d'image invalide.");
+      const mimeType = match[1];
+      const base64Data = match[2];
 
-  btnOCR.addEventListener('click', analyserOCR);
+      const res = await fetch('/api/ocr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mimeType, base64Data })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur serveur lors de l'analyse.");
+
+      // Remplissage des champs selon les clés du JSON
+      if (data.prenom) fPrenom.value = data.prenom;
+      if (data.nom) fNom.value = data.nom;
+      if (data.marque) fMarque.value = data.marque;
+      if (data.collection) fSetName.value = data.collection; // Mappé sur "COLLECTION" selon ton UI
+
+      uiBusy(false, "Analyse terminée avec succès !");
+      setTimeout(() => { statusEl.textContent = ""; }, 3000); // Efface le message après 3 sec
+      
+    } catch (e) {
+      console.error(e);
+      uiBusy(false, "Échec de l'OCR.");
+      alert("Erreur OCR : " + e.message);
+    }
+  });
 
   async function saveCard(){
     uiBusy(true, "Sauvegarde…");
 
     try{
-      // Build card object consistent with app schema
       const card = {
         id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (String(Date.now())+Math.random().toString(16).slice(2)),
         prenom: (fPrenom.value || "").trim(),
@@ -428,19 +417,16 @@ async function clubSearch(q){
         photoVerso: ""
       };
 
-      // 1) insert
       const inserted = await sbInsert("cards", toSB(card));
       const row = Array.isArray(inserted) ? inserted[0] : inserted;
       const id = row?.id;
       if(!id) throw new Error("Insert OK mais id manquant.");
 
-      // 2) upload photos
       let rectoUrl = "";
       let versoUrl = "";
       if(rectoDataUrl) rectoUrl = await uploadPhoto(rectoDataUrl, id, "recto");
       if(versoDataUrl) versoUrl = await uploadPhoto(versoDataUrl, id, "verso");
 
-      // 3) patch card
       const patch = {};
       if(rectoUrl) patch.photo_url = rectoUrl;
       if(versoUrl) patch.photo_verso_url = versoUrl;
@@ -456,6 +442,19 @@ async function clubSearch(q){
   }
 
   btnSave.addEventListener('click', (e)=>{ e.preventDefault(); saveCard(); });
+
+  const fClub = document.getElementById('fClub');
+  
+  // Cette ligne est cruciale : elle lance la recherche à chaque lettre tapée
+  fClub.addEventListener('input', (e) => clubSearch(e.target.value));
+  
+  // (Optionnel) Pour fermer le menu déroulant si on clique ailleurs
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.clubWrap')) {
+      const dd = document.getElementById("clubDropdown");
+      if(dd) dd.classList.remove('open');
+    }
+  });
 
   // init
   setActiveSide('recto');
