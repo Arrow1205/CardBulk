@@ -93,44 +93,6 @@ body { overflow: hidden; }
 
 <script src="assets/app.js"></script>
 <script>
-async function _pageCard(){
-  const params = new URLSearchParams(location.search);
-  const id = params.get('id') || sessionStorage.getItem('cv_card_id') || '';
-  if(!id){ location.href='index.html'; return; }
-
-  const c = (db?.cards||[]).find(x=>String(x.id)===String(id));
-  if(!c){
-    alert('Carte introuvable');
-    setTimeout(()=>location.href='index.html', 1500);
-    return;
-  }
-
-  if(typeof _displayCard === 'function'){ _displayCard(c); }
-}
-
-function closeDetail(){
-  if(document.referrer && document.referrer.includes(location.host)){ history.back(); } 
-  else { location.href = 'collection.html'; }
-}
-
-document.addEventListener('DOMContentLoaded', async ()=>{
-  await loadFromDB(); 
-  _pageCard(); 
-});
-
-window.closeSheet = function(id, event) {
-  if (event && event.target !== document.getElementById(id)) return;
-  const sheet = document.getElementById(id);
-  if (sheet) sheet.classList.remove('open');
-};
-
-window.editCurrentCard = function() {
-  const sheet = document.getElementById('edit-sheet');
-  if (sheet) sheet.classList.add('open');
-};
-// nouveau script
-
-<script>
     window.addEventListener('dbReady', () => {
         const params = new URLSearchParams(window.location.search);
         const cardId = params.get('id');
@@ -160,7 +122,6 @@ window.editCurrentCard = function() {
             location.href = `scanner.html?edit=${c.id}`;
         };
     });
-</script>
 </script>
 </body>
 </html>
