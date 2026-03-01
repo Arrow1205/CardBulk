@@ -1,4 +1,4 @@
-/* CardVault — app.js (stable avec connecteurs DB et UI stubs) */
+/* CardVault — app.js (stable avec connecteurs DB et Moteur de Rendu) */
 
 // ==========================================
 // 1. CONFIGURATION SUPABASE
@@ -56,11 +56,7 @@ window.sbDelete = async function sbDelete(table, id){
   if(!id) throw new Error("sbDelete: id manquant");
   const url = `${SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`;
   const r = await fetch(url, { method: "DELETE", headers: SB_HDR });
-  if(!r.ok) {
-    const txt = await r.text();
-    const d = _safeJsonParse(txt);
-    throw new Error(d?.message || `sbDelete ${r.status}`);
-  }
+  if(!r.ok) throw new Error(`sbDelete ${r.status}`);
   return true;
 };
 
@@ -90,9 +86,6 @@ window.uploadPhoto = async function uploadPhoto(dataUrl, cardId, side){
   return `${SB_URL}/storage/v1/object/public/card-photos/${path}`;
 };
 
-// ==========================================
-// 4. MAPPING DES DONNÉES
-// ==========================================
 window.toSB = function toSB(card){
   return {
     id: card.id,
@@ -114,15 +107,19 @@ window.toSB = function toSB(card){
 };
 
 // ==========================================
-// 5. ETAT GLOBAL ET INITIALISATION
+// 5. ETAT GLOBAL ET CHARGEMENT
 // ==========================================
 window.db = { cards: [], folders: [] };
 
 window.loadFromDB = async function() {
   try {
     const cards = await sbGet("cards");
-    window.db.cards = cards; // Sauvegarde en mémoire pour l'affichage
-    console.log("✅ Cartes récupérées avec succès :", cards);
+    window.db.cards = cards; // Sauvegarde en mémoire
+    
+    // DÉCLENCHEMENT DU RENDU VISUEL SELON LA PAGE
+    if (document.getElementById('page-home')) renderHome();
+    if (document.getElementById('page-collection')) renderCollection();
+    
   } catch (e) {
     console.error("Erreur de chargement DB:", e);
   }
@@ -147,16 +144,68 @@ window.navBack = function() {
   }
 };
 
-window.showToast = function(msg) { console.log("Toast:", msg); };
-
 // ==========================================
-// 6. FONCTIONS D'AFFICHAGE ET DE RENDU (Pour index, card, player, club, sports)
+// 6. MOTEUR DE RENDU (INJECTION HTML)
 // ==========================================
 
-// --- Affichage détaillé d'une carte (card.html) ---
-window._displayCard = function(c) {
-  console.log("Affichage de la carte :", c);
+// --- Rendu Accueil (index.html) ---
+window.renderHome = function() {
+  const cards = window.db.cards || [];
   
+  const countEl = document.getElementById('home-count');
+  const totalEl = document.getElementById('home-total');
+  const recentList = document.getElementById('recent-list');
+
+  // Mise à jour des compteurs et de la valeur
+  if (countEl) countEl.textContent = cards.length + (cards.length > 1 ? " cartes" : " carte");
+  
+  const total = cards.reduce((sum, c) => sum + Number(c.price || 0), 0);
+  if (totalEl) totalEl.textContent = total.toFixed(2) + " €";
+
+  // Génération de la liste des 10 dernières cartes
+  if (recentList) {
+    recentList.innerHTML = cards.slice(0, 10).map(c => `
+      <div class="list-item" onclick="location.href='card.html?id=${encodeURIComponent(c.id)}'">
+        <div class="list-thumb">
+          ${c.photo_url ? `<img src="${c.photo_url}" alt="">` : `<span style="font-size:20px">🃏</span>`}
+        </div>
+        <div class="list-info">
+          <div class="list-name" style="font-family:'Barlow Condensed', sans-serif; font-size: 17px; font-weight:800; text-transform:uppercase;">
+            ${c.prenom ? c.prenom + ' ' : ''}${c.nom || 'INCONNU'}
+          </div>
+          <div class="list-meta">${c.marque || '—'} ${c.set_name ? ' • ' + c.set_name : ''}</div>
+          <div class="list-price">${c.price ? c.price + ' €' : '--'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+};
+
+// --- Rendu Collection (collection.html) ---
+window.renderCollection = function() {
+  const cards = window.db.cards || [];
+  
+  const grid = document.getElementById('coll-grid');
+  const totalCards = document.getElementById('total-cards');
+  const totalVal = document.getElementById('total-val');
+
+  if (totalCards) totalCards.textContent = cards.length + (cards.length > 1 ? " cartes" : " carte");
+  
+  const total = cards.reduce((sum, c) => sum + Number(c.price || 0), 0);
+  if (totalVal) totalVal.textContent = total.toFixed(2) + " €";
+
+  // Génération de la grille d'images (3 colonnes via CSS)
+  if (grid) {
+    grid.innerHTML = cards.map(c => `
+      <div class="coll-thumb" onclick="location.href='card.html?id=${encodeURIComponent(c.id)}'">
+        ${c.photo_url ? `<img src="${c.photo_url}" alt="">` : `<div class="coll-thumb-empty">🃏</div>`}
+      </div>
+    `).join('');
+  }
+};
+
+// --- Rendu Détail (card.html) ---
+window._displayCard = function(c) {
   const elPrenom = document.getElementById('detail-prenom');
   const elNom = document.getElementById('detail-nom');
   const elMarque = document.getElementById('d-marque-text');
@@ -176,12 +225,12 @@ window._displayCard = function(c) {
 
   if (imgFront && c.photo_url) {
     imgFront.innerHTML = `<img src="${c.photo_url}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">`;
-  } else if (imgFront) {
-    imgFront.innerHTML = `<div class="card-3d-content card-3d-placeholder"><span style="font-size:40px;opacity:.25;">🃏</span></div>`;
   }
 };
 
-// --- Utilitaires de présentation métier ---
+// ==========================================
+// 7. BOUCHONS (ÉVITE LES PLANTAGES)
+// ==========================================
 window._loadClubLogos = function() { return {}; };
 window.getClubLogoB64 = function(club) { return ""; };
 window.sportL = function(s) { return s; };
@@ -191,17 +240,11 @@ window._setPlayerHeroSrc = function(src) {
   if(img && src) img.src = src;
 };
 
-// --- Rendu visuel des listes (vides pour l'instant pour éviter les erreurs) ---
-window.renderClubPage = function() { console.log("Affichage grille Club"); };
-window.renderPlayerPage = function() { console.log("Affichage grille Joueur"); };
-window.renderSportPage = function() { console.log("Affichage grille Sport"); };
-window.renderFolders = function() { console.log("Affichage dossiers"); };
-
-// ==========================================
-// 7. BOUCHONS (STUBS) POUR ÉVITER LES ERREURS REFERENCEERROR
-// ==========================================
-// Ces fonctions correspondent aux boutons existants dans ton HTML.
-// Elles ne font rien pour le moment, mais empêchent le navigateur de crasher.
+window.renderClubPage = function() {};
+window.renderPlayerPage = function() {};
+window.renderSportPage = function() {};
+window.renderFolders = function() {};
+window.showToast = function(msg) { console.log("Toast:", msg); };
 
 const stubs = [
   "setupImageViewer", "initSportDD", "setupLiveSearch", "switchCollectionTab", "collSearch", 
@@ -218,6 +261,6 @@ const stubs = [
 
 stubs.forEach(fn => {
   window[fn] = window[fn] || function() { 
-    console.log(`Fonction ${fn}() appelée mais non implémentée (Bouchon).`); 
+    console.log(`Fonction ${fn}() en cours de développement.`); 
   };
 });
