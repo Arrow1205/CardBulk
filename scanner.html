@@ -13,156 +13,94 @@
 <meta name="theme-color" content="#0c0c0e">
 <link rel="stylesheet" href="assets/app.css">
 <title>CardVault — Ajouter</title>
-<style>
-  /* Scanner page */
-  .scan-page{min-height:100vh;padding:28px 18px 110px;}
-  .scan-title{font-family:"Barlow Condensed",system-ui; font-weight:900; letter-spacing:0.02em; font-size:42px; line-height:1; margin:6px 0 8px;}
-  .scan-sub{opacity:.65; margin:0 0 16px; font-weight:500;}
-  .seg2{display:flex; gap:10px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:999px; padding:6px; width:100%; max-width:520px;}
-  .seg2 button{flex:1; border-radius:999px; padding:10px 14px; font-weight:800; letter-spacing:.04em; font-family:"Barlow Condensed",system-ui; text-transform:uppercase; border:0; cursor:pointer; background:transparent; color:rgba(255,255,255,.55);}
-  .seg2 button.active{background:var(--accent); color:#05110a;}
-  .scan-capture{margin-top:14px; border-radius:18px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.04); overflow:hidden; position:relative;}
-  .scan-capture-inner{height:150px; display:flex; align-items:center; justify-content:center; gap:28px; color:rgba(255,255,255,.8); font-weight:700;}
-  .scan-corner{position:absolute; width:18px; height:18px; border:3px solid var(--accent); }
-  .c-tl{top:14px; left:14px; border-right:0; border-bottom:0; border-radius:4px 0 0 0;}
-  .c-tr{top:14px; right:14px; border-left:0; border-bottom:0; border-radius:0 4px 0 0;}
-  .c-bl{bottom:14px; left:14px; border-right:0; border-top:0; border-radius:0 0 0 4px;}
-  .c-br{bottom:14px; right:14px; border-left:0; border-top:0; border-radius:0 0 4px 0;}
-  .scan-preview{display:none; width:100%; height:150px; object-fit:cover;}
-  .scan-actions{display:flex; justify-content:center; margin:14px 0 8px;}
-  .scan-actions button{background:transparent; border:0; color:rgba(255,255,255,.8); font-weight:800; letter-spacing:.02em; cursor:pointer;}
-  .form-block{margin-top:16px;}
-  .label{font-family:"Barlow Condensed",system-ui; font-weight:900; letter-spacing:.12em; font-size:13px; color:rgba(255,255,255,.7); text-transform:uppercase; margin:18px 0 8px;}
-  .field{width:100%; background:transparent; border:0; outline:none; color:rgba(255,255,255,.92); font-size:16px; padding:0 0 10px; border-bottom:1px solid rgba(255,255,255,.14);}
-  .field::placeholder{color:rgba(255,255,255,.45);}
-  .row2{display:flex; gap:12px;}
-  .row2 > div{flex:1;}
-  .segYN{display:flex; gap:10px; margin-top:8px;}
-  .segYN button{flex:1; border-radius:999px; padding:12px 14px; font-weight:900; font-family:"Barlow Condensed",system-ui; text-transform:uppercase; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); color:rgba(255,255,255,.6); cursor:pointer;}
-  .segYN button.active{background:var(--accent); color:#06120a; border-color:transparent;}
-  .chips3{display:flex; gap:12px; margin-top:10px;}
-  .chip{flex:1; border-radius:999px; padding:12px 0; text-align:center; font-weight:900; font-family:"Barlow Condensed",system-ui; text-transform:uppercase; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.05); color:rgba(255,255,255,.65); cursor:pointer;}
-  .chip.active{background:var(--accent);color:#06120a;border-color:transparent;}
-  .select{appearance:none; -webkit-appearance:none; width:100%; background:transparent; border:0; outline:none; color:rgba(255,255,255,.92); font-size:16px; padding:0 28px 10px 0; border-bottom:1px solid rgba(255,255,255,.14);}
-  .select-wrap{position:relative;}
-  .select-wrap:after{content:""; position:absolute; right:4px; top:6px; width:14px; height:14px; border-right:2px solid rgba(255,255,255,.5); border-bottom:2px solid rgba(255,255,255,.5); transform:rotate(45deg); pointer-events:none;}
-  .save-btn{margin-top:22px; width:100%; border:0; border-radius:999px; padding:16px 18px; font-weight:900; font-family:"Barlow Condensed",system-ui; letter-spacing:.06em; text-transform:uppercase; background:var(--accent); color:#06120a; cursor:pointer;}
-  .tiny{font-size:12px; opacity:.6; margin-top:10px; text-align:center;}
-  .hidden{display:none!important;}
-  
-  /* Ajouts pour le menu déroulant des clubs */
-  .clubWrap { position: relative; }
-  .clubDropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #1a1a1e; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 10; margin-top: 4px; }
-  .clubDropdown.open { display: block; }
-  .clubItem { display: flex; align-items: center; gap: 10px; padding: 10px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.05); }
-  .clubItem:hover { background: rgba(255,255,255,.05); }
-  .clubItem:last-child { border-bottom: none; }
-  .clubLogo { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
-  .clubLogo img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .clubName { font-weight: 600; font-size: 14px; color: #fff; }
-  .clubMeta { font-size: 11px; color: rgba(255,255,255,.5); }
-</style>
 </head>
 <body>
 
-<div class="page active" id="page-scan">
-  <div class="page-inner scan-page">
-
-    <button class="back-btn icon-btn" onclick="history.back()" aria-label="Retour">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-
-    <div class="scan-title">AJOUTER</div>
-    <div class="scan-sub">Scanne ou upload ta carte</div>
-
-    <div class="seg2" role="tablist" aria-label="Recto Verso">
-      <button type="button" id="tab-recto" class="active">RECTO</button>
-      <button type="button" id="tab-verso">VERSO</button>
-    </div>
-
-    <div class="scan-capture" id="captureBox">
-      <div class="scan-corner c-tl"></div><div class="scan-corner c-tr"></div><div class="scan-corner c-bl"></div><div class="scan-corner c-br"></div>
-      <img id="previewRecto" class="scan-preview" alt="Aperçu recto">
-      <img id="previewVerso" class="scan-preview" alt="Aperçu verso">
-      <div class="scan-capture-inner" id="captureEmpty">
-        <button type="button" class="plain" id="btnCamera">Caméra</button>
-        <button type="button" class="plain" id="btnLibrary">Bibliothèque</button>
-      </div>
-    </div>
-
-    <div class="scan-actions">
-      <button type="button" id="btnOCR">Analyser (OCR)</button>
-    </div>
-
-    <div class="form-block">
-      <div class="label">PRÉNOM</div>
-      <input class="field" id="fPrenom" placeholder="—" autocomplete="off"/>
-
-      <div class="label">NOM</div>
-      <input class="field" id="fNom" placeholder="—" autocomplete="off"/>
-
-      <div class="label">SPORT</div>
-      <div class="select-wrap">
-        <select class="select" id="fSport">
-          <option value="">Sélectionner</option>
-          <option value="Football">Football</option>
-          <option value="Basketball">Basketball</option>
-          <option value="Baseball">Baseball</option>
-          <option value="Hockey">Hockey</option>
-          <option value="Tennis">Tennis</option>
-        </select>
+<div class="page active" id="page-scanner">
+  <div class="page-inner">
+    <div class="scanner-hdr"><div class="scanner-title">Ajouter</div><div class="scanner-sub">Scanne ou uploade ta carte</div></div>
+    <div style="padding:0 20px;">
+      
+      <div class="side-tabs">
+        <div class="side-tab active" id="add-tab-recto" onclick="switchAddSide('recto')">Recto</div>
+        <div class="side-tab" id="add-tab-verso" onclick="switchAddSide('verso')">Verso</div>
       </div>
 
-      <div id="clubGroup" class="fieldGroup hidden">
-        <div class="label">CLUB</div>
-        <div class="clubWrap">
-          <input class="field" id="fClub" placeholder="Rechercher un club" autocomplete="off"/>
-          <div id="clubDropdown" class="clubDropdown"></div>
+      <div id="add-recto-zone">
+        <div class="photo-upload" id="photo-upload-zone">
+          <input type="file" id="card-photo-lib" accept="image/*" style="display:none" onchange="handlePhoto(this,'recto')">
+          <input type="file" id="card-photo-cam" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'recto')">
+          
+          <div id="photo-preview-wrap" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib').click()">
+            <img id="photo-preview-img" style="width:100%;height:100%;object-fit:cover;">
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6);border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;">Changer</div>
+          </div>
+          <div id="photo-placeholder-ui"><div style="font-size:28px;"></div>
+            <div class="photo-btns">
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam').click()">Caméra</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib').click()">Bibliothèque</button>
+            </div>
+          </div>
+        </div>
+        <button class="btn-secondary" id="ocr-btn" style="margin-top:10px; width:100%;" type="button" onclick="ocrCard()">Analyser (OCR)</button>
+        <div id="scanStatus" style="text-align:center; font-size:12px; margin-top:5px; color:var(--accent);"></div>
+      </div>
+
+      <div id="add-verso-zone" style="display:none;">
+        <div class="photo-upload" id="photo-upload-zone-v">
+          <input type="file" id="card-photo-lib-v" accept="image/*" style="display:none" onchange="handlePhoto(this,'verso')">
+          <input type="file" id="card-photo-cam-v" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this,'verso')">
+          <div id="photo-preview-wrap-v" style="display:none;position:absolute;inset:0;" onclick="document.getElementById('card-photo-lib-v').click()">
+            <img id="photo-preview-img-v" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div id="photo-placeholder-ui-v"><div style="font-size:28px;"></div>
+            <div class="photo-btns">
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-cam-v').click()">Caméra</button>
+              <button class="photo-btn" type="button" onclick="document.getElementById('card-photo-lib-v').click()">Bibliothèque</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="label">NUMÉROTÉE</div>
-      <div class="segYN">
-        <button type="button" id="numNon" class="active">NON</button>
-        <button type="button" id="numOui">OUI</button>
-      </div>
-
-      <div class="label">SPÉCIFICITÉS</div>
-      <div class="chips3">
-        <button type="button" class="chip" data-tag="auto">AUTO</button>
-        <button type="button" class="chip" data-tag="patch">PATCH</button>
-        <button type="button" class="chip" data-tag="rookie">ROOKIE</button>
-      </div>
-
-      <div class="label">MARQUE</div>
-      <div class="select-wrap">
-        <select class="select" id="fMarque">
+      <div style="height:14px;"></div>
+      
+      <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="f-prenom" type="text" placeholder="Kylian" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="f-nom" type="text" placeholder="Mbappé" autocomplete="off"></div>
+      
+      <div class="form-group"><label class="form-label">Sport</label>
+        <div class="sport-select-wrap"><select class="form-select" id="f-sport">
           <option value="">Sélectionner</option>
+          <option value="football">Football / Soccer</option>
+          <option value="basketball">Basketball</option>
+          <option value="baseball">Baseball</option>
+          <option value="tennis">Tennis</option>
+          <option value="f1">Formule 1</option>
+        </select></div>
+      </div>
+
+      <div class="form-group"><label class="form-label">Marque</label>
+        <select class="form-select" id="f-marque">
+          <option value="">Sélectionner</option>
+          <option value="Topps">Topps</option>
+          <option value="Panini">Panini</option>
+          <option value="Leaf">Leaf</option>
+          <option value="Futera">Futera</option>
+          <option value="Daka">Daka</option>
+          <option value="Upper Deck">Upper Deck</option>
         </select>
       </div>
 
-      <div class="label">COLLECTION</div>
-      <input class="field" id="fSetName" placeholder="Sélectionner" autocomplete="off"/>
-
-      <div class="label">ANNÉE</div>
-      <div class="select-wrap">
-        <select class="select" id="fAnnee">
-          <option value="">Sélectionner</option>
-          <option>2026</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option>
-          <option>2019</option><option>2018</option><option>2017</option><option>2016</option><option>2015</option>
-        </select>
+      <div class="form-group"><label class="form-label">Collection / Set</label>
+        <input class="form-input" id="f-set" type="text" placeholder="Prizm, Chrome..." autocomplete="off">
       </div>
 
-      <div class="label">DOSSIER</div>
-      <input class="field" id="fCollection" placeholder="" autocomplete="off"/>
-
-      <div class="label">PRIX ESTIMÉ (€)</div>
-      <input class="field" id="fPrice" value="0.00" inputmode="decimal"/>
-
-      <button class="save-btn" id="btnSave">ENREGISTRER LA CARTE</button>
-      <div class="tiny" id="scanStatus"></div>
+      <div class="form-group"><label class="form-label">Dossier / Classeur</label><input class="form-input" id="f-collection" type="text" placeholder="Ex: Cartes PC"></div>
+      
+      <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="f-price" type="number" placeholder="0.00" step="0.01" min="0"></div>
+      
+      <button class="btn-primary" id="save-card-btn" onclick="saveCard()" style="margin-top:20px;">Enregistrer la carte</button>
+      <div style="height:22px;"></div>
     </div>
-
   </div>
 </div>
 
@@ -171,219 +109,65 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
   </button>
   <button class="tab-btn scan-btn active" onclick="location.href='scanner.html'" id="tab-scanner">
-    <div class="scan-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+    <div class="scan-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="22" height="22" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
   </button>
   <button class="tab-btn" onclick="location.href='collection.html'" id="tab-collection">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Collection
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Collection
   </button>
 </div>
 
 <script src="assets/app.js"></script>
 <script>
-  function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
-
-  const tabRecto = document.getElementById('tab-recto');
-  const tabVerso = document.getElementById('tab-verso');
-  const previewRecto = document.getElementById('previewRecto');
-  const previewVerso = document.getElementById('previewVerso');
-  const captureEmpty = document.getElementById('captureEmpty');
-  const btnCamera = document.getElementById('btnCamera');
-  const btnLibrary = document.getElementById('btnLibrary');
-  const btnOCR = document.getElementById('btnOCR');
-  const btnSave = document.getElementById('btnSave');
-  const statusEl = document.getElementById('scanStatus');
-
-  const fPrenom = document.getElementById('fPrenom');
-  const fNom = document.getElementById('fNom');
-  const fMarque = document.getElementById('fMarque');
-  const fSetName = document.getElementById('fSetName');
-  const fSport = document.getElementById('fSport');
-  const fClub = document.getElementById('fClub');
-  
-  // --- GESTION DES CLUBS ---
-  fSport.addEventListener('change', updateClubVisibility);
-  fClub.addEventListener('input', (e) => clubSearch(e.target.value));
-
-  // Fermer le menu déroulant si on clique à côté
-  document.addEventListener('click', (e) => {
-    if(!e.target.closest('.clubWrap')) {
-      const dd = document.getElementById("clubDropdown");
-      if(dd) dd.classList.remove('open');
-    }
-  });
-
-  let CLUBS_DATA = null;
-
-  async function loadClubsJson(){
-    if(CLUBS_DATA) return CLUBS_DATA;
-    const r = await fetch("/clubs.json", { cache: "force-cache" });
-    if(!r.ok) throw new Error("clubs.json introuvable");
-    CLUBS_DATA = await r.json();
-    return CLUBS_DATA;
-  }
-
-  function isTeamSport(s){
-    const v = String(s||"").toLowerCase();
-    return ["football","basketball","baseball"].includes(v);
-  }
-
-  async function updateClubVisibility(){
-    const s = fSport.value;
-    const show = isTeamSport(s);
-    const g = document.getElementById("clubGroup");
-    if(g) g.classList.toggle("hidden", !show);
-    if(!show){
-      fClub.value = "";
-      const dd = document.getElementById("clubDropdown");
-      if(dd) { dd.classList.remove("open"); dd.innerHTML=""; }
-    }
-  }
-
-  function norm(str){ return String(str||"").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu,""); }
-
-  async function clubSearch(q){
-    const dd = document.getElementById("clubDropdown");
-    const term = norm(q).trim();
-    if(!term){ dd.classList.remove("open"); dd.innerHTML=""; return; }
-    let data;
-    try{ data = await loadClubsJson(); }catch(e){ dd.classList.remove("open"); return; }
-    const list = (data[fSport.value] || []);
-    const hits = list.filter(c=>{
-      const n = norm(c.name);
-      if(n.includes(term)) return true;
-      return (c.aliases||[]).some(a=>norm(a).includes(term));
-    }).slice(0,10);
-
-    dd.innerHTML = hits.map(c=>{
-      const logo = c.logo ? `<img src="${c.logo}" alt="">` : `<span style="font-size:18px;">🏟️</span>`;
-      const meta = [c.country, c.league].filter(Boolean).join(" • ");
-      return `<div class="clubItem" data-name="${c.name.replace(/"/g,'&quot;')}">
-        <div class="clubLogo">${logo}</div>
-        <div>
-          <div class="clubName">${escapeHtml(c.name)}</div>
-          <div class="clubMeta">${escapeHtml(meta)}</div>
-        </div>
-      </div>`;
-    }).join("");
-
-    dd.classList.toggle("open", hits.length>0);
-
-    dd.querySelectorAll(".clubItem").forEach(el=>{
-      el.addEventListener("click", ()=>{
-        fClub.value = el.getAttribute("data-name") || "";
-        dd.classList.remove("open"); dd.innerHTML="";
-      });
-    });
-  }
-
-  // --- RESTE DU FORMULAIRE ---
-  const fAnnee = document.getElementById('fAnnee');
-  const fCollection = document.getElementById('fCollection');
-  const fPrice = document.getElementById('fPrice');
-
-  const numNon = document.getElementById('numNon');
-  const numOui = document.getElementById('numOui');
-
-  let activeSide = "recto";
   let rectoDataUrl = "";
   let versoDataUrl = "";
+  let activeSide = "recto";
 
-  const inputCamera = document.createElement('input');
-  inputCamera.type = 'file';
-  inputCamera.accept = 'image/*';
-  inputCamera.capture = 'environment';
-
-  const inputLibrary = document.createElement('input');
-  inputLibrary.type = 'file';
-  inputLibrary.accept = 'image/*';
-
-  function setActiveSide(side){
+  window.switchAddSide = function(side) {
     activeSide = side;
-    tabRecto.classList.toggle('active', side==='recto');
-    tabVerso.classList.toggle('active', side==='verso');
+    document.getElementById('add-tab-recto').classList.toggle('active', side === 'recto');
+    document.getElementById('add-tab-verso').classList.toggle('active', side === 'verso');
+    document.getElementById('add-recto-zone').style.display = (side === 'recto') ? 'block' : 'none';
+    document.getElementById('add-verso-zone').style.display = (side === 'verso') ? 'block' : 'none';
+  };
 
-    previewRecto.style.display = (side==='recto' && rectoDataUrl) ? 'block' : 'none';
-    previewVerso.style.display = (side==='verso' && versoDataUrl) ? 'block' : 'none';
-
-    const hasAny = (side==='recto' ? rectoDataUrl : versoDataUrl);
-    captureEmpty.classList.toggle('hidden', !!hasAny);
-  }
-
-  tabRecto.addEventListener('click', ()=>setActiveSide('recto'));
-  tabVerso.addEventListener('click', ()=>setActiveSide('verso'));
-
-  function setPreview(dataUrl){
-    if(activeSide==='recto'){
-      rectoDataUrl = dataUrl;
-      previewRecto.src = dataUrl;
-    } else {
-      versoDataUrl = dataUrl;
-      previewVerso.src = dataUrl;
-    }
-    captureEmpty.classList.add('hidden');
-    previewRecto.style.display = (activeSide==='recto') ? 'block' : 'none';
-    previewVerso.style.display = (activeSide==='verso') ? 'block' : 'none';
-  }
-
-  function handleFile(file){
-    if(!file) return;
+  window.handlePhoto = function(input, side) {
+    const file = input.files[0];
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload = ()=>{ setPreview(reader.result); };
+    reader.onload = () => {
+      if (side === 'recto') {
+        rectoDataUrl = reader.result;
+        document.getElementById('photo-preview-img').src = reader.result;
+        document.getElementById('photo-preview-wrap').style.display = 'block';
+        document.getElementById('photo-placeholder-ui').style.display = 'none';
+      } else {
+        versoDataUrl = reader.result;
+        document.getElementById('photo-preview-img-v').src = reader.result;
+        document.getElementById('photo-preview-wrap-v').style.display = 'block';
+        document.getElementById('photo-placeholder-ui-v').style.display = 'none';
+      }
+    };
     reader.readAsDataURL(file);
-  }
-
-  btnCamera.addEventListener('click', ()=> inputCamera.click());
-  btnLibrary.addEventListener('click', ()=> inputLibrary.click());
-  inputCamera.addEventListener('change', (e)=> handleFile(e.target.files[0]));
-  inputLibrary.addEventListener('change', (e)=> handleFile(e.target.files[0]));
-
-  const chips = Array.from(document.querySelectorAll('.chip'));
-  const activeTags = new Set();
-  chips.forEach(ch=>{
-    ch.addEventListener('click', ()=>{
-      const tag = ch.dataset.tag;
-      if(activeTags.has(tag)){ activeTags.delete(tag); ch.classList.remove('active'); }
-      else { activeTags.add(tag); ch.classList.add('active'); }
-    });
-  });
-
-  let isNum = false;
-  function setNum(v){
-    isNum = v;
-    numNon.classList.toggle('active', !v);
-    numOui.classList.toggle('active', v);
-  }
-  numNon.addEventListener('click', ()=>setNum(false));
-  numOui.addEventListener('click', ()=>setNum(true));
-
-  (function populateBrands(){
-    const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
-    for(const n of brands){
-      const opt = document.createElement('option');
-      opt.value = n;
-      opt.textContent = n;
-      fMarque.appendChild(opt);
-    }
-  })();
+  };
 
   function uiBusy(on, msg){
-    btnOCR.disabled = on;
-    btnSave.disabled = on;
-    statusEl.textContent = msg || "";
+    document.getElementById('ocr-btn').disabled = on;
+    document.getElementById('save-card-btn').disabled = on;
+    document.getElementById('scanStatus').textContent = msg || "";
   }
 
-  // --- APPEL API OCR ---
-  btnOCR.addEventListener('click', async () => {
+  // APPEL À L'IA GEMINI
+  window.ocrCard = async function() {
     if (!rectoDataUrl) {
-      alert("Veuillez d'abord capturer ou uploader le recto de la carte.");
+      alert("Veuillez d'abord uploader une image de la carte (Recto).");
       return;
     }
     
-    uiBusy(true, "Analyse OCR en cours...");
+    uiBusy(true, "Analyse de la carte par l'IA...");
     
     try {
       const match = rectoDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
-      if (!match) throw new Error("Format d'image invalide.");
+      if (!match) throw new Error("Format d'image non reconnu.");
       const mimeType = match[1];
       const base64Data = match[2];
 
@@ -394,41 +178,38 @@
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur serveur lors de l'analyse.");
+      if (!res.ok) throw new Error(data.error || "Erreur lors de l'analyse.");
 
-      if (data.prenom) fPrenom.value = data.prenom;
-      if (data.nom) fNom.value = data.nom;
-      if (data.marque) fMarque.value = data.marque;
-      if (data.collection) fSetName.value = data.collection; 
+      // Remplissage ciblé sur tes inputs HTML
+      if (data.prenom) document.getElementById('f-prenom').value = data.prenom;
+      if (data.nom) document.getElementById('f-nom').value = data.nom;
+      if (data.marque) document.getElementById('f-marque').value = data.marque;
+      if (data.collection) document.getElementById('f-set').value = data.collection;
 
       uiBusy(false, "Analyse terminée avec succès !");
-      setTimeout(() => { statusEl.textContent = ""; }, 3000);
+      setTimeout(() => { document.getElementById('scanStatus').textContent = ""; }, 3000);
       
     } catch (e) {
       console.error(e);
-      uiBusy(false, "Échec de l'OCR.");
+      uiBusy(false, "Échec de l'IA.");
       alert("Erreur OCR : " + e.message);
     }
-  });
+  };
 
-  // --- SAUVEGARDE ---
-  async function saveCard(){
-    uiBusy(true, "Sauvegarde…");
+  // SAUVEGARDE EN BASE
+  window.saveCard = async function(){
+    uiBusy(true, "Sauvegarde dans le Vault...");
 
-    try{
+    try {
       const card = {
-        id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (String(Date.now())+Math.random().toString(16).slice(2)),
-        prenom: (fPrenom.value || "").trim(),
-        nom: (fNom.value || "").trim(),
-        sport: (fSport.value || "").trim(),
-        club: (fClub.value || "").trim(), // N'oublions pas de sauvegarder le club
-        isNum: !!isNum,
-        tags: Array.from(activeTags),
-        marque: (fMarque.value || "").trim(),
-        setName: (fSetName.value || "").trim(),
-        annee: (fAnnee.value || "").trim(),
-        collection: (fCollection.value || "").trim(),
-        price: parseFloat(String(fPrice.value || "0").replace(',','.')) || 0,
+        id: crypto.randomUUID(),
+        prenom: (document.getElementById('f-prenom').value || "").trim(),
+        nom: (document.getElementById('f-nom').value || "").trim(),
+        sport: (document.getElementById('f-sport').value || "").trim(),
+        marque: (document.getElementById('f-marque').value || "").trim(),
+        setName: (document.getElementById('f-set').value || "").trim(),
+        collection: (document.getElementById('f-collection').value || "").trim(),
+        price: parseFloat(document.getElementById('f-price').value || "0") || 0,
         photo: "",
         photoVerso: ""
       };
@@ -436,7 +217,7 @@
       const inserted = await sbInsert("cards", toSB(card));
       const row = Array.isArray(inserted) ? inserted[0] : inserted;
       const id = row?.id;
-      if(!id) throw new Error("Insert OK mais id manquant.");
+      if(!id) throw new Error("Erreur de création d'ID.");
 
       let rectoUrl = "";
       let versoUrl = "";
@@ -449,18 +230,14 @@
       if(Object.keys(patch).length) await sbUpdate("cards", id, patch);
 
       uiBusy(false, "");
+      // Redirection vers le profil
       location.href = `card.html?id=${encodeURIComponent(id)}`;
-    }catch(e){
+    } catch(e) {
       console.error(e);
       uiBusy(false, "");
-      alert("Erreur sauvegarde : " + e.message);
+      alert("Erreur de sauvegarde : " + e.message);
     }
-  }
-
-  btnSave.addEventListener('click', (e)=>{ e.preventDefault(); saveCard(); });
-
-  setActiveSide('recto');
-  setNum(false);
+  };
 </script>
 
 </body>
