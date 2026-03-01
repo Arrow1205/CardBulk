@@ -593,14 +593,45 @@
 </section>
 <script src="assets/app.js"></script>
 <script>
-/* PAGE: index — init */
-document.addEventListener('DOMContentLoaded', ()=>{
-  populateYears('f-annee'); populateYears('e-annee');
-  loadFromDB();
-  setupImageViewer && setupImageViewer();
-  initSportDD && initSportDD();
-  setupLiveSearch && setupLiveSearch();
-});
+    window.addEventListener('dbReady', () => {
+        const cards = window.db.cards || [];
+        
+        // 1. Mise à jour des compteurs
+        const countEl = document.getElementById('home-count');
+        if(countEl) countEl.textContent = `${cards.length} cartes`;
+        
+        const totalEl = document.getElementById('home-total');
+        if(totalEl) {
+            const sum = cards.reduce((s, c) => s + Number(c.price || 0), 0);
+            totalEl.textContent = sum.toFixed(2) + " €";
+        }
+
+        // 2. Rendu du Carousel (Favoris)
+        const favs = cards.filter(c => c.fav);
+        const carousel = document.getElementById('fav-carousel');
+        if(carousel && favs.length > 0) {
+            carousel.innerHTML = favs.map(c => `
+                <div class="fav-card" onclick="location.href='card.html?id=${c.id}'">
+                    <img src="${c.photo_url || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+                </div>
+            `).join('');
+        }
+
+        // 3. Rendu des 5 derniers ajouts
+        const recentList = document.getElementById('recent-list');
+        if(recentList) {
+            recentList.innerHTML = cards.slice(0, 5).map(c => `
+                <div class="list-item" onclick="location.href='card.html?id=${c.id}'">
+                    <div class="list-thumb"><img src="${c.photo_url || ''}"></div>
+                    <div class="list-info">
+                        <div class="list-name">${c.prenom || ''} ${c.nom || 'INCONNU'}</div>
+                        <div class="list-meta">${c.marque || '—'} • ${c.sport || ''}</div>
+                    </div>
+                    <div class="list-price">${(c.price || 0).toFixed(0)}€</div>
+                </div>
+            `).join('');
+        }
+    });
 </script>
 </body>
 </html>
