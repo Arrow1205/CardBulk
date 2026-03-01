@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="assets/app.css">
 <title>CardVault — Ajouter</title>
 <style>
-  /* Scanner page – aligned to provided mock */
+  /* Scanner page */
   .scan-page{min-height:100vh;padding:28px 18px 110px;}
   .scan-title{font-family:"Barlow Condensed",system-ui; font-weight:900; letter-spacing:0.02em; font-size:42px; line-height:1; margin:6px 0 8px;}
   .scan-sub{opacity:.65; margin:0 0 16px; font-weight:500;}
@@ -49,6 +49,18 @@
   .save-btn{margin-top:22px; width:100%; border:0; border-radius:999px; padding:16px 18px; font-weight:900; font-family:"Barlow Condensed",system-ui; letter-spacing:.06em; text-transform:uppercase; background:var(--accent); color:#06120a; cursor:pointer;}
   .tiny{font-size:12px; opacity:.6; margin-top:10px; text-align:center;}
   .hidden{display:none!important;}
+  
+  /* Ajouts pour le menu déroulant des clubs */
+  .clubWrap { position: relative; }
+  .clubDropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #1a1a1e; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 10; margin-top: 4px; }
+  .clubDropdown.open { display: block; }
+  .clubItem { display: flex; align-items: center; gap: 10px; padding: 10px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .clubItem:hover { background: rgba(255,255,255,.05); }
+  .clubItem:last-child { border-bottom: none; }
+  .clubLogo { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .clubLogo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .clubName { font-weight: 600; font-size: 14px; color: #fff; }
+  .clubMeta { font-size: 11px; color: rgba(255,255,255,.5); }
 </style>
 </head>
 <body>
@@ -168,15 +180,13 @@
 
 <script src="assets/app.js"></script>
 <script>
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
+  function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
 
   const tabRecto = document.getElementById('tab-recto');
   const tabVerso = document.getElementById('tab-verso');
-
   const previewRecto = document.getElementById('previewRecto');
   const previewVerso = document.getElementById('previewVerso');
   const captureEmpty = document.getElementById('captureEmpty');
-
   const btnCamera = document.getElementById('btnCamera');
   const btnLibrary = document.getElementById('btnLibrary');
   const btnOCR = document.getElementById('btnOCR');
@@ -188,9 +198,19 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
   const fMarque = document.getElementById('fMarque');
   const fSetName = document.getElementById('fSetName');
   const fSport = document.getElementById('fSport');
+  const fClub = document.getElementById('fClub');
   
-  // Correction: Écouteur pour afficher/cacher le menu de clubs
+  // --- GESTION DES CLUBS ---
   fSport.addEventListener('change', updateClubVisibility);
+  fClub.addEventListener('input', (e) => clubSearch(e.target.value));
+
+  // Fermer le menu déroulant si on clique à côté
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.clubWrap')) {
+      const dd = document.getElementById("clubDropdown");
+      if(dd) dd.classList.remove('open');
+    }
+  });
 
   let CLUBS_DATA = null;
 
@@ -213,7 +233,7 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
     const g = document.getElementById("clubGroup");
     if(g) g.classList.toggle("hidden", !show);
     if(!show){
-      document.getElementById("fClub").value = "";
+      fClub.value = "";
       const dd = document.getElementById("clubDropdown");
       if(dd) { dd.classList.remove("open"); dd.innerHTML=""; }
     }
@@ -250,12 +270,13 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
 
     dd.querySelectorAll(".clubItem").forEach(el=>{
       el.addEventListener("click", ()=>{
-        document.getElementById("fClub").value = el.getAttribute("data-name") || "";
+        fClub.value = el.getAttribute("data-name") || "";
         dd.classList.remove("open"); dd.innerHTML="";
       });
     });
   }
 
+  // --- RESTE DU FORMULAIRE ---
   const fAnnee = document.getElementById('fAnnee');
   const fCollection = document.getElementById('fCollection');
   const fPrice = document.getElementById('fPrice');
@@ -267,7 +288,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
   let rectoDataUrl = "";
   let versoDataUrl = "";
 
-  // hidden file inputs
   const inputCamera = document.createElement('input');
   inputCamera.type = 'file';
   inputCamera.accept = 'image/*';
@@ -293,7 +313,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
   tabVerso.addEventListener('click', ()=>setActiveSide('verso'));
 
   function setPreview(dataUrl){
-    // Correction: la variable non déclarée 'imgDataUrl' a été supprimée.
     if(activeSide==='recto'){
       rectoDataUrl = dataUrl;
       previewRecto.src = dataUrl;
@@ -318,7 +337,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
   inputCamera.addEventListener('change', (e)=> handleFile(e.target.files[0]));
   inputLibrary.addEventListener('change', (e)=> handleFile(e.target.files[0]));
 
-  // tags
   const chips = Array.from(document.querySelectorAll('.chip'));
   const activeTags = new Set();
   chips.forEach(ch=>{
@@ -329,7 +347,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
     });
   });
 
-  // num
   let isNum = false;
   function setNum(v){
     isNum = v;
@@ -339,7 +356,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
   numNon.addEventListener('click', ()=>setNum(false));
   numOui.addEventListener('click', ()=>setNum(true));
 
-  // Brands
   (function populateBrands(){
     const brands = ["Topps","Panini","Leaf","Futera","Daka","Upper Deck"];
     for(const n of brands){
@@ -356,7 +372,7 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
     statusEl.textContent = msg || "";
   }
 
-  // CORRECTION MAJEURE: Implémentation du fetch vers l'API OCR
+  // --- APPEL API OCR ---
   btnOCR.addEventListener('click', async () => {
     if (!rectoDataUrl) {
       alert("Veuillez d'abord capturer ou uploader le recto de la carte.");
@@ -366,7 +382,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
     uiBusy(true, "Analyse OCR en cours...");
     
     try {
-      // Extraction du type MIME et du Base64 brut
       const match = rectoDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
       if (!match) throw new Error("Format d'image invalide.");
       const mimeType = match[1];
@@ -381,14 +396,13 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur serveur lors de l'analyse.");
 
-      // Remplissage des champs selon les clés du JSON
       if (data.prenom) fPrenom.value = data.prenom;
       if (data.nom) fNom.value = data.nom;
       if (data.marque) fMarque.value = data.marque;
-      if (data.collection) fSetName.value = data.collection; // Mappé sur "COLLECTION" selon ton UI
+      if (data.collection) fSetName.value = data.collection; 
 
       uiBusy(false, "Analyse terminée avec succès !");
-      setTimeout(() => { statusEl.textContent = ""; }, 3000); // Efface le message après 3 sec
+      setTimeout(() => { statusEl.textContent = ""; }, 3000);
       
     } catch (e) {
       console.error(e);
@@ -397,6 +411,7 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
     }
   });
 
+  // --- SAUVEGARDE ---
   async function saveCard(){
     uiBusy(true, "Sauvegarde…");
 
@@ -406,6 +421,7 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
         prenom: (fPrenom.value || "").trim(),
         nom: (fNom.value || "").trim(),
         sport: (fSport.value || "").trim(),
+        club: (fClub.value || "").trim(), // N'oublions pas de sauvegarder le club
         isNum: !!isNum,
         tags: Array.from(activeTags),
         marque: (fMarque.value || "").trim(),
@@ -443,20 +459,6 @@ function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;'
 
   btnSave.addEventListener('click', (e)=>{ e.preventDefault(); saveCard(); });
 
-  const fClub = document.getElementById('fClub');
-  
-  // Cette ligne est cruciale : elle lance la recherche à chaque lettre tapée
-  fClub.addEventListener('input', (e) => clubSearch(e.target.value));
-  
-  // (Optionnel) Pour fermer le menu déroulant si on clique ailleurs
-  document.addEventListener('click', (e) => {
-    if(!e.target.closest('.clubWrap')) {
-      const dd = document.getElementById("clubDropdown");
-      if(dd) dd.classList.remove('open');
-    }
-  });
-
-  // init
   setActiveSide('recto');
   setNum(false);
 </script>
