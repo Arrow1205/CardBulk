@@ -1,4 +1,4 @@
-/* CardVault — app.js (stable avec connecteurs DB et Moteur de Rendu) */
+/* CardVault — app.js (stable avec Moteur de Rendu & Favoris) */
 
 // ==========================================
 // 1. CONFIGURATION SUPABASE
@@ -102,7 +102,8 @@ window.toSB = function toSB(card){
     set_name: card.setName || "",
     price: Number.isFinite(card.price) ? card.price : 0,
     photo_url: card.photo || "",
-    photo_verso_url: card.photoVerso || ""
+    photo_verso_url: card.photoVerso || "",
+    fav: !!card.fav
   };
 };
 
@@ -116,7 +117,6 @@ window.loadFromDB = async function() {
     const cards = await sbGet("cards");
     window.db.cards = cards; // Sauvegarde en mémoire
     
-    // DÉCLENCHEMENT DU RENDU VISUEL SELON LA PAGE
     if (document.getElementById('page-home')) renderHome();
     if (document.getElementById('page-collection')) renderCollection();
     
@@ -156,13 +156,11 @@ window.renderHome = function() {
   const totalEl = document.getElementById('home-total');
   const recentList = document.getElementById('recent-list');
 
-  // Mise à jour des compteurs et de la valeur
   if (countEl) countEl.textContent = cards.length + (cards.length > 1 ? " cartes" : " carte");
   
   const total = cards.reduce((sum, c) => sum + Number(c.price || 0), 0);
   if (totalEl) totalEl.textContent = total.toFixed(2) + " €";
 
-  // Génération de la liste des 10 dernières cartes
   if (recentList) {
     recentList.innerHTML = cards.slice(0, 10).map(c => `
       <div class="list-item" onclick="location.href='card.html?id=${encodeURIComponent(c.id)}'">
@@ -194,7 +192,6 @@ window.renderCollection = function() {
   const total = cards.reduce((sum, c) => sum + Number(c.price || 0), 0);
   if (totalVal) totalVal.textContent = total.toFixed(2) + " €";
 
-  // Génération de la grille d'images (3 colonnes via CSS)
   if (grid) {
     grid.innerHTML = cards.map(c => `
       <div class="coll-thumb" onclick="location.href='card.html?id=${encodeURIComponent(c.id)}'">
@@ -204,8 +201,10 @@ window.renderCollection = function() {
   }
 };
 
-// --- Rendu Détail (card.html) ---
+// --- Rendu Détail d'une carte (card.html) ---
 window._displayCard = function(c) {
+  window.curCardId = c.id; // Sauvegarde l'ID pour le bouton favoris
+  
   const elPrenom = document.getElementById('detail-prenom');
   const elNom = document.getElementById('detail-nom');
   const elMarque = document.getElementById('d-marque-text');
@@ -214,6 +213,7 @@ window._displayCard = function(c) {
   const imgFront = document.getElementById('card-face-front');
   const elAnnee = document.getElementById('d-annee');
   const elColl = document.getElementById('d-coll');
+  const favBtn = document.getElementById('detail-fav-btn'); // Bouton étoile
   
   if (elPrenom) elPrenom.textContent = c.prenom || "";
   if (elNom) elNom.textContent = c.nom || "INCONNU";
@@ -223,13 +223,52 @@ window._displayCard = function(c) {
   if (elColl) elColl.textContent = c.collection || "—";
   if (elPrice) elPrice.textContent = c.price ? c.price + " €" : "—";
 
+  // Image de la carte
   if (imgFront && c.photo_url) {
     imgFront.innerHTML = `<img src="${c.photo_url}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">`;
+  } else if (imgFront) {
+    imgFront.innerHTML = `<div class="card-3d-content card-3d-placeholder"><span style="font-size:40px;opacity:.25;">🃏</span></div>`;
+  }
+
+  // Affichage dynamique de l'étoile Favoris
+  if (favBtn) {
+    favBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" class="fav-star"></path></svg>`;
+    if (c.fav) favBtn.classList.add('active');
+    else favBtn.classList.remove('active');
   }
 };
 
 // ==========================================
-// 7. BOUCHONS (ÉVITE LES PLANTAGES)
+// 7. FONCTION FAVORIS DYNAMIQUE
+// ==========================================
+window.toggleFav = async function() {
+  if (!window.curCardId) return;
+  const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
+  if (!c) return;
+
+  // 1. Mise à jour visuelle instantanée
+  c.fav = !c.fav; 
+  const favBtn = document.getElementById('detail-fav-btn');
+  if (favBtn) {
+    if (c.fav) favBtn.classList.add('active');
+    else favBtn.classList.remove('active');
+  }
+
+  // 2. Sauvegarde en arrière-plan dans Supabase
+  try {
+    await sbUpdate("cards", c.id, { fav: c.fav });
+    console.log("Sauvegarde du favori réussie !");
+  } catch (e) {
+    console.error("Erreur lors de la sauvegarde du favori", e);
+    // Annuler le changement visuel si ça plante
+    c.fav = !c.fav; 
+    if (c.fav) favBtn.classList.add('active');
+    else favBtn.classList.remove('active');
+  }
+};
+
+// ==========================================
+// 8. BOUCHONS (ÉVITE LES PLANTAGES)
 // ==========================================
 window._loadClubLogos = function() { return {}; };
 window.getClubLogoB64 = function(club) { return ""; };
@@ -249,7 +288,7 @@ window.showToast = function(msg) { console.log("Toast:", msg); };
 const stubs = [
   "setupImageViewer", "initSportDD", "setupLiveSearch", "switchCollectionTab", "collSearch", 
   "toggleSportDD", "setSportFilter", "setBrandFilter", "setTypeFilter", 
-  "toggleFav", "flipCard", "openPlayer", "openClub", "openSport", "editCurrentCard", 
+  "flipCard", "openPlayer", "openClub", "openSport", "editCurrentCard", 
   "openPlayerStats", "cancelBulk", "executeBulk", "closeSheet", 
   "deleteCurrentCard", "switchEditSide", "handleEditPhoto", "openCrop", "onEditSportChange", 
   "clubSearch", "eTogTag", "onMarqueChange", "onEditCollChange", "saveEdit", "selEmoji", 
