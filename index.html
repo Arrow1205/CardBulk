@@ -1,60 +1,52 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="assets/app.css">
-<title>CardVault — Accueil</title>
+    <link rel="stylesheet" href="assets/app.css">
+    <title>CardVault — Accueil</title>
 </head>
 <body>
-<div class="page active" id="page-home">
-  <div class="page-inner">
-    <div class="home-hero">
-      <div style="text-align:right;">
-        <div class="home-count" id="home-count">0 cartes</div>
-        <div class="home-total" id="home-total">0.00 €</div>
-      </div>
+    <div class="page active" id="page-home">
+        <div class="home-hero">
+            <div class="home-count" id="home-count">0 cartes</div>
+            <div class="home-total" id="home-total">0.00 €</div>
+        </div>
+        <div class="fav-carousel" id="fav-carousel"></div>
+        <div class="sec-title">Derniers ajouts</div>
+        <div class="cards-list" id="recent-list"></div>
     </div>
-    <div class="fav-carousel-container">
-      <div class="fav-carousel" id="fav-carousel"></div>
-    </div>
-    <div class="sec-row"><div class="sec-title">Derniers ajouts</div></div>
-    <div class="cards-list" id="recent-list"></div>
-  </div>
-</div>
 
-<script src="assets/app.js"></script>
-<script>
-    window.addEventListener('dbReady', () => {
-        const cards = window.db.cards || [];
-        document.getElementById('home-count').textContent = `${cards.length} cartes`;
-        const sum = cards.reduce((s, c) => s + Number(c.price || 0), 0);
-        document.getElementById('home-total').textContent = sum.toFixed(2) + " €";
+    <script src="assets/app.js"></script>
 
-        const favs = cards.filter(c => c.fav);
-        const carousel = document.getElementById('fav-carousel');
-        if(carousel && favs.length > 0) {
-            carousel.innerHTML = favs.map(c => `
-                <div class="fav-card" onclick="location.href='card.html?id=${c.id}'">
-                    <img src="${c.photo_url || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
-                </div>
-            `).join('');
-        }
-
-        const recentList = document.getElementById('recent-list');
-        if(recentList) {
-            recentList.innerHTML = cards.slice(0, 5).map(c => `
-                <div class="list-item" onclick="location.href='card.html?id=${c.id}'">
-                    <div class="list-thumb"><img src="${c.photo_url || ''}"></div>
-                    <div class="list-info">
-                        <div class="list-name">${c.prenom || ''} ${c.nom || ''}</div>
-                        <div class="list-meta">${c.marque || ''} • ${c.sport || ''}</div>
+    <script>
+        window.addEventListener('dbReady', () => {
+            const cards = window.db.cards || [];
+            document.getElementById('home-count').textContent = `${cards.length} cartes`;
+            
+            // Remplissage du carousel
+            const favs = cards.filter(c => c.fav);
+            const carousel = document.getElementById('fav-carousel');
+            if(carousel && favs.length > 0) {
+                carousel.innerHTML = favs.map(c => `
+                    <div class="fav-card" onclick="location.href='card.html?id=${c.id}'">
+                        <img src="${c.photo_url || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
                     </div>
-                    <div class="list-price">${(Number(c.price) || 0).toFixed(0)}€</div>
-                </div>
-            `).join('');
-        }
-    });
-</script>
+                `).join('');
+            }
+
+            // Remplissage des 5 derniers ajouts
+            const recentList = document.getElementById('recent-list');
+            if(recentList) {
+                recentList.innerHTML = cards.slice(0, 5).map(c => `
+                    <div class="list-item" onclick="location.href='card.html?id=${c.id}'">
+                        <div class="list-thumb"><img src="${c.photo_url || ''}"></div>
+                        <div class="list-info">
+                            <div class="list-name">${c.prenom || ''} ${c.nom || ''}</div>
+                            <div class="list-meta">${c.marque || ''}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+    </script>
 </body>
 </html>
