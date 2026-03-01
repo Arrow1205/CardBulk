@@ -12,7 +12,7 @@ window.db = { cards: [], folders: [] };
 window.activeBrand = 'all';
 window.activeType = 'all';
 
-// Initialisation impérative des contextes (Fix ReferenceError Captures 13.53.11 / 13.53.25)
+// Initialisation des contextes pour éviter les ReferenceError (Captures 13.53.11 / 13.53.25)
 window._ctxPlayer = { key: '', brand: 'all', spec: 'all' };
 window._ctxClub   = { club: '', brand: 'all', spec: 'all' };
 window._ctxSport  = { sport: '', brand: 'all', spec: 'all' };
@@ -54,7 +54,7 @@ window.loadFromDB = async function() {
     window.db.cards = await sbGet("cards");
     try { window.db.folders = await sbGet("folders"); } catch(e) { window.db.folders = []; }
     
-    // Rendu automatique selon la page détectée (Fix TypeError Capture 14.03.21)
+    // Rendu automatique selon la page détectée (Fix TypeError Capture 14.03.21 / 14.11.44)
     if (document.getElementById('page-home')) window.renderHome();
     if (document.getElementById('page-collection')) { 
         window.renderCollection(); 
@@ -203,7 +203,7 @@ window.renderValueTab = function() {
 };
 
 // ==========================================
-// 6. MODIFICATION & SUPPRESSION RÉELLE
+// 6. MODIFICATION & SUPPRESSION RÉELLE (Fix Capture 13.45.46)
 // ==========================================
 window.editCurrentCard = function() {
   const c = window.db.cards.find(x => String(x.id) === String(window.curCardId));
@@ -217,12 +217,12 @@ window.editCurrentCard = function() {
 };
 
 window.saveEdit = async function() {
-    const patch = {
-        prenom: document.getElementById('e-prenom').value,
-        nom: document.getElementById('e-nom').value,
-        marque: document.getElementById('e-marque').value,
-        price: Number(document.getElementById('e-price').value)
-    };
+    const prenom = document.getElementById('e-prenom').value;
+    const nom = document.getElementById('e-nom').value;
+    const marque = document.getElementById('e-marque').value;
+    const price = Number(document.getElementById('e-price').value);
+
+    const patch = { prenom, nom, marque, price };
     try {
         await sbUpdate("cards", window.curCardId, patch);
         const idx = window.db.cards.findIndex(c => c.id === window.curCardId);
@@ -232,7 +232,31 @@ window.saveEdit = async function() {
 };
 
 // ==========================================
-// 7. COMPATIBILITÉ (Fix ReferenceErrors)
+// 7. RENDU SOUS-PAGES (Fix Cards invisibles)
+// ==========================================
+window.renderPlayerPage = function() {
+    const grid = document.getElementById('player-cards-grid');
+    if(!grid) return;
+    const filtered = window.db.cards.filter(c => ((c.prenom||'')+' '+(c.nom||'')).trim() === window._ctxPlayer.key);
+    grid.innerHTML = filtered.map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
+};
+
+window.renderClubPage = function() {
+    const grid = document.getElementById('club-cards-grid');
+    if(!grid) return;
+    const filtered = window.db.cards.filter(c => c.club === window._ctxClub.club);
+    grid.innerHTML = filtered.map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
+};
+
+window.renderSportPage = function() {
+    const grid = document.getElementById('sport-cards-grid');
+    if(!grid) return;
+    const filtered = window.db.cards.filter(c => c.sport === window._ctxSport.sport);
+    grid.innerHTML = filtered.map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
+};
+
+// ==========================================
+// 8. COMPATIBILITÉ & UTILS (Fix ReferenceErrors)
 // ==========================================
 window.sportL = (s) => String(s).toUpperCase();
 window._loadClubLogos = () => ({});
@@ -242,7 +266,7 @@ window._setPlayerHeroSrc = () => {};
 window.renderFolders = function() {
     const grid = document.getElementById('folders-grid');
     if(!grid) return;
-    grid.innerHTML = (window.db.folders || []).map(f => `<div class="folder-card" style="min-width:140px;"><div class="folder-emoji">${f.emoji || '📁'}</div><div class="folder-name">${f.name}</div></div>`).join('');
+    grid.innerHTML = (window.db.folders || []).map(f => `<div class="folder-card" style="min-width:140px; flex-shrink:0;"><div class="folder-emoji">${f.emoji || '📁'}</div><div class="folder-name">${f.name}</div></div>`).join('');
 };
 
 window.initFilters = function() {
@@ -282,6 +306,7 @@ window.switchCollectionTab = (t) => {
     document.getElementById('coll-panel-cards').style.display = t==='cards' ? 'block' : 'none';
     document.getElementById('coll-panel-value').style.display = t==='value' ? 'block' : 'none';
 };
-// Stubs
+
+// Stubs restant pour compatibilité design
 window.toggleSportDD = () => {}; window.setupImageViewer = () => {}; window.initSportDD = () => {}; window.setupLiveSearch = () => {}; window.homeSearch = () => {}; window.collSearch = () => {}; window.toggleFav = async () => {};
 window.deleteCurrentCard = async () => { if(confirm("Supprimer ?")) { await sbDelete("cards", window.curCardId); location.href='collection.html'; } };
