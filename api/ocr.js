@@ -24,9 +24,10 @@ Aucun texte avant/après.
 `;
 
   try {
-    const models = ["gemini-1.5-flash-002","gemini-1.5-flash-001","gemini-1.5-flash"]; 
+    const models = ["gemini-1.5-flash-002","gemini-1.5-flash-001"];
     let data = null;
     let lastErr = null;
+
     for (const model of models){
       const r = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
@@ -38,12 +39,16 @@ Aucun texte avant/après.
           }),
         }
       );
-      data = await r.json();
+
+      const txt = await r.text();
+      try { data = txt ? JSON.parse(txt) : {}; }
+      catch { data = { error: { message: txt || `HTTP ${r.status}` } }; }
+
       if (!data?.error){ lastErr = null; break; }
-      lastErr = data.error.message || "Gemini error";
+      lastErr = data.error.message || `Gemini error (${model})`;
     }
+
     if (lastErr) return res.status(502).json({ error: lastErr });
-    if (data.error) return res.status(500).json({ error: data.error.message });
 
     let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
     raw = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
