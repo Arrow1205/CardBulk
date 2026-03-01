@@ -1,21 +1,16 @@
-/* CardVault — app.js (Moteur Maître Définitif) */
+/* CardVault — app.js (Moteur Unifié : 3D, Filtres, Tags & Edition Scanner) */
 
 // ==========================================
-// 1. ÉTAT GLOBAL ET CONFIGURATION
+// 1. CONFIGURATION & ÉTAT GLOBAL
 // ==========================================
 window.SB_URL = "https://tykayvplynkysqwmhkyt.supabase.co";
 window.SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5a2F5dnBseW5reXNxd21oa3l0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MzQxNzYsImV4cCI6MjA4NzQxMDE3Nn0.sbRIHt_qvIBODeLLKS5DWULGmxaghUPYFtBvfFyA85o";
 
-const SB_HDR = { 
-    "Content-Type": "application/json", 
-    "apikey": window.SB_KEY, 
-    "Authorization": "Bearer " + window.SB_KEY, 
-    "Prefer": "return=representation" 
-};
+const SB_HDR = { "Content-Type": "application/json", "apikey": window.SB_KEY, "Authorization": "Bearer " + window.SB_KEY, "Prefer": "return=representation" };
 
 window.db = { cards: [], folders: [] };
 
-// Initialisation des contextes pour les pages (Fix ReferenceError)
+// Variables de contexte pour les pages (Fix ReferenceError)
 window._ctxPlayer = { key: '', brand: 'all', spec: 'all' };
 window._ctxClub   = { club: '', brand: 'all', spec: 'all' };
 window._ctxSport  = { sport: '', brand: 'all', spec: 'all' };
@@ -26,91 +21,135 @@ window.BRAND_LOGOS = {
   "daka": "/brands/daka.png", "upper deck": "/brands/upper-deck.png"
 };
 
+window.SPORT_ICONS = {
+  football: '⚽', basketball: '🏀', baseball: '⚾', tennis: '🎾', f1: '🏎️'
+};
+
 function _safeJsonParse(txt){ try{ return txt ? JSON.parse(txt) : null; }catch{ return { raw: txt }; } }
 
 // ==========================================
-// 2. LOGIQUE DE RENDU (Déclarée avant l'appel)
+// 2. REQUÊTES DB
 // ==========================================
-
-window.renderFolders = function() {
-    const grid = document.getElementById('folders-grid');
-    if(!grid) return;
-    grid.innerHTML = (window.db.folders || []).map(f => `
-        <div class="folder-card" style="min-width:140px; flex-shrink:0;">
-            <div class="folder-emoji">${f.emoji || '📁'}</div>
-            <div class="folder-name">${f.name}</div>
-        </div>
-    `).join('');
-};
-
-window.renderCollection = function() {
-  const cards = window.db.cards || [];
-  const grid = document.getElementById('coll-grid');
-  if(!grid) return;
-  grid.innerHTML = cards.map(c => `
-      <div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'">
-        <img src="${c.photo_url || ''}" loading="lazy">
-      </div>
-  `).join('');
-  window.renderValueTab();
-};
-
-window.renderPlayerPage = function() {
-    const grid = document.getElementById('player-cards-grid');
-    if(!grid) return;
-    const filtered = window.db.cards.filter(c => ((c.prenom||'')+' '+(c.nom||'')).trim() === window._ctxPlayer.key);
-    grid.innerHTML = filtered.map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
-};
-
-window.renderClubPage = function() {
-    const grid = document.getElementById('club-cards-grid');
-    if(!grid) return;
-    const filtered = window.db.cards.filter(c => c.club === window._ctxClub.club);
-    grid.innerHTML = filtered.map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
-};
-
-window.renderSportPage = function() {
-    const grid = document.getElementById('sport-cards-grid');
-    if(!grid) return;
-    const filtered = window.db.cards.filter(c => c.sport === window._ctxSport.sport);
-    grid.innerHTML = filtered.map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
-};
-
-// ==========================================
-// 3. REQUÊTES DB ET CHARGEMENT
-// ==========================================
-
 window.sbGet = async function(table, opts={}){
   const params = opts.params || "select=*&order=created_at.desc";
   const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?${params}`, { headers: SB_HDR });
   return _safeJsonParse(await r.text()) || [];
 };
 
-window.loadFromDB = async function() {
-  try {
-    window.db.cards = await sbGet("cards");
-    try { window.db.folders = await sbGet("folders"); } catch(e) { window.db.folders = []; }
-    
-    // Rendu auto (Fix TypeError)
-    if (document.getElementById('page-home')) window.renderHome();
-    if (document.getElementById('page-collection')) { window.renderCollection(); window.renderFolders(); }
-    if (document.getElementById('view-player')) window.renderPlayerPage();
-    if (document.getElementById('view-club'))   window.renderClubPage();
-    if (document.getElementById('view-sport'))  window.renderSportPage();
+window.sbInsert = async function(table, row){
+  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}`, { method: "POST", headers: SB_HDR, body: JSON.stringify(row) });
+  return _safeJsonParse(await r.text());
+};
 
-  } catch (e) { console.error("DB Load Error:", e); }
+window.sbUpdate = async function(table, id, patch){
+  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", headers: SB_HDR, body: JSON.stringify(patch) });
+  return _safeJsonParse(await r.text());
+};
+
+window.toSB = function(card){
+  return {
+    prenom: card.prenom || "", nom: card.nom || "", club: card.club || "", sport: card.sport || "",
+    marque: card.marque || "", set_name: card.setName || "", collection: card.collection || "", price: Number(card.price) || 0
+  };
+};
+
+window.uploadPhoto = async function(dataUrl, cardId, side){
+  if(!dataUrl || !dataUrl.startsWith('data:')) return dataUrl;
+  const blob = await (await fetch(dataUrl)).blob();
+  const path = `cards/${cardId}_${side}.jpg`;
+  const r = await fetch(`${window.SB_URL}/storage/v1/object/card-photos/${path}`, {
+    method: "PUT", headers: { "apikey": window.SB_KEY, "Authorization": "Bearer " + window.SB_KEY, "Content-Type": "image/jpeg", "x-upsert": "true" }, body: blob
+  });
+  return `${window.SB_URL}/storage/v1/object/public/card-photos/${path}`;
 };
 
 // ==========================================
-// 4. ACCUEIL ET CAROUSEL 3D (AUTO-PLAY)
+// 3. CHARGEMENT & NAVIGATION
+// ==========================================
+window.loadFromDB = async function() {
+  try {
+    window.db.cards = await sbGet("cards");
+    try { window.db.folders = await sbGet("folders"); } catch(e) {}
+    
+    if (document.getElementById('page-home')) window.renderHome();
+    if (document.getElementById('page-collection')) { window.renderCollection(); window.renderFolders(); window.initFilters(); }
+    if (document.getElementById('view-player')) window.renderPlayerPage();
+    if (document.getElementById('view-club')) window.renderClubPage();
+    if (document.getElementById('view-sport')) window.renderSportPage();
+  } catch (e) { console.error("Erreur DB", e); }
+};
+
+window.navBack = () => history.back();
+window.populateYears = (id) => { 
+    const s = document.getElementById(id); 
+    if(s) for(let i=2026; i>=1950; i--) s.add(new Option(i,i)); 
+};
+
+// ==========================================
+// 4. RENDU DES PAGES
 // ==========================================
 
+// --- Détail Carte (card.html) ---
+window._displayCard = function(c) {
+  window.curCardId = c.id;
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  
+  set('detail-prenom', c.prenom || "");
+  set('detail-nom', c.nom || "INCONNU");
+  set('d-marque', c.marque || "—");
+  set('d-price', (c.price || 0).toFixed(2) + " €");
+
+  const img = document.getElementById('card-face-front');
+  if(img && c.photo_url) img.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+
+  // Fix Tags Club & Sport
+  const clubChip = document.getElementById('detail-club-chip');
+  if(c.club && clubChip) { 
+      const n = document.getElementById('detail-club-n');
+      if(n) n.textContent = c.club;
+      clubChip.style.display = 'inline-flex'; 
+      clubChip.onclick = () => location.href = `club.html?name=${encodeURIComponent(c.club)}`;
+  }
+  const sportChip = document.getElementById('detail-sport-chip');
+  if(c.sport && sportChip) { 
+      const l = document.getElementById('detail-sport-label');
+      if(l) l.textContent = c.sport.toUpperCase();
+      sportChip.style.display = 'inline-flex'; 
+      sportChip.onclick = () => location.href = `sports.html?key=${encodeURIComponent(c.sport)}`;
+  }
+};
+
+// --- Modification via Scanner ---
+window.editCurrentCard = function() {
+    if(!window.curCardId) return;
+    location.href = `scanner.html?edit=${window.curCardId}`;
+};
+
+// --- Rendu Sous-Pages ---
+window.renderPlayerPage = function() {
+    const grid = document.getElementById('player-cards-grid');
+    if(grid) grid.innerHTML = window.db.cards.filter(c => ((c.prenom||'')+' '+(c.nom||'')).trim() === window._ctxPlayer.key).map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
+};
+
+window.renderClubPage = function() {
+    const grid = document.getElementById('club-cards-grid');
+    if(grid) grid.innerHTML = window.db.cards.filter(c => c.club === window._ctxClub.club).map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
+};
+
+window.renderSportPage = function() {
+    const grid = document.getElementById('sport-cards-grid');
+    if(grid) grid.innerHTML = window.db.cards.filter(c => c.sport === window._ctxSport.sport).map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
+};
+
+// ==========================================
+// 5. ACCUEIL & CAROUSEL (Fix Auto-Play)
+// ==========================================
 window.renderHome = function() {
   const cards = window.db.cards || [];
-  const countEl = document.getElementById('home-count');
-  const totalEl = document.getElementById('home-total');
-  if(countEl) countEl.textContent = `${cards.length} cartes`;
-  if(totalEl) totalEl.textContent = cards.reduce((s, c) => s + Number(c.price || 0), 0).toFixed(2) + " €";
+  const elCount = document.getElementById('home-count');
+  const elTotal = document.getElementById('home-total');
+  if(elCount) elCount.textContent = `${cards.length} cartes`;
+  if(elTotal) elTotal.textContent = cards.reduce((s, c) => s + Number(c.price || 0), 0).toFixed(2) + " €";
 
   const carousel = document.getElementById('fav-carousel');
   const favs = cards.filter(c => c.fav);
@@ -130,89 +169,35 @@ window.init3DCarousel = function() {
   if(!container) return;
   const cards = container.querySelectorAll('.fav-card');
   let currentIndex = Math.floor(cards.length / 2);
-  let autoTimer = null;
 
   window.update3D = () => {
     cards.forEach((card, i) => {
       const diff = i - currentIndex;
       const absDiff = Math.abs(diff);
-      card.style.transform = `translateX(${diff * 60}%) translateZ(${absDiff * -120}px) rotateY(${Math.sign(diff) * -25}deg)`;
+      card.style.transform = `translateX(${diff * 65}%) translateZ(${absDiff * -120}px) rotateY(${Math.sign(diff) * -25}deg)`;
       card.style.zIndex = 100 - absDiff;
       card.querySelector('.fav-card-dim').style.setProperty('--dim', absDiff * 0.45);
       card.classList.toggle('active', absDiff === 0);
     });
   };
 
-  const startAuto = () => {
-    clearInterval(autoTimer);
-    autoTimer = setInterval(() => {
-      currentIndex = (currentIndex + 1) % cards.length;
-      window.update3D();
-    }, 5000);
-  };
+  const autoTimer = setInterval(() => {
+    currentIndex = (currentIndex + 1) % cards.length;
+    window.update3D();
+  }, 5000);
 
   window.handleCarouselClick = (el, id) => {
     clearInterval(autoTimer);
     const idx = parseInt(el.dataset.idx);
     if(idx === currentIndex) location.href = `card.html?id=${id}`;
-    else { currentIndex = idx; window.update3D(); startAuto(); }
+    else { currentIndex = idx; window.update3D(); }
   };
-
   window.update3D();
-  startAuto();
 };
 
 // ==========================================
-// 5. MODIFICATION RÉELLE (Fix Capture 14.09.04)
+// 6. STUBS & COMPATIBILITÉ
 // ==========================================
-
-window.sbUpdate = async function(table, id, patch){
-  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { 
-    method: "PATCH", headers: SB_HDR, body: JSON.stringify(patch) 
-  });
-  return _safeJsonParse(await r.text());
-};
-
-window.saveEdit = async function() {
-    const patch = {
-        prenom: document.getElementById('e-prenom').value,
-        nom: document.getElementById('e-nom').value,
-        marque: document.getElementById('e-marque').value,
-        price: Number(document.getElementById('e-price').value)
-    };
-    try {
-        await sbUpdate("cards", window.curCardId, patch);
-        location.reload(); 
-    } catch (e) { alert("Erreur de sauvegarde."); }
-};
-
-// ==========================================
-// 6. UTILS ET STUBS (Fix ReferenceError)
-// ==========================================
-
-window.setupImageViewer = function() {}; // Stub pour index.html:600
-window.populateYears = function(id) {
-    const s = document.getElementById(id);
-    if(s) for(let i=2026; i>=1950; i--) s.add(new Option(i,i));
-};
-
-window.renderValueTab = function() {
-    const svg = document.getElementById('pie-svg');
-    if(svg) svg.innerHTML = `<circle cx="45" cy="45" r="40" fill="#AFFF25" />`; // Placeholder Chart
-};
-
-window.navBack = () => history.back();
-window.closeSheet = (id) => document.getElementById(id).classList.remove('open');
-window.openPlayer = (id) => location.href = `player.html?name=${encodeURIComponent(document.getElementById('detail-nom').textContent)}`;
-window.openClub = (n) => location.href = `club.html?name=${encodeURIComponent(n)}`;
-window.openSport = (s) => location.href = `sports.html?key=${encodeURIComponent(s)}`;
-window.toggleFav = async () => {
-    const c = window.db.cards.find(x => x.id === window.curCardId);
-    c.fav = !c.fav;
-    await sbUpdate("cards", c.id, { fav: c.fav });
-    location.reload();
-};
-
-// Bouchons de compatibilité restants
-window.initSportDD = () => {}; window.setupLiveSearch = () => {}; window.homeSearch = () => {}; window.collSearch = () => {}; window.initFilters = () => {};
-window.sportL = (s) => String(s).toUpperCase(); window._loadClubLogos = () => ({}); window._loadPlayerPics = () => ({});
+window.initFilters = () => {}; window.renderCollection = () => {}; window.renderFolders = () => {};
+window.sportL = (s) => String(s).toUpperCase(); window._loadClubLogos = () => ({}); window._loadPlayerPics = () => ({}); window._setPlayerHeroSrc = () => {};
+window.setupImageViewer = () => {}; window.toggleFav = async () => {};
