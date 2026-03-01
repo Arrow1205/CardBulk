@@ -12,13 +12,16 @@
 <meta name="apple-mobile-web-app-title" content="CardVault">
 <meta name="theme-color" content="#0c0c0e">
 <link rel="stylesheet" href="assets/app.css">
-<title>CardVault — Ajouter</title>
+<title>CardVault — Scanner</title>
 </head>
 <body>
 
 <div class="page active" id="page-scanner">
   <div class="page-inner">
-    <div class="scanner-hdr"><div class="scanner-title">Ajouter</div><div class="scanner-sub">Scanne ou uploade ta carte</div></div>
+    <div class="scanner-hdr">
+      <div class="scanner-title" id="scanner-main-title">Ajouter</div>
+      <div class="scanner-sub" id="scanner-sub-title">Scanne ou uploade ta carte</div>
+    </div>
     <div style="padding:0 20px;">
       
       <div class="side-tabs">
@@ -122,6 +125,38 @@
   let versoDataUrl = "";
   let activeSide = "recto";
 
+  // --- LOGIQUE EDITION ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const editId = urlParams.get('edit');
+
+  if (editId) {
+      document.addEventListener('DOMContentLoaded', async () => {
+          await loadFromDB();
+          const c = window.db.cards.find(x => String(x.id) === String(editId));
+          if (c) {
+              document.getElementById('f-prenom').value = c.prenom || "";
+              document.getElementById('f-nom').value = c.nom || "";
+              document.getElementById('f-sport').value = c.sport || "";
+              document.getElementById('f-marque').value = c.marque || "";
+              document.getElementById('f-set').value = c.set_name || "";
+              document.getElementById('f-collection').value = c.collection || "";
+              document.getElementById('f-price').value = c.price || 0;
+              
+              if(c.photo_url) {
+                rectoDataUrl = c.photo_url;
+                document.getElementById('photo-preview-img').src = c.photo_url;
+                document.getElementById('photo-preview-wrap').style.display = 'block';
+                document.getElementById('photo-placeholder-ui').style.display = 'none';
+              }
+
+              document.getElementById('scanner-main-title').textContent = "Modifier";
+              document.getElementById('scanner-sub-title').textContent = "Mettre à jour les infos de la carte";
+              document.getElementById('save-card-btn').textContent = "Mettre à jour la carte";
+              document.getElementById('ocr-btn').style.display = "none"; // Pas d'OCR en édition
+          }
+      });
+  }
+
   window.switchAddSide = function(side) {
     activeSide = side;
     document.getElementById('add-tab-recto').classList.toggle('active', side === 'recto');
@@ -156,82 +191,74 @@
     document.getElementById('scanStatus').textContent = msg || "";
   }
 
-  // APPEL À L'IA GEMINI
   window.ocrCard = async function() {
     if (!rectoDataUrl) {
       alert("Veuillez d'abord uploader une image de la carte (Recto).");
       return;
     }
-    
     uiBusy(true, "Analyse de la carte par l'IA...");
-    
     try {
       const match = rectoDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
       if (!match) throw new Error("Format d'image non reconnu.");
-      const mimeType = match[1];
-      const base64Data = match[2];
-
       const res = await fetch('/api/ocr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mimeType, base64Data })
+        body: JSON.stringify({ mimeType: match[1], base64Data: match[2] })
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'analyse.");
-
-      // Remplissage ciblé sur tes inputs HTML
       if (data.prenom) document.getElementById('f-prenom').value = data.prenom;
       if (data.nom) document.getElementById('f-nom').value = data.nom;
       if (data.marque) document.getElementById('f-marque').value = data.marque;
       if (data.collection) document.getElementById('f-set').value = data.collection;
-
-      uiBusy(false, "Analyse terminée avec succès !");
-      setTimeout(() => { document.getElementById('scanStatus').textContent = ""; }, 3000);
-      
+      uiBusy(false, "Analyse terminée !");
     } catch (e) {
-      console.error(e);
       uiBusy(false, "Échec de l'IA.");
       alert("Erreur OCR : " + e.message);
     }
   };
 
-  // SAUVEGARDE EN BASE
   window.saveCard = async function(){
-    uiBusy(true, "Sauvegarde dans le Vault...");
-
+    uiBusy(true, "Sauvegarde...");
     try {
-      const card = {
-        id: crypto.randomUUID(),
+      const cardData = {
         prenom: (document.getElementById('f-prenom').value || "").trim(),
         nom: (document.getElementById('f-nom').value || "").trim(),
         sport: (document.getElementById('f-sport').value || "").trim(),
         marque: (document.getElementById('f-marque').value || "").trim(),
         setName: (document.getElementById('f-set').value || "").trim(),
         collection: (document.getElementById('f-collection').value || "").trim(),
-        price: parseFloat(document.getElementById('f-price').value || "0") || 0,
-        photo: "",
-        photoVerso: ""
+        price: parseFloat(document.getElementById('f-price').value || "0") || 0
       };
 
-      const inserted = await sbInsert("cards", toSB(card));
-      const row = Array.isArray(inserted) ? inserted[0] : inserted;
-      const id = row?.id;
-      if(!id) throw new Error("Erreur de création d'ID.");
+      let finalId = editId;
 
-      let rectoUrl = "";
-      let versoUrl = "";
-      if(rectoDataUrl) rectoUrl = await uploadPhoto(rectoDataUrl, id, "recto");
-      if(versoDataUrl) versoUrl = await uploadPhoto(versoDataUrl, id, "verso");
+      if (editId) {
+        // UPDATE
+        await sbUpdate("cards", editId, toSB(cardData));
+      } else {
+        // INSERT
+        cardData.id = crypto.randomUUID();
+        const inserted = await sbInsert("cards", toSB(cardData));
+        const row = Array.isArray(inserted) ? inserted[0] : inserted;
+        finalId = row?.id;
+      }
 
+      if(!finalId) throw new Error("ID manquant.");
+
+      // Upload photos si elles ont changé (détection simplifiée)
       const patch = {};
-      if(rectoUrl) patch.photo_url = rectoUrl;
-      if(versoUrl) patch.photo_verso_url = versoUrl;
-      if(Object.keys(patch).length) await sbUpdate("cards", id, patch);
+      if(rectoDataUrl && rectoDataUrl.startsWith('data:')) {
+        patch.photo_url = await uploadPhoto(rectoDataUrl, finalId, "recto");
+      }
+      if(versoDataUrl && versoDataUrl.startsWith('data:')) {
+        patch.photo_verso_url = await uploadPhoto(versoDataUrl, finalId, "verso");
+      }
+
+      if(Object.keys(patch).length) await sbUpdate("cards", finalId, patch);
 
       uiBusy(false, "");
-      // Redirection vers le profil
-      location.href = `card.html?id=${encodeURIComponent(id)}`;
+      location.href = `card.html?id=${encodeURIComponent(finalId)}`;
     } catch(e) {
       console.error(e);
       uiBusy(false, "");
