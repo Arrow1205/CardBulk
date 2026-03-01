@@ -4,8 +4,6 @@ var _PAGE = (()=>{
 })();
 
 // --- GEMINI OCR ---
-window.GEMINI_API_KEY = ""; // Gemini key is server-side via /api/ocr
-
 /* ═══════════ SUPABASE ═══════════ */
 const SB_URL="https://tykayvplynkysqwmhkyt.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5a2F5dnBseW5reXNxd21oa3l0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MzQxNzYsImV4cCI6MjA4NzQxMDE3Nn0.sbRIHt_qvIBODeLLKS5DWULGmxaghUPYFtBvfFyA85o";
@@ -13,19 +11,17 @@ const SB_HDR={"Content-Type":"application/json","apikey":SB_KEY,"Authorization":
 
 // BRAND LOGOS (loaded from Supabase when available)
 window.BRAND_LOGOS = window.BRAND_LOGOS || {};
-async function loadBrandLogos(){
-  // Local brand logos (no Supabase brands table required)
-  window.BRAND_LOGOS = window.BRAND_LOGOS || {};
-  const map = {
-    "Topps": "/brands/topps.png",
-    "Panini": "/brands/panini.png",
-    "Leaf": "/brands/leaf.png",
-    "Futera": "/brands/futera.png",
-    "Daka": "/brands/daka.png",
-    "Upper Deck": "/brands/upper-deck.png"
+async async function loadBrandLogos(){
+  // Local brand logos (no Supabase table)
+  window.BRAND_LOGOS = {
+    "topps": "/brands/topps.png",
+    "panini": "/brands/panini.png",
+    "leaf": "/brands/leaf.png",
+    "futera": "/brands/futera.png",
+    "daka": "/brands/daka.png",
+    "upper deck": "/brands/upper-deck.png",
+    "upperdeck": "/brands/upper-deck.png"
   };
-  Object.assign(window.BRAND_LOGOS, map);
-  return window.BRAND_LOGOS;
 }
 
 /* ═══════════ SPORT ICONS (embedded) ═══════════ */
@@ -57,8 +53,22 @@ async function sbSearchCards(q, limit=60){
   return Array.isArray(d)?d.map(fromSB):[];
 }
 async function sbInsert(t,row){const r=await fetch(`https://tykayvplynkysqwmhkyt.supabase.co/rest/v1/${t}`,{method:"POST",headers:SB_HDR,body:JSON.stringify(row)});const d=await r.json();if(!r.ok){console.error("sbInsert",t,r.status,d);throw new Error(d?.message||JSON.stringify(d));}return d;}
-async function sbUpdate(t,id,patch){const r=await fetch(`https://tykayvplynkysqwmhkyt.supabase.co/rest/v1/${t}?id=eq.${id}`,{method:"PATCH",headers:SB_HDR,body:JSON.stringify(patch)});if(!r.ok){const d=await r.json();console.error("sbUpdate",t,r.status,d);}}
-async function sbDelete(t,id){const r=await fetch(`https://tykayvplynkysqwmhkyt.supabase.co/rest/v1/${t}?id=eq.${id}`,{method:"DELETE",headers:SB_HDR});if(!r.ok){const d=await r.json();console.error("sbDelete",t,r.status,d);}}
+async function sbUpdate(t,id,patch){
+  const r=await fetch(`${SB_URL}/rest/v1/${t}?id=eq.${encodeURIComponent(id)}`,{
+    method:"PATCH",
+    headers:{...SB_HDR,"Content-Type":"application/json","Prefer":"return=representation"},
+    body:JSON.stringify(patch)
+  });
+  const txt=await r.text();
+  let d=null; try{ d=txt?JSON.parse(txt):null; }catch{ d={raw:txt}; }
+  if(!r.ok){
+    console.error("sbUpdate",t,r.status,d);
+    throw new Error(d?.message||d?.error||txt||`sbUpdate ${t} ${r.status}`);
+  }
+  return d;
+}
+async function sbDelete
+(t,id){const r=await fetch(`https://tykayvplynkysqwmhkyt.supabase.co/rest/v1/${t}?id=eq.${id}`,{method:"DELETE",headers:SB_HDR});if(!r.ok){const d=await r.json();console.error("sbDelete",t,r.status,d);}}
 async function uploadPhoto(dataUrl,cardId,side){try{const res=await fetch(dataUrl);const blob=await res.blob();const ext=blob.type.includes("png")?"png":"jpg";const path=`cards/${cardId}_${side}.${ext}`;const r=await fetch(`https://tykayvplynkysqwmhkyt.supabase.co/storage/v1/object/card-photos/${path}`,{method:"PUT",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":blob.type,"cache-control":"3600","x-upsert":"true"},body:blob});if(!r.ok)throw new Error("upload "+r.status);return`https://tykayvplynkysqwmhkyt.supabase.co/storage/v1/object/public/card-photos/${path}`;}catch(e){console.error("uploadPhoto",e);return"";}}
 
 function fromSB(c){return{id:String(c.id),prenom:c.prenom||"",nom:c.nom||"",club:c.club||"",clubEmoji:c.club_emoji||"",sport:c.sport||"",num:c.num||"",isNum:c.is_num||false,tags:c.tags||[],collection:c.collection||"",notes:c.notes||"",photo:c.photo_url||"",photoVerso:c.photo_verso_url||"",fav:c.fav||false,date:c.date||"",price:c.price||0,marque:c.marque||"",annee:c.annee||"",setName:c.set_name||"",nationalite:c.nationalite||"",drapeauEmoji:c.drapeau_emoji||""};}
@@ -845,7 +855,7 @@ function switchEditSide(side){
   if(rz)rz.style.display=side==="recto"?"block":"none";
   if(vz)vz.style.display=side==="verso"?"block":"none";
 }
-async function saveEdit(){
+async async function saveEdit(){
   const c=db.cards.find(x=>x.id===curCardId);if(!c)return;
   c.prenom=document.getElementById("e-prenom").value.trim();c.nom=document.getElementById("e-nom").value.trim();
   c.sport=document.getElementById("e-sport").value;
