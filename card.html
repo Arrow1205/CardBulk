@@ -3,124 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&family=Fugaz+One&display=swap" rel="stylesheet">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="CardVault">
-<meta name="theme-color" content="#0c0c0e">
 <link rel="stylesheet" href="assets/app.css">
 <title>CardVault — Carte</title>
-<style>
-body { overflow: hidden; }
-.card-detail { display:flex; position:fixed; inset:0; z-index:10; }
-.card-detail .card-detail-hdr { padding-top: env(safe-area-inset-top, 12px); }
-</style>
 </head>
 <body>
-
 <div class="card-detail open" id="card-detail">
   <div class="card-detail-hdr">
-    <button class="back-btn" onclick="closeDetail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div style="display:flex;gap:8px;">
-      <button class="detail-fav-btn" id="detail-fav-btn" onclick="toggleFav()"></button>
-    </div>
+    <button class="back-btn" onclick="history.back()">Back</button>
   </div>
-  <div class="card-3d-scene card-animated" id="card-3d-scene">
-    <div class="card-flip-container" id="card-flip-container">
-      <div class="card-flip-inner" id="card-flip-inner">
-        <div class="card-face" id="card-face-front">
-          <div class="card-3d-content card-3d-placeholder" id="card-3d-content"><span style="font-size:40px;opacity:.25;">🃏</span></div>
-        </div>
-        <div class="card-face card-face-back" id="card-face-back"></div>
-      </div>
-    </div>
+  <div class="card-3d-scene card-animated">
+    <div class="card-face" id="card-face-front"></div>
   </div>
   <div class="card-detail-bottom">
     <div class="player-identity">
-      <div>
-        <div class="player-first" id="detail-prenom" onclick="openPlayer()" style="cursor:pointer;"></div>
-        <div class="player-last" id="detail-nom" onclick="openPlayer()" style="cursor:pointer;">—</div>
-        <div class="hero-chips" style="margin-top:10px;flex-wrap:wrap;gap:8px;">
-          <div class="chip-pill" id="detail-club-chip" onclick="openClub()" style="cursor:pointer;display:none;">
-            <span id="detail-club-n"></span>
-          </div>
-          <div class="chip-pill" id="detail-sport-chip" onclick="openSport()" style="cursor:pointer;display:none;">
-            <span id="detail-sport-label"></span>
-          </div>
-        </div>
-      </div>
+      <div class="player-first" id="detail-prenom"></div>
+      <div class="player-last" id="detail-nom"></div>
+      <div class="chip-pill" id="detail-club-chip" style="display:none;"><span id="detail-club-n"></span></div>
     </div>
-    <div class="chips-grid" id="chips-grid">
-      <div class="chip chip-marque"><div class="chip-label">Marque</div><div class="chip-val" id="d-marque-text">—</div></div>
-      <div class="chip"><div class="chip-label">Set</div><div class="chip-val" id="d-set" style="font-size:13px;">—</div></div>
-      <div class="chip"><div class="chip-label">Année</div><div class="chip-val" id="d-annee">—</div></div>
-      <div class="chip" id="chip-tags-row"><div class="chip-label">Spécificités</div><div class="chip-val" id="d-tags-val" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding-top:2px;font-size:12px;">—</div></div>
-      <div class="chip"><div class="chip-label">Dossier</div><div class="chip-val" id="d-coll">—</div></div>
-      <div class="chip"><div class="chip-label">Prix</div><div class="chip-val price-val" id="d-price">—</div></div>
+    <div class="chips-grid">
+      <div class="chip"><div class="chip-val" id="d-marque">—</div></div>
+      <div class="chip"><div class="chip-val price-val" id="d-price">—</div></div>
     </div>
     <div class="detail-actions">
-     <button class="btn-secondary" style="flex:1;" onclick="window.editCurrentCard()">Modifier</button>
+      <button class="btn-secondary" onclick="window.editCurrentCard()">Modifier</button>
     </div>
   </div>
-</div>
-
-<div class="sheet-overlay" id="edit-sheet" onclick="closeSheet('edit-sheet',event)">
-  <div class="sheet" onclick="event.stopPropagation()">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">Modifier</div>
-    <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="e-prenom" type="text"></div>
-    <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="e-nom" type="text"></div>
-    <div class="form-group"><label class="form-label">Marque</label><input class="form-input" id="e-marque" type="text"></div>
-    <div class="form-group"><label class="form-label">Prix estimé (€)</label><input class="form-input" id="e-price" type="number" step="0.01"></div>
-    <button class="btn-primary" onclick="alert('Sauvegarde de la modification en cours de dev')">Sauvegarder</button>
-  </div>
-</div>
-
-<div class="tabbar">
-  <button class="tab-btn" onclick="location.href='index.html'" id="tab-home">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
-  </button>
-  <button class="tab-btn scan-btn" onclick="location.href='scanner.html'" id="tab-scanner">
-    <div class="scan-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="22" height="22" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-  </button>
-  <button class="tab-btn active" onclick="location.href='collection.html'" id="tab-collection">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Collection
-  </button>
 </div>
 
 <script src="assets/app.js"></script>
 <script>
     window.addEventListener('dbReady', () => {
-        const params = new URLSearchParams(window.location.search);
-        const cardId = params.get('id');
-        const c = window.db.cards.find(x => String(x.id) === String(cardId));
-        
+        const id = new URLSearchParams(window.location.search).get('id');
+        const c = window.db.cards.find(x => String(x.id) === String(id));
         if(!c) return;
 
-        // Remplissage des champs
-        document.getElementById('detail-nom').textContent = c.nom || "INCONNU";
         document.getElementById('detail-prenom').textContent = c.prenom || "";
+        document.getElementById('detail-nom').textContent = c.nom || "INCONNU";
         document.getElementById('d-marque').textContent = c.marque || "—";
-        document.getElementById('d-price').textContent = (c.price || 0).toFixed(2) + " €";
+        document.getElementById('d-price').textContent = (Number(c.price) || 0).toFixed(2) + " €";
         
-        const face = document.getElementById('card-face-front');
-        if(face && c.photo_url) face.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+        if(c.photo_url) document.getElementById('card-face-front').innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
 
-        // Tags Club et Sport cliquables
-        const clubChip = document.getElementById('detail-club-chip');
-        if(c.club && clubChip) {
+        if(c.club) {
             document.getElementById('detail-club-n').textContent = c.club;
-            clubChip.style.display = 'inline-flex';
-            clubChip.onclick = () => location.href = `club.html?name=${encodeURIComponent(c.club)}`;
+            document.getElementById('detail-club-chip').style.display = 'inline-flex';
         }
-
-        // Action de modification (Redirection vers scanner)
-        window.editCurrentCard = () => {
-            location.href = `scanner.html?edit=${c.id}`;
-        };
+        
+        window.editCurrentCard = () => { location.href = `scanner.html?edit=${c.id}`; };
     });
 </script>
 </body>
