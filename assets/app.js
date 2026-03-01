@@ -1,8 +1,7 @@
-/* CardBulk — app.js (stable minimal)
+/* CardBulk — app.js (stable minimal + UI helpers)
    - Supabase REST helpers
    - Storage upload helper
-   - Brand logos (local /brands/*.png)
-   This file intentionally avoids any Gemini client calls.
+   - UI Stubs pour éviter les erreurs ReferenceError
 */
 
 window.SB_URL = window.SB_URL || "https://tykayvplynkysqwmhkyt.supabase.co";
@@ -37,6 +36,8 @@ window.loadBrandLogos = async function loadBrandLogos(){
 function _safeJsonParse(txt){
   try{ return txt ? JSON.parse(txt) : null; }catch{ return { raw: txt }; }
 }
+
+// --- SUPABASE HELPERS ---
 
 window.sbGet = async function sbGet(table, opts={}){
   const params = opts.params || "select=*&order=created_at.desc";
@@ -126,6 +127,8 @@ window.uploadPhoto = async function uploadPhoto(dataUrl, cardId, side){
   return `${SB_URL}/storage/v1/object/public/card-photos/${path}`;
 };
 
+// --- SCHEMA MAPPING ---
+
 window.toSB = function toSB(card){
   return {
     id: card.id,
@@ -167,3 +170,39 @@ window.fromSB = function fromSB(c){
     createdAt: c.created_at || ""
   };
 };
+
+// ==========================================
+// --- FONCTIONS D'INTERFACE (NOUVEAU) ---
+// ==========================================
+
+// Remplir dynamiquement les menus déroulants des années
+window.populateYears = function(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  const currentYear = new Date().getFullYear() + 1; // Permet d'inclure l'année prochaine
+  for (let i = currentYear; i >= 1950; i--) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i;
+    select.appendChild(opt);
+  }
+};
+
+// Fonction de chargement de la base de données 
+window.loadFromDB = async function() {
+  try {
+    console.log("Chargement des cartes depuis Supabase...");
+    const cards = await sbGet("cards"); 
+    console.log("✅ Cartes récupérées avec succès :", cards);
+    
+    // Pour l'instant on se contente de les logguer pour vérifier que ça marche.
+    // La logique pour les injecter visuellement dans le HTML viendra après !
+  } catch (e) {
+    console.error("Erreur de chargement DB:", e);
+  }
+};
+
+// Fonctions vides (stubs) pour éviter les plantages si d'autres pages HTML essaient de les lancer
+window.setupImageViewer = window.setupImageViewer || function() {};
+window.initSportDD = window.initSportDD || function() {};
+window.setupLiveSearch = window.setupLiveSearch || function() {};
