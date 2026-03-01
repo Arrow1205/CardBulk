@@ -1,25 +1,21 @@
-/* CardVault — app.js (Moteur interactif complet et robuste) */
+/* CardVault — app.js (Moteur complet : 3D, Pie Chart, Sub-pages & Défilement Auto) */
 
 // ==========================================
-// 1. CONFIGURATION SUPABASE
+// 1. CONFIGURATION & ETAT GLOBAL
 // ==========================================
 window.SB_URL = "https://tykayvplynkysqwmhkyt.supabase.co";
 window.SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5a2F5dnBseW5reXNxd21oa3l0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MzQxNzYsImV4cCI6MjA4NzQxMDE3Nn0.sbRIHt_qvIBODeLLKS5DWULGmxaghUPYFtBvfFyA85o";
 
-const SB_HDR = { 
-    "Content-Type": "application/json", 
-    "apikey": window.SB_KEY, 
-    "Authorization": "Bearer " + window.SB_KEY, 
-    "Prefer": "return=representation" 
-};
+const SB_HDR = { "Content-Type": "application/json", "apikey": window.SB_KEY, "Authorization": "Bearer " + window.SB_KEY, "Prefer": "return=representation" };
+
+window.db = { cards: [], folders: [] };
+
+// Variables de contexte pour éviter les erreurs ReferenceError
+window._ctxPlayer = { key: '', brand: 'all', spec: 'all' };
+window._ctxClub = { club: '', brand: 'all', spec: 'all' };
+window._ctxSport = { sport: '', brand: 'all', spec: 'all' };
 
 function _safeJsonParse(txt){ try{ return txt ? JSON.parse(txt) : null; }catch{ return { raw: txt }; } }
-
-window.BRAND_LOGOS = {
-  "topps": "/brands/topps.png", "panini": "/brands/panini.png",
-  "leaf": "/brands/leaf.png", "futera": "/brands/futera.png",
-  "daka": "/brands/daka.png", "upper deck": "/brands/upper-deck.png"
-};
 
 // ==========================================
 // 2. REQUÊTES DB
@@ -31,44 +27,34 @@ window.sbGet = async function(table, opts={}){
 };
 
 window.sbUpdate = async function(table, id, patch){
-  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { 
-      method: "PATCH", headers: SB_HDR, body: JSON.stringify(patch) 
-  });
+  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", headers: SB_HDR, body: JSON.stringify(patch) });
   return _safeJsonParse(await r.text());
 };
 
 window.sbDelete = async function(table, id){
-  await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { 
-      method: "DELETE", headers: SB_HDR 
-  });
+  await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { method: "DELETE", headers: SB_HDR });
   return true;
 };
 
 // ==========================================
-// 3. CHARGEMENT ET RENDU
+// 3. CHARGEMENT INITIAL
 // ==========================================
-window.db = { cards: [], folders: [] };
-
 window.loadFromDB = async function() {
   try {
     window.db.cards = await sbGet("cards");
     try { window.db.folders = await sbGet("folders"); } catch(e) { window.db.folders = []; }
     
-    // Auto-detect page and render
     if (document.getElementById('page-home')) window.renderHome();
     if (document.getElementById('page-collection')) { 
         window.renderCollection(); 
         window.renderFolders(); 
-        window.initFilters();
     }
-    if (document.getElementById('view-player')) window._pagePlayer();
-    if (document.getElementById('view-club')) window._pageClub();
-    if (document.getElementById('view-sport')) window._pageSports();
-    
   } catch (e) { console.error("Erreur DB:", e); }
 };
 
-// --- Rendu Accueil (index.html) ---
+// ==========================================
+// 4. ACCUEIL & CAROUSEL 3D
+// ==========================================
 window.renderHome = function() {
   const cards = window.db.cards || [];
   document.getElementById('home-count').textContent = `${cards.length} cartes`;
@@ -88,7 +74,6 @@ window.renderHome = function() {
     `).join('');
   }
   
-  // Render 3D Carousel
   const carousel = document.getElementById('fav-carousel');
   const favs = cards.filter(c => c.fav);
   if (carousel && favs.length > 0) {
@@ -102,34 +87,49 @@ window.renderHome = function() {
   }
 };
 
-// --- Moteur 3D Carousel ---
 window.init3DCarousel = function() {
   const container = document.getElementById('fav-carousel');
   if(!container) return;
   const cards = container.querySelectorAll('.fav-card');
+  if(!cards.length) return;
+
   let currentIndex = Math.floor(cards.length / 2);
-  
+  let autoTimer = null;
+
   window.update3D = () => {
     cards.forEach((card, i) => {
       const diff = i - currentIndex;
       const absDiff = Math.abs(diff);
       const sign = Math.sign(diff);
-      card.style.transform = `translateX(${diff * 60}%) translateZ(${absDiff * -100}px) rotateY(${sign * -20}deg)`;
+      card.style.transform = `translateX(${diff * 60}%) translateZ(${absDiff * -120}px) rotateY(${sign * -25}deg)`;
       card.style.zIndex = 100 - absDiff;
+      card.style.opacity = absDiff > 2 ? 0 : 1;
       card.querySelector('.fav-card-dim').style.setProperty('--dim', absDiff * 0.4);
       card.classList.toggle('active', absDiff === 0);
     });
   };
-  
+
+  const startAuto = () => {
+    autoTimer = setInterval(() => {
+      currentIndex = (currentIndex + 1) % cards.length;
+      window.update3D();
+    }, 5000); // 5 secondes
+  };
+
   window.handleCarouselClick = (el, id) => {
+    clearInterval(autoTimer);
     const idx = parseInt(el.dataset.idx);
     if(idx === currentIndex) location.href = `card.html?id=${id}`;
-    else { currentIndex = idx; window.update3D(); }
+    else { currentIndex = idx; window.update3D(); startAuto(); }
   };
+
   window.update3D();
+  startAuto();
 };
 
-// --- Collection & Value (collection.html) ---
+// ==========================================
+// 5. COLLECTION & PIE CHART
+// ==========================================
 window.renderCollection = function() {
   const cards = window.db.cards || [];
   const grid = document.getElementById('coll-grid');
@@ -146,10 +146,12 @@ window.renderCollection = function() {
 window.renderValueTab = function() {
   const cards = window.db.cards || [];
   const totalVal = cards.reduce((s, c) => s + Number(c.price || 0), 0);
-  document.getElementById('total-val').textContent = totalVal.toFixed(2) + " €";
-  document.getElementById('total-cards').textContent = `${cards.length} cartes`;
+  const elVal = document.getElementById('total-val');
+  const elCount = document.getElementById('total-cards');
+  
+  if(elVal) elVal.textContent = totalVal.toFixed(2) + " €";
+  if(elCount) elCount.textContent = `${cards.length} cartes`;
 
-  // Draw Pie Chart SVG
   const brands = {};
   cards.forEach(c => { const b = c.marque || 'Autre'; brands[b] = (brands[b] || 0) + Number(c.price || 0); });
   
@@ -163,13 +165,14 @@ window.renderValueTab = function() {
 
   Object.entries(brands).forEach(([name, val], i) => {
     const sliceAngle = (val / totalVal) * 360;
-    const x1 = 45 + 40 * Math.cos(Math.PI * currentAngle / 180);
-    const y1 = 45 + 40 * Math.sin(Math.PI * currentAngle / 180);
+    const r = 40; const cx = 45; const cy = 45;
+    const x1 = cx + r * Math.cos(Math.PI * currentAngle / 180);
+    const y1 = cy + r * Math.sin(Math.PI * currentAngle / 180);
     currentAngle += sliceAngle;
-    const x2 = 45 + 40 * Math.cos(Math.PI * currentAngle / 180);
-    const y2 = 45 + 40 * Math.sin(Math.PI * currentAngle / 180);
+    const x2 = cx + r * Math.cos(Math.PI * currentAngle / 180);
+    const y2 = cy + r * Math.sin(Math.PI * currentAngle / 180);
     
-    html += `<path d="M 45 45 L ${x1} ${y1} A 40 40 0 ${sliceAngle > 180 ? 1 : 0} 1 ${x2} ${y2} Z" fill="${colors[i % colors.length]}"/>`;
+    html += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${sliceAngle > 180 ? 1 : 0} 1 ${x2} ${y2} Z" fill="${colors[i % colors.length]}"/>`;
     legHtml += `<div class="pie-legend-item"><span class="pie-legend-dot" style="background:${colors[i % colors.length]}"></span><span class="pie-legend-name">${name}</span><span class="pie-legend-val">${val.toFixed(0)}€</span></div>`;
   });
   svg.innerHTML = html;
@@ -177,8 +180,19 @@ window.renderValueTab = function() {
   document.getElementById('home-pie-wrap').style.display = 'block';
 };
 
+window.renderFolders = function() {
+    const grid = document.getElementById('folders-grid');
+    if(!grid) return;
+    grid.innerHTML = (window.db.folders || []).map(f => `
+        <div class="folder-card" style="min-width:140px; flex-shrink:0;">
+            <div class="folder-emoji">${f.emoji || '📁'}</div>
+            <div class="folder-name">${f.name}</div>
+        </div>
+    `).join('');
+};
+
 // ==========================================
-// 4. AFFICHAGE DÉTAIL (card.html)
+// 6. CARD DETAIL (card.html)
 // ==========================================
 window._displayCard = function(c) {
   window.curCardId = c.id;
@@ -195,21 +209,24 @@ window._displayCard = function(c) {
   const img = document.getElementById('card-face-front');
   if(img && c.photo_url) img.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
 
-  // Ordering: Club then Sport
+  // Badges cliquables - Ordre : Club puis Sport
   const clubChip = document.getElementById('detail-club-chip');
   if(c.club && clubChip) { 
       document.getElementById('detail-club-n').textContent = c.club; 
       clubChip.style.display = 'inline-flex'; 
+      clubChip.onclick = () => location.href = `club.html?name=${encodeURIComponent(c.club)}`;
   }
   const sportChip = document.getElementById('detail-sport-chip');
   if(c.sport && sportChip) { 
-      document.getElementById('detail-sport-label').textContent = c.sport.toUpperCase(); 
+      const label = document.getElementById('detail-sport-label');
+      if(label) label.textContent = c.sport.toUpperCase(); 
       sportChip.style.display = 'inline-flex'; 
+      sportChip.onclick = () => location.href = `sports.html?key=${encodeURIComponent(c.sport)}`;
   }
 };
 
 // ==========================================
-// 5. FONCTIONS INTERACTIVES
+// 7. UTILITAIRES & NAVIGATION
 // ==========================================
 window.switchCollectionTab = function(tab) {
   document.getElementById('coll-tab-cards').classList.toggle('active', tab === 'cards');
@@ -218,15 +235,12 @@ window.switchCollectionTab = function(tab) {
   document.getElementById('coll-panel-value').style.display = tab === 'value' ? 'block' : 'none';
 };
 
-window.renderFolders = function() {
-    const grid = document.getElementById('folders-grid');
-    if(!grid) return;
-    grid.innerHTML = (window.db.folders || []).map(f => `
-        <div class="folder-card" style="min-width:140px; flex-shrink:0;">
-            <div class="folder-emoji">${f.emoji || '📁'}</div>
-            <div class="folder-name">${f.name}</div>
-        </div>
-    `).join('');
+window.toggleFav = async () => {
+    const c = window.db.cards.find(x => x.id === window.curCardId);
+    if(!c) return;
+    c.fav = !c.fav;
+    await sbUpdate("cards", c.id, { fav: c.fav });
+    location.reload();
 };
 
 window.saveEdit = async function() {
@@ -247,23 +261,13 @@ window.deleteCurrentCard = async function() {
     }
 };
 
-// Global Navigation
-window.openSport = (s) => location.href = `sports.html?key=${encodeURIComponent(s)}`;
-window.openClub = (n) => location.href = `club.html?name=${encodeURIComponent(n)}`;
-window.openPlayer = () => {
-    const c = window.db.cards.find(x => x.id === window.curCardId);
-    if(c) location.href = `player.html?name=${encodeURIComponent(`${c.prenom} ${c.nom}`)}`;
-};
+window.closeSheet = (id) => document.getElementById(id).classList.remove('open');
+window.navBack = () => history.back();
 
-// Stubs to prevent crashes
+// Bouchons requis par tes pages HTML
 window.initFilters = () => {};
 window.setupImageViewer = () => {};
 window.initSportDD = () => {};
 window.setupLiveSearch = () => {};
-window.closeSheet = (id) => document.getElementById(id).classList.remove('open');
-window.toggleFav = async () => {
-    const c = window.db.cards.find(x => x.id === window.curCardId);
-    c.fav = !c.fav;
-    await sbUpdate("cards", c.id, { fav: c.fav });
-    location.reload();
-};
+window.homeSearch = () => {};
+window.collSearch = () => {};
