@@ -21,39 +21,44 @@ Retourne UNIQUEMENT un JSON valide avec ces clés :
 - "marque"
 - "collection"
 Aucun texte avant/après.
-`;
+`.trim();
 
   try {
-    const models = ["gemini-1.5-flash-002","gemini-1.5-flash-001"];
+    const models = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"];
     let data = null;
     let lastErr = null;
 
-    for (const model of models){
+    for (const model of models) {
       const r = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType, data: base64Data } }] }],
+            // Correction : Force Gemini à retourner du JSON natif strict
+            generationConfig: { responseMimeType: "application/json" } 
           }),
         }
       );
 
       const txt = await r.text();
-      try { data = txt ? JSON.parse(txt) : {}; }
-      catch { data = { error: { message: txt || `HTTP ${r.status}` } }; }
+      try { data = txt ? JSON.parse(txt) : {}; } catch { data = { error: { message: txt || `HTTP ${r.status}` } }; }
 
-      if (!data?.error){ lastErr = null; break; }
-      lastErr = data.error.message || `Gemini error (${model})`;
+      if (!r.ok || data?.error) {
+        lastErr = data?.error?.message || `Gemini HTTP ${r.status}`;
+        continue;
+      }
+      lastErr = null;
+      break;
     }
 
     if (lastErr) return res.status(502).json({ error: lastErr });
 
-    let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-    raw = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
-
+    // Plus besoin de nettoyer les blocs de code (```json), la réponse EST un JSON.
+    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
     const parsed = JSON.parse(raw);
+    
     return res.status(200).json(parsed);
   } catch (e) {
     return res.status(500).json({ error: e.message });
