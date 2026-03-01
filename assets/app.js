@@ -10,19 +10,20 @@ const SB_HDR = {
 };
 
 window.db = { cards: [], folders: [] };
-
-// Contextes par défaut pour éviter les ReferenceError
 window._ctxPlayer = { key: '' }; 
 window._ctxClub = { club: '' }; 
 window._ctxSport = { sport: '' };
+window.SPORT_ICONS = { football:'⚽', basketball:'🏀', baseball:'⚾', tennis:'🎾', f1:'🏎️' };
 
-// Bouchons de sécurité (Stubs) pour éviter les crashs au démarrage
+// Bouchons de sécurité (Stubs) pour stopper les erreurs console
 window.setupImageViewer = () => {}; 
 window.initSportDD = () => {}; 
 window.setupLiveSearch = () => {};
-window.sportL = (s) => String(s).toUpperCase();
+window._loadClubLogos = () => ({}); 
+window._loadPlayerPics = () => ({});
+window.sportL = (s) => String(s || '').toUpperCase();
 
-// LOGIQUE DB
+// Logique de chargement DB
 window.loadFromDB = async function() {
     try {
         const r = await fetch(`${window.SB_URL}/rest/v1/cards?select=*&order=created_at.desc`, { headers: SB_HDR });
@@ -31,13 +32,10 @@ window.loadFromDB = async function() {
             const rf = await fetch(`${window.SB_URL}/rest/v1/folders?select=*`, { headers: SB_HDR });
             window.db.folders = await rf.json();
         } catch(e) {}
-        
-        // On prévient les pages que les données sont prêtes
         window.dispatchEvent(new CustomEvent('dbReady'));
     } catch (e) { console.error("Erreur DB:", e); }
 };
 
-// Fonctions Partagées
 window.sbUpdate = async (table, id, patch) => {
     return fetch(`${window.SB_URL}/rest/v1/${table}?id=eq.${id}`, { 
         method: "PATCH", headers: SB_HDR, body: JSON.stringify(patch) 
