@@ -4,63 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <link rel="stylesheet" href="assets/app.css">
-<title>CardVault — Scanner & Modifier</title>
+<title>CardVault — Scanner</title>
 </head>
 <body>
-
-<div class="page active" id="page-scanner">
+<div class="page active">
   <div class="page-inner">
-    <div class="scanner-hdr">
-      <div class="scanner-title" id="scanner-main-title">Ajouter</div>
-      <div class="scanner-sub" id="scanner-sub-title">Scanne ou uploade ta carte</div>
-    </div>
-    <div style="padding:0 20px;">
-      <div class="photo-upload" id="photo-upload-zone" onclick="document.getElementById('card-photo-lib').click()">
-        <input type="file" id="card-photo-lib" accept="image/*" style="display:none" onchange="handlePhoto(this)">
-        <div id="photo-preview-wrap" style="display:none;position:absolute;inset:0;"><img id="photo-preview-img" style="width:100%;height:100%;object-fit:cover;"></div>
-        <div id="photo-placeholder-ui">📷 Cliquez pour ajouter une photo</div>
-      </div>
-
-      <div style="height:14px;"></div>
-      <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="f-prenom" type="text"></div>
-      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="f-nom" type="text"></div>
-      <div class="form-group"><label class="form-label">Sport</label><input class="form-input" id="f-sport" type="text"></div>
-      <div class="form-group"><label class="form-label">Marque</label><input class="form-input" id="f-marque" type="text"></div>
-      <div class="form-group"><label class="form-label">Prix (€)</label><input class="form-input" id="f-price" type="number" step="0.01"></div>
-      
-      <button class="btn-primary" id="save-card-btn" onclick="saveCard()" style="margin-top:20px;">Enregistrer la carte</button>
+    <div class="scanner-title" id="scanner-main-title">Ajouter</div>
+    <div style="padding:20px;">
+      <div class="form-group"><label>Prénom</label><input class="form-input" id="f-prenom" type="text"></div>
+      <div class="form-group"><label>Nom</label><input class="form-input" id="f-nom" type="text"></div>
+      <div class="form-group"><label>Sport</label><input class="form-input" id="f-sport" type="text"></div>
+      <div class="form-group"><label>Marque</label><input class="form-input" id="f-marque" type="text"></div>
+      <div class="form-group"><label>Prix (€)</label><input class="form-input" id="f-price" type="number" step="0.01"></div>
+      <button class="btn-primary" id="save-card-btn" onclick="saveCard()">Enregistrer</button>
     </div>
   </div>
 </div>
 
 <script src="assets/app.js"></script>
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const editId = urlParams.get('edit');
+    const editId = new URLSearchParams(window.location.search).get('edit');
 
     window.addEventListener('dbReady', () => {
         if(editId) {
             const c = window.db.cards.find(x => String(x.id) === String(editId));
             if(c) {
-                // On pré-remplit le formulaire
                 document.getElementById('f-prenom').value = c.prenom || "";
                 document.getElementById('f-nom').value = c.nom || "";
                 document.getElementById('f-sport').value = c.sport || "";
                 document.getElementById('f-marque').value = c.marque || "";
                 document.getElementById('f-price').value = c.price || 0;
-                
-                // On change les textes
                 document.getElementById('scanner-main-title').textContent = "Modifier";
-                document.getElementById('save-card-btn').textContent = "Mettre à jour la carte";
+                document.getElementById('save-card-btn').textContent = "Mettre à jour";
             }
         }
     });
 
     async function saveCard() {
-        const btn = document.getElementById('save-card-btn');
-        btn.disabled = true;
-        btn.textContent = "Chargement...";
-
         const data = {
             prenom: document.getElementById('f-prenom').value.trim(),
             nom: document.getElementById('f-nom').value.trim(),
@@ -71,16 +51,13 @@
 
         try {
             if(editId) {
-                await sbUpdate("cards", editId, data); // Mise à jour
+                await sbUpdate("cards", editId, data);
                 location.href = `card.html?id=${editId}`;
             } else {
-                // Logique d'insertion pour une nouvelle carte ici
+                // Logique sbInsert ici pour les nouvelles cartes
                 location.href = 'collection.html';
             }
-        } catch(e) {
-            alert("Erreur de sauvegarde");
-            btn.disabled = false;
-        }
+        } catch(e) { alert("Erreur"); }
     }
 </script>
 </body>
