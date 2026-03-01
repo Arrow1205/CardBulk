@@ -1,4 +1,4 @@
-/* CardVault — app.js (Moteur Unifié : 3D, Filtres, Tags & Edition Scanner) */
+/* CardVault — app.js (Moteur Maître Blindé) */
 
 // ==========================================
 // 1. CONFIGURATION & ÉTAT GLOBAL
@@ -10,7 +10,7 @@ const SB_HDR = { "Content-Type": "application/json", "apikey": window.SB_KEY, "A
 
 window.db = { cards: [], folders: [] };
 
-// Variables de contexte pour les pages (Fix ReferenceError)
+// Variables de contexte obligatoires (Fix ReferenceError)
 window._ctxPlayer = { key: '', brand: 'all', spec: 'all' };
 window._ctxClub   = { club: '', brand: 'all', spec: 'all' };
 window._ctxSport  = { sport: '', brand: 'all', spec: 'all' };
@@ -20,112 +20,24 @@ window.BRAND_LOGOS = {
   "leaf": "/brands/leaf.png", "futera": "/brands/futera.png",
   "daka": "/brands/daka.png", "upper deck": "/brands/upper-deck.png"
 };
-
-window.SPORT_ICONS = {
-  football: '⚽', basketball: '🏀', baseball: '⚾', tennis: '🎾', f1: '🏎️'
-};
+window.SPORT_ICONS = { football: '⚽', basketball: '🏀', baseball: '⚾', tennis: '🎾', f1: '🏎️' };
 
 function _safeJsonParse(txt){ try{ return txt ? JSON.parse(txt) : null; }catch{ return { raw: txt }; } }
 
 // ==========================================
-// 2. REQUÊTES DB
-// ==========================================
-window.sbGet = async function(table, opts={}){
-  const params = opts.params || "select=*&order=created_at.desc";
-  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?${params}`, { headers: SB_HDR });
-  return _safeJsonParse(await r.text()) || [];
-};
-
-window.sbInsert = async function(table, row){
-  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}`, { method: "POST", headers: SB_HDR, body: JSON.stringify(row) });
-  return _safeJsonParse(await r.text());
-};
-
-window.sbUpdate = async function(table, id, patch){
-  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", headers: SB_HDR, body: JSON.stringify(patch) });
-  return _safeJsonParse(await r.text());
-};
-
-window.toSB = function(card){
-  return {
-    prenom: card.prenom || "", nom: card.nom || "", club: card.club || "", sport: card.sport || "",
-    marque: card.marque || "", set_name: card.setName || "", collection: card.collection || "", price: Number(card.price) || 0
-  };
-};
-
-window.uploadPhoto = async function(dataUrl, cardId, side){
-  if(!dataUrl || !dataUrl.startsWith('data:')) return dataUrl;
-  const blob = await (await fetch(dataUrl)).blob();
-  const path = `cards/${cardId}_${side}.jpg`;
-  const r = await fetch(`${window.SB_URL}/storage/v1/object/card-photos/${path}`, {
-    method: "PUT", headers: { "apikey": window.SB_KEY, "Authorization": "Bearer " + window.SB_KEY, "Content-Type": "image/jpeg", "x-upsert": "true" }, body: blob
-  });
-  return `${window.SB_URL}/storage/v1/object/public/card-photos/${path}`;
-};
-
-// ==========================================
-// 3. CHARGEMENT & NAVIGATION
-// ==========================================
-window.loadFromDB = async function() {
-  try {
-    window.db.cards = await sbGet("cards");
-    try { window.db.folders = await sbGet("folders"); } catch(e) {}
-    
-    if (document.getElementById('page-home')) window.renderHome();
-    if (document.getElementById('page-collection')) { window.renderCollection(); window.renderFolders(); window.initFilters(); }
-    if (document.getElementById('view-player')) window.renderPlayerPage();
-    if (document.getElementById('view-club')) window.renderClubPage();
-    if (document.getElementById('view-sport')) window.renderSportPage();
-  } catch (e) { console.error("Erreur DB", e); }
-};
-
-window.navBack = () => history.back();
-window.populateYears = (id) => { 
-    const s = document.getElementById(id); 
-    if(s) for(let i=2026; i>=1950; i--) s.add(new Option(i,i)); 
-};
-
-// ==========================================
-// 4. RENDU DES PAGES
+// 2. FONCTIONS DE RENDU (Déclarées en priorité)
 // ==========================================
 
-// --- Détail Carte (card.html) ---
-window._displayCard = function(c) {
-  window.curCardId = c.id;
-  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-  
-  set('detail-prenom', c.prenom || "");
-  set('detail-nom', c.nom || "INCONNU");
-  set('d-marque', c.marque || "—");
-  set('d-price', (c.price || 0).toFixed(2) + " €");
-
-  const img = document.getElementById('card-face-front');
-  if(img && c.photo_url) img.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
-
-  // Fix Tags Club & Sport
-  const clubChip = document.getElementById('detail-club-chip');
-  if(c.club && clubChip) { 
-      const n = document.getElementById('detail-club-n');
-      if(n) n.textContent = c.club;
-      clubChip.style.display = 'inline-flex'; 
-      clubChip.onclick = () => location.href = `club.html?name=${encodeURIComponent(c.club)}`;
-  }
-  const sportChip = document.getElementById('detail-sport-chip');
-  if(c.sport && sportChip) { 
-      const l = document.getElementById('detail-sport-label');
-      if(l) l.textContent = c.sport.toUpperCase();
-      sportChip.style.display = 'inline-flex'; 
-      sportChip.onclick = () => location.href = `sports.html?key=${encodeURIComponent(c.sport)}`;
-  }
+window.renderFolders = function() {
+    const grid = document.getElementById('folders-grid');
+    if(grid) grid.innerHTML = (window.db.folders || []).map(f => `<div class="folder-card" style="min-width:140px;"><div class="folder-emoji">${f.emoji || '📁'}</div><div class="folder-name">${f.name}</div></div>`).join('');
 };
 
-// --- Modification via Scanner ---
-window.editCurrentCard = function() {
-    if(!window.curCardId) return;
-    location.href = `scanner.html?edit=${window.curCardId}`;
+window.renderCollection = function() {
+    const grid = document.getElementById('coll-grid');
+    if(grid) grid.innerHTML = (window.db.cards || []).map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
 };
 
-// --- Rendu Sous-Pages ---
 window.renderPlayerPage = function() {
     const grid = document.getElementById('player-cards-grid');
     if(grid) grid.innerHTML = window.db.cards.filter(c => ((c.prenom||'')+' '+(c.nom||'')).trim() === window._ctxPlayer.key).map(c => `<div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'"><img src="${c.photo_url || ''}"></div>`).join('');
@@ -142,14 +54,38 @@ window.renderSportPage = function() {
 };
 
 // ==========================================
-// 5. ACCUEIL & CAROUSEL (Fix Auto-Play)
+// 3. LOGIQUE DB & CHARGEMENT
 // ==========================================
+
+window.sbGet = async function(table, opts={}){
+  const params = opts.params || "select=*&order=created_at.desc";
+  const r = await fetch(`${window.SB_URL}/rest/v1/${encodeURIComponent(table)}?${params}`, { headers: SB_HDR });
+  return _safeJsonParse(await r.text()) || [];
+};
+
+window.loadFromDB = async function() {
+  try {
+    window.db.cards = await sbGet("cards");
+    try { window.db.folders = await sbGet("folders"); } catch(e) {}
+    
+    if (document.getElementById('page-home')) window.renderHome();
+    if (document.getElementById('page-collection')) { window.renderCollection(); window.renderFolders(); }
+    if (document.getElementById('view-player')) window.renderPlayerPage();
+    if (document.getElementById('view-club'))   window.renderClubPage();
+    if (document.getElementById('view-sport'))  window.renderSportPage();
+  } catch (e) { console.error("DB Load Error", e); }
+};
+
+// ==========================================
+// 4. ACCUEIL & CAROUSEL (Fix Auto-Play)
+// ==========================================
+
 window.renderHome = function() {
   const cards = window.db.cards || [];
-  const elCount = document.getElementById('home-count');
-  const elTotal = document.getElementById('home-total');
-  if(elCount) elCount.textContent = `${cards.length} cartes`;
-  if(elTotal) elTotal.textContent = cards.reduce((s, c) => s + Number(c.price || 0), 0).toFixed(2) + " €";
+  const elC = document.getElementById('home-count');
+  const elT = document.getElementById('home-total');
+  if(elC) elC.textContent = `${cards.length} cartes`;
+  if(elT) elT.textContent = cards.reduce((s, c) => s + Number(c.price || 0), 0).toFixed(2) + " €";
 
   const carousel = document.getElementById('fav-carousel');
   const favs = cards.filter(c => c.fav);
@@ -169,6 +105,7 @@ window.init3DCarousel = function() {
   if(!container) return;
   const cards = container.querySelectorAll('.fav-card');
   let currentIndex = Math.floor(cards.length / 2);
+  let timer = setInterval(() => { currentIndex = (currentIndex + 1) % cards.length; window.update3D(); }, 5000);
 
   window.update3D = () => {
     cards.forEach((card, i) => {
@@ -181,13 +118,8 @@ window.init3DCarousel = function() {
     });
   };
 
-  const autoTimer = setInterval(() => {
-    currentIndex = (currentIndex + 1) % cards.length;
-    window.update3D();
-  }, 5000);
-
   window.handleCarouselClick = (el, id) => {
-    clearInterval(autoTimer);
+    clearInterval(timer);
     const idx = parseInt(el.dataset.idx);
     if(idx === currentIndex) location.href = `card.html?id=${id}`;
     else { currentIndex = idx; window.update3D(); }
@@ -196,8 +128,71 @@ window.init3DCarousel = function() {
 };
 
 // ==========================================
-// 6. STUBS & COMPATIBILITÉ
+// 5. CARD DETAIL & LIENS (Fix Tags disparus)
 // ==========================================
-window.initFilters = () => {}; window.renderCollection = () => {}; window.renderFolders = () => {};
-window.sportL = (s) => String(s).toUpperCase(); window._loadClubLogos = () => ({}); window._loadPlayerPics = () => ({}); window._setPlayerHeroSrc = () => {};
-window.setupImageViewer = () => {}; window.toggleFav = async () => {};
+
+window._displayCard = function(c) {
+  window.curCardId = c.id;
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  set('detail-prenom', c.prenom || "");
+  set('detail-nom', c.nom || "INCONNU");
+  set('d-marque', c.marque || "—");
+  set('d-price', (c.price || 0).toFixed(2) + " €");
+
+  const img = document.getElementById('card-face-front');
+  if(img && c.photo_url) img.innerHTML = `<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+
+  // Fix Tags : Ordre Club puis Sport
+  const clubChip = document.getElementById('detail-club-chip');
+  if(c.club && clubChip) { 
+      const n = document.getElementById('detail-club-n');
+      if(n) n.textContent = c.club;
+      clubChip.style.display = 'inline-flex'; 
+      clubChip.onclick = () => location.href = `club.html?name=${encodeURIComponent(c.club)}`;
+  }
+  const sportChip = document.getElementById('detail-sport-chip');
+  if(c.sport && sportChip) { 
+      const l = document.getElementById('detail-sport-label');
+      if(l) l.textContent = c.sport.toUpperCase();
+      sportChip.style.display = 'inline-flex'; 
+      sportChip.onclick = () => location.href = `sports.html?key=${encodeURIComponent(c.sport)}`;
+  }
+};
+
+// ==========================================
+// 6. MODIFICATION (REDIRECTION SCANNER)
+// ==========================================
+
+window.editCurrentCard = function() {
+    if(!window.curCardId) return;
+    location.href = `scanner.html?edit=${window.curCardId}`;
+};
+
+// ==========================================
+// 7. BOUCHONS DE SURVIE (Fix ReferenceError)
+// ==========================================
+
+window.setupImageViewer = function() {}; 
+window.initSportDD = function() {};
+window.setupLiveSearch = function() {};
+window.populateYears = function(id) {
+    const s = document.getElementById(id);
+    if(s) for(let i=2026; i>=1950; i--) s.add(new Option(i,i));
+};
+window.sportL = (s) => String(s).toUpperCase();
+window._loadClubLogos = () => ({});
+window._loadPlayerPics = () => ({});
+window.getClubLogoB64 = () => "";
+window._setPlayerHeroSrc = () => {};
+window.navBack = () => history.back();
+window.closeSheet = (id) => document.getElementById(id).classList.remove('open');
+window.openPlayer = () => location.href = `player.html?name=${encodeURIComponent(document.getElementById('detail-nom').textContent)}`;
+window.sbUpdate = async (t, id, p) => { 
+  const r = await fetch(`${window.SB_URL}/rest/v1/${t}?id=eq.${id}`, { method: "PATCH", headers: SB_HDR, body: JSON.stringify(p) });
+  return _safeJsonParse(await r.text());
+};
+window.sbInsert = async (t, r) => { 
+  const res = await fetch(`${window.SB_URL}/rest/v1/${t}`, { method: "POST", headers: SB_HDR, body: JSON.stringify(r) });
+  return _safeJsonParse(await res.text());
+};
+window.toSB = (c) => ({ prenom:c.prenom, nom:c.nom, club:c.club, sport:c.sport, marque:c.marque, set_name:c.setName, collection:c.collection, price:c.price });
