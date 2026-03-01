@@ -116,7 +116,28 @@ document.addEventListener('DOMContentLoaded', ()=>{
   setupImageViewer && setupImageViewer();
 });
 </script>
+<script src="assets/app.js"></script>
+<script>
+    window.addEventListener('dbReady', () => {
+        const name = new URLSearchParams(window.location.search).get('name');
+        if(!name) return;
 
+        document.getElementById('view-player-name').textContent = name;
+        
+        const grid = document.getElementById('player-cards-grid');
+        const filtered = window.db.cards.filter(c => 
+            ((c.prenom || '') + ' ' + (c.nom || '')).trim() === name
+        );
+
+        if(grid) {
+            grid.innerHTML = filtered.map(c => `
+                <div class="coll-thumb" onclick="location.href='card.html?id=${c.id}'">
+                    <img src="${c.photo_url || ''}">
+                </div>
+            `).join('');
+        }
+    });
+</script>
 <!-- TABBAR -->
 <div class="tabbar">
   <button class="tab-btn" onclick="location.href='index.html'" id="tab-home">
