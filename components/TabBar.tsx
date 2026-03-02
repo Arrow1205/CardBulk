@@ -30,18 +30,18 @@ export default function TabBar() {
                 className={`flex flex-col items-center gap-1 transition-all ${getItemColor(item.path)}`}
               >
                 {item.isCenter ? (
-                  /* Bouton SCAN Central */
-                  <div className="flex items-center justify-center w-14 h-14 bg-[#AFFF25] text-[#040221] rounded-2xl -translate-y-6 shadow-[0_8px_20px_rgba(175,255,37,0.3)] active:scale-90 transition-transform">
-                    <item.icon size={28} strokeWidth={2.5} />
+                  /* Bouton SCAN Central en CERCLE PARFAIT */
+                  <div className="flex items-center justify-center w-16 h-16 bg-[#AFFF25] text-[#040221] rounded-full -translate-y-8 shadow-[0_10px_25px_rgba(175,255,37,0.4)] active:scale-90 transition-transform">
+                    <item.icon size={32} strokeWidth={2.5} />
                   </div>
                 ) : (
-                  /* Autres Icônes */
-                  <>
+                  /* Autres Icônes avec texte en blanc/jaune */
+                  <div className="flex flex-col items-center gap-1 pb-1">
                     <item.icon size={22} strokeWidth={2} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                    <span className="text-[9px] font-bold uppercase tracking-wider">
                       {item.label}
                     </span>
-                  </>
+                  </div>
                 )}
               </Link>
             </li>
