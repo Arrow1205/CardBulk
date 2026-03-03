@@ -7,31 +7,41 @@ export default function LoginPage() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        // On utilise l'URL exacte validée dans Google Cloud Console et Supabase
+        redirectTo: 'https://cardbulk.vercel.app/auth/callback',
       },
     });
   };
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white flex flex-col items-center justify-center p-6 text-center">
+    <div className="min-h-screen bg-[#040221] text-white flex flex-col items-center justify-center p-6 text-center font-sans">
+      {/* Logo CardBulk */}
       <h1 className="text-6xl font-black italic uppercase mb-4 tracking-tighter">
         CARD<span className="text-[#AFFF25]">BULK</span>
       </h1>
-      <p className="text-white/40 uppercase text-[10px] tracking-[0.4em] mb-16 font-bold">The Collector's Empire</p>
+      <p className="text-white/40 uppercase text-[10px] tracking-[0.4em] mb-16 font-bold">
+        The Collector's Empire
+      </p>
       
+      {/* Bouton Google */}
       <button 
         onClick={handleGoogleLogin}
-        className="w-full max-w-sm bg-white text-[#040221] font-bold py-5 rounded-[24px] flex items-center justify-center gap-4 active:scale-95 transition-all shadow-xl shadow-white/5"
+        className="w-full max-w-sm bg-white text-[#040221] font-bold py-5 rounded-[24px] flex items-center justify-center gap-4 active:scale-95 transition-all shadow-xl shadow-white/5 hover:bg-gray-100"
       >
         <Chrome size={24} />
         <span className="uppercase tracking-wider">Continuer avec Google</span>
       </button>
 
+      {/* Décoration Bas de page */}
       <div className="mt-20 flex gap-8 opacity-20 italic font-black uppercase text-xs">
         <span>Scan</span>
         <span>Stats</span>
         <span>Collect</span>
       </div>
+
+      <p className="absolute bottom-10 text-[9px] text-white/20 uppercase tracking-[0.2em]">
+        Propulsé par Gemini 3 Flash & Supabase
+      </p>
     </div>
   );
 }
