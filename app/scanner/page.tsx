@@ -5,8 +5,22 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown } from 'lucide-react';
 
-// IMPORT DE TA NOUVELLE LISTE JSON (Assure-toi que le fichier existe bien dans le dossier data !)
+// IMPORT DE TES DONNÉES JSON
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
+import SET_DATA from '@/data/set.json'; // Ton super fichier avec Brands et Sets imbriqués
+
+// 🎯 LE DICTIONNAIRE MAGIQUE : Il lie le nom affiché, l'image exacte de ton dossier, et la clé de ton set.json
+const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
+  'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
+  'BASKETBALL': { image: 'Basket', jsonKey: 'basketball', label: 'Basketball' },
+  'BASEBALL': { image: 'Baseball', jsonKey: 'baseball', label: 'Baseball' },
+  'F1': { image: 'F1', jsonKey: 'f1', label: 'Formule 1' },
+  'NFL': { image: 'NFL', jsonKey: 'nfl', label: 'Football Américain (NFL)' },
+  'NHL': { image: 'NHL', jsonKey: 'nhl', label: 'Hockey (NHL)' },
+  'POKEMON': { image: 'Pokemon', jsonKey: 'pokemon', label: 'Pokémon' },
+  'TENNIS': { image: 'Tennis', jsonKey: 'tennis', label: 'Tennis' },
+  'MARVEL': { image: 'MArvel', jsonKey: 'marvel', label: 'Marvel' }
+};
 
 export default function ScannerPage() {
   const router = useRouter();
@@ -37,16 +51,32 @@ export default function ScannerPage() {
   // Années dynamiques de 2027 à 1994
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
-  // Filtre les clubs en fonction de la saisie (basé sur le format {id, name, slug})
-  const filteredClubs = FOOTBALL_CLUBS.filter((c: any) => 
+  // Auto-complétion des clubs (Sécurisé au cas où le JSON est vide)
+  const filteredClubs = (FOOTBALL_CLUBS || []).filter((c: any) => 
     c.name.toLowerCase().includes(formData.club.toLowerCase())
   );
-
-  // Trouve le slug exact du club tapé pour afficher le bon logo
-  const selectedClub = FOOTBALL_CLUBS.find((c: any) => c.name.toLowerCase() === formData.club.toLowerCase());
+  const selectedClub = (FOOTBALL_CLUBS || []).find((c: any) => c.name.toLowerCase() === formData.club.toLowerCase());
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
 
-  // Vérifie si au moins 1 champ est rempli pour allumer le bouton
+  // 🚀 EXTRACTION INTELLIGENTE DES BRANDS ET DES SETS
+  const availableBrands = SET_DATA.brands || [];
+  
+  // On trouve les sets dispos UNIQUEMENT pour la Brand ET le Sport sélectionnés
+  let availableSets: string[] = [];
+  if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
+    const selectedBrandObj = availableBrands.find((b: any) => b.name === formData.brand);
+    const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
+    
+    if (selectedBrandObj && selectedBrandObj.sports && selectedBrandObj.sports[sportJsonKey]) {
+      availableSets = selectedBrandObj.sports[sportJsonKey];
+    }
+  }
+
+  // Trouve l'image du sport
+  const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
+  // Trouve l'image de la brand
+  const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
+
   const isFormStarted = Object.values(formData).some(val => 
     (typeof val === 'string' && val.trim() !== '') || 
     (typeof val === 'boolean' && val === true)
@@ -68,14 +98,19 @@ export default function ScannerPage() {
 
       if (!data.error && data.playerName) {
         const parts = data.playerName.split(' ');
+        
+        // Normalisation si l'IA dit "FOOTBALL" au lieu de "SOCCER"
+        let aiSport = data.sport?.toUpperCase() || prev.sport;
+        if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
+
         setFormData(prev => ({
           ...prev,
-          sport: data.sport?.toUpperCase() || prev.sport,
+          sport: aiSport,
           firstname: parts[0]?.toUpperCase() || '',
           lastname: parts.slice(1).join(' ')?.toUpperCase() || '',
-          club: data.club || '', // L'IA renvoie idéalement le nom propre
-          brand: data.brand?.toUpperCase() || prev.brand,
-          series: data.series?.toUpperCase() || prev.series,
+          club: data.club || '', 
+          brand: data.brand || prev.brand,
+          series: data.series || prev.series,
           year: data.year?.toString() || prev.year,
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -98,10 +133,8 @@ export default function ScannerPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        // Redirection vers la page de login si non connecté
-        alert("Tu dois créer un compte ou te connecter pour sauvegarder tes cartes !");
         router.push('/login'); 
-        return; // On arrête l'exécution ici
+        return; 
       }
       
       const { error } = await supabase.from('cards').insert([{
@@ -121,8 +154,8 @@ export default function ScannerPage() {
       }]);
 
       if (error) {
-        console.error("Erreur Supabase Insert:", error);
-        alert("❌ Erreur Supabase : " + error.message);
+        console.error("Erreur Supabase:", error);
+        alert("❌ Erreur : " + error.message);
         setLoading(false);
         return;
       }
@@ -130,13 +163,11 @@ export default function ScannerPage() {
       router.push('/collection');
       
     } catch (err) {
-      console.error("Erreur critique:", err);
       alert("❌ Une erreur inattendue est survenue.");
       setLoading(false);
     }
   };
 
-  // Cache l'image si le logo n'est pas trouvé
   const hideBrokenImage = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.style.display = 'none';
   };
@@ -187,16 +218,18 @@ export default function ScannerPage() {
         <h2 className="text-2xl font-black italic tracking-tighter text-white">Joueur</h2>
         
         <div className="space-y-4">
+          {/* SPORT (DYNAMIC IMAGES) */}
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
             <div className="relative flex items-center">
-              {formData.sport && (
-                <img src={`/asset/sports/${formData.sport.toLowerCase()}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />
+              {sportImage && (
+                <img src={`/asset/sports/${sportImage}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />
               )}
-              <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value})} className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 ${formData.sport ? 'pl-12' : 'pl-4'}`}>
+              <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value, series: ''})} className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 ${sportImage ? 'pl-12' : 'pl-4'}`}>
                 <option value="" className="bg-[#040221]">Sélectionne le sport</option>
-                <option value="FOOTBALL" className="bg-[#040221]">Football</option>
-                <option value="BASKETBALL" className="bg-[#040221]">Basketball</option>
+                {Object.keys(SPORT_CONFIG).map(sportKey => (
+                  <option key={sportKey} value={sportKey} className="bg-[#040221]">{SPORT_CONFIG[sportKey].label}</option>
+                ))}
               </select>
               <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
             </div>
@@ -212,7 +245,7 @@ export default function ScannerPage() {
             <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80 pl-4" />
           </div>
 
-          {/* AUTO-COMPLÉTION POUR LES CLUBS */}
+          {/* CLUB */}
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club</label>
             <div className="relative flex items-center">
@@ -233,7 +266,6 @@ export default function ScannerPage() {
               <Search className="absolute right-4 text-[#AFFF25] pointer-events-none" size={16} />
             </div>
             
-            {/* Menu Déroulant des suggestions de clubs */}
             {showClubSuggestions && formData.club && filteredClubs.length > 0 && (
               <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25]/50 rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl">
                 {filteredClubs.slice(0, 20).map((c: any) => (
@@ -257,27 +289,39 @@ export default function ScannerPage() {
         <h2 className="text-2xl font-black italic tracking-tighter text-white pt-6">Carte</h2>
         
         <div className="space-y-4">
+          
+          {/* BRAND (DEPUIS LE JSON DYNAMIQUE) */}
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Brand</label>
             <div className="relative flex items-center">
               {formData.brand && (
-                <img src={`/asset/brands/${formData.brand.toLowerCase()}.png`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Brand" />
+                <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Brand" />
               )}
-              <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 ${formData.brand ? 'pl-12' : 'pl-4'}`}>
+              <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value, series: ''})} className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 ${formData.brand ? 'pl-12' : 'pl-4'}`}>
                 <option value="" className="bg-[#040221]">Sélectionne un fabricant</option>
-                <option value="TOPPS" className="bg-[#040221]">TOPPS</option>
-                <option value="PANINI" className="bg-[#040221]">PANINI</option>
+                {availableBrands.map((b: any, i: number) => (
+                  <option key={i} value={b.name} className="bg-[#040221]">{b.name}</option>
+                ))}
               </select>
               <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
             </div>
           </div>
 
+          {/* SET (DYNAMIQUE SELON BRAND + SPORT) */}
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Set</label>
-            <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4">
-              <option value="" className="bg-[#040221]">Sélectionne la collection</option>
-              <option value="CHROME" className="bg-[#040221]">CHROME</option>
-              <option value="PRIZM" className="bg-[#040221]">PRIZM</option>
+            <select 
+              value={formData.series} 
+              onChange={e => setFormData({...formData, series: e.target.value})} 
+              disabled={!formData.brand || !formData.sport}
+              className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4 disabled:opacity-50 disabled:border-white/20`}
+            >
+              <option value="" className="bg-[#040221]">
+                {!formData.sport || !formData.brand ? "Choisis d'abord un sport et un fabricant" : "Sélectionne la collection"}
+              </option>
+              {availableSets.map((setName: string, i: number) => (
+                <option key={i} value={setName} className="bg-[#040221]">{setName}</option>
+              ))}
             </select>
             <ChevronDown className="absolute right-4 bottom-3 text-white/50 pointer-events-none" size={16} />
           </div>
