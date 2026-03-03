@@ -1,16 +1,24 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/request';
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
-  // On vérifie si une session active existe
+  // 1. On rafraîchit la session (indispensable pour éviter la boucle)
   const { data: { session } } = await supabase.auth.getSession();
 
-  // Si pas de session et qu'on n'est pas déjà sur login/auth -> Direction Login
-  if (!session && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/auth')) {
+  const isLoginPage = req.nextUrl.pathname.startsWith('/login');
+  const isAuthCallback = req.nextUrl.pathname.startsWith('/auth');
+
+  // 2. Si l'utilisateur est connecté et essaie d'aller sur /login -> On l'envoie sur l'accueil
+  if (session && isLoginPage) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
+  // 3. Si l'utilisateur n'est PAS connecté et n'est pas sur une page d'auth -> Direction /login
+  if (!session && !isLoginPage && !isAuthCallback) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
@@ -18,5 +26,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico).*)'],
 };
