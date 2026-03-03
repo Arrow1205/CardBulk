@@ -1,23 +1,21 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/request';
+import type { NextRequest } from 'next/server'; // C'était "next/request" avant
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
-  // 1. On rafraîchit la session (indispensable pour éviter la boucle)
+  // On rafraîchit la session pour éviter la boucle infinie
   const { data: { session } } = await supabase.auth.getSession();
 
   const isLoginPage = req.nextUrl.pathname.startsWith('/login');
   const isAuthCallback = req.nextUrl.pathname.startsWith('/auth');
 
-  // 2. Si l'utilisateur est connecté et essaie d'aller sur /login -> On l'envoie sur l'accueil
   if (session && isLoginPage) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  // 3. Si l'utilisateur n'est PAS connecté et n'est pas sur une page d'auth -> Direction /login
   if (!session && !isLoginPage && !isAuthCallback) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
