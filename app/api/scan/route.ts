@@ -13,16 +13,17 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const imageBuffer = await image.arrayBuffer();
 
-    const prompt = `Analyse cette carte de collection et renvoie UNIQUEMENT un JSON :
+    const prompt = `Analyse cette carte de collection. 
+    Réponds UNIQUEMENT avec un objet JSON strict, sans texte avant ou après, sous ce format :
     {
       "playerName": "Prénom Nom",
-      "brand": "Marque (ex: Topps, Panini)",
-      "series": "Collection (ex: Chrome, Prizm)",
+      "brand": "Marque",
+      "series": "Collection",
       "year": 2024,
-      "is_rookie": true/false,
-      "is_auto": true/false,
-      "is_numbered": true/false,
-      "numbering_max": 50 (si écrit 1/50, sinon null)
+      "is_rookie": true,
+      "is_auto": false,
+      "is_numbered": true,
+      "numbering_max": 50
     }`;
 
     const result = await model.generateContent([
@@ -31,10 +32,15 @@ export async function POST(req: Request) {
     ]);
 
     const response = await result.response;
-    const text = response.text().replace(/```json|```/g, "");
-    return NextResponse.json(JSON.parse(text));
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Échec de l'analyse" }, { status: 500 });
+    let text = response.text();
+    
+    // NETTOYAGE CRUCIAL : Enlève les balises ```json ou le texte parasite
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("Format JSON non trouvé");
+    
+    return NextResponse.json(JSON.parse(jsonMatch[0]));
+  } catch (error: any) {
+    console.error("Erreur API Scan:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
