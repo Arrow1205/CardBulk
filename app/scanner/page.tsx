@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown } from 'lucide-react';
 
-// IMPORT DE TA NOUVELLE LISTE JSON (Assure-toi que le fichier existe bien !)
+// IMPORT DE TA NOUVELLE LISTE JSON (Assure-toi que le fichier existe bien dans le dossier data !)
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 
 export default function ScannerPage() {
@@ -98,9 +98,10 @@ export default function ScannerPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        alert("❌ Tu dois être connecté pour sauvegarder une carte.");
-        setLoading(false);
-        return;
+        // Redirection vers la page de login si non connecté
+        alert("Tu dois créer un compte ou te connecter pour sauvegarder tes cartes !");
+        router.push('/login'); 
+        return; // On arrête l'exécution ici
       }
       
       const { error } = await supabase.from('cards').insert([{
