@@ -1,37 +1,40 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-export const maxDuration = 30; // Force Vercel à tenir 30s (indispensable pour l'IA)
-export const dynamic = 'force-dynamic';
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      console.error("ERREUR: Clé GEMINI_API_KEY manquante dans Vercel");
-      return NextResponse.json({ error: "Clé API non configurée" }, { status: 500 });
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
     const formData = await req.formData();
     const image = formData.get("image") as File;
 
-    if (!image) return NextResponse.json({ error: "Image manquante" }, { status: 400 });
+    if (!image) return NextResponse.json({ error: "Pas d'image" }, { status: 400 });
 
-    const bytes = await image.arrayBuffer();
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const imageBuffer = await image.arrayBuffer();
 
-    const prompt = `Analyse cette carte. Renvoie UNIQUEMENT un JSON: {"playerName": "NOM", "brand": "MARQUE", "series": "SET", "year": "ANNEE", "is_rookie": false, "is_auto": false, "is_numbered": false, "numbering_max": null}`;
+    const prompt = `Analyse cette carte de collection et renvoie UNIQUEMENT un JSON :
+    {
+      "playerName": "Prénom Nom",
+      "brand": "Marque (ex: Topps, Panini)",
+      "series": "Collection (ex: Chrome, Prizm)",
+      "year": 2024,
+      "is_rookie": true/false,
+      "is_auto": true/false,
+      "is_numbered": true/false,
+      "numbering_max": 50 (si écrit 1/50, sinon null)
+    }`;
 
     const result = await model.generateContent([
       prompt,
-      { inlineData: { data: Buffer.from(bytes).toString("base64"), mimeType: image.type } }
+      { inlineData: { data: Buffer.from(imageBuffer).toString("base64"), mimeType: image.type } }
     ]);
 
-    const text = result.response.text().replace(/```json|```/g, "").trim();
+    const response = await result.response;
+    const text = response.text().replace(/```json|```/g, "");
     return NextResponse.json(JSON.parse(text));
-  } catch (error: any) {
-    console.error("Détail Erreur Gemini:", error);
-    return NextResponse.json({ error: error.message }, { status: 403 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Échec de l'analyse" }, { status: 500 });
   }
 }
