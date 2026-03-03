@@ -13,69 +13,57 @@ export default function ScannerPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    sport: 'FOOTBALL',
+    sport: '',
     firstname: '',
     lastname: '',
     club: '',
-    brand: 'TOPPS',
-    series: 'CHROME',
-    year: '2025',
+    brand: '',
+    series: '',
+    year: '',
     is_auto: false,
     is_patch: false,
     is_rookie: false,
     is_numbered: false,
     num_low: '',
     num_high: '',
-    price: '50'
+    price: ''
   });
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
+    setPreviewUrl(URL.createObjectURL(file));
     setAnalyzing(true);
 
     try {
       const body = new FormData();
       body.append("image", file);
       
-      const res = await fetch("/api/scan", { method: "POST" }); // Correction: On envoie bien le body
-      const resWithBody = await fetch("/api/scan", { method: "POST", body });
-      const data = await resWithBody.json();
+      const res = await fetch("/api/scan", { method: "POST", body });
+      const data = await res.json();
 
-      if (data.error) {
-        alert(data.error);
-        setAnalyzing(false);
-        return;
-      }
-
-      // 🚨 LE MOUCHARD EST ICI : Il va afficher la réponse exacte de l'IA
-      alert("Réponse de l'IA : \n" + JSON.stringify(data, null, 2));
-
-      // On rend la détection plus souple au cas où l'IA change la casse
-      const rawName = data.playerName || data.player_name || data.name || data.PlayerName;
-
-      if (rawName) {
-        const parts = rawName.split(' ');
+      if (!data.error && data.playerName) {
+        const parts = data.playerName.split(' ');
         setFormData(prev => ({
           ...prev,
+          sport: data.sport?.toUpperCase() || prev.sport,
           firstname: parts[0]?.toUpperCase() || '',
           lastname: parts.slice(1).join(' ')?.toUpperCase() || '',
-          brand: (data.brand || data.Brand || '').toUpperCase() || 'TOPPS',
-          series: (data.series || data.Series || '').toUpperCase() || 'CHROME',
-          club: (data.club || data.Club || '').toUpperCase() || '',
-          is_rookie: !!(data.is_rookie || data.isRookie),
-          is_auto: !!(data.is_auto || data.isAuto),
-          is_numbered: !!(data.is_numbered || data.isNumbered),
-          num_high: (data.numbering_max || data.numberingMax || '')?.toString() || ''
+          club: data.club?.toUpperCase() || '',
+          brand: data.brand?.toUpperCase() || prev.brand,
+          series: data.series?.toUpperCase() || prev.series,
+          year: data.year?.toString() || prev.year,
+          is_auto: !!data.is_auto,
+          is_patch: !!data.is_patch,
+          is_rookie: !!data.is_rookie,
+          is_numbered: !!data.is_numbered,
+          num_low: data.num_low?.toString() || '',
+          num_high: data.num_high?.toString() || ''
         }));
-      } else {
-        alert("L'IA a répondu mais n'a pas trouvé le nom du joueur.");
       }
-    } catch (err: any) {
-      alert("Erreur de connexion pure. Impossible de lire la réponse.");
+    } catch (err) {
+      console.error("Échec silencieux du scan, passage en manuel.");
     } finally {
       setAnalyzing(false);
     }
@@ -89,14 +77,14 @@ export default function ScannerPage() {
       user_id: user?.id,
       brand: formData.brand,
       series: formData.series,
-      year: parseInt(formData.year),
+      year: parseInt(formData.year) || null,
       is_rookie: formData.is_rookie,
       is_auto: formData.is_auto,
       is_patch: formData.is_patch,
       is_numbered: formData.is_numbered,
       numbering_low: parseInt(formData.num_low) || null,
       numbering_max: parseInt(formData.num_high) || null,
-      purchase_price: parseFloat(formData.price),
+      purchase_price: parseFloat(formData.price) || 0,
       image_url: previewUrl,
       club_name: formData.club
     }]);
@@ -107,85 +95,156 @@ export default function ScannerPage() {
 
   return (
     <div className="min-h-screen bg-[#040221] text-white p-6 pb-24 overflow-y-auto font-sans">
-      <header className="flex items-center justify-between mb-8">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10"><ChevronLeft size={20} /></button>
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none text-center">AJOUTER</h1>
+      {/* Header */}
+      <header className="flex items-center justify-between mb-6">
+        <button onClick={() => router.back()} className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center border border-white/20">
+          <ChevronLeft size={20} />
+        </button>
+        <div className="text-center">
+          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">AJOUTER</h1>
+          <p className="text-[#AFFF25] text-[10px] italic tracking-widest mt-1">Scan ou upload ta carte</p>
+        </div>
         <div className="w-10" />
       </header>
 
-      <div className="flex gap-2 p-1 bg-black/40 rounded-full border border-white/5 mb-8">
+      {/* Toggles */}
+      <div className="flex gap-2 p-1 bg-transparent rounded-full border border-white/20 mb-8 mx-4">
         <button className="flex-1 bg-[#AFFF25] text-black font-black italic py-2 rounded-full text-[11px] uppercase">Recto</button>
-        <button className="flex-1 text-white/40 font-black italic py-2 rounded-full text-[11px] uppercase">Verso</button>
+        <button className="flex-1 text-[#AFFF25] font-black italic py-2 rounded-full text-[11px] uppercase">Verso</button>
       </div>
 
-      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[260px] mx-auto rounded-[32px] border-2 border-dashed border-[#AFFF25]/30 bg-white/5 flex flex-col items-center justify-center overflow-hidden mb-10 shadow-[0_0_50px_rgba(175,255,37,0.1)]">
-        {previewUrl ? <img src={previewUrl} className="w-full h-full object-cover" /> : (
-          <div className="text-center space-y-3">
-            <button className="bg-white/5 border border-white/10 px-8 py-2 rounded-full text-[10px] font-black uppercase italic tracking-widest">App photo</button>
-            <button className="bg-white/5 border border-white/10 px-8 py-2 rounded-full text-[10px] font-black uppercase italic block mx-auto tracking-widest">Bibliothèque</button>
+      {/* Zone Photo */}
+      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[4/3] w-full max-w-[280px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-6 cursor-pointer">
+        {/* Coins style focus appareil photo */}
+        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#AFFF25]"></div>
+        <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#AFFF25]"></div>
+        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#AFFF25]"></div>
+        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#AFFF25]"></div>
+
+        {previewUrl ? <img src={previewUrl} className="w-[90%] h-[90%] object-cover rounded-xl" /> : (
+          <div className="text-center space-y-4">
+            <div className="border border-white/40 px-6 py-2 rounded-full text-[11px] font-medium text-white/80">App photo</div>
+            <div className="border border-white/40 px-6 py-2 rounded-full text-[11px] font-medium text-white/80">Bibliothèque</div>
           </div>
         )}
+        
         {analyzing && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-[#AFFF25]">
-            <Loader2 className="animate-spin mb-2" />
-            <p className="text-[10px] font-black uppercase italic tracking-widest animate-pulse">Analyse en cours !</p>
+          <div className="absolute inset-0 bg-[#040221]/80 flex flex-col items-center justify-center">
+             <Loader2 className="animate-spin text-[#AFFF25] mb-2" />
           </div>
         )}
+      </div>
+      
+      {/* Texte Analyse */}
+      <div className="text-center mb-10 h-4">
+         {analyzing && <span className="text-[#AFFF25] text-[11px] italic tracking-widest animate-pulse">Analyse en cours !</span>}
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-2xl font-black italic uppercase tracking-tighter leading-none">Joueur</h2>
-        <div className="grid grid-cols-1 gap-4">
-          <div className="bg-[#080531] border border-white/10 p-4 rounded-2xl">
-            <label className="text-[9px] text-white/30 font-bold uppercase block mb-1">Prénom</label>
-            <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} className="bg-transparent w-full font-bold uppercase outline-none" />
+        <h2 className="text-2xl font-black italic tracking-tighter text-white">Joueur</h2>
+        
+        <div className="space-y-4">
+          <div className="relative">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
+            <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
+              <option value="" className="bg-[#040221]">Sélectionne le sport</option>
+              <option value="FOOTBALL" className="bg-[#040221]">Football</option>
+              <option value="BASKETBALL" className="bg-[#040221]">Basketball</option>
+            </select>
+            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
           </div>
-          <div className="bg-[#080531] border border-white/10 p-4 rounded-2xl">
-            <label className="text-[9px] text-white/30 font-bold uppercase block mb-1">Nom</label>
-            <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} className="bg-transparent w-full font-bold uppercase outline-none" />
+
+          <div>
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Prénom</label>
+            <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80" />
           </div>
-          <div className="bg-[#080531] border border-white/10 p-4 rounded-2xl relative">
-            <label className="text-[9px] text-white/30 font-bold uppercase block mb-1">Club</label>
-            <input value={formData.club} onChange={e => setFormData({...formData, club: e.target.value.toUpperCase()})} className="bg-transparent w-full font-bold uppercase outline-none" />
-            <Search className="absolute right-4 bottom-4 text-white/20" size={16} />
+
+          <div>
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Nom</label>
+            <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80" />
+          </div>
+
+          <div className="relative">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club</label>
+            <input value={formData.club} onChange={e => setFormData({...formData, club: e.target.value.toUpperCase()})} placeholder="Recherche un club" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80" />
+            <Search className="absolute right-4 bottom-3 text-[#AFFF25]" size={16} />
           </div>
         </div>
 
-        <h2 className="text-2xl font-black italic uppercase tracking-tighter pt-4 leading-none">Carte</h2>
-        <div className="space-y-6">
-          {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE'].map((l) => {
-            const k = l === 'NUMÉROTÉE' ? 'is_numbered' : `is_${l.toLowerCase()}`;
-            return (
-              <div key={l} className="flex justify-between items-center">
-                <span className="font-black italic uppercase text-xs tracking-widest">{l}</span>
-                <button onClick={() => setFormData({...formData, [k]: !formData[k as keyof typeof formData]})} className={`w-12 h-6 rounded-full relative transition-all ${formData[k as keyof typeof formData] ? 'bg-[#AFFF25]' : 'bg-white/10'}`}>
-                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${formData[k as keyof typeof formData] ? 'right-1 shadow-[0_0_10px_#fff]' : 'left-1'}`} />
-                </button>
-              </div>
-            )
-          })}
-          <div className="flex items-end gap-4">
-            <div className="flex-1 bg-[#080531] border border-white/10 p-4 rounded-2xl">
-              <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} className="bg-transparent w-full font-bold text-center outline-none" placeholder="05" />
-            </div>
-            <span className="text-white/20 font-bold mb-4">/</span>
-            <div className="flex-1 bg-[#080531] border border-white/10 p-4 rounded-2xl">
-              <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} className="bg-transparent w-full font-bold text-center outline-none" placeholder="50" />
+        <h2 className="text-2xl font-black italic tracking-tighter text-white pt-6">Carte</h2>
+        
+        <div className="space-y-4">
+          <div className="relative">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Brand</label>
+            <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
+              <option value="" className="bg-[#040221]">Sélectionne un fabricant</option>
+              <option value="TOPPS" className="bg-[#040221]">TOPPS</option>
+              <option value="PANINI" className="bg-[#040221]">PANINI</option>
+            </select>
+            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+          </div>
+
+          <div className="relative">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Set</label>
+            <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
+              <option value="" className="bg-[#040221]">Sélectionne la collection</option>
+              <option value="CHROME" className="bg-[#040221]">CHROME</option>
+              <option value="PRIZM" className="bg-[#040221]">PRIZM</option>
+            </select>
+            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+          </div>
+
+          <div className="relative">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Année</label>
+            <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
+              <option value="" className="bg-[#040221]">Sélectionne l'année</option>
+              <option value="2024" className="bg-[#040221]">2024</option>
+              <option value="2023" className="bg-[#040221]">2023</option>
+              <option value="2022" className="bg-[#040221]">2022</option>
+            </select>
+            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+          </div>
+
+          {/* Toggles */}
+          <div className="space-y-5 pt-4">
+            {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE'].map((l) => {
+              const k = l === 'NUMÉROTÉE' ? 'is_numbered' : `is_${l.toLowerCase()}`;
+              const active = formData[k as keyof typeof formData];
+              return (
+                <div key={l} className="flex justify-between items-center">
+                  <span className="font-black tracking-widest text-sm">{l}</span>
+                  <button onClick={() => setFormData({...formData, [k]: !active})} className={`w-10 h-5 rounded-full relative transition-all border ${active ? 'border-[#AFFF25] bg-[#AFFF25]/20' : 'border-white/30'}`}>
+                    <div className={`absolute top-[2px] w-3.5 h-3.5 rounded-full transition-all ${active ? 'right-1 bg-[#AFFF25]' : 'left-1 bg-white/50'}`} />
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Numérotation */}
+          <div className="pt-2">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Numérotation</label>
+            <div className="flex items-center gap-4">
+              <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} placeholder="5" className="flex-1 bg-transparent border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none text-white/80" />
+              <span className="text-[#AFFF25] font-bold">/</span>
+              <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} placeholder="50" className="flex-1 bg-transparent border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none text-white/80" />
             </div>
           </div>
-          <div className="bg-[#080531] border border-[#AFFF25]/30 p-4 rounded-2xl flex justify-between items-center mt-6 shadow-[0_0_20px_rgba(175,255,37,0.05)]">
-            <div>
-              <label className="text-[9px] text-[#AFFF25] font-bold uppercase block mb-1">Prix d'achat</label>
-              <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="bg-transparent font-black text-xl outline-none" />
-            </div>
-            <span className="text-[#AFFF25] font-black text-xl italic">€</span>
+
+          <div className="pt-4">
+             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Prix d'achat</label>
+             <div className="relative">
+               <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="50" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-right pr-10 text-sm outline-none text-white/80" />
+               <span className="absolute right-4 bottom-3 text-[#AFFF25] font-bold">€</span>
+             </div>
           </div>
         </div>
 
-        <button onClick={saveCard} disabled={loading || analyzing} className="w-full bg-[#AFFF25] text-black font-black italic py-5 rounded-[24px] uppercase text-xl shadow-[0_20px_50px_rgba(175,255,37,0.2)] active:scale-95 transition-all mt-10">
+        <button onClick={saveCard} disabled={loading || analyzing} className="w-full bg-white/30 text-white font-bold py-4 rounded-full mt-8 active:scale-95 transition-all">
           {loading ? 'Sauvegarde...' : 'Enregistrer'}
         </button>
       </div>
+      
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
     </div>
   );
