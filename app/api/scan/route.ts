@@ -10,12 +10,11 @@ export async function POST(req: Request) {
 
     if (!image) return NextResponse.json({ error: "Pas d'image" }, { status: 400 });
 
-    // On utilise le nom de modèle le plus stable
+    // Correction du nom : on utilise le nom court standard
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const imageBuffer = await image.arrayBuffer();
 
-    const prompt = `Analyse cette carte de collection. 
-    Réponds UNIQUEMENT avec un JSON strict :
+    const prompt = `Analyse cette carte de collection. Réponds UNIQUEMENT avec un JSON strict :
     {
       "playerName": "Prénom Nom",
       "brand": "Marque",
