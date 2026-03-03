@@ -7,10 +7,12 @@ export async function GET(request: Request) {
   const code = requestUrl.searchParams.get('code');
 
   if (code) {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Force l'échange du code contre une session réelle
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // Redirige vers la racine absolue du site
-  return NextResponse.redirect(requestUrl.origin);
+  // URL de redirection après connexion réussie
+  return NextResponse.redirect(new URL('/', request.url));
 }
