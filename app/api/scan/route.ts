@@ -1,48 +1,46 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-
-// Utilisation de la clé API
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const image = formData.get("image") as File;
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!image) return NextResponse.json({ error: "Pas d'image" }, { status: 400 });
+    if (!image || !apiKey) {
+      return NextResponse.json({ error: "Image ou Clé API manquante" }, { status: 400 });
+    }
 
-    // On force l'utilisation du modèle flash le plus récent
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     const imageBuffer = await image.arrayBuffer();
+    const base64Image = Buffer.from(imageBuffer).toString("base64");
 
-    const prompt = `Analyse cette carte de sport. Renvoie UNIQUEMENT un JSON :
-    {
-      "playerName": "Prénom Nom",
-      "brand": "Marque",
-      "series": "Collection",
-      "year": 2024,
-      "is_rookie": true/false,
-      "is_auto": true/false,
-      "is_numbered": true/false,
-      "numbering_max": 50
-    }`;
+    // Appel direct à l'API REST de Google (plus fiable que le SDK)
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-    const result = await model.generateContent([
-      prompt,
-      { inlineData: { data: Buffer.from(imageBuffer).toString("base64"), mimeType: image.type } }
-    ]);
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: "Analyse cette carte. Renvoie UNIQUEMENT un JSON: { \"playerName\": \"Prénom Nom\", \"brand\": \"Marque\", \"series\": \"Collection\", \"year\": 2024, \"is_rookie\": true/false, \"is_auto\": true/false, \"is_numbered\": true/false, \"numbering_max\": 50 }" },
+            { inline_data: { mime_type: image.type, data: base64Image } }
+          ]
+        }]
+      })
+    });
 
-    const response = await result.response;
-    const text = response.text().replace(/```json|```/g, "").trim();
+    const data = await response.json();
     
-    // Tentative d'extraction du JSON au cas où il y aurait du texte parasite
-    const jsonStart = text.indexOf('{');
-    const jsonEnd = text.lastIndexOf('}') + 1;
-    const finalJson = text.substring(jsonStart, jsonEnd);
+    if (data.error) {
+       console.error("Erreur Google API:", data.error);
+       return NextResponse.json({ error: data.error.message }, { status: 500 });
+    }
 
-    return NextResponse.json(JSON.parse(finalJson));
+    const text = data.candidates[0].content.parts[0].text;
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
+    return NextResponse.json(JSON.parse(jsonMatch[0]));
   } catch (error: any) {
-    console.error("Erreur Gemini:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
