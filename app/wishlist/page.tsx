@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import CollectionCard from '@/components/CollectionCard';
 
+export const dynamic = 'force-dynamic';
 export default function WishlistPage() {
   const [cards, setCards] = useState<any[]>([]);
 

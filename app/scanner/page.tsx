@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Camera, Image as ImageIcon, Search, ChevronDown, Loader2 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
 export default function ScannerPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
