@@ -6,36 +6,14 @@ export async function POST(req: Request) {
     const image = formData.get("image") as File;
     const apiKey = process.env.GEMINI_API_KEY;
 
-    if (!apiKey) return NextResponse.json({ error: "❌ GEMINI_API_KEY introuvable." });
+    if (!apiKey) return NextResponse.json({ error: "❌ GEMINI_API_KEY introuvable sur Vercel." });
     if (!image) return NextResponse.json({ error: "❌ Aucune image reçue." });
 
     const buffer = await image.arrayBuffer();
     const base64 = Buffer.from(buffer).toString("base64");
 
-    // 1. AUTO-DÉCOUVERTE : On demande à Google les modèles auxquels ta clé a droit
-    const modelsReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-    const modelsData = await modelsReq.json();
-
-    let modelName = "gemini-1.5-flash"; // Valeur par défaut
-
-    if (modelsData.models) {
-        // On filtre pour trouver un modèle IA capable de lire des images
-        const availableModels = modelsData.models.filter((m: any) => 
-            m.supportedGenerationMethods?.includes("generateContent") &&
-            (m.name.includes("gemini-1.5") || m.name.includes("gemini-pro-vision"))
-        );
-
-        if (availableModels.length > 0) {
-            // On prend le premier modèle autorisé trouvé par ta clé
-            const flash = availableModels.find((m: any) => m.name.includes("flash"));
-            modelName = flash ? flash.name.replace("models/", "") : availableModels[0].name.replace("models/", "");
-        } else {
-            return NextResponse.json({ error: `❌ Ta clé API Google n'a accès à aucun modèle d'image. Crée une nouvelle clé sur Google AI Studio.` });
-        }
-    }
-
-    // 2. ANALYSE AVEC LE BON MODÈLE
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+    // 1. Appel REST direct et forcé sur le modèle flash en v1beta
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const res = await fetch(apiUrl, {
       method: 'POST',
@@ -52,8 +30,10 @@ export async function POST(req: Request) {
 
     const data = await res.json();
 
-    if (data.error) {
-      return NextResponse.json({ error: `❌ Google a bloqué le modèle ${modelName}: ${data.error.message}` });
+    // 🚨 2. SI GOOGLE REFUSE, ON AFFICHE SON MESSAGE D'ERREUR EXACT
+    if (!res.ok || data.error) {
+      const msg = data.error?.message || JSON.stringify(data);
+      return NextResponse.json({ error: `🚨 Refus de Google : ${msg}` });
     }
 
     const text = data.candidates[0].content.parts[0].text;
@@ -61,12 +41,12 @@ export async function POST(req: Request) {
     const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      return NextResponse.json({ error: `❌ L'IA a répondu avec du texte normal au lieu d'un code : ${text}` });
+      return NextResponse.json({ error: `❌ L'IA a répondu sans JSON : ${text}` });
     }
 
     return NextResponse.json(JSON.parse(jsonMatch[0]));
     
   } catch (error: any) {
-    return NextResponse.json({ error: `❌ Erreur Serveur : ${error.message}` });
+    return NextResponse.json({ error: `❌ Crash Serveur : ${error.message}` });
   }
 }
