@@ -6,9 +6,10 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
+  // On vérifie si une session active existe
   const { data: { session } } = await supabase.auth.getSession();
 
-  // Si l'utilisateur n'est pas connecté et qu'il n'est pas déjà sur la page login
+  // Si pas de session et qu'on n'est pas déjà sur login/auth -> Direction Login
   if (!session && !req.nextUrl.pathname.startsWith('/login') && !req.nextUrl.pathname.startsWith('/auth')) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
