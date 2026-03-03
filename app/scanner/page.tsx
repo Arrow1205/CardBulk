@@ -5,12 +5,19 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown } from 'lucide-react';
 
+// 📂 IMPORTATION DE TES FICHIERS DE DONNÉES JSON
+import FOOTBALL_CLUBS from '@/data/football-clubs.json';
+import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
+import SETS_DATA from '@/data/set.json';
+
 export default function ScannerPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const [showClubSuggestions, setShowClubSuggestions] = useState(false);
 
   const [formData, setFormData] = useState({
     sport: '',
@@ -28,6 +35,43 @@ export default function ScannerPage() {
     num_high: '',
     price: ''
   });
+
+  // 1. GÉNÉRATION DES ANNÉES (2027 à 1994)
+  const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
+
+  // 2. LOGIQUE DES CLUBS (Foot ou Basket)
+  const activeClubs = formData.sport === 'BASKETBALL' ? BASKETBALL_CLUBS : FOOTBALL_CLUBS;
+  
+  const filteredClubs = formData.club
+    ? activeClubs.filter(c => c.name.toLowerCase().includes(formData.club.toLowerCase()))
+    : [];
+
+  const currentClubObj = activeClubs.find(c => c.name.toUpperCase() === formData.club.toUpperCase());
+  const currentClubSlug = currentClubObj ? currentClubObj.slug : formData.club.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+
+  // 3. LOGIQUE DES MARQUES ET SETS (Depuis ton set.json)
+  const allBrands = SETS_DATA?.brands?.map(b => b.name.toUpperCase()) || [];
+  
+  let availableSets: string[] = [];
+  if (SETS_DATA?.brands) {
+    const selectedBrandData = SETS_DATA.brands.find(b => b.name.toUpperCase() === formData.brand.toUpperCase());
+    const brandsToExtract = selectedBrandData ? [selectedBrandData] : SETS_DATA.brands;
+
+    brandsToExtract.forEach(b => {
+      if (b.sports) {
+        Object.values(b.sports).forEach(sportSets => {
+          if (Array.isArray(sportSets)) availableSets.push(...sportSets);
+        });
+      }
+    });
+  }
+  availableSets = Array.from(new Set(availableSets)).sort(); // Supprime les doublons et trie par ordre alphabétique
+
+  // Vérifie si au moins 1 champ est rempli pour allumer le bouton "Enregistrer"
+  const isFormStarted = Object.values(formData).some(val => 
+    (typeof val === 'string' && val.trim() !== '') || 
+    (typeof val === 'boolean' && val === true)
+  );
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,6 +119,9 @@ export default function ScannerPage() {
     
     await supabase.from('cards').insert([{
       user_id: user?.id,
+      player_firstname: formData.firstname, // ✅ NOUVEAU
+      player_lastname: formData.lastname,   // ✅ NOUVEAU
+      sport: formData.sport,                // ✅ NOUVEAU
       brand: formData.brand,
       series: formData.series,
       year: parseInt(formData.year) || null,
@@ -93,9 +140,12 @@ export default function ScannerPage() {
     setLoading(false);
   };
 
+  const hideBrokenImage = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.style.display = 'none';
+  };
+
   return (
     <div className="min-h-screen bg-[#040221] text-white p-6 pb-24 overflow-y-auto font-sans">
-      {/* Header */}
       <header className="flex items-center justify-between mb-6">
         <button onClick={() => router.back()} className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center border border-white/20">
           <ChevronLeft size={20} />
@@ -107,15 +157,12 @@ export default function ScannerPage() {
         <div className="w-10" />
       </header>
 
-      {/* Toggles */}
       <div className="flex gap-2 p-1 bg-transparent rounded-full border border-white/20 mb-8 mx-4">
         <button className="flex-1 bg-[#AFFF25] text-black font-black italic py-2 rounded-full text-[11px] uppercase">Recto</button>
         <button className="flex-1 text-[#AFFF25] font-black italic py-2 rounded-full text-[11px] uppercase">Verso</button>
       </div>
 
-      {/* Zone Photo */}
       <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[4/3] w-full max-w-[280px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-6 cursor-pointer">
-        {/* Coins style focus appareil photo */}
         <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#AFFF25]"></div>
         <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#AFFF25]"></div>
         <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#AFFF25]"></div>
@@ -135,7 +182,6 @@ export default function ScannerPage() {
         )}
       </div>
       
-      {/* Texte Analyse */}
       <div className="text-center mb-10 h-4">
          {analyzing && <span className="text-[#AFFF25] text-[11px] italic tracking-widest animate-pulse">Analyse en cours !</span>}
       </div>
@@ -146,28 +192,67 @@ export default function ScannerPage() {
         <div className="space-y-4">
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
-            <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
-              <option value="" className="bg-[#040221]">Sélectionne le sport</option>
-              <option value="FOOTBALL" className="bg-[#040221]">Football</option>
-              <option value="BASKETBALL" className="bg-[#040221]">Basketball</option>
-            </select>
-            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+            <div className="relative flex items-center">
+              {formData.sport && (
+                <img src={`/asset/sports/${formData.sport.toLowerCase()}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />
+              )}
+              <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value})} className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 ${formData.sport ? 'pl-12' : 'pl-4'}`}>
+                <option value="" className="bg-[#040221]">Sélectionne le sport</option>
+                <option value="FOOTBALL" className="bg-[#040221]">Football</option>
+                <option value="BASKETBALL" className="bg-[#040221]">Basketball</option>
+              </select>
+              <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
+            </div>
           </div>
 
           <div>
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Prénom</label>
-            <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80" />
+            <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80 pl-4" />
           </div>
 
           <div>
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Nom</label>
-            <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80" />
+            <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom du joueur" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80 pl-4" />
           </div>
 
+          {/* AUTO-COMPLÉTION DES CLUBS AVEC SLUG */}
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club</label>
-            <input value={formData.club} onChange={e => setFormData({...formData, club: e.target.value.toUpperCase()})} placeholder="Recherche un club" className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80" />
-            <Search className="absolute right-4 bottom-3 text-[#AFFF25]" size={16} />
+            <div className="relative flex items-center">
+              {formData.club && (
+                <img src={`/asset/logo-club/${currentClubSlug}.svg`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Club" />
+              )}
+              <input 
+                value={formData.club} 
+                onChange={e => {
+                  setFormData({...formData, club: e.target.value.toUpperCase()});
+                  setShowClubSuggestions(true);
+                }} 
+                onFocus={() => setShowClubSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowClubSuggestions(false), 200)}
+                placeholder="Recherche un club" 
+                className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80 ${formData.club ? 'pl-12' : 'pl-4'}`} 
+              />
+              <Search className="absolute right-4 text-[#AFFF25] pointer-events-none" size={16} />
+            </div>
+            
+            {showClubSuggestions && formData.club && filteredClubs.length > 0 && (
+              <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25]/50 rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl">
+                {filteredClubs.slice(0, 20).map(c => (
+                  <li 
+                    key={c.id} 
+                    onClick={() => {
+                      setFormData({...formData, club: c.name.toUpperCase()});
+                      setShowClubSuggestions(false);
+                    }}
+                    className="p-3 hover:bg-[#AFFF25]/10 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
+                  >
+                    <img src={`/asset/logo-club/${c.slug}.svg`} onError={hideBrokenImage} className="w-6 h-6 object-contain" />
+                    <span className="text-sm font-bold uppercase">{c.name}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
 
@@ -176,42 +261,48 @@ export default function ScannerPage() {
         <div className="space-y-4">
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Brand</label>
-            <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
-              <option value="" className="bg-[#040221]">Sélectionne un fabricant</option>
-              <option value="TOPPS" className="bg-[#040221]">TOPPS</option>
-              <option value="PANINI" className="bg-[#040221]">PANINI</option>
-            </select>
-            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+            <div className="relative flex items-center">
+              {formData.brand && (
+                <img src={`/asset/brands/${formData.brand.toLowerCase().replace(/\s+/g, '-')}.png`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Brand" />
+              )}
+              <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 ${formData.brand ? 'pl-12' : 'pl-4'}`}>
+                <option value="" className="bg-[#040221]">Sélectionne un fabricant</option>
+                {allBrands.map((brandName) => (
+                  <option key={brandName} value={brandName} className="bg-[#040221]">{brandName}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
+            </div>
           </div>
 
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Set</label>
-            <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
+            <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4">
               <option value="" className="bg-[#040221]">Sélectionne la collection</option>
-              <option value="CHROME" className="bg-[#040221]">CHROME</option>
-              <option value="PRIZM" className="bg-[#040221]">PRIZM</option>
+              {availableSets.map((set) => (
+                <option key={set} value={set} className="bg-[#040221]">{set}</option>
+              ))}
             </select>
-            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+            <ChevronDown className="absolute right-4 bottom-3 text-white/50 pointer-events-none" size={16} />
           </div>
 
           <div className="relative">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Année</label>
-            <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80">
+            <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-transparent border border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4">
               <option value="" className="bg-[#040221]">Sélectionne l'année</option>
-              <option value="2024" className="bg-[#040221]">2024</option>
-              <option value="2023" className="bg-[#040221]">2023</option>
-              <option value="2022" className="bg-[#040221]">2022</option>
+              {yearsList.map(year => (
+                <option key={year} value={year} className="bg-[#040221]">{year}</option>
+              ))}
             </select>
-            <ChevronDown className="absolute right-4 bottom-3 text-white/50" size={16} />
+            <ChevronDown className="absolute right-4 bottom-3 text-white/50 pointer-events-none" size={16} />
           </div>
 
-          {/* Toggles */}
           <div className="space-y-5 pt-4">
             {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE'].map((l) => {
               const k = l === 'NUMÉROTÉE' ? 'is_numbered' : `is_${l.toLowerCase()}`;
               const active = formData[k as keyof typeof formData];
               return (
-                <div key={l} className="flex justify-between items-center">
+                <div key={l} className="flex justify-between items-center px-1">
                   <span className="font-black tracking-widest text-sm">{l}</span>
                   <button onClick={() => setFormData({...formData, [k]: !active})} className={`w-10 h-5 rounded-full relative transition-all border ${active ? 'border-[#AFFF25] bg-[#AFFF25]/20' : 'border-white/30'}`}>
                     <div className={`absolute top-[2px] w-3.5 h-3.5 rounded-full transition-all ${active ? 'right-1 bg-[#AFFF25]' : 'left-1 bg-white/50'}`} />
@@ -221,7 +312,6 @@ export default function ScannerPage() {
             })}
           </div>
 
-          {/* Numérotation */}
           <div className="pt-2">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Numérotation</label>
             <div className="flex items-center gap-4">
@@ -240,7 +330,15 @@ export default function ScannerPage() {
           </div>
         </div>
 
-        <button onClick={saveCard} disabled={loading || analyzing} className="w-full bg-white/30 text-white font-bold py-4 rounded-full mt-8 active:scale-95 transition-all">
+        <button 
+          onClick={saveCard} 
+          disabled={loading || analyzing || !isFormStarted} 
+          className={`w-full font-black italic py-4 rounded-full mt-8 uppercase tracking-widest transition-all ${
+            isFormStarted 
+              ? 'bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] active:scale-95' 
+              : 'bg-white/10 text-white/30 cursor-not-allowed'
+          }`}
+        >
           {loading ? 'Sauvegarde...' : 'Enregistrer'}
         </button>
       </div>

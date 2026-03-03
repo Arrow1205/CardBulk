@@ -1,0 +1,182 @@
+[
+  {
+    "id": "atlanta-hawks",
+    "name": "Atlanta Hawks",
+    "slug": "atlanta-hawks",
+    "conference": "east"
+  },
+  {
+    "id": "boston-celtics",
+    "name": "Boston Celtics",
+    "slug": "boston-celtics",
+    "conference": "east"
+  },
+  {
+    "id": "brooklyn-nets",
+    "name": "Brooklyn Nets",
+    "slug": "brooklyn-nets",
+    "conference": "east"
+  },
+  {
+    "id": "charlotte-hornets",
+    "name": "Charlotte Hornets",
+    "slug": "charlotte-hornets",
+    "conference": "east"
+  },
+  {
+    "id": "chicago-bulls",
+    "name": "Chicago Bulls",
+    "slug": "chicago-bulls",
+    "conference": "east"
+  },
+  {
+    "id": "cleveland-cavaliers",
+    "name": "Cleveland Cavaliers",
+    "slug": "cleveland-cavaliers",
+    "conference": "east"
+  },
+  {
+    "id": "dallas-mavericks",
+    "name": "Dallas Mavericks",
+    "slug": "dallas-mavericks",
+    "conference": "west"
+  },
+  {
+    "id": "denver-nuggets",
+    "name": "Denver Nuggets",
+    "slug": "denver-nuggets",
+    "conference": "west"
+  },
+  {
+    "id": "detroit-pistons",
+    "name": "Detroit Pistons",
+    "slug": "detroit-pistons",
+    "conference": "east"
+  },
+  {
+    "id": "golden-state-warriors",
+    "name": "Golden State Warriors",
+    "slug": "golden-state-warriors",
+    "conference": "west"
+  },
+  {
+    "id": "houston-rockets",
+    "name": "Houston Rockets",
+    "slug": "houston-rockets",
+    "conference": "west"
+  },
+  {
+    "id": "indiana-pacers",
+    "name": "Indiana Pacers",
+    "slug": "indiana-pacers",
+    "conference": "east"
+  },
+  {
+    "id": "la-clippers",
+    "name": "LA Clippers",
+    "slug": "la-clippers",
+    "conference": "west"
+  },
+  {
+    "id": "los-angeles-lakers",
+    "name": "Los Angeles Lakers",
+    "slug": "los-angeles-lakers",
+    "conference": "west"
+  },
+  {
+    "id": "memphis-grizzlies",
+    "name": "Memphis Grizzlies",
+    "slug": "memphis-grizzlies",
+    "conference": "west"
+  },
+  {
+    "id": "miami-heat",
+    "name": "Miami Heat",
+    "slug": "miami-heat",
+    "conference": "east"
+  },
+  {
+    "id": "milwaukee-bucks",
+    "name": "Milwaukee Bucks",
+    "slug": "milwaukee-bucks",
+    "conference": "east"
+  },
+  {
+    "id": "minnesota-timberwolves",
+    "name": "Minnesota Timberwolves",
+    "slug": "minnesota-timberwolves",
+    "conference": "west"
+  },
+  {
+    "id": "new-orleans-pelicans",
+    "name": "New Orleans Pelicans",
+    "slug": "new-orleans-pelicans",
+    "conference": "west"
+  },
+  {
+    "id": "new-york-knicks",
+    "name": "New York Knicks",
+    "slug": "new-york-knicks",
+    "conference": "east"
+  },
+  {
+    "id": "oklahoma-city-thunder",
+    "name": "Oklahoma City Thunder",
+    "slug": "oklahoma-city-thunder",
+    "conference": "west"
+  },
+  {
+    "id": "orlando-magic",
+    "name": "Orlando Magic",
+    "slug": "orlando-magic",
+    "conference": "east"
+  },
+  {
+    "id": "philadelphia-76ers",
+    "name": "Philadelphia 76ers",
+    "slug": "philadelphia-76ers",
+    "conference": "east"
+  },
+  {
+    "id": "phoenix-suns",
+    "name": "Phoenix Suns",
+    "slug": "phoenix-suns",
+    "conference": "west"
+  },
+  {
+    "id": "portland-trail-blazers",
+    "name": "Portland Trail Blazers",
+    "slug": "portland-trail-blazers",
+    "conference": "west"
+  },
+  {
+    "id": "sacramento-kings",
+    "name": "Sacramento Kings",
+    "slug": "sacramento-kings",
+    "conference": "west"
+  },
+  {
+    "id": "san-antonio-spurs",
+    "name": "San Antonio Spurs",
+    "slug": "san-antonio-spurs",
+    "conference": "west"
+  },
+  {
+    "id": "toronto-raptors",
+    "name": "Toronto Raptors",
+    "slug": "toronto-raptors",
+    "conference": "east"
+  },
+  {
+    "id": "utah-jazz",
+    "name": "Utah Jazz",
+    "slug": "utah-jazz",
+    "conference": "west"
+  },
+  {
+    "id": "washington-wizards",
+    "name": "Washington Wizards",
+    "slug": "washington-wizards",
+    "conference": "east"
+  }
+]

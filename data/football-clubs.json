@@ -1,0 +1,1202 @@
+[
+  {
+    "id": "aberdeen",
+    "name": "Aberdeen",
+    "slug": "aberdeen"
+  },
+  {
+    "id": "aek-athens",
+    "name": "AEK Athens",
+    "slug": "aek-athens"
+  },
+  {
+    "id": "aek-larnaca",
+    "name": "AEK Larnaca",
+    "slug": "aek-larnaca"
+  },
+  {
+    "id": "ajax",
+    "name": "Ajax",
+    "slug": "ajax"
+  },
+  {
+    "id": "al-ahli",
+    "name": "Al Ahli",
+    "slug": "al-ahli"
+  },
+  {
+    "id": "al-ettifaq",
+    "name": "Al Ettifaq",
+    "slug": "al-ettifaq"
+  },
+  {
+    "id": "al-fateh",
+    "name": "Al Fateh",
+    "slug": "al-fateh"
+  },
+  {
+    "id": "al-fayha",
+    "name": "Al Fayha",
+    "slug": "al-fayha"
+  },
+  {
+    "id": "al-hazem",
+    "name": "Al Hazem",
+    "slug": "al-hazem"
+  },
+  {
+    "id": "al-hilal",
+    "name": "Al Hilal",
+    "slug": "al-hilal"
+  },
+  {
+    "id": "al-ittihad",
+    "name": "Al Ittihad",
+    "slug": "al-ittihad"
+  },
+  {
+    "id": "al-khaleej",
+    "name": "Al Khaleej",
+    "slug": "al-khaleej"
+  },
+  {
+    "id": "al-kholood",
+    "name": "Al Kholood",
+    "slug": "al-kholood"
+  },
+  {
+    "id": "al-najma",
+    "name": "Al Najma",
+    "slug": "al-najma"
+  },
+  {
+    "id": "al-nassr",
+    "name": "Al Nassr",
+    "slug": "al-nassr"
+  },
+  {
+    "id": "al-okhdood",
+    "name": "Al Okhdood",
+    "slug": "al-okhdood"
+  },
+  {
+    "id": "al-qadsiah",
+    "name": "Al Qadsiah",
+    "slug": "al-qadsiah"
+  },
+  {
+    "id": "al-riyadh",
+    "name": "Al Riyadh",
+    "slug": "al-riyadh"
+  },
+  {
+    "id": "al-shabab",
+    "name": "Al Shabab",
+    "slug": "al-shabab"
+  },
+  {
+    "id": "al-taawoun",
+    "name": "Al Taawoun",
+    "slug": "al-taawoun"
+  },
+  {
+    "id": "alverca",
+    "name": "Alverca",
+    "slug": "alverca"
+  },
+  {
+    "id": "angers",
+    "name": "Angers",
+    "slug": "angers"
+  },
+  {
+    "id": "arouca",
+    "name": "Arouca",
+    "slug": "arouca"
+  },
+  {
+    "id": "arsenal",
+    "name": "Arsenal",
+    "slug": "arsenal"
+  },
+  {
+    "id": "as-monaco",
+    "name": "AS Monaco",
+    "slug": "as-monaco"
+  },
+  {
+    "id": "aston-villa",
+    "name": "Aston Villa",
+    "slug": "aston-villa"
+  },
+  {
+    "id": "atalanta",
+    "name": "Atalanta",
+    "slug": "atalanta"
+  },
+  {
+    "id": "athletic-club",
+    "name": "Athletic Club",
+    "slug": "athletic-club"
+  },
+  {
+    "id": "atlanta-united",
+    "name": "Atlanta United",
+    "slug": "atlanta-united"
+  },
+  {
+    "id": "atletico-madrid",
+    "name": "Atletico Madrid",
+    "slug": "atletico-madrid"
+  },
+  {
+    "id": "augsburg",
+    "name": "Augsburg",
+    "slug": "augsburg"
+  },
+  {
+    "id": "austin-fc",
+    "name": "Austin FC",
+    "slug": "austin-fc"
+  },
+  {
+    "id": "auxerre",
+    "name": "Auxerre",
+    "slug": "auxerre"
+  },
+  {
+    "id": "avs-futebol-sad",
+    "name": "Avs Futebol Sad",
+    "slug": "avs-futebol-sad"
+  },
+  {
+    "id": "az-alkmaar",
+    "name": "Az Alkmaar",
+    "slug": "az-alkmaar"
+  },
+  {
+    "id": "barcelona",
+    "name": "Barcelona",
+    "slug": "barcelona"
+  },
+  {
+    "id": "basel",
+    "name": "Basel",
+    "slug": "basel"
+  },
+  {
+    "id": "bayer-leverkusen",
+    "name": "Bayer Leverkusen",
+    "slug": "bayer-leverkusen"
+  },
+  {
+    "id": "bayern-munchen",
+    "name": "Bayern Munchen",
+    "slug": "bayern-munchen"
+  },
+  {
+    "id": "benfica",
+    "name": "Benfica",
+    "slug": "benfica"
+  },
+  {
+    "id": "bodo-glimt",
+    "name": "Bodo Glimt",
+    "slug": "bodo-glimt"
+  },
+  {
+    "id": "bologna",
+    "name": "Bologna",
+    "slug": "bologna"
+  },
+  {
+    "id": "borussia-dortmund",
+    "name": "Borussia Dortmund",
+    "slug": "borussia-dortmund"
+  },
+  {
+    "id": "borussia-monchengladbach",
+    "name": "Borussia Monchengladbach",
+    "slug": "borussia-monchengladbach"
+  },
+  {
+    "id": "bournemouth",
+    "name": "Bournemouth",
+    "slug": "bournemouth"
+  },
+  {
+    "id": "brann",
+    "name": "Brann",
+    "slug": "brann"
+  },
+  {
+    "id": "breidablik",
+    "name": "Breidablik",
+    "slug": "breidablik"
+  },
+  {
+    "id": "brentford",
+    "name": "Brentford",
+    "slug": "brentford"
+  },
+  {
+    "id": "brest",
+    "name": "Brest",
+    "slug": "brest"
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton",
+    "slug": "brighton"
+  },
+  {
+    "id": "burnley",
+    "name": "Burnley",
+    "slug": "burnley"
+  },
+  {
+    "id": "cagliari",
+    "name": "Cagliari",
+    "slug": "cagliari"
+  },
+  {
+    "id": "casa-pia-ac",
+    "name": "Casa Pia AC",
+    "slug": "casa-pia-ac"
+  },
+  {
+    "id": "celje",
+    "name": "Celje",
+    "slug": "celje"
+  },
+  {
+    "id": "celta",
+    "name": "Celta",
+    "slug": "celta"
+  },
+  {
+    "id": "celtic",
+    "name": "Celtic",
+    "slug": "celtic"
+  },
+  {
+    "id": "cf-montreal",
+    "name": "CF Montreal",
+    "slug": "cf-montreal"
+  },
+  {
+    "id": "charlotte-fc",
+    "name": "Charlotte FC",
+    "slug": "charlotte-fc"
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea",
+    "slug": "chelsea"
+  },
+  {
+    "id": "chicago-fire-fc",
+    "name": "Chicago Fire FC",
+    "slug": "chicago-fire-fc"
+  },
+  {
+    "id": "club-brugge",
+    "name": "Club Brugge",
+    "slug": "club-brugge"
+  },
+  {
+    "id": "colorado-rapids",
+    "name": "Colorado Rapids",
+    "slug": "colorado-rapids"
+  },
+  {
+    "id": "columbus-crew",
+    "name": "Columbus Crew",
+    "slug": "columbus-crew"
+  },
+  {
+    "id": "como-1907",
+    "name": "Como 1907",
+    "slug": "como-1907"
+  },
+  {
+    "id": "copenhagen",
+    "name": "Copenhagen",
+    "slug": "copenhagen"
+  },
+  {
+    "id": "cremonese",
+    "name": "Cremonese",
+    "slug": "cremonese"
+  },
+  {
+    "id": "crvena-zvezda",
+    "name": "Crvena Zvezda",
+    "slug": "crvena-zvezda"
+  },
+  {
+    "id": "crystal-palace",
+    "name": "Crystal Palace",
+    "slug": "crystal-palace"
+  },
+  {
+    "id": "damac",
+    "name": "Damac",
+    "slug": "damac"
+  },
+  {
+    "id": "dc-united",
+    "name": "DC United",
+    "slug": "dc-united"
+  },
+  {
+    "id": "deportivo",
+    "name": "Deportivo",
+    "slug": "deportivo"
+  },
+  {
+    "id": "dinamo-zagreb",
+    "name": "Dinamo Zagreb",
+    "slug": "dinamo-zagreb"
+  },
+  {
+    "id": "drita",
+    "name": "Drita",
+    "slug": "drita"
+  },
+  {
+    "id": "dynamo-kyiv",
+    "name": "Dynamo Kyiv",
+    "slug": "dynamo-kyiv"
+  },
+  {
+    "id": "eintracht-frankfurt",
+    "name": "Eintracht Frankfurt",
+    "slug": "eintracht-frankfurt"
+  },
+  {
+    "id": "elche",
+    "name": "Elche",
+    "slug": "elche"
+  },
+  {
+    "id": "espanyol",
+    "name": "Espanyol",
+    "slug": "espanyol"
+  },
+  {
+    "id": "estoril",
+    "name": "Estoril",
+    "slug": "estoril"
+  },
+  {
+    "id": "estrela-da-amadora",
+    "name": "Estrela Da Amadora",
+    "slug": "estrela-da-amadora"
+  },
+  {
+    "id": "everton",
+    "name": "Everton",
+    "slug": "everton"
+  },
+  {
+    "id": "excelsior-rotterdam",
+    "name": "Excelsior Rotterdam",
+    "slug": "excelsior-rotterdam"
+  },
+  {
+    "id": "famalicao",
+    "name": "Famalicao",
+    "slug": "famalicao"
+  },
+  {
+    "id": "fc-cincinnati",
+    "name": "FC Cincinnati",
+    "slug": "fc-cincinnati"
+  },
+  {
+    "id": "fc-dallas",
+    "name": "FC Dallas",
+    "slug": "fc-dallas"
+  },
+  {
+    "id": "fc-groningen",
+    "name": "FC Groningen",
+    "slug": "fc-groningen"
+  },
+  {
+    "id": "fc-heidenheim",
+    "name": "FC Heidenheim",
+    "slug": "fc-heidenheim"
+  },
+  {
+    "id": "fc-metz",
+    "name": "FC Metz",
+    "slug": "fc-metz"
+  },
+  {
+    "id": "fc-porto",
+    "name": "FC Porto",
+    "slug": "fc-porto"
+  },
+  {
+    "id": "fc-utrecht",
+    "name": "FC Utrecht",
+    "slug": "fc-utrecht"
+  },
+  {
+    "id": "fenerbahce",
+    "name": "Fenerbahce",
+    "slug": "fenerbahce"
+  },
+  {
+    "id": "ferencvaros",
+    "name": "Ferencvaros",
+    "slug": "ferencvaros"
+  },
+  {
+    "id": "fesb",
+    "name": "Fesb",
+    "slug": "fesb"
+  },
+  {
+    "id": "feyenoord",
+    "name": "Feyenoord",
+    "slug": "feyenoord"
+  },
+  {
+    "id": "fiorentina",
+    "name": "Fiorentina",
+    "slug": "fiorentina"
+  },
+  {
+    "id": "fortuna-sittard",
+    "name": "Fortuna Sittard",
+    "slug": "fortuna-sittard"
+  },
+  {
+    "id": "freiburg",
+    "name": "Freiburg",
+    "slug": "freiburg"
+  },
+  {
+    "id": "fulham",
+    "name": "Fulham",
+    "slug": "fulham"
+  },
+  {
+    "id": "galatasaray",
+    "name": "Galatasaray",
+    "slug": "galatasaray"
+  },
+  {
+    "id": "genk",
+    "name": "Genk",
+    "slug": "genk"
+  },
+  {
+    "id": "genoa",
+    "name": "Genoa",
+    "slug": "genoa"
+  },
+  {
+    "id": "getafe",
+    "name": "Getafe",
+    "slug": "getafe"
+  },
+  {
+    "id": "gil-vicente",
+    "name": "Gil Vicente",
+    "slug": "gil-vicente"
+  },
+  {
+    "id": "girona",
+    "name": "Girona",
+    "slug": "girona"
+  },
+  {
+    "id": "go-ahead-eagles",
+    "name": "Go Ahead Eagles",
+    "slug": "go-ahead-eagles"
+  },
+  {
+    "id": "hacken",
+    "name": "Hacken",
+    "slug": "hacken"
+  },
+  {
+    "id": "hamburger-sv",
+    "name": "Hamburger SV",
+    "slug": "hamburger-sv"
+  },
+  {
+    "id": "hamrun-spartans",
+    "name": "Hamrun Spartans",
+    "slug": "hamrun-spartans"
+  },
+  {
+    "id": "heracles-almelo",
+    "name": "Heracles Almelo",
+    "slug": "heracles-almelo"
+  },
+  {
+    "id": "hoffenheim",
+    "name": "Hoffenheim",
+    "slug": "hoffenheim"
+  },
+  {
+    "id": "houston-dynamo",
+    "name": "Houston Dynamo",
+    "slug": "houston-dynamo"
+  },
+  {
+    "id": "iille",
+    "name": "Iille",
+    "slug": "iille"
+  },
+  {
+    "id": "inter",
+    "name": "Inter",
+    "slug": "inter"
+  },
+  {
+    "id": "inter-miami-cf",
+    "name": "Inter Miami CF",
+    "slug": "inter-miami-cf"
+  },
+  {
+    "id": "jagiellonia",
+    "name": "Jagiellonia",
+    "slug": "jagiellonia"
+  },
+  {
+    "id": "juventus",
+    "name": "Juventus",
+    "slug": "juventus"
+  },
+  {
+    "id": "kairat",
+    "name": "Kairat",
+    "slug": "kairat"
+  },
+  {
+    "id": "koln",
+    "name": "Koln",
+    "slug": "koln"
+  },
+  {
+    "id": "kups",
+    "name": "Kups",
+    "slug": "kups"
+  },
+  {
+    "id": "la-galaxy",
+    "name": "LA Galaxy",
+    "slug": "la-galaxy"
+  },
+  {
+    "id": "lausanne-sport",
+    "name": "Lausanne Sport",
+    "slug": "lausanne-sport"
+  },
+  {
+    "id": "lazio",
+    "name": "Lazio",
+    "slug": "lazio"
+  },
+  {
+    "id": "le-havre-ac",
+    "name": "Le Havre AC",
+    "slug": "le-havre-ac"
+  },
+  {
+    "id": "lecce",
+    "name": "Lecce",
+    "slug": "lecce"
+  },
+  {
+    "id": "lech-poznan",
+    "name": "Lech Poznan",
+    "slug": "lech-poznan"
+  },
+  {
+    "id": "leeds-united",
+    "name": "Leeds United",
+    "slug": "leeds-united"
+  },
+  {
+    "id": "legia-warszawa",
+    "name": "Legia Warszawa",
+    "slug": "legia-warszawa"
+  },
+  {
+    "id": "levante",
+    "name": "Levante",
+    "slug": "levante"
+  },
+  {
+    "id": "lincoln-red-imps",
+    "name": "Lincoln Red Imps",
+    "slug": "lincoln-red-imps"
+  },
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "slug": "liverpool"
+  },
+  {
+    "id": "lorient",
+    "name": "Lorient",
+    "slug": "lorient"
+  },
+  {
+    "id": "los-angeles-fc",
+    "name": "Los Angeles FC",
+    "slug": "los-angeles-fc"
+  },
+  {
+    "id": "ludogorets",
+    "name": "Ludogorets",
+    "slug": "ludogorets"
+  },
+  {
+    "id": "lyon",
+    "name": "Lyon",
+    "slug": "lyon"
+  },
+  {
+    "id": "m-tel-aviv",
+    "name": "M Tel Aviv",
+    "slug": "m-tel-aviv"
+  },
+  {
+    "id": "mainz-05",
+    "name": "Mainz 05",
+    "slug": "mainz-05"
+  },
+  {
+    "id": "mallorca",
+    "name": "Mallorca",
+    "slug": "mallorca"
+  },
+  {
+    "id": "malmo",
+    "name": "Malmo",
+    "slug": "malmo"
+  },
+  {
+    "id": "manchester-city",
+    "name": "Manchester City",
+    "slug": "manchester-city"
+  },
+  {
+    "id": "manchester-united",
+    "name": "Manchester United",
+    "slug": "manchester-united"
+  },
+  {
+    "id": "marseille",
+    "name": "Marseille",
+    "slug": "marseille"
+  },
+  {
+    "id": "midtjylland",
+    "name": "Midtjylland",
+    "slug": "midtjylland"
+  },
+  {
+    "id": "milan",
+    "name": "Milan",
+    "slug": "milan"
+  },
+  {
+    "id": "minnesota-united-fc",
+    "name": "Minnesota United FC",
+    "slug": "minnesota-united-fc"
+  },
+  {
+    "id": "moreirense",
+    "name": "Moreirense",
+    "slug": "moreirense"
+  },
+  {
+    "id": "nac-breda",
+    "name": "Nac Breda",
+    "slug": "nac-breda"
+  },
+  {
+    "id": "nacional-da-madeira",
+    "name": "Nacional Da Madeira",
+    "slug": "nacional-da-madeira"
+  },
+  {
+    "id": "nantes",
+    "name": "Nantes",
+    "slug": "nantes"
+  },
+  {
+    "id": "napoli",
+    "name": "Napoli",
+    "slug": "napoli"
+  },
+  {
+    "id": "nashville-sc",
+    "name": "Nashville SC",
+    "slug": "nashville-sc"
+  },
+  {
+    "id": "nec-nijmegen",
+    "name": "Nec Nijmegen",
+    "slug": "nec-nijmegen"
+  },
+  {
+    "id": "neom",
+    "name": "Neom",
+    "slug": "neom"
+  },
+  {
+    "id": "new-england-revolution",
+    "name": "New England Revolution",
+    "slug": "new-england-revolution"
+  },
+  {
+    "id": "new-york-city-fc",
+    "name": "New York City FC",
+    "slug": "new-york-city-fc"
+  },
+  {
+    "id": "new-york-red-bulls",
+    "name": "New York Red Bulls",
+    "slug": "new-york-red-bulls"
+  },
+  {
+    "id": "newcastle",
+    "name": "Newcastle",
+    "slug": "newcastle"
+  },
+  {
+    "id": "nice",
+    "name": "Nice",
+    "slug": "nice"
+  },
+  {
+    "id": "noah",
+    "name": "Noah",
+    "slug": "noah"
+  },
+  {
+    "id": "nottingham-forest",
+    "name": "Nottingham Forest",
+    "slug": "nottingham-forest"
+  },
+  {
+    "id": "olomouc",
+    "name": "Olomouc",
+    "slug": "olomouc"
+  },
+  {
+    "id": "olympiacos",
+    "name": "Olympiacos",
+    "slug": "olympiacos"
+  },
+  {
+    "id": "omonoia",
+    "name": "Omonoia",
+    "slug": "omonoia"
+  },
+  {
+    "id": "orlando-city",
+    "name": "Orlando City",
+    "slug": "orlando-city"
+  },
+  {
+    "id": "osasuna",
+    "name": "Osasuna",
+    "slug": "osasuna"
+  },
+  {
+    "id": "oviedo",
+    "name": "Oviedo",
+    "slug": "oviedo"
+  },
+  {
+    "id": "pafos",
+    "name": "Pafos",
+    "slug": "pafos"
+  },
+  {
+    "id": "panathinaikos",
+    "name": "Panathinaikos",
+    "slug": "panathinaikos"
+  },
+  {
+    "id": "paok",
+    "name": "Paok",
+    "slug": "paok"
+  },
+  {
+    "id": "paris-fc",
+    "name": "Paris FC",
+    "slug": "paris-fc"
+  },
+  {
+    "id": "paris-saint-germain",
+    "name": "Paris Saint Germain",
+    "slug": "paris-saint-germain"
+  },
+  {
+    "id": "parma",
+    "name": "Parma",
+    "slug": "parma"
+  },
+  {
+    "id": "pec-zwolle",
+    "name": "Pec Zwolle",
+    "slug": "pec-zwolle"
+  },
+  {
+    "id": "philadelphia-union",
+    "name": "Philadelphia Union",
+    "slug": "philadelphia-union"
+  },
+  {
+    "id": "pisa",
+    "name": "Pisa",
+    "slug": "pisa"
+  },
+  {
+    "id": "portland-timbers",
+    "name": "Portland Timbers",
+    "slug": "portland-timbers"
+  },
+  {
+    "id": "psv",
+    "name": "PSV",
+    "slug": "psv"
+  },
+  {
+    "id": "qarabag",
+    "name": "Qarabag",
+    "slug": "qarabag"
+  },
+  {
+    "id": "rakow",
+    "name": "Rakow",
+    "slug": "rakow"
+  },
+  {
+    "id": "rangers",
+    "name": "Rangers",
+    "slug": "rangers"
+  },
+  {
+    "id": "rapid-vienna",
+    "name": "Rapid Vienna",
+    "slug": "rapid-vienna"
+  },
+  {
+    "id": "rayo-vallecano",
+    "name": "Rayo Vallecano",
+    "slug": "rayo-vallecano"
+  },
+  {
+    "id": "rb-leipzig",
+    "name": "RB Leipzig",
+    "slug": "rb-leipzig"
+  },
+  {
+    "id": "rc-strasbourg-alsace",
+    "name": "RC Strasbourg Alsace",
+    "slug": "rc-strasbourg-alsace"
+  },
+  {
+    "id": "rce-lens",
+    "name": "Rce Lens",
+    "slug": "rce-lens"
+  },
+  {
+    "id": "real-betis",
+    "name": "Real Betis",
+    "slug": "real-betis"
+  },
+  {
+    "id": "real-madrid",
+    "name": "Real Madrid",
+    "slug": "real-madrid"
+  },
+  {
+    "id": "real-salt-lake",
+    "name": "Real Salt Lake",
+    "slug": "real-salt-lake"
+  },
+  {
+    "id": "real-sociedad",
+    "name": "Real Sociedad",
+    "slug": "real-sociedad"
+  },
+  {
+    "id": "rennes",
+    "name": "Rennes",
+    "slug": "rennes"
+  },
+  {
+    "id": "rijeka",
+    "name": "Rijeka",
+    "slug": "rijeka"
+  },
+  {
+    "id": "rio-ave",
+    "name": "Rio Ave",
+    "slug": "rio-ave"
+  },
+  {
+    "id": "roma",
+    "name": "Roma",
+    "slug": "roma"
+  },
+  {
+    "id": "s-bratislava",
+    "name": "S Bratislava",
+    "slug": "s-bratislava"
+  },
+  {
+    "id": "salzburg",
+    "name": "Salzburg",
+    "slug": "salzburg"
+  },
+  {
+    "id": "samsunspor",
+    "name": "Samsunspor",
+    "slug": "samsunspor"
+  },
+  {
+    "id": "san-diego-fc",
+    "name": "San Diego FC",
+    "slug": "san-diego-fc"
+  },
+  {
+    "id": "san-jose-earthquakes",
+    "name": "San Jose Earthquakes",
+    "slug": "san-jose-earthquakes"
+  },
+  {
+    "id": "santa-clara",
+    "name": "Santa Clara",
+    "slug": "santa-clara"
+  },
+  {
+    "id": "sassuolo",
+    "name": "Sassuolo",
+    "slug": "sassuolo"
+  },
+  {
+    "id": "sc-braga",
+    "name": "SC Braga",
+    "slug": "sc-braga"
+  },
+  {
+    "id": "sc-heerenveen",
+    "name": "SC Heerenveen",
+    "slug": "sc-heerenveen"
+  },
+  {
+    "id": "seattle-sounders-fc",
+    "name": "Seattle Sounders FC",
+    "slug": "seattle-sounders-fc"
+  },
+  {
+    "id": "sevilla",
+    "name": "Sevilla",
+    "slug": "sevilla"
+  },
+  {
+    "id": "shakhtar",
+    "name": "Shakhtar",
+    "slug": "shakhtar"
+  },
+  {
+    "id": "shamrock-rovers",
+    "name": "Shamrock Rovers",
+    "slug": "shamrock-rovers"
+  },
+  {
+    "id": "shelbourne",
+    "name": "Shelbourne",
+    "slug": "shelbourne"
+  },
+  {
+    "id": "shkendija",
+    "name": "Shkendija",
+    "slug": "shkendija"
+  },
+  {
+    "id": "slavia-praha",
+    "name": "Slavia Praha",
+    "slug": "slavia-praha"
+  },
+  {
+    "id": "sparta-praha",
+    "name": "Sparta Praha",
+    "slug": "sparta-praha"
+  },
+  {
+    "id": "sparta-rotterdam",
+    "name": "Sparta Rotterdam",
+    "slug": "sparta-rotterdam"
+  },
+  {
+    "id": "sporting-cp",
+    "name": "Sporting Cp",
+    "slug": "sporting-cp"
+  },
+  {
+    "id": "sporting-kansas-city",
+    "name": "Sporting Kansas City",
+    "slug": "sporting-kansas-city"
+  },
+  {
+    "id": "st-louis-city-sc",
+    "name": "ST Louis City SC",
+    "slug": "st-louis-city-sc"
+  },
+  {
+    "id": "st-pauli",
+    "name": "ST Pauli",
+    "slug": "st-pauli"
+  },
+  {
+    "id": "sturm-graz",
+    "name": "Sturm Graz",
+    "slug": "sturm-graz"
+  },
+  {
+    "id": "sunderland",
+    "name": "Sunderland",
+    "slug": "sunderland"
+  },
+  {
+    "id": "telstar",
+    "name": "Telstar",
+    "slug": "telstar"
+  },
+  {
+    "id": "tondela",
+    "name": "Tondela",
+    "slug": "tondela"
+  },
+  {
+    "id": "torino",
+    "name": "Torino",
+    "slug": "torino"
+  },
+  {
+    "id": "toronto-fc",
+    "name": "Toronto FC",
+    "slug": "toronto-fc"
+  },
+  {
+    "id": "tottenham",
+    "name": "Tottenham",
+    "slug": "tottenham"
+  },
+  {
+    "id": "toulouse",
+    "name": "Toulouse",
+    "slug": "toulouse"
+  },
+  {
+    "id": "twente",
+    "name": "Twente",
+    "slug": "twente"
+  },
+  {
+    "id": "u-craiova",
+    "name": "U Craiova",
+    "slug": "u-craiova"
+  },
+  {
+    "id": "udinese",
+    "name": "Udinese",
+    "slug": "udinese"
+  },
+  {
+    "id": "union-berlin",
+    "name": "Union Berlin",
+    "slug": "union-berlin"
+  },
+  {
+    "id": "union-saint-gilloise",
+    "name": "Union Saint Gilloise",
+    "slug": "union-saint-gilloise"
+  },
+  {
+    "id": "valencia",
+    "name": "Valencia",
+    "slug": "valencia"
+  },
+  {
+    "id": "vancouver-whitecaps-fc",
+    "name": "Vancouver Whitecaps FC",
+    "slug": "vancouver-whitecaps-fc"
+  },
+  {
+    "id": "verona",
+    "name": "Verona",
+    "slug": "verona"
+  },
+  {
+    "id": "vfb-stuttgart",
+    "name": "VFB Stuttgart",
+    "slug": "vfb-stuttgart"
+  },
+  {
+    "id": "viktoria-pizen",
+    "name": "Viktoria Pizen",
+    "slug": "viktoria-pizen"
+  },
+  {
+    "id": "villarreal",
+    "name": "Villarreal",
+    "slug": "villarreal"
+  },
+  {
+    "id": "vitoria-de-guimaraes",
+    "name": "Vitoria De Guimaraes",
+    "slug": "vitoria-de-guimaraes"
+  },
+  {
+    "id": "volendam",
+    "name": "Volendam",
+    "slug": "volendam"
+  },
+  {
+    "id": "werder-bremen",
+    "name": "Werder Bremen",
+    "slug": "werder-bremen"
+  },
+  {
+    "id": "west-ham",
+    "name": "West Ham",
+    "slug": "west-ham"
+  },
+  {
+    "id": "wolfsburg",
+    "name": "Wolfsburg",
+    "slug": "wolfsburg"
+  },
+  {
+    "id": "wolves",
+    "name": "Wolves",
+    "slug": "wolves"
+  },
+  {
+    "id": "young-boys",
+    "name": "Young Boys",
+    "slug": "young-boys"
+  },
+  {
+    "id": "zrinjski",
+    "name": "Zrinjski",
+    "slug": "zrinjski"
+  }
+]

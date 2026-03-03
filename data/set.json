@@ -1,0 +1,138 @@
+{
+  "brands": [
+    {
+      "name": "Topps",
+      "sports": {
+        "football_soccer": [
+          "Topps Chrome",
+          "Topps Chrome Sapphire",
+          "Topps Finest",
+          "Topps Museum Collection",
+          "Topps Tier One",
+          "Topps Dynasty",
+          "Topps Merlin",
+          "Topps Stadium Club",
+          "Topps UEFA Club Competitions",
+          "Topps Bundesliga",
+          "Topps MLS"
+        ],
+        "baseball": [
+          "Topps Series 1",
+          "Topps Series 2",
+          "Topps Update",
+          "Topps Chrome",
+          "Topps Chrome Sapphire",
+          "Topps Finest",
+          "Bowman",
+          "Bowman Chrome",
+          "Bowman Draft",
+          "Topps Heritage",
+          "Topps Stadium Club",
+          "Topps Allen & Ginter",
+          "Topps Tribute",
+          "Topps Dynasty"
+        ],
+        "american_football": [
+          "Topps Chrome (legacy)",
+          "Topps Finest (legacy)",
+          "Topps Triple Threads (legacy)"
+        ]
+      }
+    },
+    {
+      "name": "Panini",
+      "sports": {
+        "football_soccer": [
+          "Prizm",
+          "Select",
+          "Donruss",
+          "Donruss Optic",
+          "Immaculate",
+          "National Treasures",
+          "Obsidian",
+          "Chronicles",
+          "Revolution",
+          "Flawless",
+          "Spectra",
+          "Mosaic"
+        ],
+        "basketball_nba": [
+          "Prizm",
+          "Select",
+          "Donruss",
+          "Donruss Optic",
+          "Immaculate",
+          "National Treasures",
+          "Flawless",
+          "Obsidian",
+          "Spectra",
+          "Mosaic",
+          "Revolution",
+          "Court Kings",
+          "Hoops"
+        ],
+        "american_football_nfl": [
+          "Prizm",
+          "Select",
+          "Donruss",
+          "National Treasures",
+          "Immaculate",
+          "Flawless",
+          "Mosaic",
+          "Contenders"
+        ],
+        "baseball": [
+          "Donruss Baseball",
+          "Prizm Baseball",
+          "National Treasures Baseball"
+        ]
+      }
+    },
+    {
+      "name": "Upper Deck",
+      "sports": {
+        "hockey_nhl": [
+          "Upper Deck Series 1",
+          "Upper Deck Series 2",
+          "Upper Deck Extended",
+          "SP Authentic",
+          "The Cup",
+          "Trilogy",
+          "Ice",
+          "Black Diamond"
+        ],
+        "basketball_legacy": [
+          "Upper Deck",
+          "SP Authentic",
+          "Exquisite Collection"
+        ],
+        "american_football_legacy": [
+          "Upper Deck",
+          "SP Authentic"
+        ]
+      }
+    },
+    {
+      "name": "Leaf",
+      "sports": {
+        "multi_sport": [
+          "Leaf Metal",
+          "Leaf Trinity",
+          "Leaf Pro Set",
+          "Leaf Valiant",
+          "Leaf Ultimate Draft"
+        ]
+      }
+    },
+    {
+      "name": "DAKA",
+      "sports": {
+        "football_soccer": [
+          "DAKA Croatia",
+          "DAKA Serbia",
+          "DAKA National Team Editions"
+        ]
+      }
+    }
+  ]
+}
