@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { LayoutGrid, Trophy, Zap } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+
 export default function StatsPage() {
   const [totals, setTotals] = useState({ cards: 0, wishlist: 0 });
 
