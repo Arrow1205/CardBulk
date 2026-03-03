@@ -12,29 +12,8 @@ export async function POST(req: Request) {
     const buffer = await image.arrayBuffer();
     const base64 = Buffer.from(buffer).toString("base64");
 
-    // 1. AUTO-DÉCOUVERTE : On demande à Google les modèles auxquels ta clé a droit
-    const modelsReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-    const modelsData = await modelsReq.json();
-
-    let modelName = "gemini-1.5-flash"; // Valeur par défaut
-
-    if (modelsData.models) {
-        // On filtre pour trouver un modèle IA capable de lire des images
-        const availableModels = modelsData.models.filter((m: any) => 
-            m.supportedGenerationMethods?.includes("generateContent") &&
-            (m.name.includes("gemini-1.5") || m.name.includes("gemini-pro-vision"))
-        );
-
-        if (availableModels.length > 0) {
-            // On prend le premier modèle autorisé trouvé par ta clé
-            const flash = availableModels.find((m: any) => m.name.includes("flash"));
-            modelName = flash ? flash.name.replace("models/", "") : availableModels[0].name.replace("models/", "");
-        } else {
-            return NextResponse.json({ error: `❌ Ta clé API Google n'a accès à aucun modèle d'image. Crée une nouvelle clé sur Google AI Studio.` });
-        }
-    }
-
-    // 2. ANALYSE AVEC LE BON MODÈLE
+    // 🔥 LE COUPABLE EST CORRIGÉ ICI : On utilise le modèle présent dans ta liste !
+    const modelName = "gemini-2.5-flash"; 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
     const res = await fetch(apiUrl, {
@@ -53,7 +32,7 @@ export async function POST(req: Request) {
     const data = await res.json();
 
     if (data.error) {
-      return NextResponse.json({ error: `❌ Google a bloqué le modèle ${modelName}: ${data.error.message}` });
+      return NextResponse.json({ error: `❌ Refus de Google: ${data.error.message}` });
     }
 
     const text = data.candidates[0].content.parts[0].text;
@@ -61,7 +40,7 @@ export async function POST(req: Request) {
     const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      return NextResponse.json({ error: `❌ L'IA a répondu avec du texte normal au lieu d'un code : ${text}` });
+      return NextResponse.json({ error: `❌ L'IA a répondu avec du texte normal : ${text}` });
     }
 
     return NextResponse.json(JSON.parse(jsonMatch[0]));
