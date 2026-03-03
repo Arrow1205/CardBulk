@@ -7,12 +7,10 @@ export async function GET(request: Request) {
   const code = requestUrl.searchParams.get('code');
 
   if (code) {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-    // Cette ligne est CRUCIALE : elle transforme le code Google en session réelle
+    const supabase = createRouteHandlerClient({ cookies });
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  // On redirige vers l'accueil une fois la session créée
+  // Redirige vers la racine absolue du site
   return NextResponse.redirect(requestUrl.origin);
 }
