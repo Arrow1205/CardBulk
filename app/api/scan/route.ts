@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const imageBuffer = await image.arrayBuffer();
     const base64Image = Buffer.from(imageBuffer).toString("base64");
 
-    // Appel REST direct pour contourner les erreurs de SDK "Model not found"
+    // Appel REST direct à l'API v1beta (plus flexible sur les noms de modèles)
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const response = await fetch(apiUrl, {
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: "Analyse cette carte de sport. Renvoie UNIQUEMENT un JSON strict: { \"playerName\": \"Prénom Nom\", \"brand\": \"Marque\", \"series\": \"Collection\", \"year\": 2024, \"is_rookie\": true, \"is_auto\": false, \"is_numbered\": true, \"numbering_max\": 50, \"club\": \"Club\" }" },
+            { text: "Analyse cette carte. Renvoie UNIQUEMENT un JSON: { \"playerName\": \"Prénom Nom\", \"brand\": \"Marque\", \"series\": \"Collection\", \"year\": 2024, \"is_rookie\": true, \"is_auto\": false, \"is_numbered\": true, \"numbering_max\": 50, \"club\": \"Club\" }" },
             { inline_data: { mime_type: image.type, data: base64Image } }
           ]
         }]
@@ -32,7 +32,8 @@ export async function POST(req: Request) {
     const data = await response.json();
     
     if (data.error) {
-      return NextResponse.json({ error: data.error.message }, { status: 500 });
+       console.error("Erreur Google API:", data.error);
+       return NextResponse.json({ error: data.error.message }, { status: 500 });
     }
 
     const rawText = data.candidates[0].content.parts[0].text;

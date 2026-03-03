@@ -33,7 +33,6 @@ export default function ScannerPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Fix ERR_FILE_NOT_FOUND : on crée une URL stable immédiatement
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
     setAnalyzing(true);
@@ -52,7 +51,6 @@ export default function ScannerPage() {
           lastname: parts.slice(1).join(' ')?.toUpperCase() || '',
           brand: data.brand?.toUpperCase() || 'TOPPS',
           series: data.series?.toUpperCase() || 'CHROME',
-          year: data.year?.toString() || '2025',
           club: data.club?.toUpperCase() || '',
           is_rookie: !!data.is_rookie,
           is_auto: !!data.is_auto,
@@ -61,7 +59,7 @@ export default function ScannerPage() {
         }));
       }
     } catch (err) {
-      console.error("Analyse automatique échouée, remplissage manuel activé.");
+      console.error("Analyse automatique échouée.");
     } finally {
       setAnalyzing(false);
     }
@@ -97,58 +95,59 @@ export default function ScannerPage() {
         <button onClick={() => router.back()} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
           <ChevronLeft size={20} />
         </button>
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">AJOUTER</h1>
+        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none text-center">AJOUTER</h1>
         <div className="w-10" />
       </header>
 
+      {/* Toggle Recto/Verso */}
       <div className="flex gap-2 p-1 bg-black/40 rounded-full border border-white/5 mb-8">
         <button className="flex-1 bg-[#AFFF25] text-black font-black italic py-2 rounded-full text-[11px] uppercase">Recto</button>
         <button className="flex-1 text-white/40 font-black italic py-2 rounded-full text-[11px] uppercase">Verso</button>
       </div>
 
-      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[260px] mx-auto rounded-[32px] border-2 border-dashed border-[#AFFF25]/30 bg-white/5 flex items-center justify-center overflow-hidden mb-10 shadow-[0_0_50px_rgba(175,255,37,0.1)]">
+      {/* Zone Photo */}
+      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[260px] mx-auto rounded-[32px] border-2 border-dashed border-[#AFFF25]/30 bg-white/5 flex flex-col items-center justify-center overflow-hidden mb-10 shadow-[0_0_50px_rgba(175,255,37,0.1)]">
         {previewUrl ? <img src={previewUrl} className="w-full h-full object-cover" /> : (
-          <div className="text-center">
-            <button className="bg-white/5 border border-white/10 px-8 py-2 rounded-full text-[10px] font-black uppercase italic mb-2">App photo</button>
-            <button className="bg-white/5 border border-white/10 px-8 py-2 rounded-full text-[10px] font-black uppercase italic">Bibliotheque</button>
+          <div className="text-center space-y-3">
+            <button className="bg-white/5 border border-white/10 px-8 py-2 rounded-full text-[10px] font-black uppercase italic tracking-widest">App photo</button>
+            <button className="bg-white/5 border border-white/10 px-8 py-2 rounded-full text-[10px] font-black uppercase italic block mx-auto tracking-widest">Bibliothèque</button>
           </div>
         )}
         {analyzing && (
           <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-[#AFFF25]">
             <Loader2 className="animate-spin mb-2" />
-            <p className="text-[10px] font-black uppercase italic tracking-widest animate-pulse text-center">Analyse en cours !</p>
+            <p className="text-[10px] font-black uppercase italic tracking-widest animate-pulse">Analyse en cours !</p>
           </div>
         )}
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-2xl font-black italic uppercase tracking-tighter">Joueur</h2>
+        <h2 className="text-2xl font-black italic uppercase tracking-tighter leading-none">Joueur</h2>
         <div className="grid grid-cols-1 gap-4">
           <div className="bg-[#080531] border border-white/10 p-4 rounded-2xl">
             <label className="text-[9px] text-white/30 font-bold uppercase block mb-1">Prénom</label>
-            <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value})} className="bg-transparent w-full font-bold uppercase outline-none" />
+            <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} className="bg-transparent w-full font-bold uppercase outline-none" />
           </div>
           <div className="bg-[#080531] border border-white/10 p-4 rounded-2xl">
             <label className="text-[9px] text-white/30 font-bold uppercase block mb-1">Nom</label>
-            <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value})} className="bg-transparent w-full font-bold uppercase outline-none" />
+            <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} className="bg-transparent w-full font-bold uppercase outline-none" />
           </div>
           <div className="bg-[#080531] border border-white/10 p-4 rounded-2xl relative">
             <label className="text-[9px] text-white/30 font-bold uppercase block mb-1">Club</label>
-            <input value={formData.club} onChange={e => setFormData({...formData, club: e.target.value})} className="bg-transparent w-full font-bold uppercase outline-none" />
+            <input value={formData.club} onChange={e => setFormData({...formData, club: e.target.value.toUpperCase()})} className="bg-transparent w-full font-bold uppercase outline-none" />
             <Search className="absolute right-4 bottom-4 text-white/20" size={16} />
           </div>
         </div>
 
-        <h2 className="text-2xl font-black italic uppercase tracking-tighter pt-4">Carte</h2>
+        <h2 className="text-2xl font-black italic uppercase tracking-tighter pt-4 leading-none">Carte</h2>
         <div className="space-y-6">
           {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE'].map((l) => {
             const k = l === 'NUMÉROTÉE' ? 'is_numbered' : `is_${l.toLowerCase()}`;
-            const active = formData[k as keyof typeof formData];
             return (
               <div key={l} className="flex justify-between items-center">
                 <span className="font-black italic uppercase text-xs tracking-widest">{l}</span>
-                <button onClick={() => setFormData({...formData, [k]: !active})} className={`w-12 h-6 rounded-full relative transition-all ${active ? 'bg-[#AFFF25]' : 'bg-white/10'}`}>
-                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${active ? 'right-1 shadow-[0_0_10px_#fff]' : 'left-1'}`} />
+                <button onClick={() => setFormData({...formData, [k]: !formData[k as keyof typeof formData]})} className={`w-12 h-6 rounded-full relative transition-all ${formData[k as keyof typeof formData] ? 'bg-[#AFFF25]' : 'bg-white/10'}`}>
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${formData[k as keyof typeof formData] ? 'right-1 shadow-[0_0_10px_#fff]' : 'left-1'}`} />
                 </button>
               </div>
             )
