@@ -5,121 +5,221 @@ import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Edit, Star, Loader2 } from 'lucide-react';
 
+// 🎯 LE DICTIONNAIRE MAGIQUE (Pour trouver la bonne icône de sport)
+const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
+  'SOCCER': { image: 'Soccer', label: 'Football' },
+  'BASKETBALL': { image: 'Basket', label: 'Basketball' },
+  'BASEBALL': { image: 'Baseball', label: 'Baseball' },
+  'F1': { image: 'F1', label: 'Formule 1' },
+  'NFL': { image: 'NFL', label: 'Football Américain' },
+  'NHL': { image: 'NHL', label: 'Hockey' },
+  'POKEMON': { image: 'Pokemon', label: 'Pokémon' },
+  'TENNIS': { image: 'Tennis', label: 'Tennis' },
+  'MARVEL': { image: 'MArvel', label: 'Marvel' }
+};
+
 export default function CardDetailsPage() {
   const router = useRouter();
   const params = useParams();
+  const cardId = params.id as string;
+
   const [card, setCard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isFavoriting, setIsFavoriting] = useState(false);
 
   useEffect(() => {
-    if (params.id) fetchCard();
-  }, [params.id]);
+    fetchCard();
+  }, [cardId]);
 
   const fetchCard = async () => {
-    const { data } = await supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    const { data, error } = await supabase
       .from('cards')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', cardId)
+      .eq('user_id', user.id)
       .single();
 
-    if (data) setCard(data);
+    if (error) {
+      console.error("Erreur de chargement:", error);
+      router.push('/collection'); // Si la carte n'existe pas, on retourne à la collection
+    } else {
+      setCard(data);
+    }
     setLoading(false);
   };
 
-  if (loading) return <div className="min-h-screen bg-[#040221] flex justify-center items-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
-  if (!card) return <div className="min-h-screen bg-[#040221] text-white p-6">Carte introuvable.</div>;
+  const toggleFavorite = async () => {
+    if (!card) return;
+    setIsFavoriting(true);
+    const newFavStatus = !card.is_favorite;
+
+    // Mise à jour optimiste (l'UI change tout de suite pour la fluidité)
+    setCard({ ...card, is_favorite: newFavStatus });
+
+    const { error } = await supabase
+      .from('cards')
+      .update({ is_favorite: newFavStatus })
+      .eq('id', card.id);
+
+    if (error) {
+      console.error("Erreur lors de la mise en favori:", error);
+      // On annule si la BDD a planté
+      setCard({ ...card, is_favorite: !newFavStatus });
+    }
+    setIsFavoriting(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#040221]">
+        <Loader2 className="animate-spin text-[#AFFF25]" size={40} />
+      </div>
+    );
+  }
+
+  if (!card) return null;
+
+  // Préparation des icônes
+  const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
+  const clubSlug = card.club_name ? card.club_name.toLowerCase().replace(/\s+/g, '-') : '';
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden">
+    // On enlève le bg couleur ici pour laisser voir le background dynamique
+    <div className="min-h-screen text-white pb-36 font-sans relative overflow-x-hidden">
       
-      {/* Fond Flouté (utilise l'image de la carte) */}
-      {card.image_url && (
-        <>
-          <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30 blur-2xl scale-110"
-            style={{ backgroundImage: `url(${card.image_url})` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040221]/80 to-[#040221] h-full" />
-        </>
-      )}
-
-      {/* Header */}
-      <div className="relative z-10 p-6 flex justify-between items-center">
-        <button onClick={() => router.back()} className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20 bg-black/20 backdrop-blur-md">
-          <ChevronLeft size={20} />
-        </button>
-        <button className="w-10 h-10 rounded-full flex items-center justify-center bg-black/20 backdrop-blur-md border border-white/20">
-          <Edit size={18} />
-        </button>
+      {/* 🚀 LE BACKGROUND DYNAMIQUE (Image agrandie à 20% d'opacité) */}
+      <div className="fixed inset-0 z-0 bg-[#040221]">
+        {card.image_url && (
+          <>
+            {/* L'image prend tout l'écran, est centrée, sans déborder (object-cover) */}
+            <img 
+              src={card.image_url} 
+              alt="Background" 
+              className="w-full h-full object-cover opacity-20"
+            />
+            {/* Un léger voile par-dessus pour adoucir si l'image est trop claire */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div>
+          </>
+        )}
       </div>
 
-      {/* Contenu principal */}
-      <div className="relative z-10 px-6 flex flex-col items-center">
+      {/* 🚀 TOUT LE CONTENU EST PAR-DESSUS (z-10) */}
+      <div className="relative z-10">
         
-        {/* Carte Centrale */}
-        <div className="w-[85%] max-w-[320px] aspect-[2.5/3.5] rounded-xl overflow-hidden shadow-2xl shadow-black/50 mb-6 border border-white/10">
-          {card.image_url ? (
-            <img src={card.image_url} alt="Card" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-[#080531] flex justify-center items-center">Image</div>
-          )}
-        </div>
-
-        {/* Header Carte (Tags + Etoile) */}
-        <div className="w-full flex justify-between items-center mb-6">
-          <div className="flex flex-wrap gap-2">
-            {card.is_patch && <span className="bg-[#0B1B3D] text-[#AFFF25] px-3 py-1 rounded-full text-[10px] font-medium">Patch</span>}
-            {card.is_auto && <span className="bg-[#0B1B3D] text-white px-3 py-1 rounded-full text-[10px] font-medium">Autographe</span>}
-            {card.is_numbered && <span className="bg-[#0B1B3D] text-white px-3 py-1 rounded-full text-[10px] font-medium">Numéroté</span>}
-            {card.is_rookie && <span className="bg-[#0B1B3D] text-white px-3 py-1 rounded-full text-[10px] font-medium">Rookie</span>}
-          </div>
-          <button className="text-[#AFFF25]">
-            <Star size={24} strokeWidth={1.5} />
+        {/* HEADER (Bouton retour et édition) */}
+        <header className="flex items-center justify-between p-6">
+          <button onClick={() => router.back()} className="w-10 h-10 bg-[#040221]/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform">
+            <ChevronLeft size={20} />
           </button>
-        </div>
+          <button className="w-10 h-10 bg-[#040221]/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform">
+            <Edit size={18} />
+          </button>
+        </header>
 
-        {/* Nom du Joueur Géant */}
-        <div className="w-full mb-4">
-          <h2 className="text-2xl font-light tracking-wide uppercase leading-none">
-            {card.player_firstname || "PRÉNOM"}
-          </h2>
-          <h1 className="text-[64px] font-black italic uppercase text-[#AFFF25] leading-[0.85] tracking-tighter shadow-black drop-shadow-lg">
-            {card.player_lastname || "NOM"}
-          </h1>
-        </div>
-
-        {/* Badges Sport & Club */}
-        <div className="w-full flex gap-3 mb-10">
-          <div className="flex items-center gap-2 border border-[#AFFF25]/50 rounded-full px-4 py-1.5 bg-[#AFFF25]/5 backdrop-blur-sm">
-            <img src={`/asset/sports/${card.sport?.toLowerCase() || 'football'}.png`} className="w-4 h-4 object-contain" alt="sport" />
-            <span className="text-sm font-medium">{card.sport || "Football"}</span>
-          </div>
-          <div className="flex items-center gap-2 border border-white/20 rounded-full px-4 py-1.5 bg-white/5 backdrop-blur-sm">
-            <img src={`/asset/logo-club/${card.club_name?.toLowerCase()}.svg`} className="w-4 h-4 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} alt="club" />
-            <span className="text-sm font-medium">{card.club_name || "Club"}</span>
+        {/* IMAGE DE LA CARTE PRINCIPALE */}
+        <div className="px-6 flex justify-center mb-8">
+          <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+            {card.image_url ? (
+              <img src={card.image_url} className="w-full h-full object-cover" alt="Card" />
+            ) : (
+              <div className="w-full h-full bg-white/5 flex items-center justify-center">Image introuvable</div>
+            )}
           </div>
         </div>
 
-        {/* Grille d'infos (Brand, Set, Année, Prix) */}
-        <div className="w-full grid grid-cols-2 gap-y-6 gap-x-4 pb-10">
-          <div>
-            <span className="text-[#AFFF25] text-[10px] block mb-1">Brand</span>
-            <span className="font-bold text-lg">{card.brand || "-"}</span>
+        {/* INFOS DE LA CARTE */}
+        <div className="px-6 space-y-6">
+          
+          {/* Ligne 1 : Tags de Spécificités + Étoile Favoris */}
+          <div className="flex justify-between items-center">
+            <div className="flex flex-wrap gap-2">
+              {card.is_patch && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white shadow-md">Patch</span>}
+              {card.is_auto && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white shadow-md">Autographe</span>}
+              {card.is_numbered && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white shadow-md">Numéroté</span>}
+              {card.is_rookie && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white shadow-md">Rookie</span>}
+            </div>
+            
+            <button 
+              onClick={toggleFavorite} 
+              disabled={isFavoriting}
+              className="active:scale-90 transition-transform p-1"
+            >
+              <Star 
+                size={28} 
+                strokeWidth={card.is_favorite ? 0 : 1.5} 
+                className={card.is_favorite ? "fill-[#AFFF25] text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)]" : "text-[#AFFF25]"} 
+              />
+            </button>
           </div>
-          <div>
-            <span className="text-[#AFFF25] text-[10px] block mb-1">Set</span>
-            <span className="font-bold text-lg">{card.series || "-"}</span>
-          </div>
-          <div>
-            <span className="text-[#AFFF25] text-[10px] block mb-1">Année</span>
-            <span className="font-bold text-lg">{card.year || "-"}</span>
-          </div>
-          <div>
-            <span className="text-[#AFFF25] text-[10px] block mb-1">Prix</span>
-            <span className="font-bold text-lg">{card.purchase_price ? `${card.purchase_price}€` : "-"}</span>
-          </div>
-        </div>
 
+          {/* Ligne 2 : Noms du joueur */}
+          <div>
+            <div className="text-xl text-white uppercase tracking-wider font-light mb-1">
+              {card.firstname || "Prénom"}
+            </div>
+            <div className="text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter">
+              {card.lastname || "Nom"}
+            </div>
+          </div>
+
+          {/* Ligne 3 : Tags Sport et Club cliquables */}
+          <div className="flex flex-wrap gap-3">
+            <button 
+              onClick={() => router.push('/sport')} 
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors"
+            >
+              <img src={`/asset/sports/${sportData.image}.png`} className="w-4 h-4 object-contain" alt={sportData.label} />
+              <span className="text-sm font-medium text-white">{sportData.label}</span>
+            </button>
+            
+            {card.club_name && (
+              <button 
+                onClick={() => router.push('/club')} 
+                className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors"
+              >
+                <img 
+                  src={`/asset/logo-club/${clubSlug}.svg`} 
+                  className="w-4 h-4 object-contain" 
+                  alt={card.club_name} 
+                  onError={(e) => e.currentTarget.style.display = 'none'}
+                />
+                <span className="text-sm font-medium text-white">{card.club_name}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Ligne 4 : Grille d'informations (Brand, Set, Année, Prix) */}
+          <div className="grid grid-cols-2 gap-y-6 pt-4 border-t border-white/10 mt-6">
+            
+            <div>
+              <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div>
+              <div className="text-lg font-bold text-white capitalize">{card.brand || "-"}</div>
+            </div>
+
+            <div>
+              <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div>
+              <div className="text-lg font-bold text-white capitalize">{card.series || "-"}</div>
+            </div>
+
+            <div>
+              <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div>
+              <div className="text-lg font-bold text-white">{card.year || "-"}</div>
+            </div>
+
+            <div>
+              <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix</div>
+              <div className="text-lg font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div>
+            </div>
+
+          </div>
+
+        </div>
       </div>
     </div>
   );

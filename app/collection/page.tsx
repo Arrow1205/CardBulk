@@ -5,15 +5,20 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, Search, ChevronDown } from 'lucide-react';
 
+// On importe ton fichier pour récupérer la liste de tes Brands
+import SET_DATA from '@/data/set.json';
+
 export default function CollectionPage() {
   const router = useRouter();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // États pour les filtres (Recherche AJAX, Sport, Spécificité)
+  // États pour les filtres
   const [searchTerm, setSearchTerm] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSport, setSelectedSport] = useState('');
   const [selectedSpec, setSelectedSpec] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState(''); // Le nouveau filtre Brand
 
   useEffect(() => {
     fetchCards();
@@ -40,13 +45,23 @@ export default function CollectionPage() {
     setLoading(false);
   };
 
-  // 🚀 LOGIQUE DE FILTRAGE (AJAX en temps réel)
-  const filteredCards = cards.filter(card => {
-    // 1. Filtre par recherche (Club pour l'instant, ou prénom/nom si tu les as ajoutés en BDD)
-    const searchString = `${card.club_name || ''} ${card.brand || ''}`.toLowerCase();
-    const matchesSearch = searchString.includes(searchTerm.toLowerCase());
+  // 🚀 EXTRACTION DES NOMS UNIQUES DE TA COLLECTION (Pour les suggestions)
+  const uniquePlayers = Array.from(
+    new Set(cards.map(c => `${c.firstname || ''} ${c.lastname || ''}`.trim()).filter(Boolean))
+  );
 
-    // 2. Filtre par sport (si la colonne existe)
+  // Suggestions actives uniquement si 3 caractères ou plus
+  const searchSuggestions = searchTerm.length >= 3 
+    ? uniquePlayers.filter(name => name.toLowerCase().includes(searchTerm.toLowerCase()))
+    : [];
+
+  // 🚀 LOGIQUE DE FILTRAGE
+  const filteredCards = cards.filter(card => {
+    // 1. Filtre par recherche (Prénom + Nom)
+    const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
+    const matchesSearch = searchTerm === '' || fullName.includes(searchTerm.toLowerCase());
+
+    // 2. Filtre par sport
     const matchesSport = selectedSport === '' || card.sport === selectedSport;
 
     // 3. Filtre par spécificité
@@ -56,34 +71,62 @@ export default function CollectionPage() {
     if (selectedSpec === 'rookie') matchesSpec = card.is_rookie;
     if (selectedSpec === 'numbered') matchesSpec = card.is_numbered;
 
-    return matchesSearch && matchesSport && matchesSpec;
+    // 4. Filtre par Brand
+    const matchesBrand = selectedBrand === '' || card.brand === selectedBrand;
+
+    return matchesSearch && matchesSport && matchesSpec && matchesBrand;
   });
 
+  const availableBrands = SET_DATA.brands || [];
+
   return (
-    // ❌ Plus de bg-[#040221] pour laisser passer le dégradé du layout !
     <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* HEADER (Sans le back button et sans le +) */}
+      {/* HEADER */}
       <header className="mb-6 pt-4 text-center">
         <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">COLLECTION</h1>
       </header>
 
-      {/* BARRE DE RECHERCHE */}
-      <div className="relative mb-4">
+      {/* BARRE DE RECHERCHE AVEC SUGGESTIONS */}
+      <div className="relative mb-4 z-50">
         <Search className="absolute left-4 top-3.5 text-[#AFFF25]" size={18} />
         <input 
           type="text" 
           placeholder="Enter player name" 
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setShowSuggestions(true);
+          }}
+          onFocus={() => setShowSuggestions(true)}
+          // Le timeout permet de cliquer sur la suggestion avant que le menu disparaisse
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           className="w-full bg-[#040221] border border-[#AFFF25] rounded-full py-3 pl-12 pr-4 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)] transition-colors focus:shadow-[0_0_20px_rgba(175,255,37,0.3)]"
         />
+        
+        {/* DROPDOWN DES SUGGESTIONS (S'affiche après 3 lettres) */}
+        {showSuggestions && searchSuggestions.length > 0 && (
+          <ul className="absolute w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl z-50">
+            {searchSuggestions.map((name, i) => (
+              <li 
+                key={i} 
+                onClick={() => {
+                  setSearchTerm(name);
+                  setShowSuggestions(false);
+                }}
+                className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
+              >
+                <Search className="text-white/30" size={14} />
+                <span className="text-sm font-bold uppercase">{name}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      {/* FILTRES (Sport & Spécificité) */}
-      <div className="flex gap-2 mb-6">
+      {/* FILTRES DÉROULANTS (Sport & Spécificité) */}
+      <div className="flex gap-2 mb-4">
         
-        {/* Filtre Sport */}
         <div className="relative flex-1">
           <select 
             value={selectedSport}
@@ -99,7 +142,6 @@ export default function CollectionPage() {
           <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
         </div>
 
-        {/* Filtre Spécificité */}
         <div className="relative flex-1">
           <select 
             value={selectedSpec}
@@ -115,6 +157,52 @@ export default function CollectionPage() {
           <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
         </div>
 
+      </div>
+
+      {/* BARRE DES BRANDS (Logos scrollables horizontalement) */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 [&::-webkit-scrollbar]:hidden">
+        {/* Bouton TOUT */}
+        <button 
+          onClick={() => setSelectedBrand('')}
+          className={`flex-shrink-0 px-5 h-9 rounded-full text-xs font-black italic uppercase transition-all ${
+            selectedBrand === '' 
+              ? 'bg-[#AFFF25] text-black shadow-[0_0_15px_rgba(175,255,37,0.3)]' 
+              : 'bg-[#040221] text-white border border-white/20'
+          }`}
+        >
+          Tout
+        </button>
+        
+        {/* Logos des Brands issus de set.json */}
+        {availableBrands.map((b: any, i: number) => {
+          const brandSlug = b.name.toLowerCase().replace(/\s+/g, '-');
+          const isSelected = selectedBrand === b.name;
+          return (
+            <button 
+              key={i}
+              onClick={() => setSelectedBrand(b.name)}
+              className={`flex-shrink-0 h-9 px-4 rounded-full flex items-center justify-center transition-all border ${
+                isSelected 
+                  ? 'border-[#AFFF25] bg-[#AFFF25]/10 shadow-[0_0_15px_rgba(175,255,37,0.2)]' 
+                  : 'border-white/20 bg-[#040221]'
+              }`}
+            >
+              <img 
+                src={`/asset/brands/${brandSlug}.png`} 
+                alt={b.name} 
+                className="h-4 object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.nextElementSibling) {
+                    (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
+                  }
+                }}
+              />
+              {/* Ce texte s'affiche uniquement si l'image est introuvable */}
+              <span className="text-[10px] font-black italic uppercase hidden">{b.name}</span>
+            </button>
+          )
+        })}
       </div>
 
       {/* GRILLE DE CARTES (3 Colonnes) */}
@@ -135,7 +223,6 @@ export default function CollectionPage() {
               className="relative aspect-[3/4] rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform group"
             >
               {card.image_url ? (
-                // L'image s'affiche en cover, sans aucun texte par-dessus
                 <img src={card.image_url} alt="Card" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
