@@ -14,9 +14,30 @@
           "Topps Stadium Club",
           "Topps UEFA Club Competitions",
           "Topps Bundesliga",
-          "Topps MLS"
+          "Topps MLS",
+          "Topps Living set",
+          "Topps Now"
         ],
-        "baseball": [
+       
+        "tennis": [
+          "Topps Chrome",
+          "Topps Chrome Sapphire",
+          "Topps Royalty",
+          "Topps Graphite",
+          "Topps Now"
+        ],
+
+       
+        "basketball": [
+          "Topps Chrome",
+          "Topps Finest",
+          "Topps Living set",
+          "Topps Now",
+          "Topps Midnight"
+        ],
+
+    
+        "basketball_nba": [
           "Topps Series 1",
           "Topps Series 2",
           "Topps Update",
@@ -30,7 +51,9 @@
           "Topps Stadium Club",
           "Topps Allen & Ginter",
           "Topps Tribute",
-          "Topps Dynasty"
+          "Topps Dynasty",
+          "Topps Living set",
+          "Topps Now"
         ],
         "american_football": [
           "Topps Chrome (legacy)",
@@ -129,7 +152,22 @@
       "sports": {
         "football_soccer": [
           "DAKA Croatia",
+          "DAKA Croatia",
           "DAKA Serbia",
+          "DAKA Belgium",
+          "DAKA Nederland",
+          "DAKA Juventus",
+          "DAKA Fc Barcelone",
+          "DAKA Real Madrid",
+          "DAKA Ajax Amsterdam",
+          "DAKA AC Milan",
+          "DAKA Manchester City",
+          "DAKA Liverpool",
+          "DAKA Bayer Leverkusen",
+          "DAKA Espanyol",
+          "DAKA Eintracht Franckfort",
+          "DAKA Atelico Madrid",
+          "DAKA Belgium",
           "DAKA National Team Editions"
         ]
       }
