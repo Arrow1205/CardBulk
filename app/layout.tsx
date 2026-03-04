@@ -17,14 +17,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className={`${inter.className} bg-[#040221] text-white overflow-x-hidden min-h-screen`}>
-        {/* LE NOUVEAU DÉGRADÉ EXACT */}
+      <body className={`${inter.className} bg-[#040221] text-white overflow-x-hidden min-h-screen relative`}>
+        
+        {/* LE DÉGRADÉ (z-0 au lieu de z-50) */}
         <div 
-          className="fixed top-0 left-0 w-full h-[85px] pointer-events-none z-50" 
+          className="absolute top-0 left-0 w-full h-[85px] pointer-events-none z-0" 
           style={{ background: 'linear-gradient(0deg, rgba(217, 217, 217, 0.00) 0%, #AFFF25 100%)' }}
         ></div>
         
-        {children}
+        {/* On s'assure que le contenu passe par-dessus avec un z-10 */}
+        <div className="relative z-10">
+          {children}
+        </div>
         
         <TabBar />
       </body>
