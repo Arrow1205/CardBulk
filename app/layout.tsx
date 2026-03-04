@@ -1,13 +1,29 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import TabBar from '@/components/TabBar' 
 
 const inter = Inter({ subsets: ['latin'] })
 
+// 🚀 NOUVEAU : Bloque le zoom sur mobile et définit la couleur du navigateur
+export const viewport: Viewport = {
+  themeColor: '#040221',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
+// 🚀 NOUVEAU : Active le mode "Application Native" (Plein écran sans URL)
 export const metadata: Metadata = {
   title: 'CardBulk',
   description: 'Application de scan de cartes',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'CardBulk',
+  },
 }
 
 export default function RootLayout({

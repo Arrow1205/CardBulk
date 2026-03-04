@@ -1,0 +1,16 @@
+{
+  "name": "CardBulk",
+  "short_name": "CardBulk",
+  "description": "Application de scan et collection",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#040221",
+  "theme_color": "#040221",
+  "icons": [
+    {
+      "src": "/asset/sports/Soccer.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
