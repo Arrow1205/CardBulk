@@ -1,16 +1,13 @@
 'use client';
 
-// On ajoute useEffect ici
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus } from 'lucide-react';
 
-// IMPORT DE TES DONNÉES JSON
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
 
-// 🎯 LE DICTIONNAIRE MAGIQUE
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
   'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
   'BASKETBALL': { image: 'Basket', jsonKey: 'basketball', label: 'Basketball' },
@@ -26,7 +23,7 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
 export default function ScannerPage() {
   const router = useRouter();
   
-  // 🔒 LE NOUVEAU VERROU DE SÉCURITÉ AU CHARGEMENT
+  // VERROU DE SÉCURITÉ AU CHARGEMENT
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -41,10 +38,11 @@ export default function ScannerPage() {
   
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // NOUVEAU : On garde le fichier brut
   
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
-
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
@@ -101,6 +99,7 @@ export default function ScannerPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setSelectedFile(file); // On sauvegarde le vrai fichier pour l'upload !
     setPreviewUrl(URL.createObjectURL(file));
     setAnalyzing(true);
 
@@ -155,9 +154,40 @@ export default function ScannerPage() {
         router.push('/login'); 
         return; 
       }
+
+      let finalImageUrl = null;
+
+      // 🚀 1. UPLOAD DE L'IMAGE VERS SUPABASE
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        // On crée un nom de fichier unique avec la date
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`; // On range par dossier utilisateur
+
+        const { error: uploadError } = await supabase.storage
+          .from('card-images') // Le nom du Storage qu'on a créé !
+          .upload(filePath, selectedFile);
+
+        if (uploadError) {
+          alert("❌ Erreur lors de l'upload de l'image : " + uploadError.message);
+          setLoading(false);
+          return;
+        }
+
+        // On récupère le vrai lien internet de ton image
+        const { data: publicUrlData } = supabase.storage
+          .from('card-images')
+          .getPublicUrl(filePath);
+
+        finalImageUrl = publicUrlData.publicUrl;
+      }
       
+      // 🚀 2. SAUVEGARDE DE LA CARTE EN BASE DE DONNÉES
       const { error } = await supabase.from('cards').insert([{
         user_id: user.id,
+        sport: formData.sport,           // NOUVEAU
+        firstname: formData.firstname,   // NOUVEAU
+        lastname: formData.lastname,     // NOUVEAU
         brand: formData.brand,
         series: formData.series,
         year: parseInt(formData.year) || null,
@@ -168,12 +198,12 @@ export default function ScannerPage() {
         numbering_low: parseInt(formData.num_low) || null,
         numbering_max: parseInt(formData.num_high) || null,
         purchase_price: parseFloat(formData.price) || 0,
-        image_url: previewUrl,
+        image_url: finalImageUrl,        // LA VRAIE URL SUPABASE
         club_name: formData.club
       }]);
 
       if (error) {
-        alert("❌ Erreur : " + error.message);
+        alert("❌ Erreur de sauvegarde : " + error.message);
         setLoading(false);
         return;
       }
@@ -364,13 +394,13 @@ export default function ScannerPage() {
         <button 
           onClick={saveCard} 
           disabled={loading || analyzing || !isFormStarted} 
-          className={`w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase tracking-widest transition-all ${
+          className={`w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase tracking-widest transition-all flex justify-center items-center ${
             isFormStarted 
               ? 'bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:scale-[1.02] active:scale-95' 
               : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
           }`}
         >
-          {loading ? <Loader2 className="animate-spin mx-auto" size={20} /> : 'Enregistrer la carte'}
+          {loading ? <Loader2 className="animate-spin" size={20} /> : 'Enregistrer la carte'}
         </button>
       </div>
       
