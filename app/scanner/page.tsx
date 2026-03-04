@@ -183,8 +183,7 @@ export default function ScannerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">
-      
+    <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">      
       {/* HEADER */}
       <header className="flex items-center justify-between mb-8">
         <button onClick={() => router.back()} className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center border border-white/20">
