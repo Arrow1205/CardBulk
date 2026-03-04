@@ -9,7 +9,7 @@ import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus } from 'lucide-r
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
 
-// 🎯 LE DICTIONNAIRE MAGIQUE (Fait correspondre les sports aux noms exacts de tes fichiers)
+// 🎯 LE DICTIONNAIRE MAGIQUE
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
   'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
   'BASKETBALL': { image: 'Basket', jsonKey: 'basketball', label: 'Basketball' },
@@ -126,7 +126,7 @@ export default function ScannerPage() {
           };
         });
         
-        // Ouvre les accordéons automatiquement si l'IA a trouvé des choses
+        // Ouvre les accordéons automatiquement
         setIsJoueurOpen(true);
         setIsCarteOpen(true);
       }
@@ -178,7 +178,6 @@ export default function ScannerPage() {
     }
   };
 
-  // Pour cacher les logos Clubs ou Brands cassés (on ne cache pas le sport pour voir d'où vient le bug)
   const hideBrokenImage = (e: any) => {
     e.currentTarget.style.display = 'none';
   };
@@ -198,17 +197,15 @@ export default function ScannerPage() {
         <div className="w-10" />
       </header>
 
-      {/* ZONE PHOTO (Format portrait 3/4 au lieu de 4/3, image entière) */}
-      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[240px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-6 cursor-pointer bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10">
+      {/* ZONE PHOTO */}
+      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[240px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-10 cursor-pointer bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10">
         
-        {/* Coins style focus */}
         <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[#AFFF25]"></div>
         <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[#AFFF25]"></div>
         <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-[#AFFF25]"></div>
         <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-[#AFFF25]"></div>
 
         {previewUrl ? (
-          // object-contain permet de voir la photo en entier sans la rogner
           <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl shadow-2xl" alt="Preview" />
         ) : (
           <div className="text-center space-y-4">
@@ -226,29 +223,29 @@ export default function ScannerPage() {
         )}
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         
         {/* ===================== SECTION JOUEUR ===================== */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
+        <div>
           {/* En-tête de l'accordéon */}
           <div 
-            className="flex justify-between items-center cursor-pointer select-none"
+            className="flex justify-between items-center cursor-pointer select-none mb-4"
             onClick={() => setIsJoueurOpen(!isJoueurOpen)}
           >
             <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Joueur</h2>
-            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#AFFF25]">
-              {isJoueurOpen ? <Minus size={18} /> : <Plus size={18} />}
+            <div className="text-[#AFFF25]">
+              {isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}
             </div>
           </div>
 
           {/* Contenu de l'accordéon */}
           {isJoueurOpen && (
-            <div className="space-y-4 pt-6 animate-in slide-in-from-top-2 fade-in duration-200">
+            <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
                 <div className="relative flex items-center">
                   {sportImage && (
-                    <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />
+                    <img src={`/asset/sports/${sportImage}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />
                   )}
                   <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value, series: ''})} className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 transition-colors ${sportImage ? 'pl-12' : 'pl-4'}`}>
                     <option value="">Sélectionne le sport</option>
@@ -314,21 +311,21 @@ export default function ScannerPage() {
 
 
         {/* ===================== SECTION CARTE ===================== */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
+        <div>
           {/* En-tête de l'accordéon */}
           <div 
-            className="flex justify-between items-center cursor-pointer select-none"
+            className="flex justify-between items-center cursor-pointer select-none mb-4"
             onClick={() => setIsCarteOpen(!isCarteOpen)}
           >
             <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Carte</h2>
-            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#AFFF25]">
-              {isCarteOpen ? <Minus size={18} /> : <Plus size={18} />}
+            <div className="text-[#AFFF25]">
+              {isCarteOpen ? <Minus size={22} /> : <Plus size={22} />}
             </div>
           </div>
 
           {/* Contenu de l'accordéon */}
           {isCarteOpen && (
-            <div className="space-y-4 pt-6 animate-in slide-in-from-top-2 fade-in duration-200">
+            <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
               
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Brand</label>
@@ -390,7 +387,6 @@ export default function ScannerPage() {
                 })}
               </div>
 
-              {/* FIX NUMÉROTATION : Les input sont limités en largeur (w-24) pour ne pas déborder */}
               {formData.is_numbered && (
                 <div className="pt-2 animate-in fade-in zoom-in duration-200">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Numérotation</label>
@@ -402,7 +398,7 @@ export default function ScannerPage() {
                 </div>
               )}
 
-              <div className="pt-4">
+              <div className="pt-4 pb-4">
                  <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Prix d'achat</label>
                  <div className="relative w-1/2">
                    <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ex: 15" className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-right pr-12 text-sm outline-none text-white/80 transition-colors" />
@@ -417,7 +413,7 @@ export default function ScannerPage() {
         <button 
           onClick={saveCard} 
           disabled={loading || analyzing || !isFormStarted} 
-          className={`w-full font-black italic py-4 rounded-full mt-6 uppercase tracking-widest transition-all ${
+          className={`w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase tracking-widest transition-all ${
             isFormStarted 
               ? 'bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:scale-[1.02] active:scale-95' 
               : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
