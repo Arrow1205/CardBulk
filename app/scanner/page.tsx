@@ -7,9 +7,9 @@ import { ChevronLeft, Loader2, Search, ChevronDown } from 'lucide-react';
 
 // IMPORT DE TES DONNÉES JSON
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
-import SET_DATA from '@/data/set.json'; // Ton super fichier avec Brands et Sets imbriqués
+import SET_DATA from '@/data/set.json';
 
-// 🎯 LE DICTIONNAIRE MAGIQUE : Il lie le nom affiché, l'image exacte de ton dossier, et la clé de ton set.json
+// 🎯 LE DICTIONNAIRE MAGIQUE
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
   'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
   'BASKETBALL': { image: 'Basket', jsonKey: 'basketball', label: 'Basketball' },
@@ -28,7 +28,6 @@ export default function ScannerPage() {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -48,10 +47,9 @@ export default function ScannerPage() {
     price: ''
   });
 
-  // Années dynamiques de 2027 à 1994
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
-  // Auto-complétion des clubs (Sécurisé au cas où le JSON est vide ou mal formaté)
+  // Sécurisation JSON
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const filteredClubs = safeFootballClubs.filter((c: any) => 
     c.name?.toLowerCase().includes(formData.club.toLowerCase())
@@ -59,11 +57,10 @@ export default function ScannerPage() {
   const selectedClub = safeFootballClubs.find((c: any) => c.name?.toLowerCase() === formData.club.toLowerCase());
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
 
-  // 🚀 EXTRACTION INTELLIGENTE DES BRANDS ET DES SETS
+  // Extraction Brands & Sets
   const availableBrands = SET_DATA.brands || [];
-  
-  // On trouve les sets dispos UNIQUEMENT pour la Brand ET le Sport sélectionnés
   let availableSets: string[] = [];
+  
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
     const selectedBrandObj = availableBrands.find((b: any) => b.name?.toLowerCase() === formData.brand.toLowerCase());
     const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
@@ -73,10 +70,7 @@ export default function ScannerPage() {
     }
   }
 
-  // Trouve l'image du sport (avec le dictionnaire pour la majuscule stricte de Vercel)
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
-  
-  // Trouve l'image de la brand (ex: topps.png)
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
 
   const isFormStarted = Object.values(formData).some(val => 
@@ -84,7 +78,7 @@ export default function ScannerPage() {
     (typeof val === 'boolean' && val === true)
   );
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -101,10 +95,9 @@ export default function ScannerPage() {
       if (!data.error && data.playerName) {
         const parts = data.playerName.split(' ');
         
-        // CORRECTION VERCEL : Le fameux 'prev' est à l'intérieur du setter !
         setFormData(prev => {
           let aiSport = data.sport?.toUpperCase() || prev.sport;
-          if (aiSport === 'FOOTBALL') aiSport = 'SOCCER'; // Normalisation
+          if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
 
           return {
             ...prev,
@@ -159,7 +152,6 @@ export default function ScannerPage() {
       }]);
 
       if (error) {
-        console.error("Erreur Supabase:", error);
         alert("❌ Erreur : " + error.message);
         setLoading(false);
         return;
@@ -173,27 +165,11 @@ export default function ScannerPage() {
     }
   };
 
-  const hideBrokenImage = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const hideBrokenImage = (e: any) => {
     e.currentTarget.style.display = 'none';
   };
 
   return (
     <div className="min-h-screen bg-[#040221] text-white p-6 pb-24 overflow-y-auto overflow-x-hidden font-sans">
       <header className="flex items-center justify-between mb-6">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center border border-white/20">
-          <ChevronLeft size={20} />
-        </button>
-        <div className="text-center">
-          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">AJOUTER</h1>
-          <p className="text-[#AFFF25] text-[10px] italic tracking-widest mt-1">Scan ou upload ta carte</p>
-        </div>
-        <div className="w-10" />
-      </header>
-
-      <div className="flex gap-2 p-1 bg-transparent rounded-full border border-white/20 mb-8 mx-4">
-        <button className="flex-1 bg-[#AFFF25] text-black font-black italic py-2 rounded-full text-[11px] uppercase">Recto</button>
-        <button className="flex-1 text-[#AFFF25] font-black italic py-2 rounded-full text-[11px] uppercase">Verso</button>
-      </div>
-
-      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[4/3] w-full max-w-[280px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-6 cursor-pointer">
-        <div className="absolute top
+        <button onClick={() =>
