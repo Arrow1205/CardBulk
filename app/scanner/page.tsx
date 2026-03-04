@@ -400,7 +400,7 @@ export default function ScannerPage() {
 
               <div className="pt-4 pb-4">
                  <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Prix d'achat</label>
-                 <div className="relative w-1/2">
+                 <div className="relative w-full">
                    <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ex: 15" className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-right pr-12 text-sm outline-none text-white/80 transition-colors" />
                    <span className="absolute right-4 bottom-3 text-[#AFFF25] font-bold">€</span>
                  </div>
