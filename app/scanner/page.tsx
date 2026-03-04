@@ -65,8 +65,12 @@ export default function ScannerPage() {
     const selectedBrandObj = availableBrands.find((b: any) => b.name?.toLowerCase() === formData.brand.toLowerCase());
     const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
     
-    if (selectedBrandObj && selectedBrandObj.sports && selectedBrandObj.sports[sportJsonKey]) {
-      availableSets = selectedBrandObj.sports[sportJsonKey];
+    // CORRECTION VERCEL/TYPESCRIPT : On cast en 'any' pour éviter le blocage d'index dynamique
+    if (selectedBrandObj && selectedBrandObj.sports) {
+      const sportsData = selectedBrandObj.sports as any;
+      if (sportsData[sportJsonKey]) {
+        availableSets = sportsData[sportJsonKey];
+      }
     }
   }
 
