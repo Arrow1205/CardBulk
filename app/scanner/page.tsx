@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
+// On ajoute useEffect ici
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus } from 'lucide-react';
@@ -24,6 +25,18 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
 
 export default function ScannerPage() {
   const router = useRouter();
+  
+  // 🔒 LE NOUVEAU VERROU DE SÉCURITÉ AU CHARGEMENT
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      }
+    };
+    checkAuth();
+  }, [router]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [loading, setLoading] = useState(false);
@@ -32,7 +45,6 @@ export default function ScannerPage() {
   
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
 
-  // 🚀 ÉTATS POUR LES ACCORDÉONS
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
@@ -55,7 +67,6 @@ export default function ScannerPage() {
 
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
-  // Sécurisation JSON pour les clubs
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const filteredClubs = safeFootballClubs.filter((c: any) => 
     c.name?.toLowerCase().includes(formData.club.toLowerCase())
@@ -63,7 +74,6 @@ export default function ScannerPage() {
   const selectedClub = safeFootballClubs.find((c: any) => c.name?.toLowerCase() === formData.club.toLowerCase());
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
 
-  // Extraction Brands & Sets
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   
@@ -126,7 +136,6 @@ export default function ScannerPage() {
           };
         });
         
-        // Ouvre les accordéons automatiquement
         setIsJoueurOpen(true);
         setIsCarteOpen(true);
       }
@@ -143,7 +152,6 @@ export default function ScannerPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        alert("Tu dois créer un compte ou te connecter pour sauvegarder tes cartes !");
         router.push('/login'); 
         return; 
       }
@@ -183,8 +191,8 @@ export default function ScannerPage() {
   };
 
   return (
-    <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">      
-      {/* HEADER */}
+    <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">
+      
       <header className="flex items-center justify-between mb-8">
         <button onClick={() => router.back()} className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center border border-white/20">
           <ChevronLeft size={20} />
@@ -196,9 +204,7 @@ export default function ScannerPage() {
         <div className="w-10" />
       </header>
 
-      {/* ZONE PHOTO */}
       <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[240px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-10 cursor-pointer bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10">
-        
         <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[#AFFF25]"></div>
         <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[#AFFF25]"></div>
         <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-[#AFFF25]"></div>
@@ -223,34 +229,23 @@ export default function ScannerPage() {
       </div>
 
       <div className="space-y-8">
-        
-        {/* ===================== SECTION JOUEUR ===================== */}
         <div>
-          {/* En-tête de l'accordéon */}
-          <div 
-            className="flex justify-between items-center cursor-pointer select-none mb-4"
-            onClick={() => setIsJoueurOpen(!isJoueurOpen)}
-          >
+          <div className="flex justify-between items-center cursor-pointer select-none mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
             <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Joueur</h2>
             <div className="text-[#AFFF25]">
               {isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}
             </div>
           </div>
 
-          {/* Contenu de l'accordéon */}
           {isJoueurOpen && (
             <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
                 <div className="relative flex items-center">
-                  {sportImage && (
-                    <img src={`/asset/sports/${sportImage}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />
-                  )}
+                  {sportImage && <img src={`/asset/sports/${sportImage}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />}
                   <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value, series: ''})} className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 transition-colors ${sportImage ? 'pl-12' : 'pl-4'}`}>
                     <option value="">Sélectionne le sport</option>
-                    {Object.keys(SPORT_CONFIG).map(sportKey => (
-                      <option key={sportKey} value={sportKey}>{SPORT_CONFIG[sportKey].label}</option>
-                    ))}
+                    {Object.keys(SPORT_CONFIG).map(sportKey => <option key={sportKey} value={sportKey}>{SPORT_CONFIG[sportKey].label}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
                 </div>
@@ -269,34 +264,15 @@ export default function ScannerPage() {
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club</label>
                 <div className="relative flex items-center">
-                  {formData.club && (
-                    <img src={`/asset/logo-club/${clubSlug}.svg`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Club" />
-                  )}
-                  <input 
-                    value={formData.club} 
-                    onChange={e => {
-                      setFormData({...formData, club: e.target.value});
-                      setShowClubSuggestions(true);
-                    }} 
-                    onFocus={() => setShowClubSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowClubSuggestions(false), 200)}
-                    placeholder="Recherche un club" 
-                    className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80 transition-colors ${formData.club ? 'pl-12' : 'pl-4'}`} 
-                  />
+                  {formData.club && <img src={`/asset/logo-club/${clubSlug}.svg`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Club" />}
+                  <input value={formData.club} onChange={e => { setFormData({...formData, club: e.target.value}); setShowClubSuggestions(true); }} onFocus={() => setShowClubSuggestions(true)} onBlur={() => setTimeout(() => setShowClubSuggestions(false), 200)} placeholder="Recherche un club" className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium outline-none text-white/80 transition-colors ${formData.club ? 'pl-12' : 'pl-4'}`} />
                   <Search className="absolute right-4 text-[#AFFF25] pointer-events-none" size={16} />
                 </div>
                 
                 {showClubSuggestions && formData.club && filteredClubs.length > 0 && (
                   <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl">
                     {filteredClubs.slice(0, 20).map((c: any, i: number) => (
-                      <li 
-                        key={i} 
-                        onClick={() => {
-                          setFormData({...formData, club: c.name});
-                          setShowClubSuggestions(false);
-                        }}
-                        className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
-                      >
+                      <li key={i} onClick={() => { setFormData({...formData, club: c.name}); setShowClubSuggestions(false); }} className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0">
                         <img src={`/asset/logo-club/${c.slug}.svg`} onError={hideBrokenImage} className="w-6 h-6 object-contain" />
                         <span className="text-sm font-bold uppercase">{c.name}</span>
                       </li>
@@ -308,35 +284,23 @@ export default function ScannerPage() {
           )}
         </div>
 
-
-        {/* ===================== SECTION CARTE ===================== */}
         <div>
-          {/* En-tête de l'accordéon */}
-          <div 
-            className="flex justify-between items-center cursor-pointer select-none mb-4"
-            onClick={() => setIsCarteOpen(!isCarteOpen)}
-          >
+          <div className="flex justify-between items-center cursor-pointer select-none mb-4" onClick={() => setIsCarteOpen(!isCarteOpen)}>
             <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Carte</h2>
             <div className="text-[#AFFF25]">
               {isCarteOpen ? <Minus size={22} /> : <Plus size={22} />}
             </div>
           </div>
 
-          {/* Contenu de l'accordéon */}
           {isCarteOpen && (
             <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
-              
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Brand</label>
                 <div className="relative flex items-center">
-                  {formData.brand && (
-                    <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Brand" />
-                  )}
+                  {formData.brand && <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Brand" />}
                   <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value, series: ''})} className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 transition-colors ${formData.brand ? 'pl-12' : 'pl-4'}`}>
                     <option value="">Sélectionne un fabricant</option>
-                    {availableBrands.map((b: any, i: number) => (
-                      <option key={i} value={b.name}>{b.name}</option>
-                    ))}
+                    {availableBrands.map((b: any, i: number) => <option key={i} value={b.name}>{b.name}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
                 </div>
@@ -344,18 +308,9 @@ export default function ScannerPage() {
 
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Set</label>
-                <select 
-                  value={formData.series} 
-                  onChange={e => setFormData({...formData, series: e.target.value})} 
-                  disabled={!formData.brand || !formData.sport}
-                  className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4 disabled:opacity-50 disabled:border-white/10 transition-colors`}
-                >
-                  <option value="">
-                    {!formData.sport || !formData.brand ? "Choisis un sport et fabricant" : "Sélectionne la collection"}
-                  </option>
-                  {availableSets.map((setName: string, i: number) => (
-                    <option key={i} value={setName}>{setName}</option>
-                  ))}
+                <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} disabled={!formData.brand || !formData.sport} className={`w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4 disabled:opacity-50 disabled:border-white/10 transition-colors`}>
+                  <option value="">{!formData.sport || !formData.brand ? "Choisis un sport et fabricant" : "Sélectionne la collection"}</option>
+                  {availableSets.map((setName: string, i: number) => <option key={i} value={setName}>{setName}</option>)}
                 </select>
                 <ChevronDown className="absolute right-4 bottom-3 text-white/50 pointer-events-none" size={16} />
               </div>
@@ -364,9 +319,7 @@ export default function ScannerPage() {
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Année</label>
                 <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-sm font-medium appearance-none outline-none text-white/80 pl-4 transition-colors">
                   <option value="">Sélectionne l'année</option>
-                  {yearsList.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
+                  {yearsList.map(year => <option key={year} value={year}>{year}</option>)}
                 </select>
                 <ChevronDown className="absolute right-4 bottom-3 text-white/50 pointer-events-none" size={16} />
               </div>
@@ -408,7 +361,6 @@ export default function ScannerPage() {
           )}
         </div>
 
-        {/* BOUTON ENREGISTRER */}
         <button 
           onClick={saveCard} 
           disabled={loading || analyzing || !isFormStarted} 

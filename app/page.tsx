@@ -1,18 +1,35 @@
-import Link from 'next/link';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-[#0F1115]">
-      <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white">
-        CARD<span className="text-[#DFFF00]">BULK</span>
-      </h1>
-      <p className="text-gray-400 mt-4 font-medium uppercase text-xs tracking-[0.2em]">
-        Scan. Collect. Dominate.
-      </p>
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       
-      <Link href="/collection" className="mt-12 bg-[#DFFF00] text-black font-black italic px-10 py-4 rounded-full uppercase shadow-lg shadow-[#DFFF00]/20 active:scale-95 transition-transform">
-        Ouvrir la collection
-      </Link>
+      if (session) {
+        // Si l'utilisateur a une session active, on l'envoie sur sa collection
+        router.push('/collection');
+      } else {
+        // Sinon, direction la page de connexion
+        router.push('/login');
+      }
+    };
+    
+    checkSession();
+  }, [router]);
+
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center relative z-10">
+      <Loader2 className="animate-spin text-[#AFFF25] mb-4" size={40} />
+      <p className="text-[#AFFF25] text-xs font-bold italic tracking-widest animate-pulse">
+        CHARGEMENT...
+      </p>
     </div>
   );
 }
