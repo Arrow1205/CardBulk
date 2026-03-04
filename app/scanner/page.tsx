@@ -51,12 +51,20 @@ export default function ScannerPage() {
   // Années dynamiques de 2027 à 1994
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
+<<<<<<< HEAD
   // Auto-complétion des clubs (Sécurisé au cas où le JSON est vide ou mal formaté)
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const filteredClubs = safeFootballClubs.filter((c: any) => 
     c.name?.toLowerCase().includes(formData.club.toLowerCase())
   );
   const selectedClub = safeFootballClubs.find((c: any) => c.name?.toLowerCase() === formData.club.toLowerCase());
+=======
+  // Auto-complétion des clubs (Sécurisé au cas où le JSON est vide)
+  const filteredClubs = (FOOTBALL_CLUBS || []).filter((c: any) => 
+    c.name.toLowerCase().includes(formData.club.toLowerCase())
+  );
+  const selectedClub = (FOOTBALL_CLUBS || []).find((c: any) => c.name.toLowerCase() === formData.club.toLowerCase());
+>>>>>>> 8a55f3faa395dafe23252dd5c3d146e8d60aa840
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
 
   // 🚀 EXTRACTION INTELLIGENTE DES BRANDS ET DES SETS
@@ -65,7 +73,11 @@ export default function ScannerPage() {
   // On trouve les sets dispos UNIQUEMENT pour la Brand ET le Sport sélectionnés
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
+<<<<<<< HEAD
     const selectedBrandObj = availableBrands.find((b: any) => b.name?.toLowerCase() === formData.brand.toLowerCase());
+=======
+    const selectedBrandObj = availableBrands.find((b: any) => b.name === formData.brand);
+>>>>>>> 8a55f3faa395dafe23252dd5c3d146e8d60aa840
     const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
     
     if (selectedBrandObj && selectedBrandObj.sports && selectedBrandObj.sports[sportJsonKey]) {
@@ -73,10 +85,16 @@ export default function ScannerPage() {
     }
   }
 
+<<<<<<< HEAD
   // Trouve l'image du sport (avec le dictionnaire pour la majuscule stricte de Vercel)
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   
   // Trouve l'image de la brand (ex: topps.png)
+=======
+  // Trouve l'image du sport
+  const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
+  // Trouve l'image de la brand
+>>>>>>> 8a55f3faa395dafe23252dd5c3d146e8d60aa840
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
 
   const isFormStarted = Object.values(formData).some(val => 
@@ -101,6 +119,7 @@ export default function ScannerPage() {
       if (!data.error && data.playerName) {
         const parts = data.playerName.split(' ');
         
+<<<<<<< HEAD
         // CORRECTION VERCEL : Le fameux 'prev' est maintenant à l'intérieur du setter !
         setFormData(prev => {
           let aiSport = data.sport?.toUpperCase() || prev.sport;
@@ -123,6 +142,28 @@ export default function ScannerPage() {
             num_high: data.num_high?.toString() || ''
           };
         });
+=======
+        // Normalisation si l'IA dit "FOOTBALL" au lieu de "SOCCER"
+        let aiSport = data.sport?.toUpperCase() || prev.sport;
+        if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
+
+        setFormData(prev => ({
+          ...prev,
+          sport: aiSport,
+          firstname: parts[0]?.toUpperCase() || '',
+          lastname: parts.slice(1).join(' ')?.toUpperCase() || '',
+          club: data.club || '', 
+          brand: data.brand || prev.brand,
+          series: data.series || prev.series,
+          year: data.year?.toString() || prev.year,
+          is_auto: !!data.is_auto,
+          is_patch: !!data.is_patch,
+          is_rookie: !!data.is_rookie,
+          is_numbered: !!data.is_numbered,
+          num_low: data.num_low?.toString() || '',
+          num_high: data.num_high?.toString() || ''
+        }));
+>>>>>>> 8a55f3faa395dafe23252dd5c3d146e8d60aa840
       }
     } catch (err) {
       console.error("Échec silencieux du scan.");
@@ -137,7 +178,10 @@ export default function ScannerPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
+<<<<<<< HEAD
         alert("Tu dois créer un compte ou te connecter pour sauvegarder tes cartes !");
+=======
+>>>>>>> 8a55f3faa395dafe23252dd5c3d146e8d60aa840
         router.push('/login'); 
         return; 
       }
@@ -273,7 +317,11 @@ export default function ScannerPage() {
             
             {showClubSuggestions && formData.club && filteredClubs.length > 0 && (
               <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25]/50 rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl">
+<<<<<<< HEAD
                 {filteredClubs.slice(0, 20).map((c: any, i: number) => (
+=======
+                {filteredClubs.slice(0, 20).map((c: any) => (
+>>>>>>> 8a55f3faa395dafe23252dd5c3d146e8d60aa840
                   <li 
                     key={i} 
                     onClick={() => {
