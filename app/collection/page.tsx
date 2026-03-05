@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, Search, ChevronDown } from 'lucide-react';
 
@@ -20,13 +20,24 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
 };
 
 export default function CollectionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>}>
+      <CollectionContent />
+    </Suspense>
+  );
+}
+
+function CollectionContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  // 🚀 NOUVEAU : On récupère les filtres depuis l'URL si on vient de la page Carte
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('club') || '');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedSport, setSelectedSport] = useState('');
+  const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || '');
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
@@ -77,8 +88,10 @@ export default function CollectionPage() {
     : [];
 
   const filteredCards = cards.filter(card => {
-    const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
-    const matchesSearch = searchTerm === '' || fullName.includes(searchTerm.toLowerCase());
+    // 🚀 NOUVEAU : La recherche regarde dans Prénom, Nom ET Club !
+    const searchString = `${card.firstname || ''} ${card.lastname || ''} ${card.club_name || ''}`.toLowerCase();
+    const matchesSearch = searchTerm === '' || searchString.includes(searchTerm.toLowerCase());
+    
     const matchesSport = selectedSport === '' || card.sport === selectedSport;
     
     let matchesSpec = true;
@@ -107,7 +120,7 @@ export default function CollectionPage() {
           <Search className="absolute left-4 top-3.5 text-[#AFFF25]" size={18} />
           <input 
             type="text" 
-            placeholder="Enter player name" 
+            placeholder="Nom de joueur ou club..." 
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -234,11 +247,9 @@ export default function CollectionPage() {
               <div 
                 key={card.id} 
                 onClick={() => router.push(`/card/${card.id}`)}
-                // FIX RADIUS 12px
                 style={{ borderRadius: '12px' }}
-                // FIX HORIZONTALE PLEIN CADRE (aspect-ratio pour égaliser hauteur)
-                className={`relative overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group ${
-                  isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'
+                className={`relative overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group flex items-center justify-center ${
+                  isHorizontal ? 'col-span-2 aspect-[1.55] bg-[#080531]' : 'col-span-1 aspect-[3/4] bg-white/5'
                 }`}
               >
                 {card.image_url ? (
@@ -251,8 +262,7 @@ export default function CollectionPage() {
                         handleImageLoad(img, card.id);
                       }
                     }}
-                    // FIX HORIZONTALE PLEIN CADRE
-                    className="w-full h-full object-cover" 
+                    className={`w-full h-full ${isHorizontal ? 'object-contain p-1' : 'object-cover'}`} 
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">

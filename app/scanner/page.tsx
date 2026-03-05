@@ -37,9 +37,10 @@ function ScannerContent() {
   
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  
-  // 🚀 NOUVEAU : État de chargement bloquant pour le mode Édition
   const [isFetchingEdit, setIsFetchingEdit] = useState(!!editId);
+  
+  // 🚀 NOUVEAU : État pour la confirmation de suppression
+  const [confirmDelete, setConfirmDelete] = useState(false);
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -73,7 +74,6 @@ function ScannerContent() {
     checkAuth();
   }, [router]);
 
-  // 🚀 CORRECTION DU MODE ÉDITION : On s'assure de récupérer la carte AVANT d'afficher la page
   useEffect(() => {
     if (editId) {
       setIsFetchingEdit(true);
@@ -103,7 +103,6 @@ function ScannerContent() {
           }
         } catch (err) {
           console.error("Erreur chargement édition:", err);
-          alert("Impossible de charger la carte.");
         } finally {
           setIsFetchingEdit(false);
         }
@@ -197,7 +196,6 @@ function ScannerContent() {
       let currentBlob: Blob | File | null = selectedFile;
       
       if (!currentBlob && previewUrl) {
-        // Ajout d'un paramètre cache-busting pour éviter les erreurs CORS sur Safari/Chrome
         const response = await fetch(previewUrl + "?t=" + new Date().getTime());
         currentBlob = await response.blob();
       }
@@ -230,7 +228,6 @@ function ScannerContent() {
       
     } catch (e) {
       console.error("Erreur de rotation", e);
-      alert("Impossible de pivoter cette image.");
       setAnalyzing(false);
     }
   };
@@ -287,13 +284,21 @@ function ScannerContent() {
 
       router.push('/collection');
     } catch (err: any) {
-      alert("❌ Erreur : " + err.message);
       setLoading(false);
     }
   };
 
+  // 🚀 NOUVEAU : LA FONCTION DE SUPPRESSION QUI CONTOURNE LE BUG APPLE
   const deleteCard = async () => {
-    if (!confirm("Es-tu sûr de vouloir supprimer définitivement cette carte ?")) return;
+    if (!confirmDelete) {
+      // Premier clic : on demande confirmation visuellement
+      setConfirmDelete(true);
+      // On annule la confirmation si l'utilisateur ne clique pas dans les 3 secondes
+      setTimeout(() => setConfirmDelete(false), 3000);
+      return;
+    }
+
+    // Deuxième clic : on supprime pour de vrai
     setLoading(true);
     const { error } = await supabase.from('cards').delete().eq('id', editId);
     if (error) {
@@ -306,7 +311,6 @@ function ScannerContent() {
 
   const hideBrokenImage = (e: any) => e.currentTarget.style.display = 'none';
 
-  // Si on est en train de charger les données du mode édition, on affiche un loader
   if (isFetchingEdit) {
     return (
       <div className="min-h-screen text-white flex flex-col items-center justify-center">
@@ -331,19 +335,25 @@ function ScannerContent() {
             {editId ? 'Met à jour ta carte' : 'Scan ou upload ta carte'}
           </p>
         </div>
-        <div className="w-10 flex justify-end">
+        <div className="w-auto min-w-[40px] flex justify-end">
+          {/* 🚀 NOUVEAU : LE SMART BUTTON DE SUPPRESSION */}
           {editId && (
-            <button onClick={deleteCard} className="w-10 h-10 bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/30 active:scale-95 transition-transform">
-              <Trash2 size={18} className="text-red-500" />
+            <button 
+              onClick={deleteCard} 
+              className={`h-10 px-3 rounded-full flex items-center justify-center border active:scale-95 transition-all duration-300 ${
+                confirmDelete 
+                  ? 'bg-red-500 text-white border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' 
+                  : 'bg-red-500/10 border-red-500/30 text-red-500'
+              }`}
+            >
+              <Trash2 size={18} />
+              {confirmDelete && <span className="text-xs font-black ml-2 uppercase tracking-widest">Sûr ?</span>}
             </button>
           )}
         </div>
       </header>
 
-      {/* 🚀 CORRECTION ROTATION MOBILE : La zone cliquable et le bouton sont maintenant parfaitement séparés */}
       <div className="relative w-full max-w-[240px] mx-auto mb-12">
-        
-        {/* Zone de l'image (Cliquable pour upload) */}
         <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full flex flex-col items-center justify-center overflow-hidden cursor-pointer bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10 group">
           <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[#AFFF25] z-10"></div>
           <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[#AFFF25] z-10"></div>
@@ -368,7 +378,6 @@ function ScannerContent() {
           )}
         </div>
 
-        {/* 🚀 LE BOUTON ROTATION (Totalement en dehors du div cliquable) */}
         {previewUrl && (
           <button 
             onClick={(e) => { 

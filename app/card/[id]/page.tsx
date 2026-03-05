@@ -25,11 +25,8 @@ export default function CardDetailsPage() {
   const [card, setCard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isFavoriting, setIsFavoriting] = useState(false);
-  
-  // NOUVEAU : Détection de l'orientation de la carte
   const [isHorizontal, setIsHorizontal] = useState(false);
 
-  // ÉTATS POUR L'EFFET 3D (TILT)
   const [tiltStyle, setTiltStyle] = useState({
     transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
     transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
@@ -66,7 +63,6 @@ export default function CardDetailsPage() {
     setLoading(false);
   };
 
-  // NOUVEAU : Mesure l'image quand elle charge pour adapter le cadre
   const handleMainImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
     if (img.naturalWidth > img.naturalHeight) {
@@ -94,7 +90,6 @@ export default function CardDetailsPage() {
     setIsFavoriting(false);
   };
 
-  // FONCTIONS POUR GÉRER L'INCLINAISON ET LE REFLET
   const handleMove = (e: any) => {
     if (!card?.image_url) return;
     
@@ -108,7 +103,7 @@ export default function CardDetailsPage() {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -15; // Un peu moins d'inclinaison
+    const rotateX = ((y - centerY) / centerY) * -15; 
     const rotateY = ((x - centerX) / centerX) * 15;
 
     const glareX = (x / rect.width) * 100;
@@ -173,12 +168,9 @@ export default function CardDetailsPage() {
           </button>
         </header>
 
-        {/* IMAGE DE LA CARTE PRINCIPALE AVEC EFFET 3D */}
         <div className="px-6 flex justify-center mb-10 perspective-1000">
           <div 
-            // FIX RADIUS 12px
             style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }}
-            // FIX CADRE HORIZONTAL : aspect-[3/4] par défaut, aspect-[4/3] si horizontale
             className={`relative w-full max-w-[340px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-grab active:cursor-grabbing ${isHorizontal ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}
             onMouseMove={handleMove}
             onMouseLeave={handleLeave}
@@ -189,26 +181,22 @@ export default function CardDetailsPage() {
               <>
                 <img 
                   src={card.image_url} 
-                  onLoad={handleMainImageLoad} // Détecte l'orientation
-                  // FIX CADRE HORIZONTAL ET RADIUS 12px
+                  onLoad={handleMainImageLoad} 
                   style={{ borderRadius: '12px' }}
                   className="w-full h-full object-cover border border-white/10" 
                   alt="Card" 
                 />
                 <div 
-                  // FIX RADIUS 12px
                   style={{ ...glareStyle, borderRadius: '12px' }}
                   className="absolute inset-0 pointer-events-none transition-opacity duration-300"
                 ></div>
                 <div 
-                   // FIX RADIUS 12px
                    style={{ borderRadius: '12px' }}
                    className="absolute inset-0 border border-white/20 opacity-50 mix-blend-overlay pointer-events-none"
                 ></div>
               </>
             ) : (
               <div 
-                 // FIX RADIUS 12px
                  style={{ borderRadius: '12px' }}
                  className="w-full h-full bg-white/5 flex items-center justify-center border border-white/10">Image introuvable</div>
             )}
@@ -241,14 +229,21 @@ export default function CardDetailsPage() {
             {card.is_rookie && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white shadow-md">Rookie</span>}
           </div>
 
+          {/* 🚀 NOUVEAU : REDIRECTIONS FILTRÉES VERS LA COLLECTION */}
           <div className="flex flex-wrap gap-3 mb-6">
-            <button onClick={() => router.push('/sport')} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors">
+            <button 
+              onClick={() => router.push(`/collection?sport=${card.sport}`)} 
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors"
+            >
               <img src={`/asset/sports/${sportData.image}.png`} className="w-4 h-4 object-contain" alt={sportData.label} />
               <span className="text-sm font-medium text-white">{sportData.label}</span>
             </button>
             
             {card.club_name && (
-              <button onClick={() => router.push('/club')} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors">
+              <button 
+                onClick={() => router.push(`/collection?club=${encodeURIComponent(card.club_name)}`)} 
+                className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors"
+              >
                 <img src={`/asset/logo-club/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
                 <span className="text-sm font-medium text-white">{card.club_name}</span>
               </button>
