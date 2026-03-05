@@ -30,7 +30,6 @@ export default function CollectionPage() {
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
-  // 🚀 NOUVEAU : Mémoire pour savoir quelles cartes sont horizontales
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -58,7 +57,6 @@ export default function CollectionPage() {
     setLoading(false);
   };
 
-  // 🚀 NOUVEAU : Vérifie les proportions de l'image quand elle a fini de charger
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>, id: string) => {
     const img = e.currentTarget;
     if (img.naturalWidth > img.naturalHeight) {
@@ -227,7 +225,6 @@ export default function CollectionPage() {
           <p className="text-white/40 italic font-bold">Aucune carte trouvée.</p>
         </div>
       ) : (
-        {/* 🚀 NOUVEAU : Grille dense style Pinterest */}
         <div className="grid grid-cols-3 gap-2 auto-rows-max grid-flow-dense">
           {filteredCards.map((card) => {
             const isHorizontal = horizontalCards.has(card.id);
@@ -235,7 +232,6 @@ export default function CollectionPage() {
               <div 
                 key={card.id} 
                 onClick={() => router.push(`/card/${card.id}`)}
-                // 🚀 NOUVEAU : Si horizontal, ça prend 2 colonnes avec ratio 4:3, sinon 1 colonne ratio 3:4
                 className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-all group ${
                   isHorizontal ? 'col-span-2 aspect-[4/3]' : 'col-span-1 aspect-[3/4]'
                 }`}
@@ -244,7 +240,7 @@ export default function CollectionPage() {
                   <img 
                     src={card.image_url} 
                     alt="Card" 
-                    onLoad={(e) => handleImageLoad(e, card.id)} // Mesure l'image
+                    onLoad={(e) => handleImageLoad(e, card.id)}
                     className="w-full h-full object-cover" 
                   />
                 ) : (
