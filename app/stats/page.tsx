@@ -12,7 +12,6 @@ export default function StatsPage() {
   
   const [activeTab, setActiveTab] = useState<'nombres' | 'valeurs'>('valeurs');
   
-  // 🚀 NOUVEAU : États pour les filtres
   const [selectedSport, setSelectedSport] = useState('');
   const [selectedSpec, setSelectedSpec] = useState('');
 
@@ -44,7 +43,6 @@ export default function StatsPage() {
     );
   }
 
-  // 🚀 NOUVEAU : Filtrage des cartes avant le calcul des stats
   const filteredCards = cards.filter(card => {
     const matchesSport = selectedSport === '' || card.sport === selectedSport;
     
@@ -59,7 +57,6 @@ export default function StatsPage() {
 
   const isVal = activeTab === 'valeurs';
   
-  // Calcul sur les cartes FILTRÉES
   const calculateTotal = (filterFn: (c: any) => boolean) => {
     return filteredCards.filter(filterFn).reduce((acc, card) => {
       return acc + (isVal ? (parseFloat(card.purchase_price) || 0) : 1);
@@ -71,7 +68,6 @@ export default function StatsPage() {
   const totalPatchs = calculateTotal(c => c.is_patch);
   const totalNumbered = calculateTotal(c => c.is_numbered);
 
-  // Graphique généré à partir des cartes filtrées
   const statsBySport: Record<string, number> = {};
   filteredCards.forEach(card => {
     const sport = card.sport || 'Autre';
@@ -94,27 +90,26 @@ export default function StatsPage() {
     return `${color} ${start}% ${end - 0.5}%, #040221 ${end - 0.5}% ${end}%`;
   }).join(', ');
 
-  // 🚀 CORRECTION : Formattage propre sans le € automatique si on est dans "Nombres"
   const formattedTotal = isVal 
     ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalGlobal)
     : totalGlobal.toString();
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans relative overflow-x-hidden z-10">
       
-      <div className="absolute top-0 left-0 w-full h-[400px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#AFFF25]/20 via-[#040221]/0 to-transparent pointer-events-none -z-10"></div>
+      {/* 🚀 LE FAMEUX DÉGRADÉ JAUNE/VERT AU SOMMET */}
+      <div className="absolute top-0 left-0 w-full h-[450px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#AFFF25]/40 via-transparent to-transparent pointer-events-none -z-10"></div>
 
       <header className="pt-10 pb-4 text-center">
         <h1 className="text-5xl font-black italic uppercase tracking-tighter drop-shadow-lg">STATS</h1>
       </header>
 
-      {/* 🚀 NOUVEAU : BARRE DE FILTRES */}
       <div className="px-6 flex gap-2 mb-8">
         <div className="relative flex-1">
           <select 
             value={selectedSport}
             onChange={(e) => setSelectedSport(e.target.value)}
-            className="w-full bg-[#040221] border border-white/20 rounded-full py-2 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg"
+            className="w-full bg-[#040221]/80 backdrop-blur-md border border-white/20 rounded-full py-2 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg"
           >
             <option value="">TOUS SPORTS</option>
             <option value="SOCCER">FOOTBALL</option>
@@ -134,7 +129,7 @@ export default function StatsPage() {
           <select 
             value={selectedSpec}
             onChange={(e) => setSelectedSpec(e.target.value)}
-            className="w-full bg-[#040221] border border-white/20 rounded-full py-2 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg"
+            className="w-full bg-[#040221]/80 backdrop-blur-md border border-white/20 rounded-full py-2 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg"
           >
             <option value="">SPÉCIFICITÉS</option>
             <option value="auto">AUTO</option>
@@ -161,27 +156,26 @@ export default function StatsPage() {
         </button>
       </div>
 
-      {/* 🚀 CORRECTION : Affichage conditionnel de l'Euro */}
       <div className="text-center mb-8 px-4">
-        <div className="text-6xl font-black italic tracking-tighter leading-none whitespace-nowrap flex justify-center items-baseline">
+        <div className="text-6xl font-black italic tracking-tighter leading-none whitespace-nowrap flex justify-center items-baseline drop-shadow-md">
           {isVal ? formattedTotal.replace('€', '').trim() : totalGlobal}
           {isVal && <span className="text-5xl ml-1 text-[#AFFF25]">€</span>}
         </div>
-        <div className="text-[#AFFF25] text-xs font-bold uppercase tracking-widest mt-2">
+        <div className="text-[#AFFF25] text-xs font-bold uppercase tracking-widest mt-2 drop-shadow-sm">
           {isVal ? "Valeur totale" : "Cartes trouvées"}
         </div>
       </div>
 
       <div className="px-6 grid grid-cols-3 gap-3 mb-12">
-        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center">
+        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
           <div className="text-[10px] text-white/70 mb-1">Autos</div>
           <div className="text-[#AFFF25] font-black italic text-lg">{isVal ? `${totalAutos} €` : totalAutos}</div>
         </div>
-        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center">
+        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
           <div className="text-[10px] text-white/70 mb-1">Patchs</div>
           <div className="text-[#AFFF25] font-black italic text-lg">{isVal ? `${totalPatchs} €` : totalPatchs}</div>
         </div>
-        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center">
+        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
           <div className="text-[10px] text-white/70 mb-1">Numérotées</div>
           <div className="text-[#AFFF25] font-black italic text-lg">{isVal ? `${totalNumbered} €` : totalNumbered}</div>
         </div>
@@ -191,7 +185,7 @@ export default function StatsPage() {
         <div className="relative w-full flex justify-center mt-12 mb-10 px-6">
           <div className="relative w-64 h-64">
             <div 
-              className="w-full h-full rounded-full drop-shadow-[0_0_20px_rgba(175,255,37,0.1)] transition-all duration-700"
+              className="w-full h-full rounded-full drop-shadow-[0_0_20px_rgba(175,255,37,0.2)] transition-all duration-700"
               style={{ 
                 background: `conic-gradient(${gradientStops})`,
                 WebkitMaskImage: 'radial-gradient(circle at center, transparent 35%, black 36%)',
