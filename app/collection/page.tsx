@@ -30,7 +30,6 @@ export default function CollectionPage() {
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
-  // Mémoire pour savoir quelles cartes sont horizontales
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -58,11 +57,13 @@ export default function CollectionPage() {
     setLoading(false);
   };
 
-  // Vérifie les proportions de l'image quand elle a fini de charger
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>, id: string) => {
-    const img = e.currentTarget;
+  // 🚀 LA CORRECTION ANTI-BOUCLE INFINIE EST ICI
+  const handleImageLoad = (img: HTMLImageElement, id: string) => {
     if (img.naturalWidth > img.naturalHeight) {
       setHorizontalCards(prev => {
+        // Si la carte est DÉJÀ marquée comme horizontale, on ne fait RIEN !
+        if (prev.has(id)) return prev; 
+        
         const newSet = new Set(prev);
         newSet.add(id);
         return newSet;
@@ -242,10 +243,11 @@ export default function CollectionPage() {
                   <img 
                     src={card.image_url} 
                     alt="Card" 
-                    onLoad={(e) => handleImageLoad(e, card.id)}
+                    // Refactorisation de la détection d'image
+                    onLoad={(e) => handleImageLoad(e.currentTarget, card.id)}
                     ref={(img) => {
                       if (img && img.complete) {
-                        handleImageLoad({ currentTarget: img } as any, card.id);
+                        handleImageLoad(img, card.id);
                       }
                     }}
                     className="w-full h-full object-cover" 
