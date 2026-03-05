@@ -30,6 +30,9 @@ export default function CollectionPage() {
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
+  // Mémoire pour savoir quelles cartes sont horizontales
+  const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     fetchCards();
   }, []);
@@ -53,6 +56,20 @@ export default function CollectionPage() {
       setCards(data);
     }
     setLoading(false);
+  };
+
+  // 🚀 SÉCURITÉ ANTI-CRASH (BOUCLE INFINIE) ET DÉTECTION DE L'IMAGE
+  const handleImageLoad = (img: HTMLImageElement, id: string) => {
+    if (img.naturalWidth > img.naturalHeight) {
+      setHorizontalCards(prev => {
+        // Si la carte est DÉJÀ marquée comme horizontale, on ne fait RIEN !
+        if (prev.has(id)) return prev; 
+        
+        const newSet = new Set(prev);
+        newSet.add(id);
+        return newSet;
+      });
+    }
   };
 
   const uniquePlayers = Array.from(
@@ -83,10 +100,9 @@ export default function CollectionPage() {
   const sportImage = selectedSport ? SPORT_CONFIG[selectedSport]?.image : null;
 
   return (
-    // Remplacement du p-6 par p-2 (0.5rem)
     <div className="min-h-screen text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* J'ai ajouté un peu de marge horizontale (px-4) au header et filtres pour compenser le p-2 global */}
+      {/* ESPACE SÉCURISÉ POUR LE HEADER ET LES FILTRES (px-4 pour compenser le p-2) */}
       <div className="px-4">
         <header className="mb-6 pt-4 text-center">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">COLLECTION</h1>
@@ -207,6 +223,7 @@ export default function CollectionPage() {
         </div>
       </div>
 
+      {/* ZONE DE LA GRILLE */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-[#AFFF25]" size={40} />
@@ -216,29 +233,40 @@ export default function CollectionPage() {
           <p className="text-white/40 italic font-bold">Aucune carte trouvée.</p>
         </div>
       ) : (
-        /* 🚀 LA VRAIE GRILLE MASONRY (PINTEREST) */
-        <div className="columns-3 gap-2 px-2">
-          {filteredCards.map((card) => (
-            <div 
-              key={card.id} 
-              onClick={() => router.push(`/card/${card.id}`)}
-              /* break-inside-avoid empêche une carte d'être coupée en deux entre deux colonnes */
-              className="mb-2 break-inside-avoid relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-all group"
-            >
-              {card.image_url ? (
-                /* h-auto permet à l'image de prendre sa hauteur naturelle tout en respectant la largeur de la colonne */
-                <img 
-                  src={card.image_url} 
-                  alt="Card" 
-                  className="w-full h-auto block" 
-                />
-              ) : (
-                <div className="w-full aspect-[3/4] flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
-                  <span className="text-[10px] italic font-bold leading-tight">No Image</span>
-                </div>
-              )}
-            </div>
-          ))}
+        /* 🚀 GRILLE DENSE AVEC HAUTEUR ÉGALISÉE ET SANS CROP */
+        <div className="grid grid-cols-3 gap-2 grid-flow-dense px-2">
+          {filteredCards.map((card) => {
+            const isHorizontal = horizontalCards.has(card.id);
+            return (
+              <div 
+                key={card.id} 
+                onClick={() => router.push(`/card/${card.id}`)}
+                // aspect-[1.55] permet d'avoir la même hauteur que aspect-[3/4] sur 2 colonnes
+                className={`relative rounded-xl overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group flex items-center justify-center ${
+                  isHorizontal ? 'col-span-2 aspect-[1.55] bg-[#080531]' : 'col-span-1 aspect-[3/4] bg-white/5'
+                }`}
+              >
+                {card.image_url ? (
+                  <img 
+                    src={card.image_url} 
+                    alt="Card" 
+                    onLoad={(e) => handleImageLoad(e.currentTarget, card.id)}
+                    ref={(img) => {
+                      if (img && img.complete) {
+                        handleImageLoad(img, card.id);
+                      }
+                    }}
+                    // object-contain pour horizontale (pas de crop), object-cover pour verticale
+                    className={`w-full h-full ${isHorizontal ? 'object-contain p-1' : 'object-cover'}`} 
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
+                    <span className="text-[10px] italic font-bold leading-tight">No Image</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
