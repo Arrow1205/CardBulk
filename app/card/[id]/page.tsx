@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Edit, Star, Loader2 } from 'lucide-react';
@@ -25,8 +25,11 @@ export default function CardDetailsPage() {
   const [card, setCard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isFavoriting, setIsFavoriting] = useState(false);
+  
+  // NOUVEAU : Détection de l'orientation de la carte
+  const [isHorizontal, setIsHorizontal] = useState(false);
 
-  // 🚀 ÉTATS POUR L'EFFET 3D (TILT)
+  // ÉTATS POUR L'EFFET 3D (TILT)
   const [tiltStyle, setTiltStyle] = useState({
     transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
     transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
@@ -63,6 +66,16 @@ export default function CardDetailsPage() {
     setLoading(false);
   };
 
+  // NOUVEAU : Mesure l'image quand elle charge pour adapter le cadre
+  const handleMainImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    if (img.naturalWidth > img.naturalHeight) {
+      setIsHorizontal(true);
+    } else {
+      setIsHorizontal(false);
+    }
+  };
+
   const toggleFavorite = async () => {
     if (!card) return;
     setIsFavoriting(true);
@@ -81,12 +94,11 @@ export default function CardDetailsPage() {
     setIsFavoriting(false);
   };
 
-  // 🚀 FONCTIONS POUR GÉRER L'INCLINAISON ET LE REFLET
+  // FONCTIONS POUR GÉRER L'INCLINAISON ET LE REFLET
   const handleMove = (e: any) => {
     if (!card?.image_url) return;
     
     const rect = e.currentTarget.getBoundingClientRect();
-    // Gère la souris OU le tactile
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
@@ -96,27 +108,24 @@ export default function CardDetailsPage() {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Calcul de l'angle (max 20 degrés)
-    const rotateX = ((y - centerY) / centerY) * -20;
-    const rotateY = ((x - centerX) / centerX) * 20;
+    const rotateX = ((y - centerY) / centerY) * -15; // Un peu moins d'inclinaison
+    const rotateY = ((x - centerX) / centerX) * 15;
 
-    // Position du reflet lumineux
     const glareX = (x / rect.width) * 100;
     const glareY = (y / rect.height) * 100;
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
-      transition: 'transform 0.1s ease-out' // Rapide quand on bouge
+      transition: 'transform 0.1s ease-out'
     });
 
     setGlareStyle({
-      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.3) 0%, transparent 60%)`,
       opacity: 1
     });
   };
 
   const handleLeave = () => {
-    // Retour doux à la position initiale
     setTiltStyle({
       transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
       transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)'
@@ -165,10 +174,12 @@ export default function CardDetailsPage() {
         </header>
 
         {/* IMAGE DE LA CARTE PRINCIPALE AVEC EFFET 3D */}
-        <div className="px-6 flex justify-center mb-8 perspective-1000">
+        <div className="px-6 flex justify-center mb-10 perspective-1000">
           <div 
-            className="relative w-full max-w-[300px] aspect-[3/4] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] cursor-grab active:cursor-grabbing"
-            style={{ ...tiltStyle, transformStyle: 'preserve-3d' }}
+            // FIX RADIUS 12px
+            style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }}
+            // FIX CADRE HORIZONTAL : aspect-[3/4] par défaut, aspect-[4/3] si horizontale
+            className={`relative w-full max-w-[340px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-grab active:cursor-grabbing ${isHorizontal ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}
             onMouseMove={handleMove}
             onMouseLeave={handleLeave}
             onTouchMove={handleMove}
@@ -176,22 +187,30 @@ export default function CardDetailsPage() {
           >
             {card.image_url ? (
               <>
-                {/* L'image de la carte */}
                 <img 
                   src={card.image_url} 
-                  className="w-full h-full object-cover rounded-2xl border border-white/10" 
+                  onLoad={handleMainImageLoad} // Détecte l'orientation
+                  // FIX CADRE HORIZONTAL ET RADIUS 12px
+                  style={{ borderRadius: '12px' }}
+                  className="w-full h-full object-cover border border-white/10" 
                   alt="Card" 
                 />
-                {/* Le reflet lumineux par-dessus */}
                 <div 
-                  className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300"
-                  style={glareStyle}
+                  // FIX RADIUS 12px
+                  style={{ ...glareStyle, borderRadius: '12px' }}
+                  className="absolute inset-0 pointer-events-none transition-opacity duration-300"
                 ></div>
-                {/* Un petit effet de bordure métallique qui brille */}
-                <div className="absolute inset-0 rounded-2xl border border-white/20 opacity-50 mix-blend-overlay pointer-events-none"></div>
+                <div 
+                   // FIX RADIUS 12px
+                   style={{ borderRadius: '12px' }}
+                   className="absolute inset-0 border border-white/20 opacity-50 mix-blend-overlay pointer-events-none"
+                ></div>
               </>
             ) : (
-              <div className="w-full h-full bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">Image introuvable</div>
+              <div 
+                 // FIX RADIUS 12px
+                 style={{ borderRadius: '12px' }}
+                 className="w-full h-full bg-white/5 flex items-center justify-center border border-white/10">Image introuvable</div>
             )}
           </div>
         </div>

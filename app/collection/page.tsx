@@ -30,7 +30,6 @@ export default function CollectionPage() {
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
-  // Mémoire pour savoir quelles cartes sont horizontales
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -58,13 +57,10 @@ export default function CollectionPage() {
     setLoading(false);
   };
 
-  // 🚀 SÉCURITÉ ANTI-CRASH (BOUCLE INFINIE) ET DÉTECTION DE L'IMAGE
   const handleImageLoad = (img: HTMLImageElement, id: string) => {
     if (img.naturalWidth > img.naturalHeight) {
       setHorizontalCards(prev => {
-        // Si la carte est DÉJÀ marquée comme horizontale, on ne fait RIEN !
         if (prev.has(id)) return prev; 
-        
         const newSet = new Set(prev);
         newSet.add(id);
         return newSet;
@@ -102,7 +98,6 @@ export default function CollectionPage() {
   return (
     <div className="min-h-screen text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* ESPACE SÉCURISÉ POUR LE HEADER ET LES FILTRES (px-4 pour compenser le p-2) */}
       <div className="px-4">
         <header className="mb-6 pt-4 text-center">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">COLLECTION</h1>
@@ -223,7 +218,6 @@ export default function CollectionPage() {
         </div>
       </div>
 
-      {/* ZONE DE LA GRILLE */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-[#AFFF25]" size={40} />
@@ -233,7 +227,6 @@ export default function CollectionPage() {
           <p className="text-white/40 italic font-bold">Aucune carte trouvée.</p>
         </div>
       ) : (
-        /* 🚀 GRILLE DENSE AVEC HAUTEUR ÉGALISÉE ET SANS CROP */
         <div className="grid grid-cols-3 gap-2 grid-flow-dense px-2">
           {filteredCards.map((card) => {
             const isHorizontal = horizontalCards.has(card.id);
@@ -241,9 +234,11 @@ export default function CollectionPage() {
               <div 
                 key={card.id} 
                 onClick={() => router.push(`/card/${card.id}`)}
-                // aspect-[1.55] permet d'avoir la même hauteur que aspect-[3/4] sur 2 colonnes
-                className={`relative rounded-xl overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group flex items-center justify-center ${
-                  isHorizontal ? 'col-span-2 aspect-[1.55] bg-[#080531]' : 'col-span-1 aspect-[3/4] bg-white/5'
+                // FIX RADIUS 12px
+                style={{ borderRadius: '12px' }}
+                // FIX HORIZONTALE PLEIN CADRE (aspect-ratio pour égaliser hauteur)
+                className={`relative overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group ${
+                  isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'
                 }`}
               >
                 {card.image_url ? (
@@ -256,8 +251,8 @@ export default function CollectionPage() {
                         handleImageLoad(img, card.id);
                       }
                     }}
-                    // object-contain pour horizontale (pas de crop), object-cover pour verticale
-                    className={`w-full h-full ${isHorizontal ? 'object-contain p-1' : 'object-cover'}`} 
+                    // FIX HORIZONTALE PLEIN CADRE
+                    className="w-full h-full object-cover" 
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
