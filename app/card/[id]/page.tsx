@@ -5,7 +5,6 @@ import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Edit, Star, Loader2 } from 'lucide-react';
 
-// 🚀 NOUVEAU : On importe ton fichier de clubs pour avoir le bon nom de l'image (slug) !
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
@@ -79,36 +78,23 @@ export default function CardDetailsPage() {
     if (!card) return;
     setIsFavoriting(true);
     const newFavStatus = !card.is_favorite;
-
     setCard({ ...card, is_favorite: newFavStatus });
-
-    const { error } = await supabase
-      .from('cards')
-      .update({ is_favorite: newFavStatus })
-      .eq('id', card.id);
-
-    if (error) {
-      setCard({ ...card, is_favorite: !newFavStatus });
-    }
+    const { error } = await supabase.from('cards').update({ is_favorite: newFavStatus }).eq('id', card.id);
+    if (error) setCard({ ...card, is_favorite: !newFavStatus });
     setIsFavoriting(false);
   };
 
   const handleMove = (e: any) => {
     if (!card?.image_url) return;
-    
     const rect = e.currentTarget.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
     const x = clientX - rect.left; 
     const y = clientY - rect.top;
-
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-
     const rotateX = ((y - centerY) / centerY) * -15; 
     const rotateY = ((x - centerX) / centerX) * 15;
-
     const glareX = (x / rect.width) * 100;
     const glareY = (y / rect.height) * 100;
 
@@ -116,7 +102,6 @@ export default function CardDetailsPage() {
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
       transition: 'transform 0.1s ease-out'
     });
-
     setGlareStyle({
       background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.3) 0%, transparent 60%)`,
       opacity: 1
@@ -143,10 +128,17 @@ export default function CardDetailsPage() {
 
   const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
 
-  // 🚀 NOUVEAU : On utilise la liste JSON pour trouver le bon "slug" (le nom exact du fichier SVG)
+  // 🚀 RECHERCHE INTELLIGENTE DU CLUB (Résout "Arsenal FC" -> "arsenal")
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
-  const selectedClub = safeFootballClubs.find((c: any) => c.name?.toLowerCase() === card.club_name?.toLowerCase());
-  const clubSlug = selectedClub ? selectedClub.slug : (card.club_name ? card.club_name.toLowerCase().replace(/\s+/g, '-') : '');
+  const searchName = card.club_name ? card.club_name.toLowerCase() : '';
+  const selectedClub = safeFootballClubs.find((c: any) => {
+    const cName = c.name?.toLowerCase() || '';
+    const cSlug = c.slug?.toLowerCase() || '';
+    return searchName === cName || searchName === cSlug || searchName.includes(cSlug) || searchName.includes(cName.replace(' fc', ''));
+  });
+  
+  // Si on trouve dans le JSON on prend le slug officiel, sinon on crée un slug basique
+  const clubSlug = selectedClub ? selectedClub.slug : searchName.replace(/\s+/g, '-');
 
   return (
     <div className="min-h-screen text-white pb-36 font-sans relative overflow-x-hidden">
@@ -246,11 +238,11 @@ export default function CardDetailsPage() {
             </button>
             
             {card.club_name && (
-              // 🚀 NOUVELLE REDIRECTION VERS LA PAGE DU CLUB
               <button 
                 onClick={() => router.push(`/club/${clubSlug}`)} 
                 className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors"
               >
+                {/* 🚀 L'image s'affiche avec le slug corrigé ! */}
                 <img src={`/asset/logo-club/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
                 <span className="text-sm font-medium text-white">{card.club_name}</span>
               </button>
