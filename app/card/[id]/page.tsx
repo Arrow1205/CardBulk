@@ -5,6 +5,9 @@ import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Edit, Star, Loader2 } from 'lucide-react';
 
+// 🚀 NOUVEAU : On importe ton fichier de clubs pour avoir le bon nom de l'image (slug) !
+import FOOTBALL_CLUBS from '@/data/football-clubs.json';
+
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'SOCCER': { image: 'Soccer', label: 'Football' },
   'BASKETBALL': { image: 'Basket', label: 'Basketball' },
@@ -139,7 +142,11 @@ export default function CardDetailsPage() {
   if (!card) return null;
 
   const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
-  const clubSlug = card.club_name ? card.club_name.toLowerCase().replace(/\s+/g, '-') : '';
+
+  // 🚀 NOUVEAU : On utilise la liste JSON pour trouver le bon "slug" (le nom exact du fichier SVG)
+  const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
+  const selectedClub = safeFootballClubs.find((c: any) => c.name?.toLowerCase() === card.club_name?.toLowerCase());
+  const clubSlug = selectedClub ? selectedClub.slug : (card.club_name ? card.club_name.toLowerCase().replace(/\s+/g, '-') : '');
 
   return (
     <div className="min-h-screen text-white pb-36 font-sans relative overflow-x-hidden">
@@ -229,7 +236,6 @@ export default function CardDetailsPage() {
             {card.is_rookie && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white shadow-md">Rookie</span>}
           </div>
 
-          {/* 🚀 NOUVEAU : REDIRECTIONS FILTRÉES VERS LA COLLECTION */}
           <div className="flex flex-wrap gap-3 mb-6">
             <button 
               onClick={() => router.push(`/collection?sport=${card.sport}`)} 
@@ -240,8 +246,9 @@ export default function CardDetailsPage() {
             </button>
             
             {card.club_name && (
+              // 🚀 NOUVELLE REDIRECTION VERS LA PAGE DU CLUB
               <button 
-                onClick={() => router.push(`/collection?club=${encodeURIComponent(card.club_name)}`)} 
+                onClick={() => router.push(`/club/${clubSlug}`)} 
                 className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10 transition-colors"
               >
                 <img src={`/asset/logo-club/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
