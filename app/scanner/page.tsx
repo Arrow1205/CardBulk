@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
@@ -21,26 +21,28 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
 };
 
 export default function ScannerPage() {
-  const router = useRouter();
-  
-  // VERROU DE SÉCURITÉ AU CHARGEMENT
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
-      }
-    };
-    checkAuth();
-  }, [router]);
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>}>
+      <ScannerContent />
+    </Suspense>
+  );
+}
 
+function ScannerContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('edit'); 
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   
+  // 🚀 NOUVEAU : État de chargement bloquant pour le mode Édition
+  const [isFetchingEdit, setIsFetchingEdit] = useState(!!editId);
+  
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // NOUVEAU : On garde le fichier brut
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
@@ -63,6 +65,53 @@ export default function ScannerPage() {
     price: ''
   });
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) router.push('/login');
+    };
+    checkAuth();
+  }, [router]);
+
+  // 🚀 CORRECTION DU MODE ÉDITION : On s'assure de récupérer la carte AVANT d'afficher la page
+  useEffect(() => {
+    if (editId) {
+      setIsFetchingEdit(true);
+      const fetchCardForEdit = async () => {
+        try {
+          const { data, error } = await supabase.from('cards').select('*').eq('id', editId).single();
+          if (error) throw error;
+          
+          if (data) {
+            setFormData({
+              sport: data.sport || '',
+              firstname: data.firstname || '',
+              lastname: data.lastname || '',
+              club: data.club_name || '',
+              brand: data.brand || '',
+              series: data.series || '',
+              year: data.year?.toString() || '',
+              is_auto: data.is_auto || false,
+              is_patch: data.is_patch || false,
+              is_rookie: data.is_rookie || false,
+              is_numbered: data.is_numbered || false,
+              num_low: data.numbering_low?.toString() || '',
+              num_high: data.numbering_max?.toString() || '',
+              price: data.purchase_price?.toString() || ''
+            });
+            setPreviewUrl(data.image_url);
+          }
+        } catch (err) {
+          console.error("Erreur chargement édition:", err);
+          alert("Impossible de charger la carte.");
+        } finally {
+          setIsFetchingEdit(false);
+        }
+      };
+      fetchCardForEdit();
+    }
+  }, [editId]);
+
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
@@ -74,11 +123,9 @@ export default function ScannerPage() {
 
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
-  
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
     const selectedBrandObj = availableBrands.find((b: any) => b.name?.toLowerCase() === formData.brand.toLowerCase());
     const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
-    
     if (selectedBrandObj && selectedBrandObj.sports) {
       const sportsData = selectedBrandObj.sports as any;
       if (sportsData[sportJsonKey]) {
@@ -99,7 +146,7 @@ export default function ScannerPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setSelectedFile(file); // On sauvegarde le vrai fichier pour l'upload !
+    setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setAnalyzing(true);
 
@@ -112,11 +159,9 @@ export default function ScannerPage() {
 
       if (!data.error && data.playerName) {
         const parts = data.playerName.split(' ');
-        
         setFormData(prev => {
           let aiSport = data.sport?.toUpperCase() || prev.sport;
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
-
           return {
             ...prev,
             sport: aiSport,
@@ -134,7 +179,6 @@ export default function ScannerPage() {
             num_high: data.num_high?.toString() || ''
           };
         });
-        
         setIsJoueurOpen(true);
         setIsCarteOpen(true);
       }
@@ -145,49 +189,80 @@ export default function ScannerPage() {
     }
   };
 
+  const rotateImage = async () => {
+    if (!previewUrl) return;
+    setAnalyzing(true);
+
+    try {
+      let currentBlob: Blob | File | null = selectedFile;
+      
+      if (!currentBlob && previewUrl) {
+        // Ajout d'un paramètre cache-busting pour éviter les erreurs CORS sur Safari/Chrome
+        const response = await fetch(previewUrl + "?t=" + new Date().getTime());
+        currentBlob = await response.blob();
+      }
+      if (!currentBlob) return;
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = URL.createObjectURL(currentBlob);
+      await new Promise(resolve => { img.onload = resolve; });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.height;
+      canvas.height = img.width;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(90 * Math.PI / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const fileName = selectedFile ? selectedFile.name : `rotated-${Date.now()}.png`;
+        const newFile = new File([blob], fileName, { type: blob.type });
+        setSelectedFile(newFile);
+        setPreviewUrl(URL.createObjectURL(newFile)); 
+        setAnalyzing(false);
+      }, currentBlob.type || 'image/png');
+      
+    } catch (e) {
+      console.error("Erreur de rotation", e);
+      alert("Impossible de pivoter cette image.");
+      setAnalyzing(false);
+    }
+  };
+
   const saveCard = async () => {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         router.push('/login'); 
         return; 
       }
 
-      let finalImageUrl = null;
+      let finalImageUrl = previewUrl;
 
-      // 🚀 1. UPLOAD DE L'IMAGE VERS SUPABASE
       if (selectedFile) {
         const fileExt = selectedFile.name.split('.').pop();
-        // On crée un nom de fichier unique avec la date
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${user.id}/${fileName}`; // On range par dossier utilisateur
+        const filePath = `${user.id}/${fileName}`; 
 
-        const { error: uploadError } = await supabase.storage
-          .from('card-images') // Le nom du Storage qu'on a créé !
-          .upload(filePath, selectedFile);
+        const { error: uploadError } = await supabase.storage.from('card-images').upload(filePath, selectedFile);
+        if (uploadError) throw uploadError;
 
-        if (uploadError) {
-          alert("❌ Erreur lors de l'upload de l'image : " + uploadError.message);
-          setLoading(false);
-          return;
-        }
-
-        // On récupère le vrai lien internet de ton image
-        const { data: publicUrlData } = supabase.storage
-          .from('card-images')
-          .getPublicUrl(filePath);
-
+        const { data: publicUrlData } = supabase.storage.from('card-images').getPublicUrl(filePath);
         finalImageUrl = publicUrlData.publicUrl;
       }
       
-      // 🚀 2. SAUVEGARDE DE LA CARTE EN BASE DE DONNÉES
-      const { error } = await supabase.from('cards').insert([{
+      const cardDataToSave = {
         user_id: user.id,
-        sport: formData.sport,           // NOUVEAU
-        firstname: formData.firstname,   // NOUVEAU
-        lastname: formData.lastname,     // NOUVEAU
+        sport: formData.sport,
+        firstname: formData.firstname,
+        lastname: formData.lastname,
         brand: formData.brand,
         series: formData.series,
         year: parseInt(formData.year) || null,
@@ -198,27 +273,48 @@ export default function ScannerPage() {
         numbering_low: parseInt(formData.num_low) || null,
         numbering_max: parseInt(formData.num_high) || null,
         purchase_price: parseFloat(formData.price) || 0,
-        image_url: finalImageUrl,        // LA VRAIE URL SUPABASE
+        image_url: finalImageUrl,
         club_name: formData.club
-      }]);
+      };
 
-      if (error) {
-        alert("❌ Erreur de sauvegarde : " + error.message);
-        setLoading(false);
-        return;
+      if (editId) {
+        const { error } = await supabase.from('cards').update(cardDataToSave).eq('id', editId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('cards').insert([cardDataToSave]);
+        if (error) throw error;
       }
 
       router.push('/collection');
-      
-    } catch (err) {
-      alert("❌ Une erreur inattendue est survenue.");
+    } catch (err: any) {
+      alert("❌ Erreur : " + err.message);
       setLoading(false);
     }
   };
 
-  const hideBrokenImage = (e: any) => {
-    e.currentTarget.style.display = 'none';
+  const deleteCard = async () => {
+    if (!confirm("Es-tu sûr de vouloir supprimer définitivement cette carte ?")) return;
+    setLoading(true);
+    const { error } = await supabase.from('cards').delete().eq('id', editId);
+    if (error) {
+      alert("Erreur lors de la suppression.");
+      setLoading(false);
+    } else {
+      router.push('/collection');
+    }
   };
+
+  const hideBrokenImage = (e: any) => e.currentTarget.style.display = 'none';
+
+  // Si on est en train de charger les données du mode édition, on affiche un loader
+  if (isFetchingEdit) {
+    return (
+      <div className="min-h-screen text-white flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin text-[#AFFF25] mb-4" size={40} />
+        <p className="text-[#AFFF25] text-xs font-bold tracking-widest uppercase">Chargement de la carte...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">
@@ -228,33 +324,61 @@ export default function ScannerPage() {
           <ChevronLeft size={20} />
         </button>
         <div className="text-center">
-          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">AJOUTER</h1>
-          <p className="text-[#AFFF25] text-[10px] italic tracking-widest mt-1">Scan ou upload ta carte</p>
+          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
+            {editId ? 'MODIFIER' : 'AJOUTER'}
+          </h1>
+          <p className="text-[#AFFF25] text-[10px] italic tracking-widest mt-1">
+            {editId ? 'Met à jour ta carte' : 'Scan ou upload ta carte'}
+          </p>
         </div>
-        <div className="w-10" />
+        <div className="w-10 flex justify-end">
+          {editId && (
+            <button onClick={deleteCard} className="w-10 h-10 bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/30 active:scale-95 transition-transform">
+              <Trash2 size={18} className="text-red-500" />
+            </button>
+          )}
+        </div>
       </header>
 
-      <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full max-w-[240px] mx-auto flex flex-col items-center justify-center overflow-hidden mb-10 cursor-pointer bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10">
-        <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[#AFFF25]"></div>
-        <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[#AFFF25]"></div>
-        <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-[#AFFF25]"></div>
-        <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-[#AFFF25]"></div>
-
-        {previewUrl ? (
-          <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl shadow-2xl" alt="Preview" />
-        ) : (
-          <div className="text-center space-y-4">
-            <div className="bg-[#AFFF25]/10 border border-[#AFFF25]/30 px-6 py-2 rounded-full text-[11px] font-bold text-[#AFFF25] uppercase tracking-widest">
-              Scanner la carte
-            </div>
-          </div>
-        )}
+      {/* 🚀 CORRECTION ROTATION MOBILE : La zone cliquable et le bouton sont maintenant parfaitement séparés */}
+      <div className="relative w-full max-w-[240px] mx-auto mb-12">
         
-        {analyzing && (
-          <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-20">
-             <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={32} />
-             <span className="text-[#AFFF25] text-[10px] italic tracking-widest animate-pulse mt-2">ANALYSE EN COURS...</span>
-          </div>
+        {/* Zone de l'image (Cliquable pour upload) */}
+        <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full flex flex-col items-center justify-center overflow-hidden cursor-pointer bg-white/5 border border-white/10 rounded-2xl transition-all hover:bg-white/10 group">
+          <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[#AFFF25] z-10"></div>
+          <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[#AFFF25] z-10"></div>
+          <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-[#AFFF25] z-10"></div>
+          <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-[#AFFF25] z-10"></div>
+
+          {previewUrl ? (
+            <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl shadow-2xl z-0" alt="Preview" />
+          ) : (
+            <div className="text-center space-y-4">
+              <div className="bg-[#AFFF25]/10 border border-[#AFFF25]/30 px-6 py-2 rounded-full text-[11px] font-bold text-[#AFFF25] uppercase tracking-widest">
+                Scanner la carte
+              </div>
+            </div>
+          )}
+          
+          {analyzing && (
+            <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
+               <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={32} />
+               <span className="text-[#AFFF25] text-[10px] italic tracking-widest animate-pulse mt-2">TRAITEMENT...</span>
+            </div>
+          )}
+        </div>
+
+        {/* 🚀 LE BOUTON ROTATION (Totalement en dehors du div cliquable) */}
+        {previewUrl && (
+          <button 
+            onClick={(e) => { 
+              e.preventDefault(); 
+              rotateImage(); 
+            }}
+            className="absolute -right-4 -bottom-4 w-14 h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform"
+          >
+            <RotateCw size={24} strokeWidth={2.5} />
+          </button>
         )}
       </div>
 
@@ -400,7 +524,7 @@ export default function ScannerPage() {
               : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
           }`}
         >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : 'Enregistrer la carte'}
+          {loading ? <Loader2 className="animate-spin" size={20} /> : (editId ? 'Mettre à jour la carte' : 'Enregistrer la carte')}
         </button>
       </div>
       

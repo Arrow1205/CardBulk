@@ -30,6 +30,7 @@ export default function CollectionPage() {
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
+  // Mémoire pour savoir quelles cartes sont horizontales
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -57,6 +58,7 @@ export default function CollectionPage() {
     setLoading(false);
   };
 
+  // Vérifie les proportions de l'image quand elle a fini de charger
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>, id: string) => {
     const img = e.currentTarget;
     if (img.naturalWidth > img.naturalHeight) {
@@ -241,6 +243,11 @@ export default function CollectionPage() {
                     src={card.image_url} 
                     alt="Card" 
                     onLoad={(e) => handleImageLoad(e, card.id)}
+                    ref={(img) => {
+                      if (img && img.complete) {
+                        handleImageLoad({ currentTarget: img } as any, card.id);
+                      }
+                    }}
                     className="w-full h-full object-cover" 
                   />
                 ) : (
