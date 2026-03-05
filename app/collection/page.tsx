@@ -30,8 +30,6 @@ export default function CollectionPage() {
   const [selectedSpec, setSelectedSpec] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
-  const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
-
   useEffect(() => {
     fetchCards();
   }, []);
@@ -55,20 +53,6 @@ export default function CollectionPage() {
       setCards(data);
     }
     setLoading(false);
-  };
-
-  // 🚀 LA CORRECTION ANTI-BOUCLE INFINIE EST ICI
-  const handleImageLoad = (img: HTMLImageElement, id: string) => {
-    if (img.naturalWidth > img.naturalHeight) {
-      setHorizontalCards(prev => {
-        // Si la carte est DÉJÀ marquée comme horizontale, on ne fait RIEN !
-        if (prev.has(id)) return prev; 
-        
-        const newSet = new Set(prev);
-        newSet.add(id);
-        return newSet;
-      });
-    }
   };
 
   const uniquePlayers = Array.from(
@@ -99,124 +83,128 @@ export default function CollectionPage() {
   const sportImage = selectedSport ? SPORT_CONFIG[selectedSport]?.image : null;
 
   return (
-    <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
+    // Remplacement du p-6 par p-2 (0.5rem)
+    <div className="min-h-screen text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      <header className="mb-6 pt-4 text-center">
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">COLLECTION</h1>
-      </header>
+      {/* J'ai ajouté un peu de marge horizontale (px-4) au header et filtres pour compenser le p-2 global */}
+      <div className="px-4">
+        <header className="mb-6 pt-4 text-center">
+          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">COLLECTION</h1>
+        </header>
 
-      <div className="relative mb-4 z-50">
-        <Search className="absolute left-4 top-3.5 text-[#AFFF25]" size={18} />
-        <input 
-          type="text" 
-          placeholder="Enter player name" 
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setShowSuggestions(true);
-          }}
-          onFocus={() => setShowSuggestions(true)}
-          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-          className="w-full bg-[#040221] border border-[#AFFF25] rounded-full py-3 pl-12 pr-4 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)] transition-colors focus:shadow-[0_0_20px_rgba(175,255,37,0.3)]"
-        />
-        
-        {showSuggestions && searchSuggestions.length > 0 && (
-          <ul className="absolute w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl z-50">
-            {searchSuggestions.map((name, i) => (
-              <li 
-                key={i} 
-                onClick={() => {
-                  setSearchTerm(name);
-                  setShowSuggestions(false);
-                }}
-                className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
-              >
-                <Search className="text-white/30" size={14} />
-                <span className="text-sm font-bold uppercase">{name}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <div className="flex gap-2 mb-4">
-        <div className="relative flex-1">
-          {sportImage && <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 top-2.5 w-4 h-4 object-contain z-10" alt="Sport" />}
-          <select 
-            value={selectedSport}
-            onChange={(e) => setSelectedSport(e.target.value)}
-            className={`w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white ${sportImage ? 'pl-10' : 'pl-4'}`}
-          >
-            <option value="">TOUS SPORTS</option>
-            <option value="SOCCER">FOOTBALL</option>
-            <option value="BASKETBALL">BASKETBALL</option>
-            <option value="BASEBALL">BASEBALL</option>
-            <option value="F1">FORMULE 1</option>
-            <option value="NFL">NFL</option>
-            <option value="NHL">NHL</option>
-            <option value="TENNIS">TENNIS</option>
-            <option value="POKEMON">POKÉMON</option>
-            <option value="MARVEL">MARVEL</option>
-          </select>
-          <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
+        <div className="relative mb-4 z-50">
+          <Search className="absolute left-4 top-3.5 text-[#AFFF25]" size={18} />
+          <input 
+            type="text" 
+            placeholder="Enter player name" 
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            className="w-full bg-[#040221] border border-[#AFFF25] rounded-full py-3 pl-12 pr-4 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)] transition-colors focus:shadow-[0_0_20px_rgba(175,255,37,0.3)]"
+          />
+          
+          {showSuggestions && searchSuggestions.length > 0 && (
+            <ul className="absolute w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl z-50">
+              {searchSuggestions.map((name, i) => (
+                <li 
+                  key={i} 
+                  onClick={() => {
+                    setSearchTerm(name);
+                    setShowSuggestions(false);
+                  }}
+                  className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
+                >
+                  <Search className="text-white/30" size={14} />
+                  <span className="text-sm font-bold uppercase">{name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
-        <div className="relative flex-1">
-          <select 
-            value={selectedSpec}
-            onChange={(e) => setSelectedSpec(e.target.value)}
-            className="w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pl-4 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white"
-          >
-            <option value="">FILTRER PAR...</option>
-            <option value="auto">AUTO</option>
-            <option value="patch">PATCH</option>
-            <option value="rookie">ROOKIE</option>
-            <option value="numbered">NUMÉROTÉE</option>
-          </select>
-          <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
-        </div>
-      </div>
-
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 [&::-webkit-scrollbar]:hidden">
-        <button 
-          onClick={() => setSelectedBrand('')}
-          className={`flex-shrink-0 px-5 h-9 rounded-full text-xs font-black italic uppercase transition-all ${
-            selectedBrand === '' 
-              ? 'bg-[#AFFF25] text-black shadow-[0_0_15px_rgba(175,255,37,0.3)]' 
-              : 'bg-[#040221] text-white border border-white/20'
-          }`}
-        >
-          Tout
-        </button>
-        
-        {availableBrands.map((b: any, i: number) => {
-          const brandSlug = b.name.toLowerCase().replace(/\s+/g, '-');
-          const isSelected = selectedBrand === b.name;
-          return (
-            <button 
-              key={i}
-              onClick={() => setSelectedBrand(b.name)}
-              className={`flex-shrink-0 h-9 px-4 rounded-full flex items-center justify-center transition-all border ${
-                isSelected 
-                  ? 'border-[#AFFF25] bg-[#AFFF25]/10 shadow-[0_0_15px_rgba(175,255,37,0.2)]' 
-                  : 'border-white/20 bg-[#040221]'
-              }`}
+        <div className="flex gap-2 mb-4">
+          <div className="relative flex-1">
+            {sportImage && <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 top-2.5 w-4 h-4 object-contain z-10" alt="Sport" />}
+            <select 
+              value={selectedSport}
+              onChange={(e) => setSelectedSport(e.target.value)}
+              className={`w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white ${sportImage ? 'pl-10' : 'pl-4'}`}
             >
-              <img 
-                src={`/asset/brands/${brandSlug}.png`} 
-                alt={b.name} 
-                className="h-4 object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  if (e.currentTarget.nextElementSibling) {
-                    (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
-                  }
-                }}
-              />
-              <span className="text-[10px] font-black italic uppercase hidden">{b.name}</span>
-            </button>
-          )
-        })}
+              <option value="">TOUS SPORTS</option>
+              <option value="SOCCER">FOOTBALL</option>
+              <option value="BASKETBALL">BASKETBALL</option>
+              <option value="BASEBALL">BASEBALL</option>
+              <option value="F1">FORMULE 1</option>
+              <option value="NFL">NFL</option>
+              <option value="NHL">NHL</option>
+              <option value="TENNIS">TENNIS</option>
+              <option value="POKEMON">POKÉMON</option>
+              <option value="MARVEL">MARVEL</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
+          </div>
+
+          <div className="relative flex-1">
+            <select 
+              value={selectedSpec}
+              onChange={(e) => setSelectedSpec(e.target.value)}
+              className="w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pl-4 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white"
+            >
+              <option value="">FILTRER PAR...</option>
+              <option value="auto">AUTO</option>
+              <option value="patch">PATCH</option>
+              <option value="rookie">ROOKIE</option>
+              <option value="numbered">NUMÉROTÉE</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
+          </div>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 [&::-webkit-scrollbar]:hidden">
+          <button 
+            onClick={() => setSelectedBrand('')}
+            className={`flex-shrink-0 px-5 h-9 rounded-full text-xs font-black italic uppercase transition-all ${
+              selectedBrand === '' 
+                ? 'bg-[#AFFF25] text-black shadow-[0_0_15px_rgba(175,255,37,0.3)]' 
+                : 'bg-[#040221] text-white border border-white/20'
+            }`}
+          >
+            Tout
+          </button>
+          
+          {availableBrands.map((b: any, i: number) => {
+            const brandSlug = b.name.toLowerCase().replace(/\s+/g, '-');
+            const isSelected = selectedBrand === b.name;
+            return (
+              <button 
+                key={i}
+                onClick={() => setSelectedBrand(b.name)}
+                className={`flex-shrink-0 h-9 px-4 rounded-full flex items-center justify-center transition-all border ${
+                  isSelected 
+                    ? 'border-[#AFFF25] bg-[#AFFF25]/10 shadow-[0_0_15px_rgba(175,255,37,0.2)]' 
+                    : 'border-white/20 bg-[#040221]'
+                }`}
+              >
+                <img 
+                  src={`/asset/brands/${brandSlug}.png`} 
+                  alt={b.name} 
+                  className="h-4 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.nextElementSibling) {
+                      (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
+                    }
+                  }}
+                />
+                <span className="text-[10px] font-black italic uppercase hidden">{b.name}</span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {loading ? (
@@ -228,38 +216,29 @@ export default function CollectionPage() {
           <p className="text-white/40 italic font-bold">Aucune carte trouvée.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-2 auto-rows-max grid-flow-dense">
-          {filteredCards.map((card) => {
-            const isHorizontal = horizontalCards.has(card.id);
-            return (
-              <div 
-                key={card.id} 
-                onClick={() => router.push(`/card/${card.id}`)}
-                className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-all group ${
-                  isHorizontal ? 'col-span-2 aspect-[4/3]' : 'col-span-1 aspect-[3/4]'
-                }`}
-              >
-                {card.image_url ? (
-                  <img 
-                    src={card.image_url} 
-                    alt="Card" 
-                    // Refactorisation de la détection d'image
-                    onLoad={(e) => handleImageLoad(e.currentTarget, card.id)}
-                    ref={(img) => {
-                      if (img && img.complete) {
-                        handleImageLoad(img, card.id);
-                      }
-                    }}
-                    className="w-full h-full object-cover" 
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
-                    <span className="text-[10px] italic font-bold leading-tight">No Image</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        /* 🚀 LA VRAIE GRILLE MASONRY (PINTEREST) */
+        <div className="columns-3 gap-2 px-2">
+          {filteredCards.map((card) => (
+            <div 
+              key={card.id} 
+              onClick={() => router.push(`/card/${card.id}`)}
+              /* break-inside-avoid empêche une carte d'être coupée en deux entre deux colonnes */
+              className="mb-2 break-inside-avoid relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-all group"
+            >
+              {card.image_url ? (
+                /* h-auto permet à l'image de prendre sa hauteur naturelle tout en respectant la largeur de la colonne */
+                <img 
+                  src={card.image_url} 
+                  alt="Card" 
+                  className="w-full h-auto block" 
+                />
+              ) : (
+                <div className="w-full aspect-[3/4] flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
+                  <span className="text-[10px] italic font-bold leading-tight">No Image</span>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
