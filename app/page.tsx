@@ -10,12 +10,10 @@ export default function HomePage() {
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // États pour le carousel 3D
   const [activeIndex, setActiveIndex] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // Mémoire pour les cartes horizontales
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -50,14 +48,10 @@ export default function HomePage() {
     }
   };
 
-  // Sélection des cartes pour le carousel (Favoris en priorité, sinon les 5 dernières)
   const favoriteCards = cards.filter(c => c.is_favorite);
   const carouselCards = favoriteCards.length > 0 ? favoriteCards : cards.slice(0, 5);
-  
-  // 🚀 STRICTEMENT LES 5 DERNIERS AJOUTS
   const recentCards = cards.slice(0, 5);
 
-  // 🚀 CAROUSEL AUTO-PLAY (Toutes les 5 secondes)
   useEffect(() => {
     if (carouselCards.length === 0) return;
     const interval = setInterval(() => {
@@ -66,7 +60,6 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, [carouselCards.length]);
 
-  // Gérer le swipe tactile pour le carousel
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
@@ -92,20 +85,23 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden relative z-10">
       
+      {/* 🚀 LE FAMEUX DÉGRADÉ JAUNE/VERT AU SOMMET */}
+      <div className="absolute top-0 left-0 w-full h-[450px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#AFFF25]/40 via-transparent to-transparent pointer-events-none -z-10"></div>
+
       {/* HEADER LOGO */}
       <header className="pt-6 pb-2 text-center">
-        <div className="inline-block border-2 border-[#AFFF25] px-4 py-1 rounded-xl shadow-[0_0_15px_rgba(175,255,37,0.3)]">
+        <div className="inline-block border-2 border-[#AFFF25] px-4 py-1 rounded-xl shadow-[0_0_15px_rgba(175,255,37,0.3)] bg-[#040221]/50 backdrop-blur-md">
           <h1 className="text-2xl font-black italic uppercase tracking-tighter">
             <span className="text-[#AFFF25]">CARD</span>BULK
           </h1>
         </div>
       </header>
 
-      {/* 🚀 CAROUSEL 3D COVERFLOW (Gère maintenant Vertical & Horizontal) */}
+      {/* CAROUSEL 3D COVERFLOW */}
       <div 
-        className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden"
+        className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden mt-2"
         style={{ perspective: '1200px' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -134,7 +130,6 @@ export default function HomePage() {
                   if (offset === 0) router.push(`/card/${card.id}`);
                   else setActiveIndex(index);
                 }}
-                // 🚀 ADAPTATION DU RATIO SELON L'ORIENTATION DE L'IMAGE
                 className={`absolute w-[60%] max-w-[280px] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer ${
                   isHorizontal ? 'aspect-[1.55] bg-[#080531]' : 'aspect-[3/4] bg-white/5'
                 }`}
@@ -165,7 +160,6 @@ export default function HomePage() {
           })
         )}
 
-        {/* Petits points de pagination */}
         <div className="absolute bottom-2 flex gap-1.5">
           {carouselCards.map((_, i) => (
             <div 
@@ -189,7 +183,6 @@ export default function HomePage() {
                 onClick={() => router.push(`/card/${card.id}`)}
                 className="flex gap-4 bg-white/5 border border-white/10 rounded-2xl p-3 cursor-pointer active:scale-95 transition-transform"
               >
-                {/* Miniature (gère aussi le format de l'image miniature) */}
                 <div className={`h-24 flex-shrink-0 rounded-lg overflow-hidden flex items-center justify-center bg-[#080531] shadow-lg ${isHorizontal ? 'w-32' : 'w-16'}`}>
                   {card.image_url ? (
                     <img src={card.image_url} className={`w-full h-full ${isHorizontal ? 'object-contain p-1' : 'object-cover'}`} alt="Thumb" />
