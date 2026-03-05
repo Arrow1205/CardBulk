@@ -15,6 +15,9 @@ export default function HomePage() {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
+  // Mémoire pour les cartes horizontales
+  const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
+
   useEffect(() => {
     fetchHomeData();
   }, []);
@@ -26,27 +29,42 @@ export default function HomePage() {
       return;
     }
 
-    // On récupère toutes les cartes, triées par date d'ajout
     const { data, error } = await supabase
       .from('cards')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    if (data) {
-      setCards(data);
-    }
+    if (data) setCards(data);
     setLoading(false);
   };
 
+  const handleImageLoad = (img: HTMLImageElement, id: string) => {
+    if (img.naturalWidth > img.naturalHeight) {
+      setHorizontalCards(prev => {
+        if (prev.has(id)) return prev; 
+        const newSet = new Set(prev);
+        newSet.add(id);
+        return newSet;
+      });
+    }
+  };
+
+  // Sélection des cartes pour le carousel (Favoris en priorité, sinon les 5 dernières)
+  const favoriteCards = cards.filter(c => c.is_favorite);
+  const carouselCards = favoriteCards.length > 0 ? favoriteCards : cards.slice(0, 5);
+  
+  // 🚀 STRICTEMENT LES 5 DERNIERS AJOUTS
+  const recentCards = cards.slice(0, 5);
+
   // 🚀 CAROUSEL AUTO-PLAY (Toutes les 5 secondes)
   useEffect(() => {
-    if (cards.length === 0) return;
+    if (carouselCards.length === 0) return;
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % carouselCards.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [cards, activeIndex]);
+  }, [carouselCards.length]);
 
   // Gérer le swipe tactile pour le carousel
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -59,20 +77,11 @@ export default function HomePage() {
   const handleSwipe = () => {
     const swipeDistance = touchStartX.current - touchEndX.current;
     if (swipeDistance > 50) {
-      // Swipe Gauche -> Carte suivante
       setActiveIndex((prev) => Math.min(prev + 1, carouselCards.length - 1));
     } else if (swipeDistance < -50) {
-      // Swipe Droite -> Carte précédente
       setActiveIndex((prev) => Math.max(prev - 1, 0));
     }
   };
-
-  // Sélection des cartes pour le carousel (Favoris en priorité, sinon les 5 dernières)
-  const favoriteCards = cards.filter(c => c.is_favorite);
-  const carouselCards = favoriteCards.length > 0 ? favoriteCards : cards.slice(0, 5);
-  
-  // Sélection pour les "Derniers ajouts"
-  const recentCards = cards.slice(0, 5);
 
   if (loading) {
     return (
@@ -94,7 +103,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 🚀 CAROUSEL 3D COVERFLOW (70% de l'écran environ) */}
+      {/* 🚀 CAROUSEL 3D COVERFLOW (Gère maintenant Vertical & Horizontal) */}
       <div 
         className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden"
         style={{ perspective: '1200px' }}
@@ -102,22 +111,21 @@ export default function HomePage() {
         onTouchEnd={handleTouchEnd}
       >
         {carouselCards.length === 0 ? (
-          <div className="text-white/40 italic">Aucune carte dans la collection</div>
+          <div className="text-white/40 italic font-bold">Aucune carte à afficher</div>
         ) : (
           carouselCards.map((card, index) => {
-            // Calcul mathématique de la 3D
+            const isHorizontal = horizontalCards.has(card.id);
             const offset = index - activeIndex;
             const absOffset = Math.abs(offset);
             const direction = Math.sign(offset);
             
-            // Si la carte est trop loin, on la cache
             if (absOffset > 2) return null;
 
-            const translateX = direction * (absOffset * 50); // Décalage horizontal
-            const translateZ = absOffset * -150; // Recul en profondeur
-            const rotateY = direction * -35; // Rotation sur le côté
+            const translateX = direction * (absOffset * 50); 
+            const translateZ = absOffset * -150; 
+            const rotateY = direction * -35; 
             const zIndex = 10 - absOffset;
-            const opacity = absOffset > 1 ? 0 : 1; // On ne voit que la centrale et les 2 adjacentes
+            const opacity = absOffset > 1 ? 0 : 1; 
 
             return (
               <div 
@@ -126,7 +134,10 @@ export default function HomePage() {
                   if (offset === 0) router.push(`/card/${card.id}`);
                   else setActiveIndex(index);
                 }}
-                className="absolute w-[60%] max-w-[280px] aspect-[3/4] rounded-2xl transition-all duration-500 ease-out cursor-pointer"
+                // 🚀 ADAPTATION DU RATIO SELON L'ORIENTATION DE L'IMAGE
+                className={`absolute w-[60%] max-w-[280px] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer ${
+                  isHorizontal ? 'aspect-[1.55] bg-[#080531]' : 'aspect-[3/4] bg-white/5'
+                }`}
                 style={{
                   transform: `translateX(${translateX}%) translateZ(${translateZ}px) rotateY(${rotateY}deg)`,
                   zIndex: zIndex,
@@ -135,12 +146,17 @@ export default function HomePage() {
                 }}
               >
                 {card.image_url ? (
-                  <img src={card.image_url} className="w-full h-full object-cover rounded-2xl border border-white/10" alt="Card" />
+                  <img 
+                    src={card.image_url} 
+                    onLoad={(e) => handleImageLoad(e.currentTarget, card.id)}
+                    ref={(img) => { if (img && img.complete) handleImageLoad(img, card.id); }}
+                    className={`w-full h-full rounded-2xl border border-white/10 ${isHorizontal ? 'object-contain p-2' : 'object-cover'}`} 
+                    alt="Card" 
+                  />
                 ) : (
-                  <div className="w-full h-full bg-[#080531] rounded-2xl border border-white/10 flex items-center justify-center text-white/30 text-xs">No Image</div>
+                  <div className="w-full h-full rounded-2xl border border-white/10 flex items-center justify-center text-white/30 text-xs">No Image</div>
                 )}
                 
-                {/* Petit reflet brillant sur la carte active */}
                 {offset === 0 && (
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 rounded-2xl pointer-events-none"></div>
                 )}
@@ -160,46 +176,47 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* SECTION DERNIERS AJOUTS */}
+      {/* SECTION 5 DERNIERS AJOUTS */}
       <div className="px-6 mt-8">
         <h2 className="text-xl font-black italic uppercase tracking-tighter mb-4">Derniers ajouts</h2>
         
         <div className="space-y-3">
-          {recentCards.map(card => (
-            <div 
-              key={card.id}
-              onClick={() => router.push(`/card/${card.id}`)}
-              className="flex gap-4 bg-white/5 border border-white/10 rounded-2xl p-3 cursor-pointer active:scale-95 transition-transform"
-            >
-              {/* Miniature */}
-              <div className="w-20 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-[#080531] shadow-lg">
-                {card.image_url ? (
-                  <img src={card.image_url} className="w-full h-full object-cover" alt="Thumb" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[8px] text-white/30">N/A</div>
-                )}
-              </div>
-
-              {/* Infos */}
-              <div className="flex flex-col justify-center flex-1 overflow-hidden">
-                <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold truncate mb-1">
-                  {card.brand} — {card.series || 'Base'}
-                </div>
-                
-                <div className="text-2xl font-black italic text-[#AFFF25] uppercase tracking-tighter leading-none truncate mb-2">
-                  {card.firstname} {card.lastname}
+          {recentCards.map(card => {
+            const isHorizontal = horizontalCards.has(card.id);
+            return (
+              <div 
+                key={card.id}
+                onClick={() => router.push(`/card/${card.id}`)}
+                className="flex gap-4 bg-white/5 border border-white/10 rounded-2xl p-3 cursor-pointer active:scale-95 transition-transform"
+              >
+                {/* Miniature (gère aussi le format de l'image miniature) */}
+                <div className={`h-24 flex-shrink-0 rounded-lg overflow-hidden flex items-center justify-center bg-[#080531] shadow-lg ${isHorizontal ? 'w-32' : 'w-16'}`}>
+                  {card.image_url ? (
+                    <img src={card.image_url} className={`w-full h-full ${isHorizontal ? 'object-contain p-1' : 'object-cover'}`} alt="Thumb" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[8px] text-white/30">N/A</div>
+                  )}
                 </div>
 
-                {/* Tags alignés */}
-                <div className="flex flex-wrap gap-1">
-                  {card.is_patch && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">Patch</span>}
-                  {card.is_auto && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">Auto</span>}
-                  {card.is_numbered && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">Num</span>}
-                  {card.is_rookie && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">RC</span>}
+                <div className="flex flex-col justify-center flex-1 overflow-hidden">
+                  <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold truncate mb-1">
+                    {card.brand} — {card.series || 'Base'}
+                  </div>
+                  
+                  <div className="text-2xl font-black italic text-[#AFFF25] uppercase tracking-tighter leading-none truncate mb-2">
+                    {card.firstname} {card.lastname}
+                  </div>
+
+                  <div className="flex flex-wrap gap-1">
+                    {card.is_patch && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">Patch</span>}
+                    {card.is_auto && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">Auto</span>}
+                    {card.is_numbered && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">Num</span>}
+                    {card.is_rookie && <span className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-md text-[9px] font-bold text-white">RC</span>}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
