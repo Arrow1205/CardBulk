@@ -5,20 +5,33 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, Search, ChevronDown } from 'lucide-react';
 
-// On importe ton fichier pour récupérer la liste de tes Brands
 import SET_DATA from '@/data/set.json';
+
+const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
+  'SOCCER': { image: 'Soccer', label: 'Football' },
+  'BASKETBALL': { image: 'Basket', label: 'Basketball' },
+  'BASEBALL': { image: 'Baseball', label: 'Baseball' },
+  'F1': { image: 'F1', label: 'Formule 1' },
+  'NFL': { image: 'NFL', label: 'Football Américain' },
+  'NHL': { image: 'NHL', label: 'Hockey' },
+  'POKEMON': { image: 'Pokemon', label: 'Pokémon' },
+  'TENNIS': { image: 'Tennis', label: 'Tennis' },
+  'MARVEL': { image: 'MArvel', label: 'Marvel' }
+};
 
 export default function CollectionPage() {
   const router = useRouter();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // États pour les filtres
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSport, setSelectedSport] = useState('');
   const [selectedSpec, setSelectedSpec] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState(''); // Le nouveau filtre Brand
+  const [selectedBrand, setSelectedBrand] = useState('');
+
+  // 🚀 NOUVEAU : Mémoire pour savoir quelles cartes sont horizontales
+  const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchCards();
@@ -45,49 +58,52 @@ export default function CollectionPage() {
     setLoading(false);
   };
 
-  // 🚀 EXTRACTION DES NOMS UNIQUES DE TA COLLECTION (Pour les suggestions)
+  // 🚀 NOUVEAU : Vérifie les proportions de l'image quand elle a fini de charger
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>, id: string) => {
+    const img = e.currentTarget;
+    if (img.naturalWidth > img.naturalHeight) {
+      setHorizontalCards(prev => {
+        const newSet = new Set(prev);
+        newSet.add(id);
+        return newSet;
+      });
+    }
+  };
+
   const uniquePlayers = Array.from(
     new Set(cards.map(c => `${c.firstname || ''} ${c.lastname || ''}`.trim()).filter(Boolean))
   );
 
-  // Suggestions actives uniquement si 3 caractères ou plus
   const searchSuggestions = searchTerm.length >= 3 
     ? uniquePlayers.filter(name => name.toLowerCase().includes(searchTerm.toLowerCase()))
     : [];
 
-  // 🚀 LOGIQUE DE FILTRAGE
   const filteredCards = cards.filter(card => {
-    // 1. Filtre par recherche (Prénom + Nom)
     const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
     const matchesSearch = searchTerm === '' || fullName.includes(searchTerm.toLowerCase());
-
-    // 2. Filtre par sport
     const matchesSport = selectedSport === '' || card.sport === selectedSport;
-
-    // 3. Filtre par spécificité
+    
     let matchesSpec = true;
     if (selectedSpec === 'auto') matchesSpec = card.is_auto;
     if (selectedSpec === 'patch') matchesSpec = card.is_patch;
     if (selectedSpec === 'rookie') matchesSpec = card.is_rookie;
     if (selectedSpec === 'numbered') matchesSpec = card.is_numbered;
 
-    // 4. Filtre par Brand
-    const matchesBrand = selectedBrand === '' || card.brand === selectedBrand;
+    const matchesBrand = selectedBrand === '' || (card.brand && card.brand.toLowerCase() === selectedBrand.toLowerCase());
 
     return matchesSearch && matchesSport && matchesSpec && matchesBrand;
   });
 
   const availableBrands = SET_DATA.brands || [];
+  const sportImage = selectedSport ? SPORT_CONFIG[selectedSport]?.image : null;
 
   return (
     <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* HEADER */}
       <header className="mb-6 pt-4 text-center">
         <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">COLLECTION</h1>
       </header>
 
-      {/* BARRE DE RECHERCHE AVEC SUGGESTIONS */}
       <div className="relative mb-4 z-50">
         <Search className="absolute left-4 top-3.5 text-[#AFFF25]" size={18} />
         <input 
@@ -99,12 +115,10 @@ export default function CollectionPage() {
             setShowSuggestions(true);
           }}
           onFocus={() => setShowSuggestions(true)}
-          // Le timeout permet de cliquer sur la suggestion avant que le menu disparaisse
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           className="w-full bg-[#040221] border border-[#AFFF25] rounded-full py-3 pl-12 pr-4 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)] transition-colors focus:shadow-[0_0_20px_rgba(175,255,37,0.3)]"
         />
         
-        {/* DROPDOWN DES SUGGESTIONS (S'affiche après 3 lettres) */}
         {showSuggestions && searchSuggestions.length > 0 && (
           <ul className="absolute w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl z-50">
             {searchSuggestions.map((name, i) => (
@@ -124,20 +138,24 @@ export default function CollectionPage() {
         )}
       </div>
 
-      {/* FILTRES DÉROULANTS (Sport & Spécificité) */}
       <div className="flex gap-2 mb-4">
-        
         <div className="relative flex-1">
+          {sportImage && <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 top-2.5 w-4 h-4 object-contain z-10" alt="Sport" />}
           <select 
             value={selectedSport}
             onChange={(e) => setSelectedSport(e.target.value)}
-            className="w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pl-4 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white"
+            className={`w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white ${sportImage ? 'pl-10' : 'pl-4'}`}
           >
             <option value="">TOUS SPORTS</option>
             <option value="SOCCER">FOOTBALL</option>
             <option value="BASKETBALL">BASKETBALL</option>
             <option value="BASEBALL">BASEBALL</option>
             <option value="F1">FORMULE 1</option>
+            <option value="NFL">NFL</option>
+            <option value="NHL">NHL</option>
+            <option value="TENNIS">TENNIS</option>
+            <option value="POKEMON">POKÉMON</option>
+            <option value="MARVEL">MARVEL</option>
           </select>
           <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
         </div>
@@ -156,12 +174,9 @@ export default function CollectionPage() {
           </select>
           <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
         </div>
-
       </div>
 
-      {/* BARRE DES BRANDS (Logos scrollables horizontalement) */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-4 [&::-webkit-scrollbar]:hidden">
-        {/* Bouton TOUT */}
         <button 
           onClick={() => setSelectedBrand('')}
           className={`flex-shrink-0 px-5 h-9 rounded-full text-xs font-black italic uppercase transition-all ${
@@ -173,7 +188,6 @@ export default function CollectionPage() {
           Tout
         </button>
         
-        {/* Logos des Brands issus de set.json */}
         {availableBrands.map((b: any, i: number) => {
           const brandSlug = b.name.toLowerCase().replace(/\s+/g, '-');
           const isSelected = selectedBrand === b.name;
@@ -198,14 +212,12 @@ export default function CollectionPage() {
                   }
                 }}
               />
-              {/* Ce texte s'affiche uniquement si l'image est introuvable */}
               <span className="text-[10px] font-black italic uppercase hidden">{b.name}</span>
             </button>
           )
         })}
       </div>
 
-      {/* GRILLE DE CARTES (3 Colonnes) */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-[#AFFF25]" size={40} />
@@ -215,22 +227,34 @@ export default function CollectionPage() {
           <p className="text-white/40 italic font-bold">Aucune carte trouvée.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-2">
-          {filteredCards.map((card) => (
-            <div 
-              key={card.id} 
-              onClick={() => router.push(`/card/${card.id}`)}
-              className="relative aspect-[3/4] rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform group"
-            >
-              {card.image_url ? (
-                <img src={card.image_url} alt="Card" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
-                  <span className="text-[10px] italic font-bold leading-tight">Image non<br/>disponible</span>
-                </div>
-              )}
-            </div>
-          ))}
+        {/* 🚀 NOUVEAU : Grille dense style Pinterest */}
+        <div className="grid grid-cols-3 gap-2 auto-rows-max grid-flow-dense">
+          {filteredCards.map((card) => {
+            const isHorizontal = horizontalCards.has(card.id);
+            return (
+              <div 
+                key={card.id} 
+                onClick={() => router.push(`/card/${card.id}`)}
+                // 🚀 NOUVEAU : Si horizontal, ça prend 2 colonnes avec ratio 4:3, sinon 1 colonne ratio 3:4
+                className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-all group ${
+                  isHorizontal ? 'col-span-2 aspect-[4/3]' : 'col-span-1 aspect-[3/4]'
+                }`}
+              >
+                {card.image_url ? (
+                  <img 
+                    src={card.image_url} 
+                    alt="Card" 
+                    onLoad={(e) => handleImageLoad(e, card.id)} // Mesure l'image
+                    className="w-full h-full object-cover" 
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-white/20 p-2 text-center bg-[#080531]">
+                    <span className="text-[10px] italic font-bold leading-tight">No Image</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
