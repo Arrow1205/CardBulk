@@ -98,7 +98,7 @@ export default function HomePage() {
                 onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
                 // 🚀 HAUTEUR PASSÉE À 300px pour les horizontales (et 320px pour verticales)
                 className={`absolute max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer overflow-hidden bg-white/5 border border-white/10 ${
-                  isHorizontal ? 'h-[300px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
+                  isHorizontal ? 'h-[280px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
                 }`}
                 style={{
                   transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
