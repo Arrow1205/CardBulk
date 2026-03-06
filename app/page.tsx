@@ -81,7 +81,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Padding 2% appliqué ici */}
+      {/* 🚀 PADDING DE 2% COMME DEMANDÉ */}
       <div className="w-full px-[2%] mt-2">
         <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {carouselCards.length === 0 ? (
@@ -95,11 +95,11 @@ export default function HomePage() {
               if (absOffset > 2) return null;
 
               return (
-                // 1️⃣ DIV EXTERNE : Gère uniquement le placement 3D et la taille. Zéro bordure, zéro fond.
+                // 1️⃣ DIV EXTERNE : S'occupe uniquement du déplacement et de la 3D (pas de bordure, pas d'arrondi)
                 <div 
                   key={card.id}
                   onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                  className={`absolute max-h-[45vh] flex items-center justify-center transition-transform duration-500 ease-out cursor-pointer ${
+                  className={`absolute max-h-[45vh] transition-transform duration-500 ease-out cursor-pointer ${
                     isHorizontal ? 'h-[280px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
                   }`}
                   style={{
@@ -108,25 +108,31 @@ export default function HomePage() {
                     opacity: absOffset > 1 ? 0.4 : (absOffset > 1 ? 0 : 1)
                   }}
                 >
-                  {/* 2️⃣ DIV INTERNE : Gère l'arrondi (overflow-hidden + masque) et le fond. */}
+                  {/* 2️⃣ DIV INTERNE : Force brutalement l'arrondi sur l'image */}
                   <div 
-                    className="w-full h-full rounded-[16px] overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center"
-                    style={{ 
-                      // Le combo magique pour forcer Safari iOS à couper l'image
-                      transform: 'translateZ(0)',
-                      WebkitMaskImage: '-webkit-radial-gradient(white, black)'
+                    className="w-full h-full relative bg-[#080531]"
+                    style={{
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      // Le trio magique pour forcer la découpe sur iPhone
+                      clipPath: 'inset(0 round 16px)',
+                      WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+                      transform: 'translateZ(0)'
                     }}
                   >
                     {card.image_url ? (
                       <img 
                         src={card.image_url} 
                         onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} 
-                        className="w-full h-full object-cover rounded-[16px]" 
+                        className="w-full h-full object-cover block" 
                         alt="Card" 
                       />
                     ) : (
-                      <div className="text-white/30 text-xs font-bold">No Image</div>
+                      <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">No Image</div>
                     )}
+                    
+                    {/* Bordure placée PAR-DESSUS l'image pour qu'elle épouse bien l'arrondi de 16px */}
+                    <div className="absolute inset-0 border border-white/10 rounded-[16px] pointer-events-none"></div>
                   </div>
                 </div>
               );
