@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     let extractedPrice = '';
 
     // Méthode A : Chercher dans les données JSON-LD (Schema.org)
-    // 🚀 CORRECTION TYPESCRIPT : Utilisation d'une boucle while avec regex.exec (infaillible)
+    // 🚀 CORRECTION TYPESCRIPT : Utilisation d'une boucle while avec regex.exec (infaillible pour Vercel)
     const regexLd = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi;
     let match;
     while ((match = regexLd.exec(html)) !== null) {
