@@ -12,7 +12,7 @@ export async function POST(req: Request) {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
       }
-    });
+    }); 
 
     const html = await response.text();
 
