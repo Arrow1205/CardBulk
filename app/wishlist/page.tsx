@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, ChevronDown, Plus } from 'lucide-react';
+import { Loader2, ChevronDown, Plus, Check } from 'lucide-react';
 import SET_DATA from '@/data/set.json';
 
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
@@ -38,6 +38,20 @@ export default function WishlistPage() {
     if (img.naturalWidth > img.naturalHeight) setHorizontalCards(prev => prev.has(id) ? prev : new Set(prev).add(id));
   };
 
+  // 🚀 NOUVELLE FONCTION "ACHETÉ"
+  const markAsPurchased = async (e: React.MouseEvent, cardId: string) => {
+    e.stopPropagation(); // Empêche le clic d'ouvrir la page détail
+    
+    // Met à jour la BDD (is_wishlist passe à false, et on vide le lien web)
+    await supabase.from('cards').update({ 
+      is_wishlist: false, 
+      website_url: null 
+    }).eq('id', cardId);
+    
+    // Met à jour l'UI en retirant la carte
+    setCards(cards.filter(c => c.id !== cardId));
+  };
+
   const filteredCards = cards.filter(card => {
     const matchesSport = selectedSport === '' || card.sport === selectedSport;
     let matchesSpec = true;
@@ -53,9 +67,6 @@ export default function WishlistPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
-      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
-
       <div className="px-4">
         <header className="pt-8 pb-8 text-center">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none drop-shadow-lg">WISHLIST</h1>
@@ -96,7 +107,16 @@ export default function WishlistPage() {
             const isHorizontal = horizontalCards.has(card.id);
             return (
               <div key={card.id} onClick={() => router.push(`/card/${card.id}`)} style={{ borderRadius: '12px' }} className={`relative overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group shadow-lg ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}>
-                {card.image_url ? <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover" alt="Card" /> : <div className="text-[10px] italic font-bold">No Image</div>}
+                
+                {/* 🚀 BOUTON ACHETÉ ABSOLU EN HAUT À DROITE */}
+                <button 
+                  onClick={(e) => markAsPurchased(e, card.id)}
+                  className="absolute top-2 right-2 z-20 bg-[#AFFF25] text-black px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider shadow-lg flex items-center gap-1 hover:bg-white active:scale-90 transition-all"
+                >
+                  <Check size={10} strokeWidth={4} /> Acheté
+                </button>
+
+                {card.image_url ? <img src={card.image_url} loading="lazy" decoding="async" onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover" alt="Card" /> : <div className="text-[10px] italic font-bold">No Image</div>}
               </div>
             );
           })}

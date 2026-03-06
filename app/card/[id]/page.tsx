@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Edit, Star, Loader2 } from 'lucide-react';
+import { ChevronLeft, Edit, Star, Loader2, Smartphone } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 
@@ -27,8 +27,10 @@ export default function CardDetailsPage() {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isHorizontal, setIsHorizontal] = useState(false);
 
+  // 🚀 ETATS POUR LA 3D GYROSCOPE
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)', transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' });
   const [glareStyle, setGlareStyle] = useState({ background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 0%, transparent 50%)', opacity: 0 });
+  const [showGyroButton, setShowGyroButton] = useState(false);
 
   useEffect(() => { fetchCard(); }, [cardId]);
 
@@ -40,8 +42,71 @@ export default function CardDetailsPage() {
     setLoading(false);
   };
 
+  // 🚀 LOGIQUE GYROSCOPE (Avec gestion des permissions Apple)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+      // Vérifie si on est sur un appareil iOS qui demande la permission
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        const savedPermission = localStorage.getItem('gyro_permission');
+        if (savedPermission === 'granted') {
+          startGyro();
+        } else {
+          setShowGyroButton(true);
+        }
+      } else {
+        // Appareils Android ou anciens iOS : pas besoin de bouton
+        startGyro();
+      }
+    }
+    return () => { window.removeEventListener('deviceorientation', handleOrientation); };
+  }, []);
+
+  const requestGyroPermission = async () => {
+    try {
+      const permission = await (DeviceOrientationEvent as any).requestPermission();
+      if (permission === 'granted') {
+        localStorage.setItem('gyro_permission', 'granted');
+        setShowGyroButton(false);
+        startGyro();
+      }
+    } catch (e) {
+      console.error("Erreur Gyro", e);
+    }
+  };
+
+  const startGyro = () => {
+    window.addEventListener('deviceorientation', handleOrientation);
+  };
+
+  const handleOrientation = (e: DeviceOrientationEvent) => {
+    if (!e.gamma || !e.beta) return;
+
+    let x = e.gamma; // [-90,90]
+    let y = e.beta;  // [-180,180]
+
+    // Ajustement de l'angle naturel de prise en main du téléphone (environ 45 degrés)
+    x = Math.max(-30, Math.min(30, x));
+    y = Math.max(-30, Math.min(30, y - 45)); 
+
+    const rotateY = x * 1.5; 
+    const rotateX = -y * 1.5;
+
+    setTiltStyle({
+      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+      transition: 'transform 0.1s ease-out'
+    });
+
+    // Effet de brillance (Glare)
+    const glareX = (x / 30) * 100;
+    const glareY = (y / 30) * 100;
+    setGlareStyle({
+      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+      opacity: Math.max(0.1, Math.abs(x) / 30)
+    });
+  };
+
   const toggleFavorite = async () => {
-    if (!card || card.is_wishlist) return; // 🚀 Désactivé pour la wishlist
+    if (!card || card.is_wishlist) return;
     setIsFavoriting(true);
     const newFavStatus = !card.is_favorite;
     setCard({ ...card, is_favorite: newFavStatus });
@@ -54,7 +119,6 @@ export default function CardDetailsPage() {
 
   const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
 
-  // 🚀 RECHERCHE CLUB INTELLIGENTE
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const searchName = card.club_name ? card.club_name.toLowerCase() : '';
   const selectedClub = safeFootballClubs.find((c: any) => {
@@ -76,23 +140,31 @@ export default function CardDetailsPage() {
           <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="w-10 h-10 bg-[#040221]/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
         </header>
 
-        <div className="px-6 flex justify-center mb-10 perspective-1000">
-          <div style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} className={`relative w-full max-w-[340px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] ${isHorizontal ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
+        <div className="px-6 flex flex-col items-center justify-center mb-10 perspective-1000">
+          <div style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} className={`relative w-full max-w-[340px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}>
             {card.image_url ? (
               <img src={card.image_url} onLoad={(e) => setIsHorizontal(e.currentTarget.naturalWidth > e.currentTarget.naturalHeight)} style={{ borderRadius: '12px' }} className="w-full h-full object-cover border border-white/10" alt="Card" />
             ) : <div className="w-full h-full bg-white/5 flex items-center justify-center">No Image</div>}
+            
+            {/* Calque de reflet dynamique */}
+            <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay transition-opacity duration-200" style={glareStyle}></div>
           </div>
+
+          {/* 🚀 BOUTON D'AUTORISATION APPLE IOS */}
+          {showGyroButton && (
+            <button onClick={requestGyroPermission} className="mt-6 flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-[#AFFF25]">
+              <Smartphone size={16} /> Activer l'effet 3D
+            </button>
+          )}
         </div>
 
         <div className="px-6">
           <div className="flex justify-between items-center mb-1">
-            {/* 🚀 CLIC SUR LE NOM -> COLLECTION */}
             <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
               <div className="text-xl text-white uppercase tracking-wider font-light">{card.firstname || "Prénom"}</div>
               <div className="text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter mb-4">{card.lastname || "Nom"}</div>
             </div>
             
-            {/* 🚀 CACHE L'ÉTOILE SI WISHLIST */}
             {!card.is_wishlist && (
               <button onClick={toggleFavorite} disabled={isFavoriting} className="active:scale-90 transition-transform p-1 self-start mt-2">
                 <Star size={28} strokeWidth={card.is_favorite ? 0 : 1.5} className={card.is_favorite ? "fill-[#AFFF25] text-[#AFFF25]" : "text-[#AFFF25]"} />

@@ -33,7 +33,6 @@ function ScannerContent() {
   const editId = searchParams.get('edit'); 
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
-  // 🚀 ÉTATS POUR LE MODE BULK (LOT)
   const [scanMode, setScanMode] = useState<'unitaire' | 'lot'>('unitaire');
   const [bulkFiles, setBulkFiles] = useState<File[]>([]);
   const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
@@ -100,7 +99,6 @@ function ScannerContent() {
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
-  // 🚀 GESTION DE L'IMPORT MULTIPLE OU SIMPLE
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -118,14 +116,14 @@ function ScannerContent() {
     }
   };
 
-  // 🚀 FONCTION D'ANALYSE IA POUR UNE CARTE (Utilisée pour Unitaire ET En Lot)
   const processBulkItem = async (filesList: File[], index: number) => {
+    // 🚀 SCROLL IMMÉDIAT EN HAUT (Dès que la nouvelle image commence à charger)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     const file = filesList[index];
     setSelectedFile(file); 
     setPreviewUrl(URL.createObjectURL(file)); 
     setAnalyzing(true);
-    
-    // Réinitialise le formulaire pour éviter de garder les données de la carte précédente en mode Lot
     setFormData(DEFAULT_FORM);
 
     try {
@@ -175,7 +173,7 @@ function ScannerContent() {
     }
   };
 
-  const rotateImage = async () => { /* ... existant ... */
+  const rotateImage = async () => {
     if (!previewUrl) return;
     setIsApplyingEdit(true);
     try {
@@ -198,7 +196,7 @@ function ScannerContent() {
     } catch (e) { setIsApplyingEdit(false); }
   };
 
-  const applyImageEdits = async () => { /* ... existant ... */
+  const applyImageEdits = async () => {
     if (!previewUrl) return;
     setIsApplyingEdit(true);
     try {
@@ -221,7 +219,6 @@ function ScannerContent() {
 
   const handleAutoEnhance = () => setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
 
-  // 🚀 SAUVEGARDE ET GESTION DE LA FILE D'ATTENTE BULK
   const saveCard = async () => {
     setLoading(true);
     try {
@@ -240,15 +237,13 @@ function ScannerContent() {
       if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
       else await supabase.from('cards').insert([cardDataToSave]);
 
-      // Si on est en mode "Lot" et qu'il reste des cartes dans la file
       if (scanMode === 'lot' && currentBulkIndex < bulkFiles.length - 1) {
         setLoading(false);
         const nextIndex = currentBulkIndex + 1;
         setCurrentBulkIndex(nextIndex);
+        // Lance le scan du prochain sans délai
         await processBulkItem(bulkFiles, nextIndex);
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonte en haut pour la nouvelle carte
       } else {
-        // Sinon c'est fini, on redirige
         router.push(isWishlistMode ? '/wishlist' : '/collection');
       }
     } catch (err) {
@@ -327,7 +322,6 @@ function ScannerContent() {
         </div>
       </header>
 
-      {/* 🚀 ONGLET DE SÉLECTION DU MODE (Caché si édition) */}
       {!editId && !previewUrl && (
         <div className="flex justify-center gap-8 mb-8">
           <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
@@ -345,7 +339,6 @@ function ScannerContent() {
             </div>
           )}
           
-          {/* LOADER D'ANALYSE IA */}
           {analyzing && !showEditor && (
             <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={32} />
@@ -369,7 +362,6 @@ function ScannerContent() {
       </div>
 
       <div className="space-y-8">
-        {/* TOUS LES CHAMPS DE FORMULAIRE SONT ICI */}
         <div>
           <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
             <h2 className="text-2xl font-black italic uppercase">Joueur</h2><div className="text-[#AFFF25]">{isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
@@ -380,18 +372,22 @@ function ScannerContent() {
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
                 <div className="relative flex items-center">
                   {sportImage && <img src={`/asset/sports/${sportImage}.png`} onError={hideBrokenImage} className="absolute left-4 w-5 h-5 object-contain z-10" alt="Sport" />}
-                  <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value, series: ''})} className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 ${sportImage ? 'pl-12' : 'pl-4'}`}><option value="">Sport</option>{Object.keys(SPORT_CONFIG).map(k => <option key={k} value={k}>{SPORT_CONFIG[k].label}</option>)}</select>
+                  {/* 🚀 AJOUT DE appearance-none POUR ENLEVER LE DOUBLE CHEVRON ET pl-[44px] POUR L'ESPACEMENT */}
+                  <select value={formData.sport} onChange={e => setFormData({...formData, sport: e.target.value, series: ''})} className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm appearance-none outline-none ${sportImage ? 'pl-[44px]' : 'pl-4'}`}>
+                    <option value="">Sport</option>
+                    {Object.keys(SPORT_CONFIG).map(k => <option key={k} value={k}>{SPORT_CONFIG[k].label}</option>)}
+                  </select>
                   <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
                 </div>
               </div>
-              <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4" />
-              <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4" />
+              <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 outline-none" />
+              <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 outline-none" />
               
               <div className="relative">
                 <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club</label>
                 <div className="relative flex items-center">
                   {formData.club && <img src={`/asset/logo-club/${clubSlug}.svg`} onError={(e) => e.currentTarget.style.display='none'} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Club" />}
-                  <input value={formData.club} onChange={e => { setFormData({...formData, club: e.target.value}); setShowClubSuggestions(true); }} onFocus={() => setShowClubSuggestions(true)} onBlur={() => setTimeout(() => setShowClubSuggestions(false), 200)} placeholder="Club" className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm ${formData.club ? 'pl-12' : 'pl-4'}`} />
+                  <input value={formData.club} onChange={e => { setFormData({...formData, club: e.target.value}); setShowClubSuggestions(true); }} onFocus={() => setShowClubSuggestions(true)} onBlur={() => setTimeout(() => setShowClubSuggestions(false), 200)} placeholder="Club" className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm outline-none ${formData.club ? 'pl-[44px]' : 'pl-4'}`} />
                   <Search className="absolute right-4 text-[#AFFF25] pointer-events-none" size={16} />
                 </div>
                 {showClubSuggestions && formData.club && filteredClubs.length > 0 && (
@@ -416,15 +412,19 @@ function ScannerContent() {
             <div className="space-y-4">
               <div className="relative">
                 {formData.brand && <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 top-3 w-6 h-6 object-contain z-10" alt="Brand" />}
-                <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm ${formData.brand ? 'pl-12' : 'pl-4'}`}><option value="">Fabricant</option>{availableBrands.map((b: any) => <option key={b.name} value={b.name}>{b.name}</option>)}</select>
+                {/* 🚀 AJOUT DE appearance-none SUR TOUS LES SELECTS */}
+                <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm appearance-none outline-none ${formData.brand ? 'pl-[44px]' : 'pl-4'}`}>
+                  <option value="">Fabricant</option>
+                  {availableBrands.map((b: any) => <option key={b.name} value={b.name}>{b.name}</option>)}
+                </select>
                 <ChevronDown className="absolute right-4 top-3 text-white/50 pointer-events-none" size={16} />
               </div>
               <div className="relative">
-                <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4"><option value="">Collection</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
+                <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 appearance-none outline-none"><option value="">Collection</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                 <ChevronDown className="absolute right-4 top-3 text-white/50 pointer-events-none" size={16} />
               </div>
               <div className="relative">
-                <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
+                <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 appearance-none outline-none"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
                 <ChevronDown className="absolute right-4 top-3 text-white/50 pointer-events-none" size={16} />
               </div>
               
@@ -438,28 +438,27 @@ function ScannerContent() {
               
               {formData.is_numbered && (
                 <div className="flex items-center gap-4">
-                  <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} placeholder="Ex: 5" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm" />
+                  <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} placeholder="Ex: 5" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none" />
                   <span className="text-[#AFFF25] font-black text-xl">/</span>
-                  <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} placeholder="Ex: 50" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm" />
+                  <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} placeholder="Ex: 50" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none" />
                 </div>
               )}
 
               <div className="relative w-full">
-                <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Prix d'achat" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 pr-8" />
+                <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Prix d'achat" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 pr-8 outline-none" />
                 <span className="absolute right-4 top-3 text-[#AFFF25] font-bold">€</span>
               </div>
               
               {isWishlistMode && (
                 <div className="relative w-full flex items-center">
                   <LinkIcon className="absolute left-4 text-white/40" size={16} />
-                  <input value={formData.website_url} onChange={e => setFormData({...formData, website_url: e.target.value})} placeholder="Lien Web (Vinted, eBay...)" className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 pl-12 rounded-full text-sm outline-none text-white/80 transition-colors" />
+                  <input value={formData.website_url} onChange={e => setFormData({...formData, website_url: e.target.value})} placeholder="Lien Web (Vinted, eBay...)" className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 pl-12 rounded-full text-sm outline-none transition-colors" />
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* 🚀 BOUTON SAUVEGARDE INTELLIGENT (S'adapte au mode) */}
         <button disabled={loading || analyzing || !isFormStarted} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase flex justify-center transition-all ${isFormStarted ? 'bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:scale-[1.02] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
           {loading ? <Loader2 className="animate-spin" /> : 
             editId ? 'Mettre à jour' : 
@@ -469,7 +468,6 @@ function ScannerContent() {
         </button>
       </div>
       
-      {/* 🚀 L'INPUT GÈRE MAINTENANT LE "MULTIPLE" SI ON EST EN MODE LOT */}
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={scanMode === 'lot'} />
     </div>
   );
