@@ -27,7 +27,6 @@ export default function CardDetailsPage() {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isHorizontal, setIsHorizontal] = useState(false);
 
-  // 🚀 ETATS POUR LA 3D GYROSCOPE
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg)', transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' });
   const [glareStyle, setGlareStyle] = useState({ background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 0%, transparent 50%)', opacity: 0 });
   const [showGyroButton, setShowGyroButton] = useState(false);
@@ -42,10 +41,8 @@ export default function CardDetailsPage() {
     setLoading(false);
   };
 
-  // 🚀 LOGIQUE GYROSCOPE (Avec gestion des permissions Apple)
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-      // Vérifie si on est sur un appareil iOS qui demande la permission
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         const savedPermission = localStorage.getItem('gyro_permission');
         if (savedPermission === 'granted') {
@@ -54,7 +51,6 @@ export default function CardDetailsPage() {
           setShowGyroButton(true);
         }
       } else {
-        // Appareils Android ou anciens iOS : pas besoin de bouton
         startGyro();
       }
     }
@@ -69,34 +65,30 @@ export default function CardDetailsPage() {
         setShowGyroButton(false);
         startGyro();
       }
-    } catch (e) {
-      console.error("Erreur Gyro", e);
-    }
+    } catch (e) { console.error("Erreur Gyro", e); }
   };
 
-  const startGyro = () => {
-    window.addEventListener('deviceorientation', handleOrientation);
-  };
+  const startGyro = () => { window.addEventListener('deviceorientation', handleOrientation); };
 
   const handleOrientation = (e: DeviceOrientationEvent) => {
     if (!e.gamma || !e.beta) return;
 
-    let x = e.gamma; // [-90,90]
-    let y = e.beta;  // [-180,180]
+    let x = e.gamma; 
+    let y = e.beta;  
 
-    // Ajustement de l'angle naturel de prise en main du téléphone (environ 45 degrés)
     x = Math.max(-30, Math.min(30, x));
     y = Math.max(-30, Math.min(30, y - 45)); 
 
-    const rotateY = x * 1.5; 
-    const rotateX = -y * 1.5;
+    // 🚀 GYROSCOPE ADOUCI : 3x MOINS RAPIDE (x * 0.5)
+    const rotateY = x * 0.5; 
+    const rotateX = -y * 0.5;
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-      transition: 'transform 0.1s ease-out'
+      // 🚀 TRANSITION PLUS LENTE ET FLUIDE
+      transition: 'transform 0.3s ease-out'
     });
 
-    // Effet de brillance (Glare)
     const glareX = (x / 30) * 100;
     const glareY = (y / 30) * 100;
     setGlareStyle({
@@ -146,11 +138,9 @@ export default function CardDetailsPage() {
               <img src={card.image_url} onLoad={(e) => setIsHorizontal(e.currentTarget.naturalWidth > e.currentTarget.naturalHeight)} style={{ borderRadius: '12px' }} className="w-full h-full object-cover border border-white/10" alt="Card" />
             ) : <div className="w-full h-full bg-white/5 flex items-center justify-center">No Image</div>}
             
-            {/* Calque de reflet dynamique */}
             <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay transition-opacity duration-200" style={glareStyle}></div>
           </div>
 
-          {/* 🚀 BOUTON D'AUTORISATION APPLE IOS */}
           {showGyroButton && (
             <button onClick={requestGyroPermission} className="mt-6 flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest text-[#AFFF25]">
               <Smartphone size={16} /> Activer l'effet 3D
