@@ -73,7 +73,6 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden relative z-10">
       
-      {/* NOUVEAU DÉGRADÉ 70px */}
       <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <header className="pt-6 pb-2 text-center">
@@ -82,7 +81,6 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 🚀 WRAPPER POUR FORCER LE PADDING DE 5% DE CHAQUE CÔTÉ */}
       <div className="w-full px-[5%] mt-2">
         <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {carouselCards.length === 0 ? (
@@ -99,7 +97,6 @@ export default function HomePage() {
                 <div 
                   key={card.id}
                   onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                  // 🚀 HAUTEUR 280px POUR LES HORIZONTALES
                   className={`absolute max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer overflow-hidden bg-white/5 border border-white/10 ${
                     isHorizontal ? 'h-[280px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
                   }`}
@@ -111,16 +108,17 @@ export default function HomePage() {
                   }}
                 >
                   {card.image_url ? (
-                    <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover" alt="Card" />
+                    // 🚀 AJOUT DU ROUNDED-2XL DIRECTEMENT SUR L'IMAGE
+                    <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover rounded-2xl" alt="Card" />
                   ) : (
-                    <div className="w-full h-full bg-[#080531] flex items-center justify-center text-white/30 text-xs">No Image</div>
+                    // 🚀 AJOUT DU ROUNDED-2XL DIRECTEMENT SUR LE PLACEHOLDER
+                    <div className="w-full h-full bg-[#080531] flex items-center justify-center text-white/30 text-xs rounded-2xl">No Image</div>
                   )}
                 </div>
               );
             })
           )}
           
-          {/* Petits points de pagination */}
           <div className="absolute bottom-2 flex gap-1.5 z-20">
             {carouselCards.map((_, i) => <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeIndex ? 'bg-[#AFFF25] w-3' : 'bg-white/30'}`} />)}
           </div>
