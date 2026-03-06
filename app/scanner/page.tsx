@@ -83,6 +83,14 @@ function ScannerContent() {
     }
   }
 
+  // 🚀 RÉINTÉGRATION DES VARIABLES MANQUANTES POUR ÉVITER LE CRASH VERCEL
+  const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
+  const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
+  const isFormStarted = Object.values(formData).some(val => 
+    (typeof val === 'string' && val.trim() !== '') || 
+    (typeof val === 'boolean' && val === true)
+  );
+
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -164,14 +172,12 @@ function ScannerContent() {
 
   if (isFetchingEdit) return <div className="min-h-screen text-white flex flex-col items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
-  // 🚀 TITRES EN BLANC ET RENOMMAGE
   const pageTitle = isWishlistMode ? 'WISHLIST' : (editId ? 'MODIFIER' : 'AJOUTER');
 
   return (
     <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">
       <header className="flex items-center justify-between mb-8">
         <button onClick={() => router.back()} className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20"><ChevronLeft size={20} /></button>
-        {/* 🚀 TITRE EN BLANC */}
         <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">
           {pageTitle}
         </h1>
@@ -241,7 +247,8 @@ function ScannerContent() {
           {isCarteOpen && (
             <div className="space-y-4">
               <div className="relative">
-                <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4"><option value="">Fabricant</option>{availableBrands.map((b: any) => <option key={b.name} value={b.name}>{b.name}</option>)}</select>
+                {formData.brand && <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 top-3 w-6 h-6 object-contain z-10" alt="Brand" />}
+                <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm ${formData.brand ? 'pl-12' : 'pl-4'}`}><option value="">Fabricant</option>{availableBrands.map((b: any) => <option key={b.name} value={b.name}>{b.name}</option>)}</select>
                 <ChevronDown className="absolute right-4 top-3 text-white/50 pointer-events-none" size={16} />
               </div>
               <div className="relative">
@@ -276,7 +283,9 @@ function ScannerContent() {
           )}
         </div>
 
-        <button onClick={saveCard} className="w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] flex justify-center">{loading ? <Loader2 className="animate-spin" /> : 'Enregistrer'}</button>
+        <button disabled={loading || analyzing || !isFormStarted} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase flex justify-center transition-all ${isFormStarted ? 'bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:scale-[1.02] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
+          {loading ? <Loader2 className="animate-spin" /> : 'Enregistrer'}
+        </button>
       </div>
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
     </div>
