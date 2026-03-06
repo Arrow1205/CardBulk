@@ -4,7 +4,7 @@ export async function POST(req: Request) {
   try {
     const { url } = await req.json();
     if (!url) return NextResponse.json({ error: 'URL manquante' }, { status: 400 });
-
+ 
     // 🚀 L'ASTUCE MAGIQUE : Se faire passer pour Googlebot pour contourner l'anti-bot Vinted/eBay
     // Les sites e-commerce laissent toujours passer Google pour leur SEO, et lui fournissent le prix en clair !
     const response = await fetch(url, {
