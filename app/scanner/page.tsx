@@ -17,6 +17,8 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
   'TENNIS': { image: 'Tennis', jsonKey: 'tennis', label: 'Tennis' }
 };
 
+const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '' };
+
 export default function ScannerPage() { 
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>}>
@@ -30,6 +32,11 @@ function ScannerContent() {
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit'); 
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
+
+  // 🚀 ÉTATS POUR LE MODE BULK (LOT)
+  const [scanMode, setScanMode] = useState<'unitaire' | 'lot'>('unitaire');
+  const [bulkFiles, setBulkFiles] = useState<File[]>([]);
+  const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +55,7 @@ function ScannerContent() {
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
-  const [formData, setFormData] = useState({ sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '' });
+  const [formData, setFormData] = useState(DEFAULT_FORM);
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
   useEffect(() => {
@@ -93,14 +100,33 @@ function ScannerContent() {
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
-  // 🚀 LE SCANNER IA CORRIGÉ (Affiche bien le loader et ne plante pas si données partielles)
-  const handleFileChange = async (e: any) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // 🚀 GESTION DE L'IMPORT MULTIPLE OU SIMPLE
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
+    if (scanMode === 'lot') {
+      if (files.length > 10) {
+        alert("Tu ne peux sélectionner que 10 cartes maximum à la fois pour éviter de surcharger le réseau.");
+        return;
+      }
+      setBulkFiles(files);
+      setCurrentBulkIndex(0);
+      await processBulkItem(files, 0);
+    } else {
+      await processBulkItem([files[0]], 0);
+    }
+  };
+
+  // 🚀 FONCTION D'ANALYSE IA POUR UNE CARTE (Utilisée pour Unitaire ET En Lot)
+  const processBulkItem = async (filesList: File[], index: number) => {
+    const file = filesList[index];
     setSelectedFile(file); 
     setPreviewUrl(URL.createObjectURL(file)); 
     setAnalyzing(true);
+    
+    // Réinitialise le formulaire pour éviter de garder les données de la carte précédente en mode Lot
+    setFormData(DEFAULT_FORM);
 
     try {
       const body = new FormData(); 
@@ -109,20 +135,18 @@ function ScannerContent() {
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
-      console.log("IA Data:", data);
-
       if (!data.error) {
-        let fname = formData.firstname;
-        let lname = formData.lastname;
+        let fname = '';
+        let lname = '';
 
         if (data.playerName) {
           const parts = data.playerName.split(' ');
-          fname = parts[0]?.toUpperCase() || fname;
-          lname = parts.slice(1).join(' ')?.toUpperCase() || lname;
+          fname = parts[0]?.toUpperCase() || '';
+          lname = parts.slice(1).join(' ')?.toUpperCase() || '';
         }
 
         setFormData(prev => {
-          let aiSport = data.sport?.toUpperCase() || prev.sport;
+          let aiSport = data.sport?.toUpperCase() || '';
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
           
           return {
@@ -130,16 +154,16 @@ function ScannerContent() {
             sport: aiSport,
             firstname: fname,
             lastname: lname,
-            club: data.club || prev.club,
-            brand: data.brand || prev.brand,
-            series: data.series || prev.series,
-            year: data.year ? data.year.toString() : prev.year,
-            is_auto: data.is_auto ?? prev.is_auto,
-            is_patch: data.is_patch ?? prev.is_patch,
-            is_rookie: data.is_rookie ?? prev.is_rookie,
-            is_numbered: data.is_numbered ?? prev.is_numbered,
-            num_low: data.num_low ? data.num_low.toString() : prev.num_low,
-            num_high: data.num_high ? data.num_high.toString() : prev.num_high
+            club: data.club || '',
+            brand: data.brand || '',
+            series: data.series || '',
+            year: data.year ? data.year.toString() : '',
+            is_auto: !!data.is_auto,
+            is_patch: !!data.is_patch,
+            is_rookie: !!data.is_rookie,
+            is_numbered: !!data.is_numbered,
+            num_low: data.num_low ? data.num_low.toString() : '',
+            num_high: data.num_high ? data.num_high.toString() : ''
           };
         });
       }
@@ -147,12 +171,11 @@ function ScannerContent() {
       console.error("Scan error:", err);
     } finally { 
       setAnalyzing(false); 
-      // Réinitialise l'input pour pouvoir rescanner la même image si besoin
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const rotateImage = async () => {
+  const rotateImage = async () => { /* ... existant ... */
     if (!previewUrl) return;
     setIsApplyingEdit(true);
     try {
@@ -175,64 +198,63 @@ function ScannerContent() {
     } catch (e) { setIsApplyingEdit(false); }
   };
 
-  const applyImageEdits = async () => {
+  const applyImageEdits = async () => { /* ... existant ... */
     if (!previewUrl) return;
     setIsApplyingEdit(true);
     try {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = previewUrl;
+      const img = new Image(); img.crossOrigin = "anonymous"; img.src = previewUrl;
       await new Promise(resolve => { img.onload = resolve; });
-
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      canvas.width = img.width;
-      canvas.height = img.height;
-
+      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
+      canvas.width = img.width; canvas.height = img.height;
       ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
-
-      const scale = imgSettings.zoom;
-      const sw = img.width / scale;
-      const sh = img.height / scale;
-      const sx = (img.width - sw) / 2;
-      const sy = (img.height - sh) / 2;
-
+      const scale = imgSettings.zoom; const sw = img.width / scale; const sh = img.height / scale;
+      const sx = (img.width - sw) / 2; const sy = (img.height - sh) / 2;
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-
       canvas.toBlob((blob) => {
         if (!blob) return;
         const newFile = new File([blob], `edited-${Date.now()}.png`, { type: 'image/png' });
-        setSelectedFile(newFile);
-        setPreviewUrl(URL.createObjectURL(newFile));
-        setShowEditor(false);
-        setIsApplyingEdit(false);
+        setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); setShowEditor(false); setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }, 'image/png');
-    } catch (e) {
-      setIsApplyingEdit(false);
-    }
+    } catch (e) { setIsApplyingEdit(false); }
   };
 
-  const handleAutoEnhance = () => {
-    setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
-  };
+  const handleAutoEnhance = () => setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
 
+  // 🚀 SAUVEGARDE ET GESTION DE LA FILE D'ATTENTE BULK
   const saveCard = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return; 
-    let finalImageUrl = previewUrl;
-    if (selectedFile) {
-      const filePath = `${user.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`; 
-      await supabase.storage.from('card-images').upload(filePath, selectedFile);
-      finalImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return; 
+      let finalImageUrl = previewUrl;
+      
+      if (selectedFile) {
+        const filePath = `${user.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`; 
+        await supabase.storage.from('card-images').upload(filePath, selectedFile);
+        finalImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
+      }
+      
+      const cardDataToSave = { user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, series: formData.series, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url };
+      
+      if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
+      else await supabase.from('cards').insert([cardDataToSave]);
+
+      // Si on est en mode "Lot" et qu'il reste des cartes dans la file
+      if (scanMode === 'lot' && currentBulkIndex < bulkFiles.length - 1) {
+        setLoading(false);
+        const nextIndex = currentBulkIndex + 1;
+        setCurrentBulkIndex(nextIndex);
+        await processBulkItem(bulkFiles, nextIndex);
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonte en haut pour la nouvelle carte
+      } else {
+        // Sinon c'est fini, on redirige
+        router.push(isWishlistMode ? '/wishlist' : '/collection');
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
     }
-    const cardDataToSave = { user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, series: formData.series, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url };
-    if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
-    else await supabase.from('cards').insert([cardDataToSave]);
-    router.push(isWishlistMode ? '/wishlist' : '/collection');
   };
 
   const deleteCard = async () => {
@@ -277,22 +299,10 @@ function ScannerContent() {
             </button>
 
             <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div>
-                <input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Luminosité</span><span>{imgSettings.brightness}%</span></div>
-                <input type="range" min="50" max="150" step="1" value={imgSettings.brightness} onChange={e => setImgSettings({...imgSettings, brightness: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Contraste</span><span>{imgSettings.contrast}%</span></div>
-                <input type="range" min="50" max="150" step="1" value={imgSettings.contrast} onChange={e => setImgSettings({...imgSettings, contrast: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" />
-              </div>
-              <div>
-                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Brillance</span><span>{imgSettings.saturation}%</span></div>
-                <input type="range" min="0" max="200" step="1" value={imgSettings.saturation} onChange={e => setImgSettings({...imgSettings, saturation: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" />
-              </div>
+              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div><input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
+              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Luminosité</span><span>{imgSettings.brightness}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.brightness} onChange={e => setImgSettings({...imgSettings, brightness: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
+              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Contraste</span><span>{imgSettings.contrast}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.contrast} onChange={e => setImgSettings({...imgSettings, contrast: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
+              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Brillance</span><span>{imgSettings.saturation}%</span></div><input type="range" min="0" max="200" step="1" value={imgSettings.saturation} onChange={e => setImgSettings({...imgSettings, saturation: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
             </div>
           </div>
           
@@ -305,11 +315,9 @@ function ScannerContent() {
         </div>
       )}
 
-      <header className="flex items-center justify-between mb-8">
+      <header className="flex items-center justify-between mb-6">
         <button onClick={() => router.back()} className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20"><ChevronLeft size={20} /></button>
-        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">
-          {pageTitle}
-        </h1>
+        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">{pageTitle}</h1>
         <div className="w-auto min-w-[40px] flex justify-end">
           {editId && (
             <button onClick={deleteCard} className={`h-10 px-3 rounded-full flex items-center justify-center transition-all duration-300 ${confirmDelete ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-white text-red-500'}`}>
@@ -319,15 +327,31 @@ function ScannerContent() {
         </div>
       </header>
 
+      {/* 🚀 ONGLET DE SÉLECTION DU MODE (Caché si édition) */}
+      {!editId && !previewUrl && (
+        <div className="flex justify-center gap-8 mb-8">
+          <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
+          <button onClick={() => setScanMode('lot')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
+        </div>
+      )}
+
       <div className="relative w-full max-w-[240px] mx-auto mb-12">
         <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden cursor-pointer bg-white/5 border border-white/10 rounded-2xl">
-          {previewUrl ? <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" /> : <div className="text-[11px] font-bold text-[#AFFF25] border border-[#AFFF25]/30 px-6 py-2 rounded-full">SCANNER</div>}
+          {previewUrl ? (
+            <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
+          ) : (
+            <div className="text-[11px] font-bold text-[#AFFF25] border border-[#AFFF25]/30 px-6 py-2 rounded-full uppercase text-center leading-tight">
+              {scanMode === 'lot' ? 'SCANNER EN MASSE\n(Max 10)' : 'SCANNER UNE CARTE'}
+            </div>
+          )}
           
-          {/* 🚀 LE LOADER DU SCAN IA EST DE RETOUR ICI ! */}
+          {/* LOADER D'ANALYSE IA */}
           {analyzing && !showEditor && (
             <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={32} />
-               <span className="text-[#AFFF25] text-[10px] italic tracking-widest animate-pulse mt-2">ANALYSE IA...</span>
+               <span className="text-[#AFFF25] text-[10px] italic tracking-widest animate-pulse mt-2 text-center">
+                 {scanMode === 'lot' ? `ANALYSE ${currentBulkIndex + 1} / ${bulkFiles.length}...` : 'ANALYSE IA...'}
+               </span>
             </div>
           )}
         </div>
@@ -345,6 +369,7 @@ function ScannerContent() {
       </div>
 
       <div className="space-y-8">
+        {/* TOUS LES CHAMPS DE FORMULAIRE SONT ICI */}
         <div>
           <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
             <h2 className="text-2xl font-black italic uppercase">Joueur</h2><div className="text-[#AFFF25]">{isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
@@ -411,6 +436,14 @@ function ScannerContent() {
                 )
               })}
               
+              {formData.is_numbered && (
+                <div className="flex items-center gap-4">
+                  <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} placeholder="Ex: 5" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm" />
+                  <span className="text-[#AFFF25] font-black text-xl">/</span>
+                  <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} placeholder="Ex: 50" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm" />
+                </div>
+              )}
+
               <div className="relative w-full">
                 <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Prix d'achat" className="w-full bg-[#040221] border border-white/20 p-3 rounded-full text-sm pl-4 pr-8" />
                 <span className="absolute right-4 top-3 text-[#AFFF25] font-bold">€</span>
@@ -426,11 +459,18 @@ function ScannerContent() {
           )}
         </div>
 
+        {/* 🚀 BOUTON SAUVEGARDE INTELLIGENT (S'adapte au mode) */}
         <button disabled={loading || analyzing || !isFormStarted} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-2 mb-6 uppercase flex justify-center transition-all ${isFormStarted ? 'bg-[#AFFF25] text-black shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:scale-[1.02] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
-          {loading ? <Loader2 className="animate-spin" /> : 'Enregistrer'}
+          {loading ? <Loader2 className="animate-spin" /> : 
+            editId ? 'Mettre à jour' : 
+            (scanMode === 'lot' && currentBulkIndex < bulkFiles.length - 1) ? `Valider & Suivant (${currentBulkIndex + 1}/${bulkFiles.length})` : 
+            (scanMode === 'lot' ? `Terminer (${currentBulkIndex + 1}/${bulkFiles.length})` : 'Enregistrer')
+          }
         </button>
       </div>
-      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+      
+      {/* 🚀 L'INPUT GÈRE MAINTENANT LE "MULTIPLE" SI ON EST EN MODE LOT */}
+      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={scanMode === 'lot'} />
     </div>
   );
 }
