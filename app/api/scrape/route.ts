@@ -4,9 +4,8 @@ export async function POST(req: Request) {
   try {
     const { url } = await req.json();
     if (!url) return NextResponse.json({ error: 'URL manquante' }, { status: 400 });
- 
+
     // 🚀 L'ASTUCE MAGIQUE : Se faire passer pour Googlebot pour contourner l'anti-bot Vinted/eBay
-    // Les sites e-commerce laissent toujours passer Google pour leur SEO, et lui fournissent le prix en clair !
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
@@ -20,11 +19,11 @@ export async function POST(req: Request) {
     // --------------------------------------------------------
     // 1️⃣ RECHERCHE DE L'IMAGE (Open Graph)
     // --------------------------------------------------------
-    let match = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
+    let matchImg = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
              || html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["'][^>]*>/i)
              || html.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i);
 
-    let imageUrl = match ? match[1] : null;
+    let imageUrl = matchImg ? matchImg[1] : null;
     let base64Image = null;
 
     if (imageUrl) {
@@ -44,9 +43,11 @@ export async function POST(req: Request) {
     // --------------------------------------------------------
     let extractedPrice = '';
 
-    // Méthode A : Chercher dans les données JSON-LD (Schema.org) - Le plus fiable pour Vinted/eBay
-    const jsonLdMatches = html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi);
-    for (const match of jsonLdMatches) {
+    // Méthode A : Chercher dans les données JSON-LD (Schema.org)
+    // 🚀 CORRECTION TYPESCRIPT : Utilisation d'une boucle while avec regex.exec (infaillible)
+    const regexLd = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi;
+    let match;
+    while ((match = regexLd.exec(html)) !== null) {
       try {
         const data = JSON.parse(match[1]);
         // Fonction récursive pour trouver une clé "price" n'importe où dans le JSON
