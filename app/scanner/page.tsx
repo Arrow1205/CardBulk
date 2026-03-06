@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, Link as LinkIcon } from 'lucide-react';
+// 🚀 NOUVELLES ICONS IMPORTÉES
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, Link as LinkIcon, SlidersHorizontal, Wand2, X, Check } from 'lucide-react';
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
 
@@ -38,6 +39,11 @@ function ScannerContent() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
+  // 🚀 ÉTATS POUR L'ÉDITEUR D'IMAGE
+  const [showEditor, setShowEditor] = useState(false);
+  const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
+
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
@@ -68,7 +74,6 @@ function ScannerContent() {
       if (a.name.toLowerCase().startsWith(searchStr)) return -1;
       return 1;
     });
-
   const selectedClub = filteredClubs[0];
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
 
@@ -83,13 +88,9 @@ function ScannerContent() {
     }
   }
 
-  // 🚀 RÉINTÉGRATION DES VARIABLES MANQUANTES POUR ÉVITER LE CRASH VERCEL
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
-  const isFormStarted = Object.values(formData).some(val => 
-    (typeof val === 'string' && val.trim() !== '') || 
-    (typeof val === 'boolean' && val === true)
-  );
+  const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
@@ -115,35 +116,66 @@ function ScannerContent() {
         currentBlob = await response.blob();
       }
       if (!currentBlob) return;
+      const img = new Image(); img.crossOrigin = "anonymous"; img.src = URL.createObjectURL(currentBlob);
+      await new Promise(resolve => { img.onload = resolve; });
+      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
+      canvas.width = img.height; canvas.height = img.width;
+      ctx.translate(canvas.width / 2, canvas.height / 2); ctx.rotate(90 * Math.PI / 180); ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
+        setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); setAnalyzing(false);
+      }, currentBlob.type || 'image/png');
+    } catch (e) { setAnalyzing(false); }
+  };
 
+  // 🚀 FONCTION MAGIQUE POUR APPLIQUER LES MODIFICATIONS D'IMAGE (Canvas)
+  const applyImageEdits = async () => {
+    if (!previewUrl) return;
+    setAnalyzing(true);
+    try {
       const img = new Image();
       img.crossOrigin = "anonymous";
-      img.src = URL.createObjectURL(currentBlob);
+      img.src = previewUrl;
       await new Promise(resolve => { img.onload = resolve; });
 
       const canvas = document.createElement('canvas');
-      canvas.width = img.height;
-      canvas.height = img.width;
-      
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(90 * Math.PI / 180);
-      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // Application des filtres CSS dans le Canvas
+      ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
+
+      // Application du Zoom (Recadrage depuis le centre)
+      const scale = imgSettings.zoom;
+      const sw = img.width / scale;
+      const sh = img.height / scale;
+      const sx = (img.width - sw) / 2;
+      const sy = (img.height - sh) / 2;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
       canvas.toBlob((blob) => {
         if (!blob) return;
-        const fileName = selectedFile ? selectedFile.name : `rotated-${Date.now()}.png`;
-        const newFile = new File([blob], fileName, { type: blob.type });
+        const newFile = new File([blob], `edited-${Date.now()}.png`, { type: 'image/png' });
         setSelectedFile(newFile);
-        setPreviewUrl(URL.createObjectURL(newFile)); 
+        setPreviewUrl(URL.createObjectURL(newFile));
+        setShowEditor(false);
         setAnalyzing(false);
-      }, currentBlob.type || 'image/png');
-      
+        // On réinitialise pour la prochaine fois
+        setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
+      }, 'image/png');
     } catch (e) {
+      console.error(e);
       setAnalyzing(false);
     }
+  };
+
+  const handleAutoEnhance = () => {
+    setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
   };
 
   const saveCard = async () => {
@@ -175,7 +207,65 @@ function ScannerContent() {
   const pageTitle = isWishlistMode ? 'WISHLIST' : (editId ? 'MODIFIER' : 'AJOUTER');
 
   return (
-    <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">
+    <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans relative">
+      
+      {/* 🚀 MODAL ÉDITEUR D'IMAGE */}
+      {showEditor && previewUrl && (
+        <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
+          <header className="flex justify-between items-center mb-6 pt-4">
+            <button onClick={() => setShowEditor(false)} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 active:scale-95"><X size={20} /></button>
+            <h2 className="text-xl font-black italic uppercase text-[#AFFF25] tracking-widest">Éditeur</h2>
+            <button onClick={applyImageEdits} className="w-10 h-10 bg-[#AFFF25] text-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.5)] active:scale-95"><Check size={20} strokeWidth={3} /></button>
+          </header>
+
+          <div className="relative w-full flex-1 max-h-[50vh] rounded-2xl overflow-hidden border border-white/20 bg-black/50 shadow-2xl flex items-center justify-center">
+            <img 
+              src={previewUrl} 
+              className="w-full h-full object-contain"
+              style={{
+                filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`,
+                transform: `scale(${imgSettings.zoom})`
+              }}
+              alt="Preview Edit" 
+            />
+          </div>
+
+          <div className="mt-8 space-y-6 pb-6 overflow-y-auto">
+            <button onClick={handleAutoEnhance} className="w-full py-3 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25] text-[#AFFF25] font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform">
+              <Wand2 size={18} /> Amélioration Auto
+            </button>
+
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div>
+                <input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" />
+              </div>
+              <div>
+                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Luminosité</span><span>{imgSettings.brightness}%</span></div>
+                <input type="range" min="50" max="150" step="1" value={imgSettings.brightness} onChange={e => setImgSettings({...imgSettings, brightness: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" />
+              </div>
+              <div>
+                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Contraste</span><span>{imgSettings.contrast}%</span></div>
+                <input type="range" min="50" max="150" step="1" value={imgSettings.contrast} onChange={e => setImgSettings({...imgSettings, contrast: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" />
+              </div>
+              <div>
+                <div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Brillance</span><span>{imgSettings.saturation}%</span></div>
+                <input type="range" min="0" max="200" step="1" value={imgSettings.saturation} onChange={e => setImgSettings({...imgSettings, saturation: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" />
+              </div>
+            </div>
+          </div>
+          
+          {analyzing && (
+            <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-50">
+               <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={40} />
+               <span className="text-[#AFFF25] text-xs font-bold tracking-widest animate-pulse mt-2">APPLICATION...</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 🚀 FIN MODAL ÉDITEUR */}
+
       <header className="flex items-center justify-between mb-8">
         <button onClick={() => router.back()} className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20"><ChevronLeft size={20} /></button>
         <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">
@@ -194,10 +284,17 @@ function ScannerContent() {
         <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden cursor-pointer bg-white/5 border border-white/10 rounded-2xl">
           {previewUrl ? <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" /> : <div className="text-[11px] font-bold text-[#AFFF25] border border-[#AFFF25]/30 px-6 py-2 rounded-full">SCANNER</div>}
         </div>
+        
+        {/* 🚀 BOUTONS ROTATION ET ÉDITION */}
         {previewUrl && (
-          <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 -bottom-4 w-14 h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform">
-            <RotateCw size={24} strokeWidth={2.5} />
-          </button>
+          <>
+            <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 w-12 h-12 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform">
+              <RotateCw size={20} strokeWidth={2.5} />
+            </button>
+            <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-4 w-12 h-12 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform">
+              <SlidersHorizontal size={20} strokeWidth={2.5} />
+            </button>
+          </>
         )}
       </div>
 
