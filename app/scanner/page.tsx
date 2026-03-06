@@ -33,7 +33,6 @@ function ScannerContent() {
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit'); 
   
-  // 🚀 NOUVEAU : Détecte si on vient du bouton "+" de la Wishlist
   const isAddingToWishlist = searchParams.get('wishlist') === 'true';
   const [isWishlistMode, setIsWishlistMode] = useState(isAddingToWishlist);
 
@@ -51,7 +50,6 @@ function ScannerContent() {
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
-  // 🚀 NOUVEAU : Ajout du champ website_url
   const [formData, setFormData] = useState({
     sport: '',
     firstname: '',
@@ -70,6 +68,9 @@ function ScannerContent() {
     website_url: ''
   });
 
+  // 🚀 LA CORRECTION EST ICI : On remet la liste des années !
+  const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
+
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -87,7 +88,6 @@ function ScannerContent() {
           if (error) throw error;
           
           if (data) {
-            // Si on édite une carte, on vérifie si elle fait partie de la Wishlist
             setIsWishlistMode(data.is_wishlist || false);
             
             setFormData({
@@ -270,8 +270,8 @@ function ScannerContent() {
         purchase_price: parseFloat(formData.price) || 0,
         image_url: finalImageUrl,
         club_name: formData.club,
-        is_wishlist: isWishlistMode, // 🚀 ON SAUVEGARDE LE MODE WISHLIST
-        website_url: formData.website_url // 🚀 ON SAUVEGARDE L'URL
+        is_wishlist: isWishlistMode, 
+        website_url: formData.website_url 
       };
 
       if (editId) {
@@ -282,7 +282,6 @@ function ScannerContent() {
         if (error) throw error;
       }
 
-      // Si on était en mode wishlist, on renvoie vers la wishlist, sinon collection
       router.push(isWishlistMode ? '/wishlist' : '/collection');
     } catch (err: any) {
       setLoading(false);
@@ -314,7 +313,6 @@ function ScannerContent() {
     );
   }
 
-  // 🚀 Titre Dynamique
   const pageTitle = editId ? (isWishlistMode ? 'MODIFIER WISH' : 'MODIFIER') : (isWishlistMode ? 'AJOUTER WISH' : 'AJOUTER');
 
   return (
@@ -505,7 +503,7 @@ function ScannerContent() {
                  </div>
               </div>
 
-              {/* 🚀 NOUVEAU : LE CHAMP URL QUI N'APPARAÎT QU'EN MODE WISHLIST */}
+              {/* CHAMP URL POUR LA WISHLIST */}
               {isWishlistMode && (
                 <div className="pt-4 pb-4 animate-in fade-in duration-300">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Lien Web (Vinted, eBay...)</label>
