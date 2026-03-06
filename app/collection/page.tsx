@@ -3,10 +3,9 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Search, ChevronDown } from 'lucide-react';
+import { Loader2, Search, ChevronDown, X } from 'lucide-react'; // 🚀 X IMPORTÉ
 import SET_DATA from '@/data/set.json';
 
-// 🚀 RETRAIT POKEMON/MARVEL
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'SOCCER': { image: 'Soccer', label: 'Football' },
   'BASKETBALL': { image: 'Basket', label: 'Basketball' },
@@ -32,7 +31,6 @@ function CollectionContent() {
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🚀 RÉCUPÉRATION RECHERCHE DEPUIS URL
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || searchParams.get('club') || '');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || '');
@@ -48,7 +46,6 @@ function CollectionContent() {
     if (!user) return router.push('/login');
 
     const { data } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-    // 🚀 EXCLUSION WISHLIST
     if (data) setCards(data.filter(c => !c.is_wishlist));
     setLoading(false);
   };
@@ -81,8 +78,9 @@ function CollectionContent() {
 
   return (
     <div className="min-h-screen text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
-      {/* 🚀 DÉGRADÉ UNIFORME */}
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#AFFF25]/20 via-[#AFFF25]/5 to-transparent pointer-events-none -z-10"></div>
+      
+      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
+      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <div className="px-4">
         <header className="mb-6 pt-4 text-center">
@@ -98,8 +96,19 @@ function CollectionContent() {
             onChange={(e) => { setSearchTerm(e.target.value); setShowSuggestions(true); }}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            className="w-full bg-[#040221]/60 backdrop-blur-md border border-[#AFFF25] rounded-full py-3 pl-12 pr-4 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)]"
+            // 🚀 Ajout de pr-10 pour que le texte ne chevauche pas la croix
+            className="w-full bg-[#040221]/60 backdrop-blur-md border border-[#AFFF25] rounded-full py-3 pl-12 pr-10 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)]"
           />
+          {/* 🚀 BOUTON POUR VIDER LE CHAMP DE RECHERCHE */}
+          {searchTerm && (
+            <button 
+              onClick={() => { setSearchTerm(''); setShowSuggestions(false); }}
+              className="absolute right-4 top-3.5 text-white/50 hover:text-white transition-colors"
+            >
+              <X size={18} />
+            </button>
+          )}
+
           {showSuggestions && searchSuggestions.length > 0 && (
             <ul className="absolute w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-2xl z-50">
               {searchSuggestions.map((name, i) => (
@@ -149,10 +158,9 @@ function CollectionContent() {
                 className={`relative overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group flex items-center justify-center ${isHorizontal ? 'col-span-2 aspect-[1.55] bg-[#080531]' : 'col-span-1 aspect-[3/4] bg-white/5'}`}
               >
                 {card.image_url ? (
-                  // 🚀 OBJECT-COVER POUR TOUT LE MONDE
                   <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover" alt="Card" />
                 ) : (
-                  <div className="text-[10px] italic font-bold">No Image</div>
+                  <div className="text-[10px] italic font-bold text-white/30">No Image</div>
                 )}
               </div>
             );

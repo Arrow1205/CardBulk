@@ -33,7 +33,6 @@ export default function HomePage() {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
-    // 🚀 On exclut la wishlist de l'accueil
     if (data) setCards(data.filter(c => !c.is_wishlist));
     setLoading(false);
   };
@@ -74,8 +73,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden relative z-10">
       
-      {/* 🚀 DÉGRADÉ UNIFORME */}
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#AFFF25]/20 via-[#AFFF25]/5 to-transparent pointer-events-none -z-10"></div>
+      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
+      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <header className="pt-6 pb-2 text-center">
         <div className="inline-block border-2 border-[#AFFF25] px-4 py-1 rounded-xl shadow-[0_0_15px_rgba(175,255,37,0.3)] bg-[#040221]/50 backdrop-blur-md">
@@ -98,7 +97,8 @@ export default function HomePage() {
               <div 
                 key={card.id}
                 onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                className={`absolute w-[60%] max-w-[280px] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}
+                // 🚀 HAUTEUR FIXE (320px) POUR TOUT LE MONDE. La largeur grandit si aspect-[1.55] !
+                className={`absolute h-[320px] max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer overflow-hidden bg-white/5 border border-white/10 ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}
                 style={{
                   transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
                   zIndex: 10 - absOffset,
@@ -107,10 +107,9 @@ export default function HomePage() {
                 }}
               >
                 {card.image_url ? (
-                  // 🚀 OBJECT-COVER PLEIN CADRE
-                  <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full rounded-2xl border border-white/10 object-cover" alt="Card" />
+                  <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover" alt="Card" />
                 ) : (
-                  <div className="w-full h-full rounded-2xl border border-white/10 bg-[#080531] flex items-center justify-center text-white/30 text-xs">No Image</div>
+                  <div className="w-full h-full bg-[#080531] flex items-center justify-center text-white/30 text-xs">No Image</div>
                 )}
               </div>
             );

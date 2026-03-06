@@ -24,7 +24,6 @@ export default function StatsPage() {
   const [selectedSport, setSelectedSport] = useState('');
   const [selectedSpec, setSelectedSpec] = useState('');
 
-  // 🚀 ÉTAT POUR LA POPIN DE DÉTAILS
   const [detailModal, setDetailModal] = useState<'autos' | 'patchs' | 'numbered' | null>(null);
 
   useEffect(() => { fetchStats(); }, []);
@@ -33,7 +32,6 @@ export default function StatsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
     const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
-    // 🚀 EXCLURE WISHLIST
     if (data) setCards(data.filter(c => !c.is_wishlist));
     setLoading(false);
   };
@@ -81,14 +79,13 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans relative overflow-x-hidden z-10">
       
-      {/* 🚀 DÉGRADÉ UNIFORME */}
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#AFFF25]/20 via-[#AFFF25]/5 to-transparent pointer-events-none -z-10"></div>
+      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
+      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <header className="pt-10 pb-4 text-center">
         <h1 className="text-5xl font-black italic uppercase tracking-tighter drop-shadow-lg">STATS</h1>
       </header>
 
-      {/* 🚀 FILTRES MOINS HAUTS (py-1.5) */}
       <div className="px-6 flex gap-2 mb-8">
         <div className="relative flex-1">
           <select value={selectedSport} onChange={(e) => setSelectedSport(e.target.value)} className="w-full bg-[#040221]/80 backdrop-blur-md border border-white/20 rounded-full py-1.5 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg">
@@ -106,13 +103,11 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 🚀 ONGLET BLANC ET JAUNE FLUO */}
       <div className="flex justify-center gap-10 mb-8">
         <button onClick={() => setActiveTab('nombres')} className={`text-lg font-bold transition-all ${activeTab === 'nombres' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)]' : 'text-white'}`}>Nombres</button>
         <button onClick={() => setActiveTab('valeurs')} className={`text-lg font-bold transition-all ${activeTab === 'valeurs' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)]' : 'text-white'}`}>Valeurs</button>
       </div>
 
-      {/* 🚀 TEXTE "CARTES" ET € BLANC */}
       <div className="text-center mb-8 px-4">
         <div className="text-6xl font-black italic tracking-tighter leading-none whitespace-nowrap flex justify-center items-baseline drop-shadow-md">
           {isVal ? formattedTotal.replace('€', '').trim() : totalGlobal}
@@ -123,7 +118,6 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 🚀 CLIC POUR AFFICHER LA POPIN */}
       <div className="px-6 grid grid-cols-3 gap-3 mb-12">
         <div onClick={() => setDetailModal('autos')} className="bg-[#080531]/80 cursor-pointer active:scale-95 transition-transform backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
           <div className="text-[10px] text-white/70 mb-1">Autos</div>
@@ -139,7 +133,6 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 🚀 GRAPHIQUE AUX BONNES COULEURS AVEC NOMBRES */}
       {totalGlobal > 0 && (
         <div className="relative w-full flex justify-center mt-12 mb-10 px-6">
           <div className="relative w-64 h-64">
@@ -165,7 +158,6 @@ export default function StatsPage() {
         </div>
       )}
 
-      {/* 🚀 POPIN DE DÉTAILS */}
       {detailModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4" onClick={() => setDetailModal(null)}>
           <div className="bg-[#040221] border border-[#AFFF25] rounded-2xl p-6 w-full max-w-sm" onClick={e => e.stopPropagation()}>

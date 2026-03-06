@@ -52,8 +52,9 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-[#040221] text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
-      {/* 🚀 DÉGRADÉ UNIFORME */}
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#AFFF25]/20 via-[#AFFF25]/5 to-transparent pointer-events-none -z-10"></div>
+      
+      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
+      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <div className="px-4">
         <header className="pt-8 pb-8 text-center">
