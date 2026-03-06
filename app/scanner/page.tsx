@@ -34,12 +34,13 @@ function ScannerContent() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [isApplyingEdit, setIsApplyingEdit] = useState(false);
+  
   const [isFetchingEdit, setIsFetchingEdit] = useState(!!editId);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
-  // ÉTATS POUR L'ÉDITEUR D'IMAGE
   const [showEditor, setShowEditor] = useState(false);
   const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
 
@@ -92,7 +93,7 @@ function ScannerContent() {
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
-  // 🚀 LE SCANNER IA ROBUSTE EST DE RETOUR
+  // 🚀 LE SCANNER IA CORRIGÉ (Affiche bien le loader et ne plante pas si données partielles)
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -108,47 +109,52 @@ function ScannerContent() {
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
-      console.log("Réponse de l'IA reçue :", data);
+      console.log("IA Data:", data);
 
-      if (!data.error && data.playerName) {
-        const parts = data.playerName.split(' ');
-        
+      if (!data.error) {
+        let fname = formData.firstname;
+        let lname = formData.lastname;
+
+        if (data.playerName) {
+          const parts = data.playerName.split(' ');
+          fname = parts[0]?.toUpperCase() || fname;
+          lname = parts.slice(1).join(' ')?.toUpperCase() || lname;
+        }
+
         setFormData(prev => {
-          // Gestion sécurisée du sport
           let aiSport = data.sport?.toUpperCase() || prev.sport;
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
           
           return {
             ...prev,
             sport: aiSport,
-            firstname: parts[0]?.toUpperCase() || prev.firstname,
-            lastname: parts.slice(1).join(' ')?.toUpperCase() || prev.lastname,
+            firstname: fname,
+            lastname: lname,
             club: data.club || prev.club,
             brand: data.brand || prev.brand,
             series: data.series || prev.series,
             year: data.year ? data.year.toString() : prev.year,
-            is_auto: data.is_auto ? true : prev.is_auto,
-            is_patch: data.is_patch ? true : prev.is_patch,
-            is_rookie: data.is_rookie ? true : prev.is_rookie,
-            is_numbered: data.is_numbered ? true : prev.is_numbered,
+            is_auto: data.is_auto ?? prev.is_auto,
+            is_patch: data.is_patch ?? prev.is_patch,
+            is_rookie: data.is_rookie ?? prev.is_rookie,
+            is_numbered: data.is_numbered ?? prev.is_numbered,
             num_low: data.num_low ? data.num_low.toString() : prev.num_low,
             num_high: data.num_high ? data.num_high.toString() : prev.num_high
           };
         });
-        
-        setIsJoueurOpen(true);
-        setIsCarteOpen(true);
       }
     } catch (err) {
-      console.error("Erreur critique lors du scan de l'image :", err);
+      console.error("Scan error:", err);
     } finally { 
       setAnalyzing(false); 
+      // Réinitialise l'input pour pouvoir rescanner la même image si besoin
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
   const rotateImage = async () => {
     if (!previewUrl) return;
-    setAnalyzing(true);
+    setIsApplyingEdit(true);
     try {
       let currentBlob: Blob | File | null = selectedFile;
       if (!currentBlob && previewUrl) {
@@ -156,41 +162,22 @@ function ScannerContent() {
         currentBlob = await response.blob();
       }
       if (!currentBlob) return;
-
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = URL.createObjectURL(currentBlob);
+      const img = new Image(); img.crossOrigin = "anonymous"; img.src = URL.createObjectURL(currentBlob);
       await new Promise(resolve => { img.onload = resolve; });
-
-      const canvas = document.createElement('canvas');
-      canvas.width = img.height;
-      canvas.height = img.width;
-      
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(90 * Math.PI / 180);
-      ctx.drawImage(img, -img.width / 2, -img.height / 2);
-
+      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
+      canvas.width = img.height; canvas.height = img.width;
+      ctx.translate(canvas.width / 2, canvas.height / 2); ctx.rotate(90 * Math.PI / 180); ctx.drawImage(img, -img.width / 2, -img.height / 2);
       canvas.toBlob((blob) => {
         if (!blob) return;
-        const fileName = selectedFile ? selectedFile.name : `rotated-${Date.now()}.png`;
-        const newFile = new File([blob], fileName, { type: blob.type });
-        setSelectedFile(newFile);
-        setPreviewUrl(URL.createObjectURL(newFile)); 
-        setAnalyzing(false);
+        const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
+        setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); setIsApplyingEdit(false);
       }, currentBlob.type || 'image/png');
-      
-    } catch (e) {
-      setAnalyzing(false);
-    }
+    } catch (e) { setIsApplyingEdit(false); }
   };
 
-  // FONCTION MAGIQUE POUR APPLIQUER LES MODIFICATIONS D'IMAGE (Canvas)
   const applyImageEdits = async () => {
     if (!previewUrl) return;
-    setAnalyzing(true);
+    setIsApplyingEdit(true);
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -220,12 +207,11 @@ function ScannerContent() {
         setSelectedFile(newFile);
         setPreviewUrl(URL.createObjectURL(newFile));
         setShowEditor(false);
-        setAnalyzing(false);
+        setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }, 'image/png');
     } catch (e) {
-      console.error(e);
-      setAnalyzing(false);
+      setIsApplyingEdit(false);
     }
   };
 
@@ -310,7 +296,7 @@ function ScannerContent() {
             </div>
           </div>
           
-          {analyzing && (
+          {isApplyingEdit && (
             <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-50">
                <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={40} />
                <span className="text-[#AFFF25] text-xs font-bold tracking-widest animate-pulse mt-2">APPLICATION...</span>
@@ -336,6 +322,14 @@ function ScannerContent() {
       <div className="relative w-full max-w-[240px] mx-auto mb-12">
         <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden cursor-pointer bg-white/5 border border-white/10 rounded-2xl">
           {previewUrl ? <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" /> : <div className="text-[11px] font-bold text-[#AFFF25] border border-[#AFFF25]/30 px-6 py-2 rounded-full">SCANNER</div>}
+          
+          {/* 🚀 LE LOADER DU SCAN IA EST DE RETOUR ICI ! */}
+          {analyzing && !showEditor && (
+            <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
+               <Loader2 className="animate-spin text-[#AFFF25] mb-2" size={32} />
+               <span className="text-[#AFFF25] text-[10px] italic tracking-widest animate-pulse mt-2">ANALYSE IA...</span>
+            </div>
+          )}
         </div>
         
         {previewUrl && (
