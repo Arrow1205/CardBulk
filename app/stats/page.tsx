@@ -1,69 +1,234 @@
 'use client';
-export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { LayoutGrid, Trophy, Zap } from 'lucide-react';
-
+import { Loader2, ChevronDown } from 'lucide-react';
 
 export default function StatsPage() {
-  const [totals, setTotals] = useState({ cards: 0, wishlist: 0 });
+  const router = useRouter();
+  const [cards, setCards] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [activeTab, setActiveTab] = useState<'nombres' | 'valeurs'>('valeurs');
+  
+  const [selectedSport, setSelectedSport] = useState('');
+  const [selectedSpec, setSelectedSpec] = useState('');
 
   useEffect(() => {
-    async function fetchStats() {
-      const { count: c } = await supabase.from('cards').select('*', { count: 'exact', head: true }).eq('is_wishlist', false);
-      const { count: w } = await supabase.from('cards').select('*', { count: 'exact', head: true }).eq('is_wishlist', true);
-      setTotals({ cards: c || 0, wishlist: w || 0 });
-    }
     fetchStats();
   }, []);
 
+  const fetchStats = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('cards')
+      .select('*')
+      .eq('user_id', user.id);
+
+    if (data) setCards(data);
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#040221] flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin text-[#AFFF25]" size={40} />
+      </div>
+    );
+  }
+
+  const filteredCards = cards.filter(card => {
+    const matchesSport = selectedSport === '' || card.sport === selectedSport;
+    
+    let matchesSpec = true;
+    if (selectedSpec === 'auto') matchesSpec = card.is_auto;
+    if (selectedSpec === 'patch') matchesSpec = card.is_patch;
+    if (selectedSpec === 'rookie') matchesSpec = card.is_rookie;
+    if (selectedSpec === 'numbered') matchesSpec = card.is_numbered;
+
+    return matchesSport && matchesSpec;
+  });
+
+  const isVal = activeTab === 'valeurs';
+  
+  const calculateTotal = (filterFn: (c: any) => boolean) => {
+    return filteredCards.filter(filterFn).reduce((acc, card) => {
+      return acc + (isVal ? (parseFloat(card.purchase_price) || 0) : 1);
+    }, 0);
+  };
+
+  const totalGlobal = calculateTotal(() => true);
+  const totalAutos = calculateTotal(c => c.is_auto);
+  const totalPatchs = calculateTotal(c => c.is_patch);
+  const totalNumbered = calculateTotal(c => c.is_numbered);
+
+  const statsBySport: Record<string, number> = {};
+  filteredCards.forEach(card => {
+    const sport = card.sport || 'Autre';
+    const amount = isVal ? (parseFloat(card.purchase_price) || 0) : 1;
+    statsBySport[sport] = (statsBySport[sport] || 0) + amount;
+  });
+
+  const sortedSports = Object.entries(statsBySport).sort((a, b) => b[1] - a[1]);
+  
+  let currentPercentage = 0;
+  const gradientStops = sortedSports.map(([sport, value], index) => {
+    const percentage = (value / totalGlobal) * 100;
+    const start = currentPercentage;
+    const end = currentPercentage + percentage;
+    currentPercentage = end;
+    
+    const colors = ['#AFFF25', '#91DB1C', '#74B514', '#588E0C', '#3D6806'];
+    const color = colors[index % colors.length];
+    
+    return `${color} ${start}% ${end - 0.5}%, #040221 ${end - 0.5}% ${end}%`;
+  }).join(', ');
+
+  const formattedTotal = isVal 
+    ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(totalGlobal)
+    : totalGlobal.toString();
+
   return (
-    <div className="p-6 pt-12 min-h-screen bg-[#0F1115]">
-      <header className="mb-10">
-        <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-none text-white">
-          VOTRE <br /> <span className="text-[#DFFF00]">EMPIRE</span>
-        </h1>
+    <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans relative overflow-x-hidden z-10">
+      
+      {/* 🚀 LE FAMEUX DÉGRADÉ JAUNE/VERT AU SOMMET */}
+      <div className="absolute top-0 left-0 w-full h-[450px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#AFFF25]/40 via-transparent to-transparent pointer-events-none -z-10"></div>
+
+      <header className="pt-10 pb-4 text-center">
+        <h1 className="text-5xl font-black italic uppercase tracking-tighter drop-shadow-lg">STATS</h1>
       </header>
 
-      <div className="grid gap-4">
-        {/* Carte Principale : Total */}
-        <div className="bg-[#1A1D23] border border-white/5 p-6 rounded-[32px] flex items-center justify-between">
-          <div>
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Cartes</p>
-            <p className="text-5xl font-black italic text-white">{totals.cards}</p>
-          </div>
-          <div className="bg-[#DFFF00] p-4 rounded-2xl text-black">
-            <LayoutGrid size={32} />
-          </div>
+      <div className="px-6 flex gap-2 mb-8">
+        <div className="relative flex-1">
+          <select 
+            value={selectedSport}
+            onChange={(e) => setSelectedSport(e.target.value)}
+            className="w-full bg-[#040221]/80 backdrop-blur-md border border-white/20 rounded-full py-2 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg"
+          >
+            <option value="">TOUS SPORTS</option>
+            <option value="SOCCER">FOOTBALL</option>
+            <option value="BASKETBALL">BASKETBALL</option>
+            <option value="BASEBALL">BASEBALL</option>
+            <option value="F1">FORMULE 1</option>
+            <option value="NFL">NFL</option>
+            <option value="NHL">NHL</option>
+            <option value="TENNIS">TENNIS</option>
+            <option value="POKEMON">POKÉMON</option>
+            <option value="MARVEL">MARVEL</option>
+          </select>
+          <ChevronDown className="absolute right-3 top-2 text-white/50 pointer-events-none" size={14} />
         </div>
 
-        {/* Wishlist Stats */}
-        <div className="bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 p-6 rounded-[32px] flex items-center justify-between">
-          <div>
-            <p className="text-[10px] font-bold text-[#8B5CF6] uppercase tracking-widest mb-1">En attente (Wishlist)</p>
-            <p className="text-4xl font-black italic text-white">{totals.wishlist}</p>
-          </div>
-          <Trophy className="text-[#8B5CF6]" size={40} />
-        </div>
-
-        {/* Section par Sport (Utilise tes assets SVG) */}
-        <div className="mt-6">
-          <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4 ml-2">Répartition par sport</h3>
-          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-            {[
-              { name: 'Soccer', icon: '/asset/Icons/soccer.svg' },
-              { name: 'Basket', icon: '/asset/Icons/basket.svg' },
-              { name: 'F1', icon: '/asset/Icons/formula.svg' }
-            ].map((sport) => (
-              <div key={sport.name} className="flex-shrink-0 bg-white/5 border border-white/10 p-4 rounded-2xl flex flex-col items-center gap-2 min-w-[100px]">
-                <img src={sport.icon} className="w-8 h-8" alt={sport.name} />
-                <span className="text-[10px] font-bold uppercase">{sport.name}</span>
-              </div>
-            ))}
-          </div>
+        <div className="relative flex-1">
+          <select 
+            value={selectedSpec}
+            onChange={(e) => setSelectedSpec(e.target.value)}
+            className="w-full bg-[#040221]/80 backdrop-blur-md border border-white/20 rounded-full py-2 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg"
+          >
+            <option value="">SPÉCIFICITÉS</option>
+            <option value="auto">AUTO</option>
+            <option value="patch">PATCH</option>
+            <option value="rookie">ROOKIE</option>
+            <option value="numbered">NUMÉROTÉE</option>
+          </select>
+          <ChevronDown className="absolute right-3 top-2 text-white/50 pointer-events-none" size={14} />
         </div>
       </div>
+
+      <div className="flex justify-center gap-10 mb-8">
+        <button 
+          onClick={() => setActiveTab('nombres')}
+          className={`text-lg font-bold transition-all ${activeTab === 'nombres' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
+        >
+          Nombres
+        </button>
+        <button 
+          onClick={() => setActiveTab('valeurs')}
+          className={`text-lg font-bold transition-all ${activeTab === 'valeurs' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)]' : 'text-white/40 hover:text-white/70'}`}
+        >
+          Valeurs
+        </button>
+      </div>
+
+      <div className="text-center mb-8 px-4">
+        <div className="text-6xl font-black italic tracking-tighter leading-none whitespace-nowrap flex justify-center items-baseline drop-shadow-md">
+          {isVal ? formattedTotal.replace('€', '').trim() : totalGlobal}
+          {isVal && <span className="text-5xl ml-1 text-[#AFFF25]">€</span>}
+        </div>
+        <div className="text-[#AFFF25] text-xs font-bold uppercase tracking-widest mt-2 drop-shadow-sm">
+          {isVal ? "Valeur totale" : "Cartes trouvées"}
+        </div>
+      </div>
+
+      <div className="px-6 grid grid-cols-3 gap-3 mb-12">
+        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
+          <div className="text-[10px] text-white/70 mb-1">Autos</div>
+          <div className="text-[#AFFF25] font-black italic text-lg">{isVal ? `${totalAutos} €` : totalAutos}</div>
+        </div>
+        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
+          <div className="text-[10px] text-white/70 mb-1">Patchs</div>
+          <div className="text-[#AFFF25] font-black italic text-lg">{isVal ? `${totalPatchs} €` : totalPatchs}</div>
+        </div>
+        <div className="bg-[#080531]/80 backdrop-blur-sm border border-white/20 rounded-xl p-3 flex flex-col justify-center shadow-lg">
+          <div className="text-[10px] text-white/70 mb-1">Numérotées</div>
+          <div className="text-[#AFFF25] font-black italic text-lg">{isVal ? `${totalNumbered} €` : totalNumbered}</div>
+        </div>
+      </div>
+
+      {totalGlobal > 0 ? (
+        <div className="relative w-full flex justify-center mt-12 mb-10 px-6">
+          <div className="relative w-64 h-64">
+            <div 
+              className="w-full h-full rounded-full drop-shadow-[0_0_20px_rgba(175,255,37,0.2)] transition-all duration-700"
+              style={{ 
+                background: `conic-gradient(${gradientStops})`,
+                WebkitMaskImage: 'radial-gradient(circle at center, transparent 35%, black 36%)',
+                maskImage: 'radial-gradient(circle at center, transparent 35%, black 36%)'
+              }}
+            ></div>
+
+            {sortedSports.map(([sport, value], index) => {
+              if (index > 3) return null; 
+              let angle = 0;
+              let previousPercent = 0;
+              for(let i=0; i<=index; i++) {
+                const percent = (sortedSports[i][1] / totalGlobal);
+                if (i === index) angle = (previousPercent + percent/2) * 360;
+                previousPercent += percent;
+              }
+              const rad = (angle - 90) * (Math.PI / 180);
+              const x = Math.cos(rad) * 140; 
+              const y = Math.sin(rad) * 140;
+
+              return (
+                <div 
+                  key={sport}
+                  className="absolute text-[#AFFF25] text-xs font-medium"
+                  style={{
+                    left: `calc(50% + ${x}px)`,
+                    top: `calc(50% + ${y}px)`,
+                    transform: 'translate(-50%, -50%)',
+                    textShadow: '0 2px 10px rgba(0,0,0,1)'
+                  }}
+                >
+                  {sport}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="text-center mt-12 text-white/40 italic font-bold">
+          Aucune donnée à afficher pour ces filtres.
+        </div>
+      )}
+
     </div>
   );
 }

@@ -12,8 +12,9 @@ export default function ClubPage() {
   const router = useRouter();
   const params = useParams();
   
-  // 🚀 CORRECTION 1 : On décode proprement l'URL pour être sûr d'avoir le bon nom de fichier
-  const safeSlug = decodeURIComponent(params.slug as string);
+  // 🚀 SÉCURITÉ : On s'assure que le slug existe bien avant de l'utiliser
+  const rawSlug = params?.slug as string;
+  const safeSlug = rawSlug ? decodeURIComponent(rawSlug) : '';
 
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,13 +25,15 @@ export default function ClubPage() {
 
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
-  // Récupérer le vrai nom du club depuis le JSON grâce au slug
+  // Récupérer le vrai nom du club
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const clubObj = safeFootballClubs.find((c: any) => c.slug === safeSlug);
-  const clubName = clubObj ? clubObj.name : safeSlug.replace(/-/g, ' ');
+  const clubName = clubObj ? clubObj.name : (safeSlug ? safeSlug.replace(/-/g, ' ') : '');
 
   useEffect(() => {
-    fetchClubCards();
+    if (clubName) {
+      fetchClubCards();
+    }
   }, [clubName]);
 
   const fetchClubCards = async () => {
@@ -44,7 +47,7 @@ export default function ClubPage() {
       .from('cards')
       .select('*')
       .eq('user_id', user.id)
-      .ilike('club_name', `%${clubName}%`) // Tolérance dans la recherche du nom
+      .ilike('club_name', `%${clubName}%`)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -88,30 +91,32 @@ export default function ClubPage() {
   const availableBrands = SET_DATA.brands || [];
 
   return (
-    // 🚀 CORRECTION 2 : On s'assure que le fond global est là pour que les couches marchent
+    // Le fond principal de la page
     <div className="min-h-screen bg-[#040221] text-white pb-36 overflow-x-hidden font-sans relative">
       
-      {/* 🚀 CORRECTION 3 : L'AURA AU BON NIVEAU (z-0) */}
-      <div className="absolute top-0 left-0 w-full h-[80vh] overflow-hidden z-0 pointer-events-none flex flex-col items-center">
-        {/* Aura principale (Couleur 1) - mix-blend-screen permet d'illuminer l'écran */}
-        <img 
-          src={`/asset/logo-club/${safeSlug}.svg`} 
-          className="absolute -top-[10%] w-[180%] max-w-[800px] opacity-60 blur-[100px] mix-blend-screen" 
-          alt=""
-          onError={(e) => e.currentTarget.src = `/asset/logo-club/${safeSlug}.png`} // Sécurité si c'est un PNG
-        />
-        {/* Aura secondaire inversée (Couleur 2) */}
-        <img 
-          src={`/asset/logo-club/${safeSlug}.svg`} 
-          className="absolute top-[20%] w-[150%] max-w-[600px] opacity-40 blur-[120px] mix-blend-screen rotate-180" 
-          alt=""
-          onError={(e) => e.currentTarget.style.display = 'none'}
-        />
-        {/* Fond dégradé pour que l'aura disparaisse doucement vers le bas */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040221]/80 to-[#040221]"></div>
+      {/* 🚀 L'AURA MAGIQUE (z-0 pour rester derrière) */}
+      <div className="absolute top-0 left-0 w-full h-[800px] overflow-hidden z-0 pointer-events-none">
+        {safeSlug && (
+          <>
+            {/* Aura Haute (transform-gpu force le téléphone à calculer le flou sans bug) */}
+            <img 
+              src={`/asset/logo-club/${safeSlug}.svg`} 
+              className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[200%] max-w-[800px] opacity-50 blur-[80px] transform-gpu" 
+              alt=""
+            />
+            {/* Aura Basse (inversée) */}
+            <img 
+              src={`/asset/logo-club/${safeSlug}.svg`} 
+              className="absolute top-[25%] left-1/2 -translate-x-1/2 w-[150%] max-w-[600px] opacity-30 blur-[100px] rotate-180 transform-gpu" 
+              alt=""
+            />
+          </>
+        )}
+        {/* Voile de dégradé pour que la lumière disparaisse doucement en bas */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040221]/10 via-[#040221]/80 to-[#040221]"></div>
       </div>
 
-      {/* TOUT LE CONTENU EST PAR DESSUS L'AURA (z-10) */}
+      {/* 🚀 LE CONTENU DE LA PAGE (z-10 pour être au-dessus de l'aura) */}
       <div className="relative z-10">
         <header className="flex items-center justify-between p-6">
           <button onClick={() => router.back()} className="w-10 h-10 bg-[#040221]/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform">
@@ -122,12 +127,14 @@ export default function ClubPage() {
 
         {/* ZONE LOGO ET TITRE */}
         <div className="px-6 flex flex-col items-center mb-8">
-          <img 
-            src={`/asset/logo-club/${safeSlug}.svg`} 
-            alt={clubName} 
-            className="w-48 h-48 object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] mb-6 animate-in fade-in zoom-in duration-500" 
-            onError={(e) => e.currentTarget.src = `/asset/logo-club/${safeSlug}.png`} // Sécurité logo
-          />
+          {safeSlug && (
+            <img 
+              src={`/asset/logo-club/${safeSlug}.svg`} 
+              alt={clubName} 
+              className="w-40 h-40 object-contain drop-shadow-[0_10px_30px_rgba(255,255,255,0.2)] mb-6 animate-in fade-in zoom-in duration-500" 
+              onError={(e) => e.currentTarget.style.display = 'none'} // Si l'image n'existe pas, on la cache proprement
+            />
+          )}
           <h1 className="text-4xl text-center font-black italic uppercase tracking-tighter leading-none w-full drop-shadow-md">
             {clubName}
           </h1>
@@ -209,7 +216,7 @@ export default function ClubPage() {
           </div>
         </div>
 
-        {/* GRILLE DE CARTES (AVEC STYLE PINTEREST/DENSE) */}
+        {/* GRILLE DE CARTES PINTEREST */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="animate-spin text-[#AFFF25]" size={40} />
