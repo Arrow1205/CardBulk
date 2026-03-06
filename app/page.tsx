@@ -81,7 +81,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 🚀 RETOUR AU PADDING DE 2% */}
+      {/* Padding 2% appliqué ici */}
       <div className="w-full px-[2%] mt-2">
         <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {carouselCards.length === 0 ? (
@@ -95,29 +95,39 @@ export default function HomePage() {
               if (absOffset > 2) return null;
 
               return (
+                // 1️⃣ DIV EXTERNE : Gère uniquement le placement 3D et la taille. Zéro bordure, zéro fond.
                 <div 
                   key={card.id}
                   onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                  // rounded-2xl ici et dans le style pour forcer l'effet
-                  className={`absolute max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer bg-white/5 border border-white/10 ${
+                  className={`absolute max-h-[45vh] flex items-center justify-center transition-transform duration-500 ease-out cursor-pointer ${
                     isHorizontal ? 'h-[280px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
                   }`}
                   style={{
                     transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
                     zIndex: 10 - absOffset,
-                    opacity: absOffset > 1 ? 0.4 : (absOffset > 1 ? 0 : 1),
-                    // 🚀 LE FIX MAGIQUE POUR FORCER L'ARRONDI SUR SAFARI EN 3D
-                    WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                    WebkitBackfaceVisibility: 'hidden',
-                    borderRadius: '16px' // Sécurité supplémentaire
-                    // 🚀 OMBRES SUPPRIMÉES ICI !
+                    opacity: absOffset > 1 ? 0.4 : (absOffset > 1 ? 0 : 1)
                   }}
                 >
-                  {card.image_url ? (
-                    <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover rounded-2xl" alt="Card" />
-                  ) : (
-                    <div className="w-full h-full bg-[#080531] flex items-center justify-center text-white/30 text-xs rounded-2xl">No Image</div>
-                  )}
+                  {/* 2️⃣ DIV INTERNE : Gère l'arrondi (overflow-hidden + masque) et le fond. */}
+                  <div 
+                    className="w-full h-full rounded-[16px] overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center"
+                    style={{ 
+                      // Le combo magique pour forcer Safari iOS à couper l'image
+                      transform: 'translateZ(0)',
+                      WebkitMaskImage: '-webkit-radial-gradient(white, black)'
+                    }}
+                  >
+                    {card.image_url ? (
+                      <img 
+                        src={card.image_url} 
+                        onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} 
+                        className="w-full h-full object-cover rounded-[16px]" 
+                        alt="Card" 
+                      />
+                    ) : (
+                      <div className="text-white/30 text-xs font-bold">No Image</div>
+                    )}
+                  </div>
                 </div>
               );
             })
