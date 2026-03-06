@@ -81,7 +81,8 @@ export default function HomePage() {
         </div>
       </header>
 
-      <div className="w-full px-[5%] mt-2">
+      {/* 🚀 RETOUR AU PADDING DE 2% */}
+      <div className="w-full px-[2%] mt-2">
         <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {carouselCards.length === 0 ? (
             <div className="text-white/40 italic font-bold">Aucune carte à afficher</div>
@@ -97,21 +98,24 @@ export default function HomePage() {
                 <div 
                   key={card.id}
                   onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                  className={`absolute max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer overflow-hidden bg-white/5 border border-white/10 ${
+                  // rounded-2xl ici et dans le style pour forcer l'effet
+                  className={`absolute max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer bg-white/5 border border-white/10 ${
                     isHorizontal ? 'h-[280px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
                   }`}
                   style={{
                     transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
                     zIndex: 10 - absOffset,
                     opacity: absOffset > 1 ? 0.4 : (absOffset > 1 ? 0 : 1),
-                    boxShadow: offset === 0 ? '0 20px 50px rgba(175,255,37,0.2)' : '0 10px 30px rgba(0,0,0,0.8)'
+                    // 🚀 LE FIX MAGIQUE POUR FORCER L'ARRONDI SUR SAFARI EN 3D
+                    WebkitMaskImage: '-webkit-radial-gradient(white, black)',
+                    WebkitBackfaceVisibility: 'hidden',
+                    borderRadius: '16px' // Sécurité supplémentaire
+                    // 🚀 OMBRES SUPPRIMÉES ICI !
                   }}
                 >
                   {card.image_url ? (
-                    // 🚀 AJOUT DU ROUNDED-2XL DIRECTEMENT SUR L'IMAGE
                     <img src={card.image_url} onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover rounded-2xl" alt="Card" />
                   ) : (
-                    // 🚀 AJOUT DU ROUNDED-2XL DIRECTEMENT SUR LE PLACEHOLDER
                     <div className="w-full h-full bg-[#080531] flex items-center justify-center text-white/30 text-xs rounded-2xl">No Image</div>
                   )}
                 </div>
