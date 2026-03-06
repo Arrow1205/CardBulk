@@ -81,7 +81,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 🚀 PADDING DE 2% COMME DEMANDÉ */}
+      {/* PADDING DE 2% */}
       <div className="w-full px-[2%] mt-2">
         <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {carouselCards.length === 0 ? (
@@ -95,29 +95,31 @@ export default function HomePage() {
               if (absOffset > 2) return null;
 
               return (
-                // 1️⃣ DIV EXTERNE : S'occupe uniquement du déplacement et de la 3D (pas de bordure, pas d'arrondi)
                 <div 
                   key={card.id}
                   onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                  className={`absolute max-h-[45vh] transition-transform duration-500 ease-out cursor-pointer ${
-                    isHorizontal ? 'h-[280px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
-                  }`}
+                  // Suppression totale des classes aspect-ratio
+                  className="absolute flex items-center justify-center transition-transform duration-500 ease-out cursor-pointer"
                   style={{
+                    // 🚀 TAILLES EXPLICITES POUR ESQUIVER LE BUG SAFARI
+                    width: isHorizontal ? '434px' : '240px',
+                    height: isHorizontal ? '280px' : '320px',
+                    maxWidth: isHorizontal ? '90vw' : '70vw', // Sécurité pour pas déborder de l'écran mobile
+                    
                     transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
                     zIndex: 10 - absOffset,
                     opacity: absOffset > 1 ? 0.4 : (absOffset > 1 ? 0 : 1)
+                    // Ombres bien supprimées
                   }}
                 >
-                  {/* 2️⃣ DIV INTERNE : Force brutalement l'arrondi sur l'image */}
                   <div 
                     className="w-full h-full relative bg-[#080531]"
                     style={{
                       borderRadius: '16px',
                       overflow: 'hidden',
-                      // Le trio magique pour forcer la découpe sur iPhone
-                      clipPath: 'inset(0 round 16px)',
-                      WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                      transform: 'translateZ(0)'
+                      // Double sécurité matérielle
+                      transform: 'translateZ(0)',
+                      WebkitMaskImage: '-webkit-radial-gradient(white, black)'
                     }}
                   >
                     {card.image_url ? (
@@ -131,7 +133,6 @@ export default function HomePage() {
                       <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">No Image</div>
                     )}
                     
-                    {/* Bordure placée PAR-DESSUS l'image pour qu'elle épouse bien l'arrondi de 16px */}
                     <div className="absolute inset-0 border border-white/10 rounded-[16px] pointer-events-none"></div>
                   </div>
                 </div>
