@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     const { url } = await req.json();
     if (!url) return NextResponse.json({ error: 'URL manquante' }, { status: 400 });
 
-    // 🚀 L'ASTUCE MAGIQUE : Se faire passer pour Googlebot pour contourner l'anti-bot Vinted/eBay
+    // Se faire passer pour Googlebot
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
@@ -16,9 +16,7 @@ export async function POST(req: Request) {
 
     const html = await response.text();
 
-    // --------------------------------------------------------
-    // 1️⃣ RECHERCHE DE L'IMAGE (Open Graph)
-    // --------------------------------------------------------
+    // 1️⃣ RECHERCHE DE L'IMAGE
     let matchImg = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
              || html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["'][^>]*>/i)
              || html.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i);
@@ -38,19 +36,16 @@ export async function POST(req: Request) {
       }
     }
 
-    // --------------------------------------------------------
-    // 2️⃣ RECHERCHE INTELLIGENTE DU PRIX (Vinted / eBay)
-    // --------------------------------------------------------
+    // 2️⃣ RECHERCHE DU PRIX
     let extractedPrice = '';
 
-    // Méthode A : Chercher dans les données JSON-LD (Schema.org)
-    // 🚀 CORRECTION TYPESCRIPT : Utilisation d'une boucle while avec regex.exec (infaillible pour Vercel)
+    // CORRECTION TYPE SCRIPT : Boucle while classique au lieu de matchAll / for...of
     const regexLd = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi;
     let match;
+    
     while ((match = regexLd.exec(html)) !== null) {
       try {
         const data = JSON.parse(match[1]);
-        // Fonction récursive pour trouver une clé "price" n'importe où dans le JSON
         const findPrice = (obj: any): string | null => {
           if (!obj || typeof obj !== 'object') return null;
           if (obj.price) return String(obj.price);
@@ -72,33 +67,26 @@ export async function POST(req: Request) {
       }
     }
 
-    // Méthode B : Les balises Meta (og:price:amount)
     if (!extractedPrice) {
       let metaPrice = html.match(/<meta[^>]*property=["'](?:product|og):price:amount["'][^>]*content=["']([^"']+)["']/i)
                    || html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["'](?:product|og):price:amount["']/i);
       if (metaPrice) extractedPrice = metaPrice[1];
     }
 
-    // Méthode C : Les balises spécifiques eBay (itemprop="price")
     if (!extractedPrice) {
       let ebayPrice = html.match(/itemprop=["']price["'][^>]*content=["']([^"']+)["']/i)
                    || html.match(/content=["']([^"']+)["'][^>]*itemprop=["']price["']/i);
       if (ebayPrice) extractedPrice = ebayPrice[1];
     }
 
-    // Méthode D : Directement dans le HTML de Vinted (data-testid="item-price")
     if (!extractedPrice) {
       let vintedPrice = html.match(/data-testid=["']item-price["'][^>]*>([^<]+)<\//i);
       if (vintedPrice) extractedPrice = vintedPrice[1];
     }
 
-    // --------------------------------------------------------
-    // 3️⃣ NETTOYAGE DU PRIX (Garder uniquement les chiffres)
-    // --------------------------------------------------------
+    // 3️⃣ NETTOYAGE DU PRIX
     if (extractedPrice) {
-      // Remplace la virgule par un point (ex: "15,50" -> "15.50")
       extractedPrice = extractedPrice.replace(',', '.');
-      // Supprime tout ce qui n'est pas un chiffre ou un point (supprime "€", "EUR", les espaces...)
       extractedPrice = extractedPrice.replace(/[^\d.]/g, '');
     }
 
@@ -108,7 +96,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ 
       base64: base64Image,
-      price: extractedPrice || '' // Renvoie le prix formaté, ou vide s'il n'a rien trouvé
+      price: extractedPrice || '' 
     });
 
   } catch (error) {
