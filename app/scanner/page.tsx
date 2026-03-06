@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-// 🚀 NOUVELLES ICONS IMPORTÉES
 import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, Link as LinkIcon, SlidersHorizontal, Wand2, X, Check } from 'lucide-react';
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
@@ -40,7 +39,7 @@ function ScannerContent() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
-  // 🚀 ÉTATS POUR L'ÉDITEUR D'IMAGE
+  // ÉTATS POUR L'ÉDITEUR D'IMAGE
   const [showEditor, setShowEditor] = useState(false);
   const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
 
@@ -74,6 +73,7 @@ function ScannerContent() {
       if (a.name.toLowerCase().startsWith(searchStr)) return -1;
       return 1;
     });
+
   const selectedClub = filteredClubs[0];
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
 
@@ -92,18 +92,58 @@ function ScannerContent() {
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
+  // 🚀 LE SCANNER IA ROBUSTE EST DE RETOUR
   const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setSelectedFile(file); setPreviewUrl(URL.createObjectURL(file)); setAnalyzing(true);
+
+    setSelectedFile(file); 
+    setPreviewUrl(URL.createObjectURL(file)); 
+    setAnalyzing(true);
+
     try {
-      const body = new FormData(); body.append("image", file);
-      const res = await fetch("/api/scan", { method: "POST", body }); const data = await res.json();
+      const body = new FormData(); 
+      body.append("image", file);
+      
+      const res = await fetch("/api/scan", { method: "POST", body }); 
+      const data = await res.json();
+      
+      console.log("Réponse de l'IA reçue :", data);
+
       if (!data.error && data.playerName) {
         const parts = data.playerName.split(' ');
-        setFormData(prev => ({ ...prev, sport: data.sport?.toUpperCase() === 'FOOTBALL' ? 'SOCCER' : data.sport?.toUpperCase() || prev.sport, firstname: parts[0]?.toUpperCase() || '', lastname: parts.slice(1).join(' ')?.toUpperCase() || '', club: data.club || '', brand: data.brand || prev.brand, series: data.series || prev.series, year: data.year?.toString() || prev.year, is_auto: !!data.is_auto, is_patch: !!data.is_patch, is_rookie: !!data.is_rookie, is_numbered: !!data.is_numbered, num_low: data.num_low?.toString() || '', num_high: data.num_high?.toString() || '' }));
+        
+        setFormData(prev => {
+          // Gestion sécurisée du sport
+          let aiSport = data.sport?.toUpperCase() || prev.sport;
+          if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
+          
+          return {
+            ...prev,
+            sport: aiSport,
+            firstname: parts[0]?.toUpperCase() || prev.firstname,
+            lastname: parts.slice(1).join(' ')?.toUpperCase() || prev.lastname,
+            club: data.club || prev.club,
+            brand: data.brand || prev.brand,
+            series: data.series || prev.series,
+            year: data.year ? data.year.toString() : prev.year,
+            is_auto: data.is_auto ? true : prev.is_auto,
+            is_patch: data.is_patch ? true : prev.is_patch,
+            is_rookie: data.is_rookie ? true : prev.is_rookie,
+            is_numbered: data.is_numbered ? true : prev.is_numbered,
+            num_low: data.num_low ? data.num_low.toString() : prev.num_low,
+            num_high: data.num_high ? data.num_high.toString() : prev.num_high
+          };
+        });
+        
+        setIsJoueurOpen(true);
+        setIsCarteOpen(true);
       }
-    } catch (err) {} finally { setAnalyzing(false); }
+    } catch (err) {
+      console.error("Erreur critique lors du scan de l'image :", err);
+    } finally { 
+      setAnalyzing(false); 
+    }
   };
 
   const rotateImage = async () => {
@@ -116,20 +156,38 @@ function ScannerContent() {
         currentBlob = await response.blob();
       }
       if (!currentBlob) return;
-      const img = new Image(); img.crossOrigin = "anonymous"; img.src = URL.createObjectURL(currentBlob);
+
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = URL.createObjectURL(currentBlob);
       await new Promise(resolve => { img.onload = resolve; });
-      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
-      canvas.width = img.height; canvas.height = img.width;
-      ctx.translate(canvas.width / 2, canvas.height / 2); ctx.rotate(90 * Math.PI / 180); ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.height;
+      canvas.height = img.width;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(90 * Math.PI / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
       canvas.toBlob((blob) => {
         if (!blob) return;
-        const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
-        setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); setAnalyzing(false);
+        const fileName = selectedFile ? selectedFile.name : `rotated-${Date.now()}.png`;
+        const newFile = new File([blob], fileName, { type: blob.type });
+        setSelectedFile(newFile);
+        setPreviewUrl(URL.createObjectURL(newFile)); 
+        setAnalyzing(false);
       }, currentBlob.type || 'image/png');
-    } catch (e) { setAnalyzing(false); }
+      
+    } catch (e) {
+      setAnalyzing(false);
+    }
   };
 
-  // 🚀 FONCTION MAGIQUE POUR APPLIQUER LES MODIFICATIONS D'IMAGE (Canvas)
+  // FONCTION MAGIQUE POUR APPLIQUER LES MODIFICATIONS D'IMAGE (Canvas)
   const applyImageEdits = async () => {
     if (!previewUrl) return;
     setAnalyzing(true);
@@ -146,10 +204,8 @@ function ScannerContent() {
       canvas.width = img.width;
       canvas.height = img.height;
 
-      // Application des filtres CSS dans le Canvas
       ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
 
-      // Application du Zoom (Recadrage depuis le centre)
       const scale = imgSettings.zoom;
       const sw = img.width / scale;
       const sh = img.height / scale;
@@ -165,7 +221,6 @@ function ScannerContent() {
         setPreviewUrl(URL.createObjectURL(newFile));
         setShowEditor(false);
         setAnalyzing(false);
-        // On réinitialise pour la prochaine fois
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }, 'image/png');
     } catch (e) {
@@ -209,7 +264,7 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans relative">
       
-      {/* 🚀 MODAL ÉDITEUR D'IMAGE */}
+      {/* MODAL ÉDITEUR D'IMAGE */}
       {showEditor && previewUrl && (
         <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
           <header className="flex justify-between items-center mb-6 pt-4">
@@ -264,8 +319,6 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* 🚀 FIN MODAL ÉDITEUR */}
-
       <header className="flex items-center justify-between mb-8">
         <button onClick={() => router.back()} className="w-10 h-10 rounded-full flex items-center justify-center border border-white/20"><ChevronLeft size={20} /></button>
         <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">
@@ -285,7 +338,6 @@ function ScannerContent() {
           {previewUrl ? <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" /> : <div className="text-[11px] font-bold text-[#AFFF25] border border-[#AFFF25]/30 px-6 py-2 rounded-full">SCANNER</div>}
         </div>
         
-        {/* 🚀 BOUTONS ROTATION ET ÉDITION */}
         {previewUrl && (
           <>
             <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 w-12 h-12 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform">
