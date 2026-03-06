@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Search, ChevronDown, X } from 'lucide-react'; // 🚀 X IMPORTÉ
+import { Loader2, Search, ChevronDown, X } from 'lucide-react';
 import SET_DATA from '@/data/set.json';
 
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
@@ -79,8 +79,7 @@ function CollectionContent() {
   return (
     <div className="min-h-screen text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
-      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
+      {/* (Le double dégradé a été supprimé ici) */}
 
       <div className="px-4">
         <header className="mb-6 pt-4 text-center">
@@ -96,10 +95,8 @@ function CollectionContent() {
             onChange={(e) => { setSearchTerm(e.target.value); setShowSuggestions(true); }}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            // 🚀 Ajout de pr-10 pour que le texte ne chevauche pas la croix
             className="w-full bg-[#040221]/60 backdrop-blur-md border border-[#AFFF25] rounded-full py-3 pl-12 pr-10 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)]"
           />
-          {/* 🚀 BOUTON POUR VIDER LE CHAMP DE RECHERCHE */}
           {searchTerm && (
             <button 
               onClick={() => { setSearchTerm(''); setShowSuggestions(false); }}

@@ -73,7 +73,6 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden relative z-10">
       
-      {/* 🚀 NOUVEAU DÉGRADÉ 70px OPACITY 0.8 */}
       <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <header className="pt-6 pb-2 text-center">
@@ -82,7 +81,8 @@ export default function HomePage() {
         </div>
       </header>
 
-      <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden mt-2" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      {/* 🚀 PADDING DE RESPIRATION px-[2%] */}
+      <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden mt-2 px-[2%]" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         {carouselCards.length === 0 ? (
           <div className="text-white/40 italic font-bold">Aucune carte à afficher</div>
         ) : (
@@ -97,8 +97,10 @@ export default function HomePage() {
               <div 
                 key={card.id}
                 onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                // 🚀 HAUTEUR FIXE (320px) POUR TOUT LE MONDE. La largeur grandit si aspect-[1.55] !
-                className={`absolute h-[320px] max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer overflow-hidden bg-white/5 border border-white/10 ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}
+                // 🚀 CONDITION DE HAUTEUR : 110px pour horizontales, 320px pour verticales
+                className={`absolute max-h-[45vh] flex items-center justify-center rounded-2xl transition-all duration-500 ease-out cursor-pointer overflow-hidden bg-white/5 border border-white/10 ${
+                  isHorizontal ? 'h-[110px] aspect-[1.55]' : 'h-[320px] aspect-[3/4]'
+                }`}
                 style={{
                   transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
                   zIndex: 10 - absOffset,
