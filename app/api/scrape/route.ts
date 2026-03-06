@@ -5,13 +5,11 @@ export async function POST(req: Request) {
     const { url } = await req.json();
     if (!url) return NextResponse.json({ error: 'URL manquante' }, { status: 400 });
 
-    // 🚀 SÉCURITÉ : Limite de temps à 8 secondes pour ne jamais tourner dans le vide
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     let html = '';
     try {
-      // 🚀 ASTUCE : On s'adapte à la cible. eBay bloque les faux Googlebot, donc on passe en Chrome.
       const isEbay = url.toLowerCase().includes('ebay');
       const userAgent = isEbay 
         ? 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -39,14 +37,13 @@ export async function POST(req: Request) {
     let matchImg = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
              || html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["'][^>]*>/i)
              || html.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i)
-             || html.match(/<img[^>]*id=["']icImg["'][^>]*src=["']([^"']+)["'][^>]*>/i); // Sécurité spéciale eBay
+             || html.match(/<img[^>]*id=["']icImg["'][^>]*src=["']([^"']+)["'][^>]*>/i);
 
     let imageUrl = matchImg ? matchImg[1] : null;
     let base64Image = null;
 
     if (imageUrl) {
       try {
-        // Nettoyage de l'URL pour eBay
         imageUrl = imageUrl.replace(/&amp;/g, '&');
         if (imageUrl.startsWith('//')) imageUrl = 'https:' + imageUrl;
 
@@ -98,12 +95,24 @@ export async function POST(req: Request) {
       if (metaPrice) extractedPrice = metaPrice[1];
     }
 
-    // C: Spécifique eBay
+    // 🚀 C: SPÉCIFIQUE EBAY (Amélioré pour contrer les sous-balises)
     if (!extractedPrice) {
-      let ebayPrice = html.match(/itemprop=["']price["'][^>]*content=["']([^"']+)["']/i)
-                   || html.match(/content=["']([^"']+)["'][^>]*itemprop=["']price["']/i)
-                   || html.match(/class=["']x-price-primary["'][^>]*>([^<]+)</i);
-      if (ebayPrice) extractedPrice = ebayPrice[1];
+      let ebayMeta = html.match(/itemprop=["']price["'][^>]*content=["']([^"']+)["']/i)
+                  || html.match(/content=["']([^"']+)["'][^>]*itemprop=["']price["']/i);
+      
+      if (ebayMeta) {
+        extractedPrice = ebayMeta[1];
+      } else {
+        // On cherche le bloc "x-price-primary" et on aspire tout ce qu'il y a dedans
+        let ebayDiv = html.match(/class=["'][^"']*(?:x-price-primary|prc-display)[^"']*["'][^>]*>([\s\S]*?)<\/(?:div|span)>/i);
+        if (ebayDiv) {
+          // On retire le code HTML (<span...>) pour ne garder que le texte pur
+          let cleanText = ebayDiv[1].replace(/<[^>]+>/g, '').trim();
+          const regexPrice = /([0-9]+(?:[.,][0-9]{1,2})?)/;
+          const found = cleanText.match(regexPrice);
+          if (found) extractedPrice = found[1];
+        }
+      }
     }
 
     // D: Spécifique Vinted
@@ -119,7 +128,6 @@ export async function POST(req: Request) {
       extractedPrice = extractedPrice.replace(',', '.');
       extractedPrice = extractedPrice.replace(/[^\d.]/g, '');
       
-      // Sécurité si un prix a plusieurs points (ex: format américain "1.200.50")
       const parts = extractedPrice.split('.');
       if (parts.length > 2) {
          extractedPrice = parts.slice(0, -1).join('') + '.' + parts[parts.length-1];
