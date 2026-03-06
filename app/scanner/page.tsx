@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, Link as LinkIcon } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
@@ -33,13 +33,15 @@ function ScannerContent() {
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit'); 
   
+  // 🚀 NOUVEAU : Détecte si on vient du bouton "+" de la Wishlist
+  const isAddingToWishlist = searchParams.get('wishlist') === 'true';
+  const [isWishlistMode, setIsWishlistMode] = useState(isAddingToWishlist);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [isFetchingEdit, setIsFetchingEdit] = useState(!!editId);
-  
-  // 🚀 NOUVEAU : État pour la confirmation de suppression
   const [confirmDelete, setConfirmDelete] = useState(false);
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -49,6 +51,7 @@ function ScannerContent() {
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
+  // 🚀 NOUVEAU : Ajout du champ website_url
   const [formData, setFormData] = useState({
     sport: '',
     firstname: '',
@@ -63,7 +66,8 @@ function ScannerContent() {
     is_numbered: false,
     num_low: '',
     num_high: '',
-    price: ''
+    price: '',
+    website_url: ''
   });
 
   useEffect(() => {
@@ -83,6 +87,9 @@ function ScannerContent() {
           if (error) throw error;
           
           if (data) {
+            // Si on édite une carte, on vérifie si elle fait partie de la Wishlist
+            setIsWishlistMode(data.is_wishlist || false);
+            
             setFormData({
               sport: data.sport || '',
               firstname: data.firstname || '',
@@ -97,7 +104,8 @@ function ScannerContent() {
               is_numbered: data.is_numbered || false,
               num_low: data.numbering_low?.toString() || '',
               num_high: data.numbering_max?.toString() || '',
-              price: data.purchase_price?.toString() || ''
+              price: data.purchase_price?.toString() || '',
+              website_url: data.website_url || ''
             });
             setPreviewUrl(data.image_url);
           }
@@ -110,8 +118,6 @@ function ScannerContent() {
       fetchCardForEdit();
     }
   }, [editId]);
-
-  const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const filteredClubs = safeFootballClubs.filter((c: any) => 
@@ -127,9 +133,7 @@ function ScannerContent() {
     const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
     if (selectedBrandObj && selectedBrandObj.sports) {
       const sportsData = selectedBrandObj.sports as any;
-      if (sportsData[sportJsonKey]) {
-        availableSets = sportsData[sportJsonKey];
-      }
+      if (sportsData[sportJsonKey]) availableSets = sportsData[sportJsonKey];
     }
   }
 
@@ -191,10 +195,8 @@ function ScannerContent() {
   const rotateImage = async () => {
     if (!previewUrl) return;
     setAnalyzing(true);
-
     try {
       let currentBlob: Blob | File | null = selectedFile;
-      
       if (!currentBlob && previewUrl) {
         const response = await fetch(previewUrl + "?t=" + new Date().getTime());
         currentBlob = await response.blob();
@@ -227,7 +229,6 @@ function ScannerContent() {
       }, currentBlob.type || 'image/png');
       
     } catch (e) {
-      console.error("Erreur de rotation", e);
       setAnalyzing(false);
     }
   };
@@ -236,10 +237,7 @@ function ScannerContent() {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/login'); 
-        return; 
-      }
+      if (!user) return; 
 
       let finalImageUrl = previewUrl;
 
@@ -271,7 +269,9 @@ function ScannerContent() {
         numbering_max: parseInt(formData.num_high) || null,
         purchase_price: parseFloat(formData.price) || 0,
         image_url: finalImageUrl,
-        club_name: formData.club
+        club_name: formData.club,
+        is_wishlist: isWishlistMode, // 🚀 ON SAUVEGARDE LE MODE WISHLIST
+        website_url: formData.website_url // 🚀 ON SAUVEGARDE L'URL
       };
 
       if (editId) {
@@ -282,30 +282,25 @@ function ScannerContent() {
         if (error) throw error;
       }
 
-      router.push('/collection');
+      // Si on était en mode wishlist, on renvoie vers la wishlist, sinon collection
+      router.push(isWishlistMode ? '/wishlist' : '/collection');
     } catch (err: any) {
       setLoading(false);
     }
   };
 
-  // 🚀 NOUVEAU : LA FONCTION DE SUPPRESSION QUI CONTOURNE LE BUG APPLE
   const deleteCard = async () => {
     if (!confirmDelete) {
-      // Premier clic : on demande confirmation visuellement
       setConfirmDelete(true);
-      // On annule la confirmation si l'utilisateur ne clique pas dans les 3 secondes
       setTimeout(() => setConfirmDelete(false), 3000);
       return;
     }
-
-    // Deuxième clic : on supprime pour de vrai
     setLoading(true);
     const { error } = await supabase.from('cards').delete().eq('id', editId);
-    if (error) {
-      alert("Erreur lors de la suppression.");
-      setLoading(false);
+    if (!error) {
+      router.push(isWishlistMode ? '/wishlist' : '/collection');
     } else {
-      router.push('/collection');
+      setLoading(false);
     }
   };
 
@@ -315,10 +310,12 @@ function ScannerContent() {
     return (
       <div className="min-h-screen text-white flex flex-col items-center justify-center">
         <Loader2 className="animate-spin text-[#AFFF25] mb-4" size={40} />
-        <p className="text-[#AFFF25] text-xs font-bold tracking-widest uppercase">Chargement de la carte...</p>
       </div>
     );
   }
+
+  // 🚀 Titre Dynamique
+  const pageTitle = editId ? (isWishlistMode ? 'MODIFIER WISH' : 'MODIFIER') : (isWishlistMode ? 'AJOUTER WISH' : 'AJOUTER');
 
   return (
     <div className="min-h-screen text-white p-6 pb-36 overflow-y-auto overflow-x-hidden font-sans">
@@ -328,22 +325,16 @@ function ScannerContent() {
           <ChevronLeft size={20} />
         </button>
         <div className="text-center">
-          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
-            {editId ? 'MODIFIER' : 'AJOUTER'}
+          <h1 className="text-3xl font-black italic uppercase tracking-tighter leading-none text-[#AFFF25]">
+            {pageTitle}
           </h1>
-          <p className="text-[#AFFF25] text-[10px] italic tracking-widest mt-1">
-            {editId ? 'Met à jour ta carte' : 'Scan ou upload ta carte'}
-          </p>
         </div>
         <div className="w-auto min-w-[40px] flex justify-end">
-          {/* 🚀 NOUVEAU : LE SMART BUTTON DE SUPPRESSION */}
           {editId && (
             <button 
               onClick={deleteCard} 
               className={`h-10 px-3 rounded-full flex items-center justify-center border active:scale-95 transition-all duration-300 ${
-                confirmDelete 
-                  ? 'bg-red-500 text-white border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' 
-                  : 'bg-red-500/10 border-red-500/30 text-red-500'
+                confirmDelete ? 'bg-red-500 text-white border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-red-500/10 border-red-500/30 text-red-500'
               }`}
             >
               <Trash2 size={18} />
@@ -380,10 +371,7 @@ function ScannerContent() {
 
         {previewUrl && (
           <button 
-            onClick={(e) => { 
-              e.preventDefault(); 
-              rotateImage(); 
-            }}
+            onClick={(e) => { e.preventDefault(); rotateImage(); }}
             className="absolute -right-4 -bottom-4 w-14 h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform"
           >
             <RotateCw size={24} strokeWidth={2.5} />
@@ -395,9 +383,7 @@ function ScannerContent() {
         <div>
           <div className="flex justify-between items-center cursor-pointer select-none mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
             <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Joueur</h2>
-            <div className="text-[#AFFF25]">
-              {isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}
-            </div>
+            <div className="text-[#AFFF25]">{isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
           </div>
 
           {isJoueurOpen && (
@@ -450,9 +436,7 @@ function ScannerContent() {
         <div>
           <div className="flex justify-between items-center cursor-pointer select-none mb-4" onClick={() => setIsCarteOpen(!isCarteOpen)}>
             <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Carte</h2>
-            <div className="text-[#AFFF25]">
-              {isCarteOpen ? <Minus size={22} /> : <Plus size={22} />}
-            </div>
+            <div className="text-[#AFFF25]">{isCarteOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
           </div>
 
           {isCarteOpen && (
@@ -513,13 +497,29 @@ function ScannerContent() {
                 </div>
               )}
 
-              <div className="pt-4 pb-4">
+              <div className="pt-4">
                  <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Prix d'achat</label>
                  <div className="relative w-full">
                    <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Ex: 15" className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 rounded-full text-right pr-12 text-sm outline-none text-white/80 transition-colors" />
                    <span className="absolute right-4 bottom-3 text-[#AFFF25] font-bold">€</span>
                  </div>
               </div>
+
+              {/* 🚀 NOUVEAU : LE CHAMP URL QUI N'APPARAÎT QU'EN MODE WISHLIST */}
+              {isWishlistMode && (
+                <div className="pt-4 pb-4 animate-in fade-in duration-300">
+                  <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Lien Web (Vinted, eBay...)</label>
+                  <div className="relative w-full flex items-center">
+                    <LinkIcon className="absolute left-4 text-white/40" size={16} />
+                    <input 
+                      value={formData.website_url} 
+                      onChange={e => setFormData({...formData, website_url: e.target.value})} 
+                      placeholder="https://..." 
+                      className="w-full bg-[#040221] border border-white/20 focus:border-[#AFFF25] p-3 pl-12 rounded-full text-sm outline-none text-white/80 transition-colors" 
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -533,7 +533,7 @@ function ScannerContent() {
               : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'
           }`}
         >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : (editId ? 'Mettre à jour la carte' : 'Enregistrer la carte')}
+          {loading ? <Loader2 className="animate-spin" size={20} /> : (editId ? 'Mettre à jour' : 'Enregistrer')}
         </button>
       </div>
       
