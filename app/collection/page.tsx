@@ -74,11 +74,13 @@ function CollectionContent() {
   });
 
   const availableBrands = SET_DATA.brands || [];
-  const sportImage = selectedSport ? SPORT_CONFIG[selectedSport]?.image : null;
 
   return (
-    <div className="min-h-screen text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
+    <div className="min-h-screen bg-[#040221] text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
+      {/* 🚀 LE DEGRADÉ EST DE RETOUR */}
+      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
+
       <div className="px-4">
         <header className="mb-6 pt-4 text-center">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none drop-shadow-lg">COLLECTION</h1>
@@ -96,10 +98,7 @@ function CollectionContent() {
             className="w-full bg-[#040221]/60 backdrop-blur-md border border-[#AFFF25] rounded-full py-3 pl-12 pr-10 text-sm outline-none text-white italic placeholder:text-white/40 shadow-[0_0_15px_rgba(175,255,37,0.1)]"
           />
           {searchTerm && (
-            <button 
-              onClick={() => { setSearchTerm(''); setShowSuggestions(false); }}
-              className="absolute right-4 top-3.5 text-white/50 hover:text-white transition-colors"
-            >
+            <button onClick={() => { setSearchTerm(''); setShowSuggestions(false); }} className="absolute right-4 top-3.5 text-white/50 hover:text-white transition-colors">
               <X size={18} />
             </button>
           )}
@@ -116,28 +115,19 @@ function CollectionContent() {
           )}
         </div>
 
-        {/* 🚀 RETOUR DU FILTRE MARQUE + LES 2 AUTRES */}
-        <div className="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
-          <div className="relative min-w-[140px] flex-1">
-            {sportImage && <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 top-2.5 w-4 h-4 object-contain z-10" alt="Sport" />}
-            <select value={selectedSport} onChange={(e) => setSelectedSport(e.target.value)} className={`w-full bg-[#040221]/60 backdrop-blur-md border border-white/20 rounded-full py-2.5 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white ${sportImage ? 'pl-10' : 'pl-4'}`}>
-              <option value="">SPORTS</option>
-              {Object.keys(SPORT_CONFIG).map(key => <option key={key} value={key}>{SPORT_CONFIG[key].label}</option>)}
-            </select>
-            <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
-          </div>
-
-          <div className="relative min-w-[140px] flex-1">
+        {/* 🚀 LIGNE 1 : MARQUES ET FILTRES */}
+        <div className="flex gap-2 mb-3">
+          <div className="relative flex-1">
             <select value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)} className="w-full bg-[#040221]/60 backdrop-blur-md border border-white/20 rounded-full py-2.5 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white">
-              <option value="">MARQUES</option>
+              <option value="">TOUTES MARQUES</option>
               {availableBrands.map((b: any) => <option key={b.name} value={b.name}>{b.name}</option>)}
             </select>
             <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
           </div>
 
-          <div className="relative min-w-[140px] flex-1">
+          <div className="relative flex-1">
             <select value={selectedSpec} onChange={(e) => setSelectedSpec(e.target.value)} className="w-full bg-[#040221]/60 backdrop-blur-md border border-white/20 rounded-full py-2.5 pl-4 pr-8 text-xs font-bold uppercase outline-none appearance-none text-white">
-              <option value="">FILTRES</option>
+              <option value="">TOUS FILTRES</option>
               <option value="auto">AUTO</option>
               <option value="patch">PATCH</option>
               <option value="rookie">ROOKIE</option>
@@ -145,6 +135,33 @@ function CollectionContent() {
             </select>
             <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
           </div>
+        </div>
+
+        {/* 🚀 LIGNE 2 : SCROLL HORIZONTAL DES SPORTS (GÉLULES) */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide snap-x">
+          <button 
+            onClick={() => setSelectedSport('')} 
+            className={`snap-start whitespace-nowrap px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${selectedSport === '' ? 'bg-[#AFFF25] text-black border-[#AFFF25] shadow-[0_0_15px_rgba(175,255,37,0.4)]' : 'bg-transparent text-white/60 border-white/20 hover:border-white/50'}`}
+          >
+            TOUT
+          </button>
+          
+          {Object.keys(SPORT_CONFIG).map(key => (
+            <button 
+              key={key}
+              onClick={() => setSelectedSport(key)} 
+              className={`snap-start flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${selectedSport === key ? 'bg-[#AFFF25] text-black border-[#AFFF25] shadow-[0_0_15px_rgba(175,255,37,0.4)]' : 'bg-transparent text-white/60 border-white/20 hover:border-white/50'}`}
+            >
+              {SPORT_CONFIG[key].image && (
+                <img 
+                  src={`/asset/sports/${SPORT_CONFIG[key].image}.png`} 
+                  className={`w-4 h-4 object-contain ${selectedSport === key ? 'brightness-0' : ''}`} // Passe en noir si sélectionné
+                  alt={SPORT_CONFIG[key].label} 
+                />
+              )}
+              {SPORT_CONFIG[key].label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -162,7 +179,6 @@ function CollectionContent() {
                 className={`relative overflow-hidden border border-white/10 cursor-pointer active:scale-95 transition-all group flex items-center justify-center ${isHorizontal ? 'col-span-2 aspect-[1.55] bg-[#080531]' : 'col-span-1 aspect-[3/4] bg-white/5'}`}
               >
                 {card.image_url ? (
-                  // 🚀 LAZY LOADING AJOUTÉ ICI : loading="lazy" decoding="async"
                   <img src={card.image_url} loading="lazy" decoding="async" onLoad={(e) => handleImageLoad(e.currentTarget, card.id)} className="w-full h-full object-cover" alt="Card" />
                 ) : (
                   <div className="text-[10px] italic font-bold text-white/30">No Image</div>

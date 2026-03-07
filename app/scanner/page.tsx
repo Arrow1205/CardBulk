@@ -94,7 +94,7 @@ function ScannerContent() {
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
-  // 🚀 FONCTION IMPORT PAR URL AVEC RECUPERATION DU PRIX
+  // 🚀 IMPORT PAR URL AVEC RECUPERATION DU PRIX
   const handleUrlImport = async () => {
     if (!formData.website_url) return;
     setAnalyzing(true);
@@ -108,17 +108,14 @@ function ScannerContent() {
       const data = await res.json();
       
       if (data.base64) {
-        // Convertit l'image Base64 en fichier
         const imgRes = await fetch(data.base64);
         const blob = await imgRes.blob();
         const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
         
-        // On met à jour le prix immédiatement si le scraper l'a trouvé !
         if (data.price) {
           setFormData(prev => ({ ...prev, price: data.price }));
         }
 
-        // Lance le scan IA classique pour le reste (joueur, marque...)
         setBulkFiles([file]);
         setCurrentBulkIndex(0);
         await processBulkItem([file], 0, false); 
@@ -153,7 +150,6 @@ function ScannerContent() {
     setAnalyzing(true);
     
     const currentUrl = formData.website_url;
-    // Si on vient d'un lien, on ne réinitialise pas tout (on garde le prix et l'URL)
     if (resetForm) setFormData(DEFAULT_FORM);
 
     try {
@@ -243,6 +239,38 @@ function ScannerContent() {
 
   const handleAutoEnhance = () => setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
 
+  // 🚀 FONCTION DE COMPRESSION PUISSANTE AVANT ENVOI
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1000; 
+        const scaleSize = MAX_WIDTH / img.width;
+        
+        if (scaleSize < 1) {
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+        } else {
+          canvas.width = img.width;
+          canvas.height = img.height;
+        }
+
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+             resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }));
+          } else {
+             resolve(file);
+          }
+        }, 'image/jpeg', 0.8); 
+      };
+    });
+  };
+
   const saveCard = async () => {
     setLoading(true);
     try {
@@ -251,8 +279,11 @@ function ScannerContent() {
       let finalImageUrl = previewUrl;
       
       if (selectedFile) {
-        const filePath = `${user.id}/${Date.now()}.${selectedFile.name.split('.').pop()}`; 
-        await supabase.storage.from('card-images').upload(filePath, selectedFile);
+        // 🚀 COMPRESSION DE L'IMAGE POUR DES PERFORMANCES MAXIMALES !
+        const compressedFile = await compressImage(selectedFile);
+        
+        const filePath = `${user.id}/${Date.now()}.jpg`; 
+        await supabase.storage.from('card-images').upload(filePath, compressedFile);
         finalImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
       }
       
