@@ -54,7 +54,7 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE (Ajusté pour plus de réactivité)
+  // 🧭 GYROSCOPE
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
@@ -95,14 +95,12 @@ export default function CardDetailsPage() {
     let x = e.gamma; 
     let y = e.beta;  
     
-    // Centrage de l'axe Y (Téléphone tenu à ~45°)
     let adjustedY = y - 45;
 
     const maxTilt = 30;
     x = Math.max(-maxTilt, Math.min(maxTilt, x));
     adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
 
-    // Mouvements amplifiés pour que l'effet soit plus visible
     const rotateY = x * 0.8; 
     const rotateX = -adjustedY * 0.8;
 
@@ -199,14 +197,14 @@ export default function CardDetailsPage() {
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* 🚀 Modifié : Top à 74px exactement */}
-      <div className="fixed top-[74px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none px-4">
+      {/* 🚀 TOP EXACTEMENT À 74PX */}
+      <div className="fixed top-[74px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none px-6">
         
-        {/* 🚀 Modifié : inline-block pour que la div épouse la taille exacte de l'image (Shrink-to-fit) */}
+        {/* 🚀 LE SECRET EST ICI : "max-w-full" sur le conteneur pour empêcher le débordement horizontal */}
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          className="relative inline-block shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
+          className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleLeave}
           onTouchMove={handleTouchMove}
@@ -214,18 +212,17 @@ export default function CardDetailsPage() {
           onTouchCancel={handleLeave}
         >
           {card.image_url ? (
-            // 🚀 Modifié : w-auto h-auto max-h-[420px] max-w-full pour ne pas couper l'image et l'afficher au max
+            /* 🚀 L'IMAGE : w-auto h-auto avec max-w et max-h stricts, plus object-contain pour interdire tout crop ! */
             <img 
               src={card.image_url} 
               style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-              className="block w-auto h-auto max-w-full max-h-[420px] border border-white/10" 
+              className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10" 
               alt="Card" 
             />
           ) : (
             <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>
           )}
           
-          {/* Glare (Lumière) */}
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
         </div>
 
@@ -238,7 +235,7 @@ export default function CardDetailsPage() {
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
-      {/* 🚀 Modifié : mt-[450px] */}
+      {/* 🚀 LAYER EXACTEMENT À 500PX */}
       <div className="relative z-30 w-full mt-[450px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">
