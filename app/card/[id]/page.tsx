@@ -55,11 +55,10 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE (Amélioré)
+  // 🧭 GYROSCOPE
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-      // Détection iOS 13+
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         const savedPermission = localStorage.getItem('gyro_permission');
         if (savedPermission === 'granted') {
@@ -68,7 +67,6 @@ export default function CardDetailsPage() {
           setShowGyroButton(true);
         }
       } else {
-        // Android ou vieux iOS : on lance direct
         startGyro();
       }
     }
@@ -93,13 +91,10 @@ export default function CardDetailsPage() {
   const handleOrientation = (e: DeviceOrientationEvent) => {
     if (e.gamma === null || e.beta === null) return;
     
-    let x = e.gamma; // Inclinaison Gauche/Droite
-    let y = e.beta;  // Inclinaison Avant/Arrière
+    let x = e.gamma; 
+    let y = e.beta;  
     
-    // On centre par rapport à une tenue naturelle du téléphone (environ 45 degrés d'inclinaison)
     y = y - 45;
-
-    // On limite les valeurs pour éviter que la carte ne se retourne complètement
     x = Math.max(-45, Math.min(45, x));
     y = Math.max(-45, Math.min(45, y)); 
 
@@ -108,7 +103,7 @@ export default function CardDetailsPage() {
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1, 1, 1)`,
-      transition: 'transform 0.1s ease-out' // Transition plus courte pour une meilleure réactivité du gyroscope
+      transition: 'transform 0.1s ease-out'
     });
 
     const glareX = (x / 45) * 100;
@@ -125,8 +120,6 @@ export default function CardDetailsPage() {
   // ==========================================
   const handleMove = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
-    
-    // Si l'utilisateur touche l'écran, on coupe le gyroscope temporairement
     window.removeEventListener('deviceorientation', handleOrientation);
 
     const rect = cardRef.current.getBoundingClientRect();
@@ -156,7 +149,6 @@ export default function CardDetailsPage() {
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => handleMove(e.touches[0].clientX, e.touches[0].clientY);
 
   const handleLeave = () => {
-    // A la fin du tactile, on relance le gyroscope s'il est autorisé
     const savedPermission = localStorage.getItem('gyro_permission');
     if (savedPermission === 'granted' || typeof (DeviceOrientationEvent as any).requestPermission !== 'function') {
       startGyro();
@@ -201,12 +193,13 @@ export default function CardDetailsPage() {
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN (Correction du layout appliquée ici !) */}
-      <div className="fixed inset-0 pt-[25px] w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none">
+      {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
+      {/* Modification clé ici : top-[104px] (88px + 16px) et largeur réduite pour les petits écrans */}
+      <div className="fixed top-[104px] left-0 w-full flex flex-col items-center z-10 perspective-1000 pointer-events-none">
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          className={`relative w-full max-w-[320px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}
+          className={`relative w-[75%] max-w-[300px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleLeave}
           onTouchMove={handleTouchMove}
@@ -219,7 +212,6 @@ export default function CardDetailsPage() {
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
         </div>
 
-        {/* Bouton Gyroscope collé à la carte pour iOS */}
         {showGyroButton && (
           <button onClick={requestGyroPermission} className="pointer-events-auto mt-8 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
             <Smartphone size={16} /> Activer la 3D
@@ -228,7 +220,8 @@ export default function CardDetailsPage() {
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
-      <div className="relative z-30 w-full mt-[460px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
+      {/* Modification clé ici : mt-[540px] pour ne pas remonter sur l'image */}
+      <div className="relative z-30 w-full mt-[540px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">

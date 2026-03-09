@@ -254,18 +254,17 @@ export default function CollectionPage() {
           )}
         </div>
 
-        {/* 3. GRILLE DE CARTES PINTEREST */}
-        <div className="px-6 grid grid-cols-2 gap-4 pb-20 auto-rows-max">
+        {/* 3. GRILLE DE CARTES PINTEREST - PASSÉE SUR 3 COLONNES */}
+        <div className="px-6 grid grid-cols-3 gap-3 pb-20 auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
-              // Si la carte est détectée comme horizontale, on lui donne la classe col-span-2
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
 
               return (
                 <div 
                   key={card.id} 
                   onClick={() => router.push(`/card/${card.id}`)} 
-                  className={`relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
+                  className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
                 >
                   {card.image_url ? (
                     <img 
@@ -275,18 +274,18 @@ export default function CollectionPage() {
                       className="w-full h-full object-cover opacity-80" 
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">Pas d'image</div>
+                    <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px]">Pas d'image</div>
                   )}
 
-                  <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/90 to-transparent">
-                    <div className="text-xs text-white/70 uppercase">{card.firstname}</div>
-                    <div className="text-lg font-black text-[#AFFF25] uppercase italic leading-none">{card.lastname}</div>
+                  <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/90 to-transparent">
+                    <div className="text-[9px] text-white/70 uppercase truncate">{card.firstname}</div>
+                    <div className="text-sm font-black text-[#AFFF25] uppercase italic leading-none truncate">{card.lastname}</div>
                   </div>
                 </div>
               );
             })
           ) : (
-            <div className="col-span-2 text-center py-10 text-white/40 italic">
+            <div className="col-span-3 text-center py-10 text-white/40 italic">
               Aucune carte ne correspond à ces filtres.
             </div>
           )}
