@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, X, ChevronLeft, LayoutGrid, ChevronDown, Euro, Hash } from 'lucide-react';
+import { Loader2, X, LayoutGrid, ChevronDown, Euro, Hash } from 'lucide-react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
@@ -32,7 +32,7 @@ export default function StatsPage() {
   // Toggle Nombre vs Valeur €
   const [displayMode, setDisplayMode] = useState<'count' | 'value'>('count');
 
-  // Filtres (Identiques à la collection)
+  // Filtres
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [showAuto, setShowAuto] = useState(false);
@@ -96,7 +96,7 @@ export default function StatsPage() {
     { label: 'Auto + Num', list: filteredCards.filter(c => c.is_auto && !c.is_patch && c.is_numbered), color: '#8B5CF6' },
     { label: 'Patch + Num', list: filteredCards.filter(c => !c.is_auto && c.is_patch && c.is_numbered), color: '#EC4899' },
     { label: 'Auto+Patch+Num', list: filteredCards.filter(c => c.is_auto && c.is_patch && c.is_numbered), color: '#EF4444' },
-  ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0); // On ne garde que ceux > 0
+  ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0);
 
   // ==========================================
   // GRAPHIQUE ANNEAUX IMBRIQUÉS (Nested Doughnut)
@@ -109,10 +109,10 @@ export default function StatsPage() {
       label: stat.label,
       data: [stat.value, maxScaleValue - stat.value],
       backgroundColor: [stat.color, 'rgba(255, 255, 255, 0.05)'], // La partie "vide" est grise/transparente
-      borderWidth: 4, // Espace entre les anneaux
-      borderColor: '#040221', // Couleur du fond de page pour détacher les anneaux
-      borderRadius: 20, // Bords arrondis pour le look "Progress Ring"
-      cutout: '20%', // Épaisseur des anneaux
+      borderWidth: 4, 
+      borderColor: '#040221', 
+      borderRadius: 20, 
+      cutout: '20%', 
     }))
   };
 
@@ -123,11 +123,11 @@ export default function StatsPage() {
       legend: {
         position: 'bottom' as const,
         labels: { 
-          color: 'rgba(255, 255, 255, 0.7)', 
-          font: { family: 'sans-serif', size: 10, weight: 'bold' as const },
+          color: '#FFFFFF', // Texte en blanc
+          font: { family: 'sans-serif', size: 10, weight: 'normal' as const }, // Texte en regular
           generateLabels: (chart: any) => {
              return statsUniques.map((stat, i) => ({
-               text: `${stat.label} (${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + '€' : stat.value})`,
+               text: `${stat.label} (${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value})`,
                fillStyle: stat.color,
                hidden: false,
                index: i
@@ -136,13 +136,12 @@ export default function StatsPage() {
         }
       },
       tooltip: {
-        // CORRECTION TYPESCRIPT : On filtre proprement les tooltips de la zone "vide" (index 1)
         filter: function(tooltipItem: any) {
           return tooltipItem.dataIndex !== 1;
         },
         callbacks: {
           label: function(context: any) {
-            const valueLabel = displayMode === 'value' ? `${context.raw.toLocaleString('fr-FR')} €` : `${context.raw} cartes`;
+            const valueLabel = displayMode === 'value' ? `${context.raw.toLocaleString('fr-FR')} €` : `${context.raw}`;
             return ` ${context.dataset.label} : ${valueLabel}`;
           }
         }
@@ -153,25 +152,22 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans pb-32">
       
-      {/* HEADER */}
-      <div className="pt-8 pb-4 px-6 flex items-center gap-4">
-        <button onClick={() => router.push('/collection')} className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center border border-[#AFFF25] active:scale-95 transition-transform shrink-0">
-          <ChevronLeft size={20} className="text-[#AFFF25]" />
-        </button>
+      {/* HEADER (Centré, sans bouton retour) */}
+      <div className="pt-8 pb-4 px-6 flex justify-center items-center">
         <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none">Statistiques</h1>
       </div>
 
-      {/* FILTRES (Sports + Spécificités) */}
+      {/* FILTRES (Sports + Spécificités - Style Collection) */}
       <div className="mb-6">
         <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex gap-3 px-6 pb-2 w-max">
-            <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-transparent border-[#AFFF25] text-white'}`}>
+            <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
               <LayoutGrid size={16} /> <span className="text-sm font-bold">Tout</span>
             </button>
             {availableSports.map(sportKey => {
               const isSelected = selectedSport === sportKey;
               return (
-                <button key={sportKey} onClick={() => setSelectedSport(sportKey)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${isSelected ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-transparent border-[#AFFF25] text-white'}`}>
+                <button key={sportKey} onClick={() => setSelectedSport(sportKey)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${isSelected ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
                   <img src={`/asset/sports/${isSelected ? 'neg-' : ''}${SPORT_CONFIG[sportKey].image}.png`} className="h-4 object-contain" alt={SPORT_CONFIG[sportKey].label} />
                   <span className="text-sm font-bold whitespace-nowrap">{SPORT_CONFIG[sportKey].label}</span>
                 </button>
@@ -183,18 +179,18 @@ export default function StatsPage() {
         <div className="relative z-50 mt-4 px-6">
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
           <div className="flex gap-3">
-            <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border border-[#AFFF25] text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25] text-[#040221]' : 'bg-transparent text-white'}`}>
-              Filtres Spéc. <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
+            <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+              Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
             </button>
-            <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border border-[#AFFF25] text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25] text-[#040221]' : 'bg-transparent text-white'}`}>
+            <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
               <span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span>
               <ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
             </button>
           </div>
 
-          {/* Menus Dropdown (Logique identique à Collection) */}
+          {/* Menus Dropdown */}
           {openDropdown === 'spec' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-[#AFFF25] rounded-[24px] p-4 shadow-2xl">
+            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl">
               {[
                 { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) },
                 { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) },
@@ -202,22 +198,22 @@ export default function StatsPage() {
               ].map((item, idx) => (
                 <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer">
                   <span className="text-sm font-bold text-white">{item.label}</span>
-                  <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors border border-[#AFFF25] ${item.state ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
-                    <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-[#AFFF25]'}`}></div>
+                  <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors border border-white/20 ${item.state ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
+                    <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
                   </div>
                 </div>
               ))}
             </div>
           )}
           {openDropdown === 'brand' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-[#AFFF25] rounded-[24px] p-4 shadow-2xl max-h-80 overflow-y-auto">
+            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl max-h-80 overflow-y-auto">
               {BRANDS.map(brand => {
                 const isActive = selectedBrands.includes(brand);
                 return (
                   <div key={brand} onClick={() => setSelectedBrands(prev => isActive ? prev.filter(b => b !== brand) : [...prev, brand])} className="w-full flex items-center justify-between py-3 cursor-pointer">
                     <span className="text-sm font-bold text-white">{brand}</span>
-                    <div className={`w-10 h-6 rounded-full flex items-center p-1 border border-[#AFFF25] transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
-                      <div className={`w-4 h-4 rounded-full transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-[#AFFF25]'}`}></div>
+                    <div className={`w-10 h-6 rounded-full flex items-center p-1 border border-white/20 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
+                      <div className={`w-4 h-4 rounded-full transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
                     </div>
                   </div>
                 );
@@ -230,11 +226,11 @@ export default function StatsPage() {
       {/* KPI GLOBAUX */}
       <div className="px-6 grid grid-cols-2 gap-4 mb-8">
         <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
-          <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Total Sélectionné</div>
+          <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Nombre de cartes</div>
           <div className="text-4xl font-black text-[#AFFF25]">{filteredCards.length}</div>
         </div>
         <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
-          <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Valeur Sélection</div>
+          <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Valeur collection</div>
           <div className="text-3xl font-black text-[#AFFF25] truncate">
             {filteredCards.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0).toLocaleString('fr-FR')} €
           </div>
@@ -266,37 +262,36 @@ export default function StatsPage() {
         <div className="grid grid-cols-3 gap-3">
           <button onClick={() => setActiveDetail('auto')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform">
             <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
-              {displayMode === 'value' ? getVal(autosGlobal).toLocaleString('fr-FR') : autosGlobal.length}
+              {displayMode === 'value' ? `${getVal(autosGlobal).toLocaleString('fr-FR')} €` : autosGlobal.length}
             </div>
             <div className="text-[10px] text-white uppercase font-bold tracking-wider">Autos</div>
           </button>
           
           <button onClick={() => setActiveDetail('patch')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform">
             <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
-              {displayMode === 'value' ? getVal(patchesGlobal).toLocaleString('fr-FR') : patchesGlobal.length}
+              {displayMode === 'value' ? `${getVal(patchesGlobal).toLocaleString('fr-FR')} €` : patchesGlobal.length}
             </div>
             <div className="text-[10px] text-white uppercase font-bold tracking-wider">Patchs</div>
           </button>
           
           <button onClick={() => setActiveDetail('numbered')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform">
             <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
-              {displayMode === 'value' ? getVal(numberedsGlobal).toLocaleString('fr-FR') : numberedsGlobal.length}
+              {displayMode === 'value' ? `${getVal(numberedsGlobal).toLocaleString('fr-FR')} €` : numberedsGlobal.length}
             </div>
             <div className="text-[10px] text-white uppercase font-bold tracking-wider">Numérotés</div>
           </button>
         </div>
       </div>
 
-      {/* GRAPHIQUE ANNEAUX IMBRIQUÉS (PROGRESS RINGS) */}
+      {/* GRAPHIQUE ANNEAUX IMBRIQUÉS (Sans bordure ni titre) */}
       <div className="px-6 mb-10">
-        <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-4">Combinaisons Uniques</h2>
-        <div className="bg-transparent border border-[#AFFF25] rounded-[32px] p-6 relative flex flex-col items-center">
+        <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center">
           
-          {/* Données au centre de l'anneau */}
+          {/* Données au centre de l'anneau (Texte en blanc et regular) */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none pb-6">
-            <div className="text-xs font-bold uppercase tracking-widest text-white">Total</div>
-            <div className="text-2xl font-black text-[#AFFF25]">
-              {displayMode === 'value' ? `${totalCardsVal.toLocaleString('fr-FR')}€` : totalCardsVal}
+            <div className="text-xs font-normal uppercase tracking-widest text-white">Total</div>
+            <div className="text-2xl font-normal text-white">
+              {displayMode === 'value' ? `${totalCardsVal.toLocaleString('fr-FR')} €` : totalCardsVal}
             </div>
           </div>
 
@@ -304,7 +299,7 @@ export default function StatsPage() {
             {statsUniques.length > 0 ? (
               <Doughnut data={doughnutData} options={doughnutOptions} />
             ) : (
-              <div className="h-full flex items-center justify-center text-[#AFFF25] italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
+              <div className="h-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
             )}
           </div>
         </div>
@@ -329,16 +324,15 @@ export default function StatsPage() {
             </div>
 
             <div className="space-y-4 mb-8">
-              {/* Le rendu utilise getVal() pour s'adapter au Toggle Nombre/Valeur */}
               {activeDetail === 'auto' && (
                 <>
                   <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
                     <span className="text-sm text-white font-medium">Autographes seuls</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && !c.is_patch))}</span>
+                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && !c.is_patch))} {displayMode === 'value' && '€'}</span>
                   </div>
                   <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
                     <span className="text-sm text-white font-medium">Auto + Patchs (RPA)</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && c.is_patch))}</span>
+                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && c.is_patch))} {displayMode === 'value' && '€'}</span>
                   </div>
                 </>
               )}
@@ -347,11 +341,11 @@ export default function StatsPage() {
                 <>
                   <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
                     <span className="text-sm text-white font-medium">Patchs seuls</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => !c.is_auto && c.is_patch))}</span>
+                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => !c.is_auto && c.is_patch))} {displayMode === 'value' && '€'}</span>
                   </div>
                   <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
                     <span className="text-sm text-white font-medium">Patchs + Autos (RPA)</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && c.is_patch))}</span>
+                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && c.is_patch))} {displayMode === 'value' && '€'}</span>
                   </div>
                 </>
               )}
@@ -360,11 +354,11 @@ export default function StatsPage() {
                 <>
                   <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
                     <span className="text-sm text-white font-medium">Numérotées seules</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered))}</span>
+                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered))} {displayMode === 'value' && '€'}</span>
                   </div>
                   <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
                     <span className="text-sm text-white font-medium">Numérotées + Hit (Auto/Patch)</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => (c.is_auto || c.is_patch) && c.is_numbered))}</span>
+                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => (c.is_auto || c.is_patch) && c.is_numbered))} {displayMode === 'value' && '€'}</span>
                   </div>
                 </>
               )}
