@@ -116,19 +116,21 @@ export default function StatsPage() {
     }))
   };
 
-  const doughnutOptions = {
+const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom' as const,
         labels: { 
-          color: '#FFFFFF', // Texte en blanc
-          font: { family: 'sans-serif', size: 10, weight: 'normal' as const }, // Texte en regular
+          font: { family: 'sans-serif', size: 10, weight: 'normal' as const },
           generateLabels: (chart: any) => {
              return statsUniques.map((stat, i) => ({
                text: `${stat.label} (${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value})`,
                fillStyle: stat.color,
+               fontColor: '#FFFFFF', // 👈 C'est ICI qu'on force le texte en blanc
+               strokeStyle: '#040221', // Petite astuce : bordure foncée autour du carré de couleur
+               lineWidth: 2,
                hidden: false,
                index: i
              }));
