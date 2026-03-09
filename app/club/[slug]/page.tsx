@@ -1,305 +1,219 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Edit, Star, Loader2, Smartphone } from 'lucide-react';
+import { ChevronLeft, ChevronDown, Loader2 } from 'lucide-react';
 
-import FOOTBALL_CLUBS from '@/data/football-clubs.json';
-
-const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
-  'SOCCER': { image: 'Soccer', label: 'Football' },
-  'BASKETBALL': { image: 'Basket', label: 'Basketball' },
-  'BASEBALL': { image: 'Baseball', label: 'Baseball' },
-  'F1': { image: 'F1', label: 'Formule 1' },
-  'NFL': { image: 'NFL', label: 'Football Américain' },
-  'NHL': { image: 'NHL', label: 'Hockey' },
-  'TENNIS': { image: 'Tennis', label: 'Tennis' }
-};
-
-// NOUVEAU : Mapping entre les sports de la DB et tes noms de dossiers
 const SPORT_FOLDERS: Record<string, string> = {
-  'SOCCER': 'foot', // Par défaut dans le dossier foot (adapter si besoin pour MLS)
+  'SOCCER': 'foot',
   'BASKETBALL': 'NBA',
   'BASEBALL': 'MLB',
   'NFL': 'NFL',
   'NHL': 'NHL'
 };
 
-export default function CardDetailsPage() {
+// Fonction utilitaire pour "slugifier" le nom du club de la DB afin de le comparer à l'URL
+const slugify = (text: string) => {
+  return text.toString().toLowerCase().trim()
+    .replace(/\s+/g, '-')       // Remplace les espaces par -
+    .replace(/[^\w\-]+/g, '')   // Supprime les caractères non-alphanumériques
+    .replace(/\-\-+/g, '-');    // Remplace les multiples - par un seul
+};
+
+export default function ClubPage() {
   const router = useRouter();
   const params = useParams();
-  const cardId = params.id as string;
+  const slug = params.slug as string;
 
-  const [card, setCard] = useState<any>(null);
+  const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isFavoriting, setIsFavoriting] = useState(false);
-  
-  const [isHorizontal, setIsHorizontal] = useState(false);
 
-  const [tiltStyle, setTiltStyle] = useState({ 
-    transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', 
-    transition: 'transform 0.3s ease-out' 
-  });
-  const [glareStyle, setGlareStyle] = useState({ 
-    background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 0%, transparent 50%)', 
-    opacity: 0,
-    transition: 'opacity 0.3s ease-out'
-  });
-  
-  const [showGyroButton, setShowGyroButton] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
+  // Filtres
+  const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
+  const [selectedSpec, setSelectedSpec] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'player' | 'spec' | null>(null);
 
-  useEffect(() => { fetchCard(); }, [cardId]);
+  useEffect(() => {
+    fetchClubCards();
+  }, [slug]);
 
-  const fetchCard = async () => {
+  const fetchClubCards = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return router.push('/login'); 
+    if (!user) return router.push('/login');
+
+    // On récupère toutes les cartes de l'utilisateur
+    const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
     
-    const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
     if (data) {
-      setCard(data);
-      setIsHorizontal(data.is_horizontal || false);
-    } 
-    else router.push('/collection');
+      // On filtre pour ne garder que les cartes dont le nom du club "slugifié" correspond au slug de l'URL
+      const clubCards = data.filter(c => c.club_name && slugify(c.club_name) === slug && !c.is_wishlist);
+      setCards(clubCards);
+    }
     
     setLoading(false);
   };
 
-  // ==========================================
-  // 🧭 GYROSCOPE
-  // ==========================================
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-        const savedPermission = localStorage.getItem('gyro_permission');
-        if (savedPermission === 'granted') {
-          startGyro();
-        } else {
-          setShowGyroButton(true);
-        }
-      } else {
-        startGyro();
-      }
-    }
-    return () => { window.removeEventListener('deviceorientation', handleOrientation); };
-  }, []);
+  if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
-  const requestGyroPermission = async () => {
-    try {
-      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-        const permission = await (DeviceOrientationEvent as any).requestPermission();
-        if (permission === 'granted') {
-          localStorage.setItem('gyro_permission', 'granted');
-          setShowGyroButton(false);
-          startGyro();
-        }
-      }
-    } catch (e) { console.error(e); }
-  };
+  if (cards.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#040221] flex flex-col items-center justify-center text-white p-6 text-center">
+        <p className="mb-4 text-white/60">Aucune carte trouvée pour ce club.</p>
+        <button onClick={() => router.back()} className="px-6 py-3 bg-[#AFFF25] text-[#040221] font-bold rounded-full">Retour</button>
+      </div>
+    );
+  }
 
-  const startGyro = () => { 
-    window.addEventListener('deviceorientation', handleOrientation, true); 
-  };
+  // Informations générales du club (déduites de la première carte trouvée)
+  const firstCard = cards[0];
+  const clubName = firstCard.club_name;
+  const sportFolder = SPORT_FOLDERS[firstCard.sport] || 'foot';
+  const logoUrl = `/asset/logo-club/${sportFolder}/${slug}.svg`;
 
-  const handleOrientation = (e: DeviceOrientationEvent) => {
-    if (!e || e.gamma === null || e.beta === null) return;
+  // Gestion des filtres : Liste unique des joueurs de ce club
+  const uniquePlayers = Array.from(new Set(cards.map(c => `${c.firstname || ''} ${c.lastname || ''}`.trim()))).filter(Boolean);
+
+  // Cartes filtrées
+  const filteredCards = cards.filter(card => {
+    const fullName = `${card.firstname || ''} ${card.lastname || ''}`.trim();
+    const playerMatch = !selectedPlayer || fullName === selectedPlayer;
     
-    let x = e.gamma; 
-    let y = e.beta;  
-    
-    let adjustedY = y - 45;
+    const specMatch = !selectedSpec || 
+      (selectedSpec === 'Auto' && card.is_auto) || 
+      (selectedSpec === 'Patch' && card.is_patch) || 
+      (selectedSpec === 'Numéroté' && card.is_numbered);
 
-    const maxTilt = 30;
-    x = Math.max(-maxTilt, Math.min(maxTilt, x));
-    adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
-
-    const rotateY = x * 0.8; 
-    const rotateX = -adjustedY * 0.8;
-
-    setTiltStyle({
-      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1, 1, 1)`,
-      transition: 'transform 0.1s ease-out'
-    });
-
-    const glareX = (x / maxTilt) * 100;
-    const glareY = (adjustedY / maxTilt) * 100;
-    setGlareStyle({
-      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.35) 0%, transparent 60%)`,
-      opacity: Math.max(0.1, Math.abs(x) / maxTilt),
-      transition: 'opacity 0.1s ease-out'
-    });
-  };
-
-  // ==========================================
-  // 👆 TACTILE
-  // ==========================================
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!cardRef.current) return;
-    window.removeEventListener('deviceorientation', handleOrientation);
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = clientX - rect.left; 
-    const y = clientY - rect.top;  
-    const centerX = rect.width / 2; 
-    const centerY = rect.height / 2;
-    
-    const rotateX = ((y - centerY) / centerY) * -12; 
-    const rotateY = ((x - centerX) / centerX) * 12;
-
-    setTiltStyle({
-      transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
-      transition: 'none' 
-    });
-    
-    const glareX = (x / rect.width) * 100; 
-    const glareY = (y / rect.height) * 100;
-    setGlareStyle({
-      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.5) 0%, transparent 50%)`,
-      opacity: 0.8,
-      transition: 'none'
-    });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => handleMove(e.clientX, e.clientY);
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => handleMove(e.touches[0].clientX, e.touches[0].clientY);
-
-  const handleLeave = () => {
-    const savedPermission = localStorage.getItem('gyro_permission');
-    if (savedPermission === 'granted' || typeof (DeviceOrientationEvent as any).requestPermission !== 'function') {
-      startGyro();
-    }
-
-    setTiltStyle({
-      transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
-      transition: 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' 
-    });
-    setGlareStyle(prev => ({ ...prev, opacity: 0, transition: 'opacity 0.6s ease-out' }));
-  };
-
-  const toggleFavorite = async () => {
-    if (!card || card.is_wishlist) return;
-    setIsFavoriting(true);
-    const newFavStatus = !card.is_favorite;
-    setCard({ ...card, is_favorite: newFavStatus });
-    await supabase.from('cards').update({ is_favorite: newFavStatus }).eq('id', card.id);
-    setIsFavoriting(false);
-  };
-
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#040221]"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
-  if (!card) return null;
-
-  const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
-  
-  // Récupération du dossier associé au sport (ex: "NBA", "foot")
-  const sportFolder = SPORT_FOLDERS[card.sport] || 'foot'; 
-  
-  const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
-  const searchName = card.club_name ? card.club_name.toLowerCase() : '';
-  const selectedClub = safeFootballClubs.find((c: any) => searchName === c.name?.toLowerCase() || searchName === c.slug?.toLowerCase() || c.slug?.includes(searchName));
-  const clubSlug = selectedClub ? selectedClub.slug : searchName.replace(/\s+/g, '-');
+    return playerMatch && specMatch;
+  });
 
   return (
-    <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
+    <div className="min-h-screen text-white font-sans relative bg-[#040221]">
       
-      {/* 🌌 FOND FIXE DE L'APP */}
-      <div className="fixed inset-0 z-0 bg-[#040221]">
-        {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
-      </div>
-
-      {/* 🔝 HEADER FIXE */}
-      <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6">
-        <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
-        <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
+      {/* HEADER FIXE */}
+      <header className="fixed top-0 left-0 w-full z-50 flex items-center p-6">
+        <button onClick={() => router.back()} className="w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
+          <ChevronLeft size={20} />
+        </button>
       </header>
 
-      {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} left-0 w-full flex flex-col items-center justify-center z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
-        
-        <div 
-          ref={cardRef}
-          style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleLeave}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleLeave}
-          onTouchCancel={handleLeave}
-        >
-          {card.image_url ? (
-            <img 
-              src={card.image_url} 
-              onLoad={(e) => {
-                if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) {
-                  setIsHorizontal(true);
-                }
-              }}
-              style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-              className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10" 
-              alt="Card" 
-            />
-          ) : (
-            <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>
-          )}
-          
-          <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
-        </div>
-
-        {/* Bouton Gyroscope collé à la carte pour iOS */}
-        {showGyroButton && (
-          <button onClick={requestGyroPermission} className="pointer-events-auto mt-6 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
-            <Smartphone size={16} /> Activer la 3D
-          </button>
-        )}
+      {/* BACKGROUND BLURRÉ AVEC LE LOGO */}
+      <div className="absolute top-0 left-0 w-full h-[450px] overflow-hidden z-0">
+        <img 
+          src={logoUrl} 
+          alt="Club Background" 
+          className="w-full h-full object-cover blur-[60px] opacity-40 scale-150 saturate-150"
+          onError={(e) => e.currentTarget.style.display = 'none'}
+        />
+        {/* Dégradé pour fondre l'image dans le fond de la page */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040221]/80 to-[#040221]"></div>
       </div>
 
-      {/* 📄 SECTION INFORMATIONS */}
-      <div className="relative z-30 w-full mt-[450px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
+      {/* CONTENU PRINCIPAL */}
+      <div className="relative z-10 pt-20 flex flex-col items-center">
         
-        <div className="flex justify-between items-start mb-6">
-          <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
-            <div className="text-xl text-white uppercase tracking-wider font-light">{card.firstname || "Prénom"}</div>
-            <div className="text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter">{card.lastname || "Nom"}</div>
+        {/* LOGO CENTRAL */}
+        <div className="w-48 h-48 mb-8 flex items-center justify-center drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+          <img 
+            src={logoUrl} 
+            alt={clubName} 
+            className="max-w-full max-h-full object-contain"
+            onError={(e) => e.currentTarget.style.display = 'none'}
+          />
+        </div>
+
+        {/* CONTAINER DU BAS (Arrondi) */}
+        <div className="w-full bg-[#040221] rounded-t-[32px] px-4 pt-6 pb-32 min-h-[50vh] shadow-[0_-20px_40px_rgba(0,0,0,0.4)] relative">
+          
+          <h1 className="text-3xl font-black italic uppercase text-center mb-6 tracking-tighter">
+            {clubName}
+          </h1>
+
+          {/* FILTRES (Dropdowns) */}
+          <div className="flex gap-3 mb-6 relative z-20">
+            {/* Overlay pour fermer les menus */}
+            {openDropdown && <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)}></div>}
+
+            {/* Dropdown Joueurs */}
+            <div className="relative flex-[2]">
+              <button 
+                onClick={() => setOpenDropdown(openDropdown === 'player' ? null : 'player')}
+                className="w-full border border-white/20 rounded-full px-4 py-2.5 flex items-center justify-between bg-transparent active:scale-95 transition-transform relative z-20"
+              >
+                <span className="text-xs font-bold uppercase tracking-widest text-white/90 truncate mr-2">
+                  {selectedPlayer ? selectedPlayer : 'TOUS LES JOUEURS'}
+                </span>
+                <ChevronDown size={14} className={`text-white/80 transition-transform ${openDropdown === 'player' ? 'rotate-180' : ''}`} />
+              </button>
+
+              {openDropdown === 'player' && (
+                <div className="absolute top-full left-0 w-full mt-2 bg-[#040221] border border-white/10 rounded-2xl shadow-2xl p-2 z-30 max-h-60 overflow-y-auto">
+                  <button onClick={() => { setSelectedPlayer(null); setOpenDropdown(null); }} className="w-full text-left px-4 py-3 text-xs font-bold uppercase hover:bg-white/10 rounded-xl">Tous les joueurs</button>
+                  {uniquePlayers.map(player => (
+                    <button key={player} onClick={() => { setSelectedPlayer(player); setOpenDropdown(null); }} className="w-full text-left px-4 py-3 text-xs font-bold uppercase hover:bg-white/10 rounded-xl truncate">
+                      {player}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Dropdown Spécificités */}
+            <div className="relative flex-1">
+              <button 
+                onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')}
+                className="w-full border border-white/20 rounded-full px-4 py-2.5 flex items-center justify-between bg-transparent active:scale-95 transition-transform relative z-20"
+              >
+                <span className="text-xs font-bold uppercase tracking-widest text-white/90 truncate mr-2">
+                  {selectedSpec ? selectedSpec : 'Filtre'}
+                </span>
+                <ChevronDown size={14} className={`text-white/80 transition-transform ${openDropdown === 'spec' ? 'rotate-180' : ''}`} />
+              </button>
+
+              {openDropdown === 'spec' && (
+                <div className="absolute top-full right-0 w-48 mt-2 bg-[#040221] border border-white/10 rounded-2xl shadow-2xl p-2 z-30">
+                  <button onClick={() => { setSelectedSpec(null); setOpenDropdown(null); }} className="w-full text-left px-4 py-3 text-xs font-bold uppercase hover:bg-white/10 rounded-xl">Toutes</button>
+                  {['Auto', 'Patch', 'Numéroté'].map(spec => (
+                    <button key={spec} onClick={() => { setSelectedSpec(spec); setOpenDropdown(null); }} className="w-full text-left px-4 py-3 text-xs font-bold uppercase hover:bg-white/10 rounded-xl">
+                      {spec}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          {!card.is_wishlist && (
-            <button onClick={toggleFavorite} disabled={isFavoriting} className="active:scale-90 transition-transform p-1 self-start mt-2">
-              <Star size={28} strokeWidth={card.is_favorite ? 0 : 1.5} className={card.is_favorite ? "fill-[#AFFF25] text-[#AFFF25]" : "text-[#AFFF25]"} />
-            </button>
-          )}
-        </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
-          {card.is_patch && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Patch</span>}
-          {card.is_auto && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Autographe</span>}
-          {card.is_numbered && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Numéroté</span>}
-        </div>
-
-        <div className="flex flex-wrap gap-3 mb-6">
-          <button onClick={() => router.push(`/collection?sport=${card.sport}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
-            <img src={`/asset/sports/${sportData.image}.png`} className="w-4 h-4 object-contain" alt={sportData.label} />
-            <span className="text-sm font-medium text-white">{sportData.label}</span>
-          </button>
-          {card.club_name && (
-            <button onClick={() => router.push(`/club/${clubSlug}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
-              {/* NOUVEAU CHEMIN D'IMAGE INCLUANT LE DOSSIER DU SPORT */}
-              <img src={`/asset/logo-club/${sportFolder}/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
-              <span className="text-sm font-medium text-white">{card.club_name}</span>
-            </button>
-          )}
-        </div>
-
-        <div className="grid grid-cols-2 gap-y-6 pt-6 border-t border-white/10">
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-lg font-bold text-white capitalize">{card.brand || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-lg font-bold text-white capitalize">{card.series || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-lg font-bold text-white">{card.year || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix</div><div className="text-lg font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
-        </div>
-
-        {card.website_url && (
-          <div className="pt-8 flex justify-center pb-6">
-            <button onClick={() => window.open(card.website_url, '_blank')} className="w-[80%] max-w-[300px] border-2 border-[#AFFF25] text-[#AFFF25] py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#AFFF25]/10">View on website</button>
+          {/* GRILLE DE CARTES (3 Colonnes comme sur tes captures) */}
+          <div className="grid grid-cols-3 gap-2">
+            {filteredCards.length > 0 ? (
+              filteredCards.map(card => {
+                const isHorizontal = card.is_horizontal;
+                return (
+                  <div 
+                    key={card.id} 
+                    onClick={() => router.push(`/card/${card.id}`)} 
+                    className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
+                  >
+                    {card.image_url ? (
+                      <img src={card.image_url} alt={card.lastname} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px]">No Img</div>
+                    )}
+                    <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/90 to-transparent">
+                      <div className="text-[9px] text-white/70 uppercase truncate">{card.firstname}</div>
+                      <div className="text-[11px] font-black text-[#AFFF25] uppercase italic leading-none truncate">{card.lastname}</div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="col-span-3 text-center py-10 text-white/40 italic">
+                Aucune carte ne correspond aux filtres.
+              </div>
+            )}
           </div>
-        )}
+
+        </div>
       </div>
     </div>
   );
