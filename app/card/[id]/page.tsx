@@ -25,7 +25,6 @@ export default function CardDetailsPage() {
   const [card, setCard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isFavoriting, setIsFavoriting] = useState(false);
-  const [isHorizontal, setIsHorizontal] = useState(false);
 
   const [tiltStyle, setTiltStyle] = useState({ 
     transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', 
@@ -55,7 +54,7 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE
+  // 🧭 GYROSCOPE (Mathématiques adoucies et optimisées)
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
@@ -86,31 +85,38 @@ export default function CardDetailsPage() {
     } catch (e) { console.error(e); }
   };
 
-  const startGyro = () => { window.addEventListener('deviceorientation', handleOrientation); };
+  const startGyro = () => { 
+    window.addEventListener('deviceorientation', handleOrientation, true); 
+  };
 
   const handleOrientation = (e: DeviceOrientationEvent) => {
-    if (e.gamma === null || e.beta === null) return;
+    if (!e || e.gamma === null || e.beta === null) return;
     
-    let x = e.gamma; 
-    let y = e.beta;  
+    let x = e.gamma; // Inclinaison gauche/droite [-90, 90]
+    let y = e.beta;  // Inclinaison avant/arrière [-180, 180]
     
-    y = y - 45;
-    x = Math.max(-45, Math.min(45, x));
-    y = Math.max(-45, Math.min(45, y)); 
+    // On centre l'axe Y autour d'une prise en main naturelle (environ 45 degrés)
+    let adjustedY = y - 45;
 
-    const rotateY = x * 0.6; 
-    const rotateX = -y * 0.6;
+    // Limites pour éviter les retournements complets de la carte
+    const maxTilt = 25;
+    x = Math.max(-maxTilt, Math.min(maxTilt, x));
+    adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
+
+    // Coefficients multiplicateurs pour adoucir le mouvement
+    const rotateY = x * 0.8; 
+    const rotateX = -adjustedY * 0.8;
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1, 1, 1)`,
       transition: 'transform 0.1s ease-out'
     });
 
-    const glareX = (x / 45) * 100;
-    const glareY = (y / 45) * 100;
+    const glareX = (x / maxTilt) * 100;
+    const glareY = (adjustedY / maxTilt) * 100;
     setGlareStyle({
-      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
-      opacity: Math.max(0.1, Math.abs(x) / 45),
+      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.3) 0%, transparent 60%)`,
+      opacity: Math.max(0.1, Math.abs(x) / maxTilt),
       transition: 'opacity 0.1s ease-out'
     });
   };
@@ -139,7 +145,7 @@ export default function CardDetailsPage() {
     const glareX = (x / rect.width) * 100; 
     const glareY = (y / rect.height) * 100;
     setGlareStyle({
-      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.5) 0%, transparent 50%)`,
+      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.4) 0%, transparent 50%)`,
       opacity: 0.8,
       transition: 'none'
     });
@@ -194,12 +200,13 @@ export default function CardDetailsPage() {
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* Modification clé ici : top-[104px] (88px + 16px) et largeur réduite pour les petits écrans */}
-      <div className="fixed top-[104px] left-0 w-full flex flex-col items-center z-10 perspective-1000 pointer-events-none">
+      {/* 🚀 Ligne Modifiée : top-[74px] */}
+      <div className="fixed top-[74px] left-0 w-full flex flex-col items-center z-10 perspective-1000 pointer-events-none">
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          className={`relative w-[75%] max-w-[300px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto ${isHorizontal ? 'aspect-[1.55]' : 'aspect-[3/4]'}`}
+          // 🚀 Ligne Modifiée : On enlève les aspect-ratios fixes
+          className="relative w-[75%] max-w-[300px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleLeave}
           onTouchMove={handleTouchMove}
@@ -207,11 +214,13 @@ export default function CardDetailsPage() {
           onTouchCancel={handleLeave}
         >
           {card.image_url ? (
-            <img src={card.image_url} onLoad={(e) => setIsHorizontal(e.currentTarget.naturalWidth > e.currentTarget.naturalHeight)} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="w-full h-full object-cover border border-white/10" alt="Card" />
-          ) : <div className="w-full h-full bg-white/5 flex items-center justify-center pointer-events-none">No Image</div>}
+            // 🚀 Ligne Modifiée : w-full h-auto pour épouser la forme de l'image
+            <img src={card.image_url} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="block w-full h-auto object-contain border border-white/10" alt="Card" />
+          ) : <div className="w-full aspect-[3/4] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>}
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
         </div>
 
+        {/* Bouton Gyroscope collé à la carte pour iOS */}
         {showGyroButton && (
           <button onClick={requestGyroPermission} className="pointer-events-auto mt-8 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
             <Smartphone size={16} /> Activer la 3D
@@ -220,8 +229,8 @@ export default function CardDetailsPage() {
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
-      {/* Modification clé ici : mt-[540px] pour ne pas remonter sur l'image */}
-      <div className="relative z-30 w-full mt-[540px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
+      {/* 🚀 Ligne Modifiée : mt-[500px] */}
+      <div className="relative z-30 w-full mt-[500px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
