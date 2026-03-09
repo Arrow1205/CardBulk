@@ -29,7 +29,7 @@ export default function StatsPage() {
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // NOUVEAU : Toggle Nombre vs Valeur €
+  // Toggle Nombre vs Valeur €
   const [displayMode, setDisplayMode] = useState<'count' | 'value'>('count');
 
   // Filtres (Identiques à la collection)
@@ -101,8 +101,6 @@ export default function StatsPage() {
   // ==========================================
   // GRAPHIQUE ANNEAUX IMBRIQUÉS (Nested Doughnut)
   // ==========================================
-  // Pour simuler des barres de progression, on crée un dataset par catégorie
-  // Chaque dataset a 2 valeurs : [Valeur de la catégorie, Reste (Max - Valeur)]
   const maxScaleValue = totalCardsVal > 0 ? totalCardsVal : 1; 
 
   const doughnutData = {
@@ -138,9 +136,12 @@ export default function StatsPage() {
         }
       },
       tooltip: {
+        // CORRECTION TYPESCRIPT : On filtre proprement les tooltips de la zone "vide" (index 1)
+        filter: function(tooltipItem: any) {
+          return tooltipItem.dataIndex !== 1;
+        },
         callbacks: {
           label: function(context: any) {
-            if (context.dataIndex === 1) return null; // Ne pas afficher de tooltip sur la partie vide
             const valueLabel = displayMode === 'value' ? `${context.raw.toLocaleString('fr-FR')} €` : `${context.raw} cartes`;
             return ` ${context.dataset.label} : ${valueLabel}`;
           }
