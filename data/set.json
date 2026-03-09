@@ -4,66 +4,67 @@
       "name": "Topps",
       "sports": {
         "football_soccer": [
-          "Topps Chrome",
-          "Topps Chrome Sapphire",
-          "Topps Finest",
-          "Topps Deco",
-          "Topps Merlin",
-          "Topps Pristine",
-          "Topps Match Attax",
-          "Topps Bowman Chrome",
-          "Topps Museum Collection",
-          "Topps Tier One",
-          "Topps Dynasty",
-          "Topps Merlin",
-          "Topps Stadium Club",
-          "Topps UEFA Club Competitions",
-          "Topps Bundesliga",
-          "Topps MLS",
-          "Topps Living set",
-          "Topps Now"
+          "Chrome",
+          "Chrome Sapphire",
+          "Finest",
+          "Deco",
+          "Merlin",
+          "Pristine",
+          "Match Attax",
+          "Bowman Chrome",
+          "Museum Collection",
+          "Tier One",
+          "Dynasty",
+          "Merlin",
+          "Stadium Club",
+          "UEFA Club Competitions",
+          "Bundesliga",
+          "MLS",
+          "Living set",
+          "Now"
+          "Summer Signing"
         ],
        
         "tennis": [
-          "Topps Chrome",
-          "Topps Chrome Sapphire",
-          "Topps Royalty",
-          "Topps Graphite",
-          "Topps Now"
+          "Chrome",
+          "Chrome Sapphire",
+          "Royalty",
+          "Graphite",
+          "Now"
         ],
 
        
         "basketball": [
-          "Topps Chrome",
-          "Topps Finest",
-          "Topps Living set",
-          "Topps Now",
-          "Topps Midnight"
+          "Chrome",
+          "Finest",
+          "Living set",
+          "Now",
+          "Midnight"
         ],
 
     
         "basketball_nba": [
-          "Topps Series 1",
-          "Topps Series 2",
-          "Topps Update",
-          "Topps Chrome",
-          "Topps Chrome Sapphire",
-          "Topps Finest",
+          "Series 1",
+          "Series 2",
+          "Update",
+          "Chrome",
+          "Chrome Sapphire",
+          "Finest",
           "Bowman",
           "Bowman Chrome",
           "Bowman Draft",
-          "Topps Heritage",
-          "Topps Stadium Club",
-          "Topps Allen & Ginter",
-          "Topps Tribute",
-          "Topps Dynasty",
-          "Topps Living set",
-          "Topps Now"
+          "Heritage",
+          "Stadium Club",
+          "Allen & Ginter",
+          "Tribute",
+          "Dynasty",
+          "Living set",
+          "Now"
         ],
         "american_football": [
-          "Topps Chrome (legacy)",
-          "Topps Finest (legacy)",
-          "Topps Triple Threads (legacy)"
+          "Chrome (legacy)",
+          "Finest (legacy)",
+          "Triple Threads (legacy)"
         ]
       }
     },
@@ -120,9 +121,9 @@
       "name": "Upper Deck",
       "sports": {
         "hockey_nhl": [
-          "Upper Deck Series 1",
-          "Upper Deck Series 2",
-          "Upper Deck Extended",
+          "Series 1",
+          "Series 2",
+          "Extended",
           "SP Authentic",
           "The Cup",
           "Trilogy",
@@ -143,37 +144,37 @@
     {
       "name": "Leaf",
       "sports": {
-        "multi_sport": [
-          "Leaf Metal",
-          "Leaf Trinity",
-          "Leaf Pro Set",
-          "Leaf Valiant",
-          "Leaf Ultimate Draft"
+        "tennis": [
+          "Metal",
+          "Trinity",
+          "Pro Set",
+          "Valiant",
+          "Ultimate Draft"
         ]
-      }
+             }
     },
     {
       "name": "DAKA",
       "sports": {
         "football_soccer": [
-          "DAKA Croatia",
-          "DAKA Croatia",
-          "DAKA Serbia",
-          "DAKA Belgium",
-          "DAKA Nederland",
-          "DAKA Juventus",
-          "DAKA Fc Barcelone",
-          "DAKA Real Madrid",
-          "DAKA Ajax Amsterdam",
-          "DAKA AC Milan",
-          "DAKA Manchester City",
-          "DAKA Liverpool",
-          "DAKA Bayer Leverkusen",
-          "DAKA Espanyol",
-          "DAKA Eintracht Franckfort",
-          "DAKA Atelico Madrid",
-          "DAKA Belgium",
-          "DAKA National Team Editions"
+          "Croatia",
+          "Croatia",
+          "Serbia",
+          "Belgium",
+          "Nederland",
+          "Juventus",
+          "Fc Barcelone",
+          "Real Madrid",
+          "Ajax Amsterdam",
+          "AC Milan",
+          "Manchester City",
+          "Liverpool",
+          "Bayer Leverkusen",
+          "Espanyol",
+          "Eintracht Franckfort",
+          "Atelico Madrid",
+          "Belgium",
+          "National Team Editions"
         ]
       }
     }

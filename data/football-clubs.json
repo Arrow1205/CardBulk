@@ -664,6 +664,11 @@
     "name": "Lyon",
     "slug": "lyon"
   },
+    {
+    "id": "lille",
+    "name": "lille OSC",
+    "slug": "lille"
+  },
   {
     "id": "m-tel-aviv",
     "name": "M Tel Aviv",
@@ -911,7 +916,7 @@
   },
   {
     "id": "rce-lens",
-    "name": "Rce Lens",
+    "name": "Rc Lens",
     "slug": "rce-lens"
   },
   {
