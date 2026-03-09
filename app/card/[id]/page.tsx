@@ -42,10 +42,10 @@ export default function CardDetailsPage() {
 
   useEffect(() => { fetchCard(); }, [cardId]);
 
-  // 🚀 VRAIE CONNEXION SUPABASE POUR VERCEL
+  // 🚀 VRAIE CONNEXION SUPABASE
   const fetchCard = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return router.push('/login'); // Sécurité activée
+    if (!user) return router.push('/login'); 
     
     const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
     if (data) setCard(data); 
@@ -55,10 +55,11 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE (Tonalité 0.6)
+  // 🧭 GYROSCOPE (Amélioré)
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+      // Détection iOS 13+
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         const savedPermission = localStorage.getItem('gyro_permission');
         if (savedPermission === 'granted') {
@@ -67,6 +68,7 @@ export default function CardDetailsPage() {
           setShowGyroButton(true);
         }
       } else {
+        // Android ou vieux iOS : on lance direct
         startGyro();
       }
     }
@@ -75,11 +77,13 @@ export default function CardDetailsPage() {
 
   const requestGyroPermission = async () => {
     try {
-      const permission = await (DeviceOrientationEvent as any).requestPermission();
-      if (permission === 'granted') {
-        localStorage.setItem('gyro_permission', 'granted');
-        setShowGyroButton(false);
-        startGyro();
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        const permission = await (DeviceOrientationEvent as any).requestPermission();
+        if (permission === 'granted') {
+          localStorage.setItem('gyro_permission', 'granted');
+          setShowGyroButton(false);
+          startGyro();
+        }
       }
     } catch (e) { console.error(e); }
   };
@@ -88,17 +92,23 @@ export default function CardDetailsPage() {
 
   const handleOrientation = (e: DeviceOrientationEvent) => {
     if (e.gamma === null || e.beta === null) return;
-    let x = e.gamma; let y = e.beta;  
     
+    let x = e.gamma; // Inclinaison Gauche/Droite
+    let y = e.beta;  // Inclinaison Avant/Arrière
+    
+    // On centre par rapport à une tenue naturelle du téléphone (environ 45 degrés d'inclinaison)
+    y = y - 45;
+
+    // On limite les valeurs pour éviter que la carte ne se retourne complètement
     x = Math.max(-45, Math.min(45, x));
-    y = Math.max(-45, Math.min(45, y - 60)); 
+    y = Math.max(-45, Math.min(45, y)); 
 
     const rotateY = x * 0.6; 
     const rotateX = -y * 0.6;
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1, 1, 1)`,
-      transition: 'transform 0.3s ease-out'
+      transition: 'transform 0.1s ease-out' // Transition plus courte pour une meilleure réactivité du gyroscope
     });
 
     const glareX = (x / 45) * 100;
@@ -106,7 +116,7 @@ export default function CardDetailsPage() {
     setGlareStyle({
       background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
       opacity: Math.max(0.1, Math.abs(x) / 45),
-      transition: 'opacity 0.3s ease-out'
+      transition: 'opacity 0.1s ease-out'
     });
   };
 
@@ -115,11 +125,15 @@ export default function CardDetailsPage() {
   // ==========================================
   const handleMove = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
+    
+    // Si l'utilisateur touche l'écran, on coupe le gyroscope temporairement
     window.removeEventListener('deviceorientation', handleOrientation);
 
     const rect = cardRef.current.getBoundingClientRect();
-    const x = clientX - rect.left; const y = clientY - rect.top;  
-    const centerX = rect.width / 2; const centerY = rect.height / 2;
+    const x = clientX - rect.left; 
+    const y = clientY - rect.top;  
+    const centerX = rect.width / 2; 
+    const centerY = rect.height / 2;
     
     const rotateX = ((y - centerY) / centerY) * -12; 
     const rotateY = ((x - centerX) / centerX) * 12;
@@ -129,7 +143,8 @@ export default function CardDetailsPage() {
       transition: 'none' 
     });
     
-    const glareX = (x / rect.width) * 100; const glareY = (y / rect.height) * 100;
+    const glareX = (x / rect.width) * 100; 
+    const glareY = (y / rect.height) * 100;
     setGlareStyle({
       background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.5) 0%, transparent 50%)`,
       opacity: 0.8,
@@ -141,8 +156,11 @@ export default function CardDetailsPage() {
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => handleMove(e.touches[0].clientX, e.touches[0].clientY);
 
   const handleLeave = () => {
+    // A la fin du tactile, on relance le gyroscope s'il est autorisé
     const savedPermission = localStorage.getItem('gyro_permission');
-    if (savedPermission === 'granted') startGyro();
+    if (savedPermission === 'granted' || typeof (DeviceOrientationEvent as any).requestPermission !== 'function') {
+      startGyro();
+    }
 
     setTiltStyle({
       transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
@@ -151,7 +169,6 @@ export default function CardDetailsPage() {
     setGlareStyle(prev => ({ ...prev, opacity: 0, transition: 'opacity 0.6s ease-out' }));
   };
 
-  // 🚀 VRAIE SAUVEGARDE DES FAVORIS
   const toggleFavorite = async () => {
     if (!card || card.is_wishlist) return;
     setIsFavoriting(true);
@@ -178,14 +195,14 @@ export default function CardDetailsPage() {
         {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
       </div>
 
-      {/* 🔝 HEADER FIXE (Transparent et interactif) */}
+      {/* 🔝 HEADER FIXE */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      <div className="fixed top-[110px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none">
+      {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN (Correction du layout appliquée ici !) */}
+      <div className="fixed inset-0 pt-[25px] w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none">
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
@@ -202,7 +219,7 @@ export default function CardDetailsPage() {
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
         </div>
 
-        {/* Bouton Gyroscope collé à la carte */}
+        {/* Bouton Gyroscope collé à la carte pour iOS */}
         {showGyroButton && (
           <button onClick={requestGyroPermission} className="pointer-events-auto mt-8 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
             <Smartphone size={16} /> Activer la 3D
@@ -210,7 +227,7 @@ export default function CardDetailsPage() {
         )}
       </div>
 
-      {/* 📄 SECTION INFORMATIONS (Arrêt sous le header à 88px) */}
+      {/* 📄 SECTION INFORMATIONS */}
       <div className="relative z-30 w-full mt-[460px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">

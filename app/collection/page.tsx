@@ -17,24 +17,8 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'F1': { image: 'F1', label: 'Formule 1' }
 };
 
-const SPORT_FOLDER_MAP: Record<string, string> = {
-  'SOCCER': 'foot',
-  'BASKETBALL': 'NBA',
-  'BASEBALL': 'MLB',
-  'NFL': 'NFL',
-  'NHL': 'NHL'
-};
-
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
-
-const getClubLogoUrl = (sport: string, clubName?: string) => {
-  if (!clubName) return null;
-  const folder = SPORT_FOLDER_MAP[sport];
-  if (!folder) return null;
-  const formattedClubName = clubName.replace(/\s+/g, '-');
-  return `/asset/logo-club/${folder}/${formattedClubName}.svg`;
-};
 
 export default function CollectionPage() {
   const router = useRouter();
@@ -60,6 +44,9 @@ export default function CollectionPage() {
   const [cards, setCards] = useState<any[]>([]);
   const [folders, setFolders] = useState<any[]>([]);
 
+  // État pour la grille Pinterest (détecte si une image est horizontale)
+  const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     fetchCollection();
   }, []);
@@ -72,9 +59,11 @@ export default function CollectionPage() {
       return;
     }
 
-    // Récupérer les cartes de l'utilisateur
+    // Récupérer les cartes en excluant la Wishlist !
     const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id);
-    if (cardsData) setCards(cardsData);
+    if (cardsData) {
+      setCards(cardsData.filter(c => c.is_wishlist !== true));
+    }
 
     // Récupérer les dossiers de l'utilisateur
     const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
@@ -87,7 +76,6 @@ export default function CollectionPage() {
   const otherFolders = folders.filter(f => !f.is_favorite);
   const currentFolder = folders.find(f => f.id === activeFolderId);
 
-  // 🧮 Calculer le nombre de cartes par dossier
   const getFolderCardCount = (folderId: string) => {
     return cards.filter(card => card.folder_id === folderId).length;
   };
@@ -120,10 +108,7 @@ export default function CollectionPage() {
     const folder = folders.find(f => f.id === folderId);
     if (!folder) return;
     
-    // Mise à jour immédiate pour l'interface
     setFolders(folders.map(f => f.id === folderId ? { ...f, is_favorite: !f.is_favorite } : f));
-    
-    // Enregistrement en base
     await supabase.from('folders').update({ is_favorite: !folder.is_favorite }).eq('id', folderId);
   };
 
@@ -134,16 +119,21 @@ export default function CollectionPage() {
       await supabase.from('folders').delete().eq('id', folderId);
     }
   };
-  // ==================================
 
-  // Écran de chargement Global
+  // Permet de détecter la taille de l'image pour la grille Pinterest
+  const handleImageLoad = (id: string, e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    if (naturalWidth > naturalHeight) {
+      setHorizontalCards(prev => ({ ...prev, [id]: true }));
+    }
+  };
+
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
   // ==========================================
   // BLOC RÉUTILISABLE : FILTRES + GRILLE CARTES
   // ==========================================
   const renderCardsAndFilters = () => {
-    // Si on est dans un dossier, on ne prend que les cartes de ce dossier
     const baseCards = activeFolderId ? cards.filter(c => c.folder_id === activeFolderId) : cards;
 
     const uniqueSports = new Set(baseCards.map(c => c.sport));
@@ -264,35 +254,33 @@ export default function CollectionPage() {
           )}
         </div>
 
-        {/* 3. GRILLE DE CARTES FILTRÉES */}
-        <div className="px-6 grid grid-cols-2 gap-4 pb-20">
+        {/* 3. GRILLE DE CARTES PINTEREST */}
+        <div className="px-6 grid grid-cols-2 gap-4 pb-20 auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
-              const logoUrl = getClubLogoUrl(card.sport, card.club_name);
+              // Si la carte est détectée comme horizontale, on lui donne la classe col-span-2
+              const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
 
               return (
-                <div key={card.id} onClick={() => router.push(`/card/${card.id}`)} className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform">
+                <div 
+                  key={card.id} 
+                  onClick={() => router.push(`/card/${card.id}`)} 
+                  className={`relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
+                >
                   {card.image_url ? (
-                    <img src={card.image_url} alt={card.lastname} className="w-full h-full object-cover opacity-80" />
+                    <img 
+                      src={card.image_url} 
+                      alt={card.lastname} 
+                      onLoad={(e) => handleImageLoad(card.id, e)}
+                      className="w-full h-full object-cover opacity-80" 
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">Pas d'image</div>
-                  )}
-                  
-                  {logoUrl && (
-                    <div className="absolute top-2 right-2 w-8 h-8 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center p-1.5 border border-white/20 z-10">
-                      <img src={logoUrl} alt={card.club_name} className="w-full h-full object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                    </div>
                   )}
 
                   <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/90 to-transparent">
                     <div className="text-xs text-white/70 uppercase">{card.firstname}</div>
                     <div className="text-lg font-black text-[#AFFF25] uppercase italic leading-none">{card.lastname}</div>
-                  </div>
-                  
-                  <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-                    {card.is_patch && <span className="w-2.5 h-2.5 rounded-full bg-[#1E3A8A] border border-white/20 shadow-md"></span>}
-                    {card.is_auto && <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 border border-white/20 shadow-md"></span>}
-                    {card.is_numbered && <span className="w-2.5 h-2.5 rounded-full bg-white border border-black/20 shadow-md"></span>}
                   </div>
                 </div>
               );
@@ -314,7 +302,6 @@ export default function CollectionPage() {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
         
-        {/* HEADER DOSSIER AVEC ACTIONS */}
         <div className="pt-8 pb-4 px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 overflow-hidden">
             <button 
@@ -358,7 +345,7 @@ export default function CollectionPage() {
       
       {/* HEADER & SEARCH */}
       <div className="pt-8 pb-4">
-        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter">Ma Collection</h1>
+        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">Ma Collection</h1>
         
         <div className="relative mx-6 mb-6">
           <input 
