@@ -76,7 +76,7 @@ export default function CollectionPage() {
   const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
 
   // ==========================================
-  // NOUVEAU : STATES POUR LE MODE SÉLECTION
+  // STATES POUR LE MODE SÉLECTION
   // ==========================================
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
@@ -89,10 +89,21 @@ export default function CollectionPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
 
-    const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id);
+    // AJOUT ICI : .order('created_at', { ascending: false }) pour avoir les plus récentes en premier
+    const { data: cardsData } = await supabase
+      .from('cards')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+      
     if (cardsData) setCards(cardsData.filter(c => c.is_wishlist !== true));
 
-    const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
+    const { data: foldersData } = await supabase
+      .from('folders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true });
+      
     if (foldersData) setFolders(foldersData);
 
     setLoading(false);
@@ -141,7 +152,7 @@ export default function CollectionPage() {
   };
 
   // ==========================================
-  // NOUVELLES FONCTIONS : GESTION SÉLECTION CARTES
+  // GESTION SÉLECTION CARTES
   // ==========================================
   const handleStartSelection = () => {
     if (!activeFolderId) return;
@@ -399,7 +410,7 @@ export default function CollectionPage() {
           </div>
         </div>
 
-        {/* NOUVEAU BOUTON : Ajouter / Gérer les cartes */}
+        {/* BOUTON : Ajouter / Gérer les cartes */}
         <div className="px-6 pb-4">
           <button 
             onClick={handleStartSelection} 

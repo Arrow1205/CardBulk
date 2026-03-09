@@ -13,12 +13,11 @@ const SPORT_FOLDERS: Record<string, string> = {
   'NHL': 'NHL'
 };
 
-// Fonction utilitaire pour "slugifier" le nom du club de la DB afin de le comparer à l'URL
 const slugify = (text: string) => {
   return text.toString().toLowerCase().trim()
-    .replace(/\s+/g, '-')       // Remplace les espaces par -
-    .replace(/[^\w\-]+/g, '')   // Supprime les caractères non-alphanumériques
-    .replace(/\-\-+/g, '-');    // Remplace les multiples - par un seul
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
 };
 
 export default function ClubPage() {
@@ -28,6 +27,9 @@ export default function ClubPage() {
 
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // NOUVEAU : State pour forcer la détection des cartes horizontales
+  const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
 
   // Filtres
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
@@ -42,16 +44,21 @@ export default function ClubPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
 
-    // On récupère toutes les cartes de l'utilisateur
     const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
     
     if (data) {
-      // On filtre pour ne garder que les cartes dont le nom du club "slugifié" correspond au slug de l'URL
       const clubCards = data.filter(c => c.club_name && slugify(c.club_name) === slug && !c.is_wishlist);
       setCards(clubCards);
     }
     
     setLoading(false);
+  };
+
+  // NOUVEAU : Fonction qui détecte si l'image est horizontale au chargement
+  const handleImageLoad = (id: string, e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) {
+      setHorizontalCards(prev => ({ ...prev, [id]: true }));
+    }
   };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
@@ -65,16 +72,13 @@ export default function ClubPage() {
     );
   }
 
-  // Informations générales du club (déduites de la première carte trouvée)
   const firstCard = cards[0];
   const clubName = firstCard.club_name;
   const sportFolder = SPORT_FOLDERS[firstCard.sport] || 'foot';
   const logoUrl = `/asset/logo-club/${sportFolder}/${slug}.svg`;
 
-  // Gestion des filtres : Liste unique des joueurs de ce club
   const uniquePlayers = Array.from(new Set(cards.map(c => `${c.firstname || ''} ${c.lastname || ''}`.trim()))).filter(Boolean);
 
-  // Cartes filtrées
   const filteredCards = cards.filter(card => {
     const fullName = `${card.firstname || ''} ${card.lastname || ''}`.trim();
     const playerMatch = !selectedPlayer || fullName === selectedPlayer;
@@ -105,7 +109,6 @@ export default function ClubPage() {
           className="w-full h-full object-cover blur-[60px] opacity-40 scale-150 saturate-150"
           onError={(e) => e.currentTarget.style.display = 'none'}
         />
-        {/* Dégradé pour fondre l'image dans le fond de la page */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040221]/80 to-[#040221]"></div>
       </div>
 
@@ -131,7 +134,6 @@ export default function ClubPage() {
 
           {/* FILTRES (Dropdowns) */}
           <div className="flex gap-3 mb-6 relative z-20">
-            {/* Overlay pour fermer les menus */}
             {openDropdown && <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)}></div>}
 
             {/* Dropdown Joueurs */}
@@ -183,19 +185,27 @@ export default function ClubPage() {
             </div>
           </div>
 
-          {/* GRILLE DE CARTES (3 Colonnes comme sur tes captures) */}
+          {/* GRILLE DE CARTES (3 Colonnes - Gestion des cartes horizontales) */}
           <div className="grid grid-cols-3 gap-2">
             {filteredCards.length > 0 ? (
               filteredCards.map(card => {
-                const isHorizontal = card.is_horizontal;
+                // NOUVEAU : On vérifie soit le state calculé par l'image, soit la base de données
+                const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
+                
                 return (
                   <div 
                     key={card.id} 
                     onClick={() => router.push(`/card/${card.id}`)} 
+                    // Si isHorizontal = true -> col-span-2. Sinon -> col-span-1
                     className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
                   >
                     {card.image_url ? (
-                      <img src={card.image_url} alt={card.lastname} className="w-full h-full object-cover" />
+                      <img 
+                        src={card.image_url} 
+                        alt={card.lastname} 
+                        onLoad={(e) => handleImageLoad(card.id, e)} // Appel au moment du chargement de l'image
+                        className="w-full h-full object-cover" 
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px]">No Img</div>
                     )}
