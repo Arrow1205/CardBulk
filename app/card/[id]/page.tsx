@@ -54,7 +54,7 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE (Mathématiques adoucies et optimisées)
+  // 🧭 GYROSCOPE
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
@@ -92,20 +92,19 @@ export default function CardDetailsPage() {
   const handleOrientation = (e: DeviceOrientationEvent) => {
     if (!e || e.gamma === null || e.beta === null) return;
     
-    let x = e.gamma; // Inclinaison gauche/droite [-90, 90]
-    let y = e.beta;  // Inclinaison avant/arrière [-180, 180]
+    let x = e.gamma; 
+    let y = e.beta;  
     
-    // On centre l'axe Y autour d'une prise en main naturelle (environ 45 degrés)
+    // Le téléphone est généralement tenu à 45°
     let adjustedY = y - 45;
 
-    // Limites pour éviter les retournements complets de la carte
-    const maxTilt = 25;
+    // Bloquer les angles trop forts
+    const maxTilt = 30;
     x = Math.max(-maxTilt, Math.min(maxTilt, x));
     adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
 
-    // Coefficients multiplicateurs pour adoucir le mouvement
-    const rotateY = x * 0.8; 
-    const rotateX = -adjustedY * 0.8;
+    const rotateY = x * 0.7; 
+    const rotateX = -adjustedY * 0.7;
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1, 1, 1)`,
@@ -193,20 +192,20 @@ export default function CardDetailsPage() {
         {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
       </div>
 
-      {/* 🔝 HEADER FIXE */}
+      {/* 🔝 HEADER FIXE (Hauteur 88px) */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* 🚀 Ligne Modifiée : top-[74px] */}
-      <div className="fixed top-[74px] left-0 w-full flex flex-col items-center z-10 perspective-1000 pointer-events-none">
+      {/* 🚀 Modifié : Top à 74px (88px + 16px d'écart) */}
+      <div className="fixed top-[744px] left-0 w-full flex flex-col items-center z-10 perspective-1000 pointer-events-none">
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          // 🚀 Ligne Modifiée : On enlève les aspect-ratios fixes
-          className="relative w-[75%] max-w-[300px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
+          // 🚀 Modifié : Le conteneur s'adapte à la taille de l'image, sans forcer la largeur
+          className="relative flex items-center justify-center shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleLeave}
           onTouchMove={handleTouchMove}
@@ -214,23 +213,24 @@ export default function CardDetailsPage() {
           onTouchCancel={handleLeave}
         >
           {card.image_url ? (
-            // 🚀 Ligne Modifiée : w-full h-auto pour épouser la forme de l'image
-            <img src={card.image_url} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="block w-full h-auto object-contain border border-white/10" alt="Card" />
-          ) : <div className="w-full aspect-[3/4] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>}
+            // 🚀 Modifié : Hauteur max absolue (420px), et largeur auto pour ne JAMAIS couper
+            <img src={card.image_url} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="block max-h-[420px] max-w-[85vw] w-auto h-auto object-contain border border-white/10" alt="Card" />
+          ) : <div className="w-[250px] h-[350px] max-w-[85vw] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>}
+          
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
         </div>
 
         {/* Bouton Gyroscope collé à la carte pour iOS */}
         {showGyroButton && (
-          <button onClick={requestGyroPermission} className="pointer-events-auto mt-8 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
+          <button onClick={requestGyroPermission} className="pointer-events-auto mt-6 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
             <Smartphone size={16} /> Activer la 3D
           </button>
         )}
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
-      {/* 🚀 Ligne Modifiée : mt-[500px] */}
-      <div className="relative z-30 w-full mt-[500px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
+      {/* 🚀 Modifié : Démarre en dessous de la zone maximale de la carte (mt-[520px]) */}
+      <div className="relative z-30 w-full mt-[520px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
