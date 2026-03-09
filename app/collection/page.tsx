@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Check, Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Check, Trash2, Loader2 } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -15,12 +17,31 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'F1': { image: 'F1', label: 'Formule 1' }
 };
 
+const SPORT_FOLDER_MAP: Record<string, string> = {
+  'SOCCER': 'foot',
+  'BASKETBALL': 'NBA',
+  'BASEBALL': 'MLB',
+  'NFL': 'NFL',
+  'NHL': 'NHL'
+};
+
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
+const getClubLogoUrl = (sport: string, clubName?: string) => {
+  if (!clubName) return null;
+  const folder = SPORT_FOLDER_MAP[sport];
+  if (!folder) return null;
+  const formattedClubName = clubName.replace(/\s+/g, '-');
+  return `/asset/logo-club/${folder}/${formattedClubName}.svg`;
+};
+
 export default function CollectionPage() {
+  const router = useRouter();
+  
   const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers'>('cartes');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
   
   // Filtres
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
@@ -29,13 +50,9 @@ export default function CollectionPage() {
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
   
-  // États des Dropdowns
   const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | null>(null);
-  
-  // Navigation dans un dossier
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
-  // Popin
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [newFolderType, setNewFolderType] = useState('Binder');
@@ -44,55 +61,97 @@ export default function CollectionPage() {
   const [folders, setFolders] = useState<any[]>([]);
 
   useEffect(() => {
-    setCards([
-      { id: '1', firstname: 'Zinédine', lastname: 'Zidane', sport: 'SOCCER', brand: 'Panini', is_auto: true, is_patch: false, is_numbered: false, image_url: 'https://images.unsplash.com/photo-1614632537190-23e4146777db?q=80&w=400&auto=format&fit=crop' },
-      { id: '2', firstname: 'Michael', lastname: 'Jordan', sport: 'BASKETBALL', brand: 'Upper Deck', is_auto: false, is_patch: true, is_numbered: false, image_url: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?q=80&w=400&auto=format&fit=crop' },
-      { id: '3', firstname: 'Carlos', lastname: 'Alcaraz', sport: 'TENNIS', brand: 'Topps', is_auto: false, is_patch: false, is_numbered: true, image_url: 'https://images.unsplash.com/photo-1622279457486-640c4cb686a1?q=80&w=400&auto=format&fit=crop' },
-    ]);
-    
-    setFolders([
-      { id: 'f1', name: 'PC Real Madrid', type: 'Binder', is_favorite: true, card_count: 42 },
-      { id: 'f2', name: 'Rookies 2024', type: 'Deck', is_favorite: true, card_count: 15 },
-      { id: 'f3', name: 'Vrac à trier', type: 'Boîte', is_favorite: false, card_count: 312 },
-      { id: 'f4', name: 'Sorare', type: 'Digital', is_favorite: false, card_count: 8 },
-    ]);
+    fetchCollection();
   }, []);
+
+  // 🚀 VRAIE CONNEXION SUPABASE
+  const fetchCollection = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    // Récupérer les cartes de l'utilisateur
+    const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id);
+    if (cardsData) setCards(cardsData);
+
+    // Récupérer les dossiers de l'utilisateur
+    const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
+    if (foldersData) setFolders(foldersData);
+
+    setLoading(false);
+  };
 
   const favoriteFolders = folders.filter(f => f.is_favorite);
   const otherFolders = folders.filter(f => !f.is_favorite);
   const currentFolder = folders.find(f => f.id === activeFolderId);
 
-  // === ACTIONS SUR LES DOSSIERS ===
-  const handleCreateFolder = (e: React.FormEvent) => {
+  // 🧮 Calculer le nombre de cartes par dossier
+  const getFolderCardCount = (folderId: string) => {
+    return cards.filter(card => card.folder_id === folderId).length;
+  };
+
+  // === ACTIONS SUR LES DOSSIERS (SUPABASE) ===
+  const handleCreateFolder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newFolderName.trim()) return;
-    const newFolder = { id: Date.now().toString(), name: newFolderName, type: newFolderType, is_favorite: false, card_count: 0 };
-    setFolders([...folders, newFolder]);
-    setIsModalOpen(false); setNewFolderName(''); setNewFolderType('Binder');
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase.from('folders').insert([{
+      name: newFolderName,
+      type: newFolderType,
+      user_id: user.id,
+      is_favorite: false
+    }]).select();
+
+    if (data && data.length > 0) {
+      setFolders([...folders, data[0]]);
+    }
+    
+    setIsModalOpen(false); 
+    setNewFolderName(''); 
+    setNewFolderType('Binder');
   };
 
-  const toggleFolderFavorite = (folderId: string) => {
+  const toggleFolderFavorite = async (folderId: string) => {
+    const folder = folders.find(f => f.id === folderId);
+    if (!folder) return;
+    
+    // Mise à jour immédiate pour l'interface
     setFolders(folders.map(f => f.id === folderId ? { ...f, is_favorite: !f.is_favorite } : f));
+    
+    // Enregistrement en base
+    await supabase.from('folders').update({ is_favorite: !folder.is_favorite }).eq('id', folderId);
   };
 
-  const deleteFolder = (folderId: string) => {
+  const deleteFolder = async (folderId: string) => {
     if (window.confirm("Supprimer ce dossier ? (Tes cartes ne seront pas supprimées, elles retourneront dans la collection globale).")) {
       setFolders(folders.filter(f => f.id !== folderId));
       setActiveFolderId(null);
+      await supabase.from('folders').delete().eq('id', folderId);
     }
   };
   // ==================================
+
+  // Écran de chargement Global
+  if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
   // ==========================================
   // BLOC RÉUTILISABLE : FILTRES + GRILLE CARTES
   // ==========================================
   const renderCardsAndFilters = () => {
-    const uniqueSports = new Set(cards.map(c => c.sport));
+    // Si on est dans un dossier, on ne prend que les cartes de ce dossier
+    const baseCards = activeFolderId ? cards.filter(c => c.folder_id === activeFolderId) : cards;
+
+    const uniqueSports = new Set(baseCards.map(c => c.sport));
     const availableSports = SPORT_ORDER.filter(sportKey => uniqueSports.has(sportKey));
     const hasMultipleSports = availableSports.length > 1;
 
-    const filteredCards = cards.filter(card => {
-      const searchMatch = !searchQuery || card.lastname.toLowerCase().includes(searchQuery.toLowerCase()) || card.firstname.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredCards = baseCards.filter(card => {
+      const searchMatch = !searchQuery || card.lastname?.toLowerCase().includes(searchQuery.toLowerCase()) || card.firstname?.toLowerCase().includes(searchQuery.toLowerCase());
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = !selectedBrand || card.brand === selectedBrand;
       const autoMatch = !showAuto || card.is_auto;
@@ -208,21 +267,36 @@ export default function CollectionPage() {
         {/* 3. GRILLE DE CARTES FILTRÉES */}
         <div className="px-6 grid grid-cols-2 gap-4 pb-20">
           {filteredCards.length > 0 ? (
-            filteredCards.map(card => (
-              <div key={card.id} className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform">
-                <img src={card.image_url} alt={card.lastname} className="w-full h-full object-cover opacity-80" />
-                <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/90 to-transparent">
-                  <div className="text-xs text-white/70 uppercase">{card.firstname}</div>
-                  <div className="text-lg font-black text-[#AFFF25] uppercase italic leading-none">{card.lastname}</div>
+            filteredCards.map(card => {
+              const logoUrl = getClubLogoUrl(card.sport, card.club_name);
+
+              return (
+                <div key={card.id} onClick={() => router.push(`/card/${card.id}`)} className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform">
+                  {card.image_url ? (
+                    <img src={card.image_url} alt={card.lastname} className="w-full h-full object-cover opacity-80" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">Pas d'image</div>
+                  )}
+                  
+                  {logoUrl && (
+                    <div className="absolute top-2 right-2 w-8 h-8 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center p-1.5 border border-white/20 z-10">
+                      <img src={logoUrl} alt={card.club_name} className="w-full h-full object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
+                    </div>
+                  )}
+
+                  <div className="absolute bottom-0 left-0 w-full p-3 bg-gradient-to-t from-black/90 to-transparent">
+                    <div className="text-xs text-white/70 uppercase">{card.firstname}</div>
+                    <div className="text-lg font-black text-[#AFFF25] uppercase italic leading-none">{card.lastname}</div>
+                  </div>
+                  
+                  <div className="absolute top-2 left-2 flex flex-col gap-1.5">
+                    {card.is_patch && <span className="w-2.5 h-2.5 rounded-full bg-[#1E3A8A] border border-white/20 shadow-md"></span>}
+                    {card.is_auto && <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 border border-white/20 shadow-md"></span>}
+                    {card.is_numbered && <span className="w-2.5 h-2.5 rounded-full bg-white border border-black/20 shadow-md"></span>}
+                  </div>
                 </div>
-                
-                <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-                  {card.is_patch && <span className="w-2.5 h-2.5 rounded-full bg-[#1E3A8A] border border-white/20 shadow-md"></span>}
-                  {card.is_auto && <span className="w-2.5 h-2.5 rounded-full bg-yellow-500 border border-white/20 shadow-md"></span>}
-                  {card.is_numbered && <span className="w-2.5 h-2.5 rounded-full bg-white border border-black/20 shadow-md"></span>}
-                </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="col-span-2 text-center py-10 text-white/40 italic">
               Aucune carte ne correspond à ces filtres.
@@ -346,7 +420,7 @@ export default function CollectionPage() {
                   <div>
                     <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1">{folder.type}</div>
                     <div className="text-xl font-black text-white leading-tight mb-1">{folder.name}</div>
-                    <div className="text-xs text-[#AFFF25] font-medium">{folder.card_count} carte{folder.card_count > 1 ? 's' : ''}</div>
+                    <div className="text-xs text-[#AFFF25] font-medium">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div>
                   </div>
                 </div>
               ))}
@@ -375,7 +449,7 @@ export default function CollectionPage() {
                   </div>
                   <div>
                     <div className="text-base font-bold text-white leading-tight">{folder.name}</div>
-                    <div className="text-xs text-[#AFFF25] mt-0.5">{folder.card_count} carte{folder.card_count > 1 ? 's' : ''}</div>
+                    <div className="text-xs text-[#AFFF25] mt-0.5">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div>
                   </div>
                 </div>
                 <span className="text-[10px] px-3 py-1 rounded-full bg-white/10 text-white/60 font-bold uppercase tracking-widest">{folder.type}</span>
