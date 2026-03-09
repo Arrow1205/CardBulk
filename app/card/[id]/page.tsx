@@ -197,8 +197,8 @@ export default function CardDetailsPage() {
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* 🚀 TOP EXACTEMENT À 74PX */}
-      <div className="fixed top-[74px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none px-6">
+      {/* 🚀 TOP EXACTEMENT À 16PX */}
+      <div className="fixed top-[16px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none px-6">
         
         {/* 🚀 LE SECRET EST ICI : "max-w-full" sur le conteneur pour empêcher le débordement horizontal */}
         <div 
