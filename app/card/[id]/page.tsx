@@ -17,6 +17,15 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'TENNIS': { image: 'Tennis', label: 'Tennis' }
 };
 
+// NOUVEAU : Mapping entre les sports de la DB et tes noms de dossiers
+const SPORT_FOLDERS: Record<string, string> = {
+  'SOCCER': 'foot', // Par défaut dans le dossier foot (adapter si besoin pour MLS)
+  'BASKETBALL': 'NBA',
+  'BASEBALL': 'MLB',
+  'NFL': 'NFL',
+  'NHL': 'NHL'
+};
+
 export default function CardDetailsPage() {
   const router = useRouter();
   const params = useParams();
@@ -26,7 +35,6 @@ export default function CardDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [isFavoriting, setIsFavoriting] = useState(false);
   
-  // NOUVEAU : State pour gérer l'orientation de la carte
   const [isHorizontal, setIsHorizontal] = useState(false);
 
   const [tiltStyle, setTiltStyle] = useState({ 
@@ -44,7 +52,6 @@ export default function CardDetailsPage() {
 
   useEffect(() => { fetchCard(); }, [cardId]);
 
-  // 🚀 VRAIE CONNEXION SUPABASE
   const fetchCard = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login'); 
@@ -52,7 +59,6 @@ export default function CardDetailsPage() {
     const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
     if (data) {
       setCard(data);
-      // On initialise avec la donnée de la DB si elle existe
       setIsHorizontal(data.is_horizontal || false);
     } 
     else router.push('/collection');
@@ -184,6 +190,10 @@ export default function CardDetailsPage() {
   if (!card) return null;
 
   const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
+  
+  // Récupération du dossier associé au sport (ex: "NBA", "foot")
+  const sportFolder = SPORT_FOLDERS[card.sport] || 'foot'; 
+  
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
   const searchName = card.club_name ? card.club_name.toLowerCase() : '';
   const selectedClub = safeFootballClubs.find((c: any) => searchName === c.name?.toLowerCase() || searchName === c.slug?.toLowerCase() || c.slug?.includes(searchName));
@@ -204,7 +214,6 @@ export default function CardDetailsPage() {
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* 🚀 NOUVEAU : On utilise une template string pour le top dynamiquement en fonction du state */}
       <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} left-0 w-full flex flex-col items-center justify-center z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         
         <div 
@@ -220,7 +229,6 @@ export default function CardDetailsPage() {
           {card.image_url ? (
             <img 
               src={card.image_url} 
-              // NOUVEAU : Sécurité supplémentaire : On vérifie les dimensions réelles au chargement
               onLoad={(e) => {
                 if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) {
                   setIsHorizontal(true);
@@ -246,7 +254,6 @@ export default function CardDetailsPage() {
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
-      {/* 🚀 LAYER EXACTEMENT À 500PX */}
       <div className="relative z-30 w-full mt-[450px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">
@@ -274,7 +281,8 @@ export default function CardDetailsPage() {
           </button>
           {card.club_name && (
             <button onClick={() => router.push(`/club/${clubSlug}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
-              <img src={`/asset/logo-club/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
+              {/* NOUVEAU CHEMIN D'IMAGE INCLUANT LE DOSSIER DU SPORT */}
+              <img src={`/asset/logo-club/${sportFolder}/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
               <span className="text-sm font-medium text-white">{card.club_name}</span>
             </button>
           )}
