@@ -1204,8 +1204,6 @@
     "name": "Zrinjski",
     "slug": "zrinjski"
   }
-
-  [
 { "id": "afghanistan", "name": "Afghanistan", "slug": "afghanistan" },
 { "id": "albania", "name": "Albanie", "slug": "albania" },
 { "id": "algeria", "name": "Algérie", "slug": "algeria" },
@@ -1413,5 +1411,4 @@
 { "id": "yemen", "name": "Yémen", "slug": "yemen" },
 { "id": "zambia", "name": "Zambie", "slug": "zambia" },
 { "id": "zimbabwe", "name": "Zimbabwe", "slug": "zimbabwe" }
-]
 ]
