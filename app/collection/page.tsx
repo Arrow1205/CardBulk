@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2 } from 'lucide-react';
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -21,7 +21,7 @@ const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
 // ==========================================
-// COMPOSANT RECHERCHE (Sorti du composant principal pour éviter le bug du clavier qui se ferme)
+// COMPOSANT RECHERCHE
 // ==========================================
 const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
   <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none">
@@ -31,12 +31,10 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
         placeholder="Rechercher joueur ou club..." 
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        // Ajout de la bordure jaune du thème (border-[#AFFF25])
         className="w-full bg-[#040221] border-2 border-[#AFFF25] rounded-full py-3.5 pl-[20px] pr-[44px] text-white placeholder-white/40 focus:outline-none focus:shadow-[0_0_15px_rgba(175,255,37,0.3)] transition-all shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
       />
       
       <div className="absolute right-[16px] top-1/2 -translate-y-1/2">
-        {/* Loupe ou Croix selon s'il y a du texte */}
         {searchQuery.length === 0 ? (
           <Search className="text-[#AFFF25]" size={20} />
         ) : (
@@ -76,6 +74,12 @@ export default function CollectionPage() {
   const [cards, setCards] = useState<any[]>([]);
   const [folders, setFolders] = useState<any[]>([]);
   const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
+
+  // ==========================================
+  // NOUVEAU : STATES POUR LE MODE SÉLECTION
+  // ==========================================
+  const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
+  const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchCollection();
@@ -136,6 +140,71 @@ export default function CollectionPage() {
     }
   };
 
+  // ==========================================
+  // NOUVELLES FONCTIONS : GESTION SÉLECTION CARTES
+  // ==========================================
+  const handleStartSelection = () => {
+    if (!activeFolderId) return;
+    // On pré-sélectionne les cartes qui sont déjà dans ce dossier
+    const alreadyInFolder = cards.filter(c => c.folder_id === activeFolderId).map(c => c.id);
+    setSelectedForFolder(new Set(alreadyInFolder));
+    setTargetFolderId(activeFolderId);
+    
+    // On sort de la vue "dossier unique" et on bascule sur l'onglet cartes
+    setActiveFolderId(null);
+    setActiveTab('cartes');
+  };
+
+  const toggleCardSelection = (cardId: string) => {
+    setSelectedForFolder(prev => {
+      const next = new Set(prev);
+      if (next.has(cardId)) next.delete(cardId);
+      else next.add(cardId);
+      return next;
+    });
+  };
+
+  const handleCancelSelection = () => {
+    // On annule et on retourne dans le dossier
+    setActiveFolderId(targetFolderId);
+    setTargetFolderId(null);
+    setSelectedForFolder(new Set());
+  };
+
+  const handleConfirmSelection = async () => {
+    if (!targetFolderId) return;
+    const folderId = targetFolderId;
+    
+    // 1. Mise à jour "Optimiste" immédiate pour l'UI
+    const updatedCards = cards.map(c => {
+      // Si la carte est dans la sélection, on lui assigne le dossier
+      if (selectedForFolder.has(c.id)) {
+        return { ...c, folder_id: folderId };
+      } 
+      // Si la carte ÉTAIT dans le dossier mais n'est plus sélectionnée, on l'enlève
+      else if (c.folder_id === folderId && !selectedForFolder.has(c.id)) {
+        return { ...c, folder_id: null };
+      }
+      return c;
+    });
+    setCards(updatedCards);
+    
+    // On ferme le mode sélection et on retourne dans le dossier
+    setActiveFolderId(folderId);
+    setTargetFolderId(null);
+    setSelectedForFolder(new Set());
+
+    // 2. Synchronisation Supabase en arrière-plan
+    // On vide d'abord le dossier (folder_id = null pour les cartes du dossier actuel)
+    await supabase.from('cards').update({ folder_id: null }).eq('folder_id', folderId);
+    
+    // Puis on assigne le dossier aux cartes sélectionnées (si on en a sélectionné au moins une)
+    const selectedArray = Array.from(selectedForFolder);
+    if (selectedArray.length > 0) {
+       await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
+    }
+  };
+
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
   // ==========================================
@@ -167,7 +236,6 @@ export default function CollectionPage() {
       <>
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
-          // Ajout des classes Tailwind pour masquer la scrollbar horizontale
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex gap-3 px-6 pb-2 w-max">
               <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
@@ -188,9 +256,7 @@ export default function CollectionPage() {
         )}
 
         {/* 2. DROPDOWNS : SPÉCIFICITÉS ET MARQUES */}
-        {/* Ajout du z-50 sur le parent pour qu'il passe au-dessus de tout */}
         <div className={`relative z-50 mb-6 px-6 ${!hasMultipleSports ? 'mt-4' : ''}`}>
-          {/* Overlay avec z-[60] pour bloquer les clics en dessous, mais laisser les menus au-dessus */}
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
 
           <div className="flex gap-3">
@@ -204,7 +270,6 @@ export default function CollectionPage() {
             </button>
           </div>
 
-          {/* DROPDOWN SPÉCIFICITÉS (z-[70] pour être par dessus la barre de recherche) */}
           {openDropdown === 'spec' && (
             <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
               {[
@@ -225,7 +290,6 @@ export default function CollectionPage() {
             </div>
           )}
 
-          {/* DROPDOWN MARQUES (z-[70] pour être par dessus la barre de recherche) */}
           {openDropdown === 'brand' && (
             <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
               <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
@@ -258,13 +322,27 @@ export default function CollectionPage() {
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
+              const isSelected = targetFolderId && selectedForFolder.has(card.id);
 
               return (
                 <div 
                   key={card.id} 
-                  onClick={() => router.push(`/card/${card.id}`)} 
-                  className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
+                  // GESTION DU CLIC : Si mode sélection actif, on toggle. Sinon on va sur la carte
+                  onClick={() => targetFolderId ? toggleCardSelection(card.id) : router.push(`/card/${card.id}`)} 
+                  className={`relative rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-transform 
+                    ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}
+                    ${isSelected ? 'ring-2 ring-[#AFFF25] ring-offset-2 ring-offset-[#040221]' : 'bg-white/5 border border-white/10'}
+                  `}
                 >
+                  {/* OVERLAY DE SÉLECTION */}
+                  {isSelected && (
+                    <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center transition-all">
+                       <div className="bg-[#AFFF25] rounded-full p-1.5 shadow-lg">
+                          <Check size={20} className="text-[#040221] stroke-[3]" />
+                       </div>
+                    </div>
+                  )}
+
                   {card.image_url ? (
                     <img 
                       src={card.image_url} 
@@ -276,7 +354,7 @@ export default function CollectionPage() {
                     <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px]">Pas d'image</div>
                   )}
 
-                  <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/90 to-transparent">
+                  <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/90 to-transparent z-10">
                     <div className="text-[9px] text-white/70 uppercase truncate">{card.firstname}</div>
                     <div className="text-sm font-black text-[#AFFF25] uppercase italic leading-none truncate">{card.lastname}</div>
                   </div>
@@ -285,7 +363,7 @@ export default function CollectionPage() {
             })
           ) : (
             <div className="col-span-3 text-center py-10 text-white/40 italic">
-              Aucune carte ne correspond à ces filtres.
+              Aucune carte ne correspond.
             </div>
           )}
         </div>
@@ -321,8 +399,17 @@ export default function CollectionPage() {
           </div>
         </div>
 
+        {/* NOUVEAU BOUTON : Ajouter / Gérer les cartes */}
+        <div className="px-6 pb-4">
+          <button 
+            onClick={handleStartSelection} 
+            className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"
+          >
+            <Plus size={18} /> Gérer les cartes du dossier
+          </button>
+        </div>
+
         {renderCardsAndFilters()}
-        {/* On laisse la barre de recherche accessible ici, puisqu'on est dans un dossier spécifique (et non sur l'onglet principal des dossiers) */}
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
     );
@@ -336,31 +423,37 @@ export default function CollectionPage() {
       
       {/* HEADER */}
       <div className="pt-8 pb-4">
-        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">Ma Collection</h1>
+        {/* On adapte le titre si on est en mode sélection */}
+        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">
+          {targetFolderId ? "Sélection" : "Ma Collection"}
+        </h1>
         
-        <div className="flex justify-center px-6 gap-8 mb-4">
-          <button 
-            onClick={() => setActiveTab('cartes')}
-            className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
-          >
-            Cartes
-            {activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
-          </button>
-          <button 
-            onClick={() => setActiveTab('dossiers')}
-            className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
-          >
-            Dossiers
-            {activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
-          </button>
-        </div>
+        {/* On masque les tabs si on est en mode sélection pour éviter les erreurs de navigation */}
+        {!targetFolderId && (
+          <div className="flex justify-center px-6 gap-8 mb-4">
+            <button 
+              onClick={() => setActiveTab('cartes')}
+              className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
+            >
+              Cartes
+              {activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
+            </button>
+            <button 
+              onClick={() => setActiveTab('dossiers')}
+              className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
+            >
+              Dossiers
+              {activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* VUE CARTES */}
       {activeTab === 'cartes' && renderCardsAndFilters()}
 
       {/* VUE DOSSIERS */}
-      {activeTab === 'dossiers' && (
+      {activeTab === 'dossiers' && !targetFolderId && (
         <div className="animate-in fade-in duration-300">
           
           <div className="px-6 flex justify-between items-center mb-4 mt-2">
@@ -447,7 +540,23 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* Barre de recherche masquée dans l'onglet Dossiers */}
+      {/* POPIN FLOTTANTE DE VALIDATION (Active uniquement en mode sélection) */}
+      {targetFolderId && (
+        <div className="fixed bottom-[180px] left-0 w-full px-6 z-50 pointer-events-none animate-in slide-in-from-bottom-4">
+          <div className="relative w-full max-w-md mx-auto pointer-events-auto bg-[#AFFF25] rounded-2xl p-4 shadow-[0_10px_40px_rgba(175,255,37,0.3)] border border-[#9ee615]">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[#040221] font-black uppercase tracking-widest text-sm">Cartes pour ce dossier</span>
+              <span className="bg-[#040221] text-[#AFFF25] px-3 py-1 rounded-full text-xs font-bold">{selectedForFolder.size} incluse(s)</span>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={handleCancelSelection} className="flex-1 py-3 border border-[#040221]/20 text-[#040221] font-bold rounded-xl uppercase text-xs active:scale-95 transition-transform">Annuler</button>
+              <button onClick={handleConfirmSelection} className="flex-1 py-3 bg-[#040221] text-[#AFFF25] font-bold rounded-xl uppercase text-xs active:scale-95 transition-transform">Confirmer</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Barre de recherche classique (masquée dans les dossiers et inactive pour le mode tab, mais présente sous la popin sélection si on veut chercher pendant la sélection) */}
       {activeTab !== 'dossiers' && (
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
