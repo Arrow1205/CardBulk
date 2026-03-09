@@ -54,7 +54,7 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE
+  // 🧭 GYROSCOPE (Ajusté pour plus de réactivité)
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
@@ -95,16 +95,16 @@ export default function CardDetailsPage() {
     let x = e.gamma; 
     let y = e.beta;  
     
-    // Le téléphone est généralement tenu à 45°
+    // Centrage de l'axe Y (Téléphone tenu à ~45°)
     let adjustedY = y - 45;
 
-    // Bloquer les angles trop forts
     const maxTilt = 30;
     x = Math.max(-maxTilt, Math.min(maxTilt, x));
     adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
 
-    const rotateY = x * 0.7; 
-    const rotateX = -adjustedY * 0.7;
+    // Mouvements amplifiés pour que l'effet soit plus visible
+    const rotateY = x * 0.8; 
+    const rotateX = -adjustedY * 0.8;
 
     setTiltStyle({
       transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1, 1, 1)`,
@@ -114,7 +114,7 @@ export default function CardDetailsPage() {
     const glareX = (x / maxTilt) * 100;
     const glareY = (adjustedY / maxTilt) * 100;
     setGlareStyle({
-      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.3) 0%, transparent 60%)`,
+      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.35) 0%, transparent 60%)`,
       opacity: Math.max(0.1, Math.abs(x) / maxTilt),
       transition: 'opacity 0.1s ease-out'
     });
@@ -144,7 +144,7 @@ export default function CardDetailsPage() {
     const glareX = (x / rect.width) * 100; 
     const glareY = (y / rect.height) * 100;
     setGlareStyle({
-      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.4) 0%, transparent 50%)`,
+      background: `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.5) 0%, transparent 50%)`,
       opacity: 0.8,
       transition: 'none'
     });
@@ -192,20 +192,21 @@ export default function CardDetailsPage() {
         {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
       </div>
 
-      {/* 🔝 HEADER FIXE (Hauteur 88px) */}
+      {/* 🔝 HEADER FIXE */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* 🚀 Modifié : Top à 74px (88px + 16px d'écart) */}
-      <div className="fixed top-[744px] left-0 w-full flex flex-col items-center z-10 perspective-1000 pointer-events-none">
+      {/* 🚀 Modifié : Top à 74px exactement */}
+      <div className="fixed top-[74px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none px-4">
+        
+        {/* 🚀 Modifié : inline-block pour que la div épouse la taille exacte de l'image (Shrink-to-fit) */}
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          // 🚀 Modifié : Le conteneur s'adapte à la taille de l'image, sans forcer la largeur
-          className="relative flex items-center justify-center shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
+          className="relative inline-block shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleLeave}
           onTouchMove={handleTouchMove}
@@ -213,10 +214,18 @@ export default function CardDetailsPage() {
           onTouchCancel={handleLeave}
         >
           {card.image_url ? (
-            // 🚀 Modifié : Hauteur max absolue (420px), et largeur auto pour ne JAMAIS couper
-            <img src={card.image_url} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="block max-h-[420px] max-w-[85vw] w-auto h-auto object-contain border border-white/10" alt="Card" />
-          ) : <div className="w-[250px] h-[350px] max-w-[85vw] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>}
+            // 🚀 Modifié : w-auto h-auto max-h-[420px] max-w-full pour ne pas couper l'image et l'afficher au max
+            <img 
+              src={card.image_url} 
+              style={{ borderRadius: '12px', pointerEvents: 'none' }} 
+              className="block w-auto h-auto max-w-full max-h-[420px] border border-white/10" 
+              alt="Card" 
+            />
+          ) : (
+            <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>
+          )}
           
+          {/* Glare (Lumière) */}
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
         </div>
 
@@ -229,8 +238,8 @@ export default function CardDetailsPage() {
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
-      {/* 🚀 Modifié : Démarre en dessous de la zone maximale de la carte (mt-[520px]) */}
-      <div className="relative z-30 w-full mt-[520px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
+      {/* 🚀 Modifié : mt-[450px] */}
+      <div className="relative z-30 w-full mt-[450px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
