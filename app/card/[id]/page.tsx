@@ -25,6 +25,9 @@ export default function CardDetailsPage() {
   const [card, setCard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isFavoriting, setIsFavoriting] = useState(false);
+  
+  // NOUVEAU : State pour gérer l'orientation de la carte
+  const [isHorizontal, setIsHorizontal] = useState(false);
 
   const [tiltStyle, setTiltStyle] = useState({ 
     transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', 
@@ -47,7 +50,11 @@ export default function CardDetailsPage() {
     if (!user) return router.push('/login'); 
     
     const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
-    if (data) setCard(data); 
+    if (data) {
+      setCard(data);
+      // On initialise avec la donnée de la DB si elle existe
+      setIsHorizontal(data.is_horizontal || false);
+    } 
     else router.push('/collection');
     
     setLoading(false);
@@ -197,10 +204,9 @@ export default function CardDetailsPage() {
       </header>
 
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
-      {/* 🚀 TOP EXACTEMENT À 16PX */}
-      <div className="fixed top-[16px] left-0 w-full flex flex-col items-center justify-center z-10 perspective-1000 pointer-events-none px-6">
+      {/* 🚀 NOUVEAU : On utilise une template string pour le top dynamiquement en fonction du state */}
+      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} left-0 w-full flex flex-col items-center justify-center z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         
-        {/* 🚀 LE SECRET EST ICI : "max-w-full" sur le conteneur pour empêcher le débordement horizontal */}
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
@@ -212,9 +218,14 @@ export default function CardDetailsPage() {
           onTouchCancel={handleLeave}
         >
           {card.image_url ? (
-            /* 🚀 L'IMAGE : w-auto h-auto avec max-w et max-h stricts, plus object-contain pour interdire tout crop ! */
             <img 
               src={card.image_url} 
+              // NOUVEAU : Sécurité supplémentaire : On vérifie les dimensions réelles au chargement
+              onLoad={(e) => {
+                if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) {
+                  setIsHorizontal(true);
+                }
+              }}
               style={{ borderRadius: '12px', pointerEvents: 'none' }} 
               className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10" 
               alt="Card" 
