@@ -20,6 +20,38 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
+// ==========================================
+// COMPOSANT RECHERCHE (Sorti du composant principal pour éviter le bug du clavier qui se ferme)
+// ==========================================
+const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
+  <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none">
+    <div className="relative w-full max-w-md mx-auto pointer-events-auto">
+      <input 
+        type="text" 
+        placeholder="Rechercher joueur ou club..." 
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        // Ajout de la bordure jaune du thème (border-[#AFFF25])
+        className="w-full bg-[#040221] border-2 border-[#AFFF25] rounded-full py-3.5 pl-[20px] pr-[44px] text-white placeholder-white/40 focus:outline-none focus:shadow-[0_0_15px_rgba(175,255,37,0.3)] transition-all shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
+      />
+      
+      <div className="absolute right-[16px] top-1/2 -translate-y-1/2">
+        {/* Loupe ou Croix selon s'il y a du texte */}
+        {searchQuery.length === 0 ? (
+          <Search className="text-[#AFFF25]" size={20} />
+        ) : (
+          <button 
+            onClick={() => setSearchQuery('')} 
+            className="text-red-500 hover:text-red-400 transition-colors flex items-center justify-center p-1"
+          >
+            <X size={20} strokeWidth={3} />
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
 export default function CollectionPage() {
   const router = useRouter();
   
@@ -29,7 +61,7 @@ export default function CollectionPage() {
   
   // Filtres
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]); // 🚀 Tableau pour sélections multiples
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
@@ -117,7 +149,6 @@ export default function CollectionPage() {
 
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase();
-      // 🚀 Recherche dans Nom, Prénom ET Nom du Club
       const searchMatch = !searchQuery || 
         card.lastname?.toLowerCase().includes(searchTerm) || 
         card.firstname?.toLowerCase().includes(searchTerm) ||
@@ -136,7 +167,8 @@ export default function CollectionPage() {
       <>
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
-          <div className="overflow-x-auto no-scrollbar mb-4 mt-2">
+          // Ajout des classes Tailwind pour masquer la scrollbar horizontale
+          <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex gap-3 px-6 pb-2 w-max">
               <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
                 <LayoutGrid size={16} /> <span className="text-sm font-bold">Tout</span>
@@ -156,24 +188,25 @@ export default function CollectionPage() {
         )}
 
         {/* 2. DROPDOWNS : SPÉCIFICITÉS ET MARQUES */}
-        <div className={`relative z-30 mb-6 px-6 ${!hasMultipleSports ? 'mt-4' : ''}`}>
-          {openDropdown && <div className="fixed inset-0 z-40" onClick={() => setOpenDropdown(null)}></div>}
+        {/* Ajout du z-50 sur le parent pour qu'il passe au-dessus de tout */}
+        <div className={`relative z-50 mb-6 px-6 ${!hasMultipleSports ? 'mt-4' : ''}`}>
+          {/* Overlay avec z-[60] pour bloquer les clics en dessous, mais laisser les menus au-dessus */}
+          {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
 
           <div className="flex gap-3">
-            {/* 🚀 Boutons réduits en hauteur (py-2) */}
-            <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-50 ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+            <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
               Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
             </button>
 
-            <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-50 ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+            <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
               <span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span>
               <ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
             </button>
           </div>
 
-          {/* DROPDOWN SPÉCIFICITÉS */}
+          {/* DROPDOWN SPÉCIFICITÉS (z-[70] pour être par dessus la barre de recherche) */}
           {openDropdown === 'spec' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-50 bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
+            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
               {[
                 { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) },
                 { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) },
@@ -181,7 +214,6 @@ export default function CollectionPage() {
               ].map((item, idx) => (
                 <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer group">
                   <span className={`text-sm font-bold transition-colors ${item.state ? 'text-white' : 'text-white/60'}`}>{item.label}</span>
-                  {/* 🚀 Composant Toggle (UI stricte) */}
                   <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${item.state ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
                     <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
                   </div>
@@ -193,9 +225,9 @@ export default function CollectionPage() {
             </div>
           )}
 
-          {/* DROPDOWN MARQUES */}
+          {/* DROPDOWN MARQUES (z-[70] pour être par dessus la barre de recherche) */}
           {openDropdown === 'brand' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-50 bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
+            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
               <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
                 {BRANDS.map(brand => {
                   const slug = brand.toLowerCase().replace(/\s+/g, '-');
@@ -207,7 +239,6 @@ export default function CollectionPage() {
                         <img src={`/asset/logo-marque/${slug}.png`} alt={brand} className="h-5 object-contain mix-blend-screen" onError={(e) => e.currentTarget.style.display = 'none'} />
                         <span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'}`}>{brand}</span>
                       </div>
-                      {/* 🚀 Composant Toggle */}
                       <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
                         <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
                       </div>
@@ -223,7 +254,6 @@ export default function CollectionPage() {
         </div>
 
         {/* 3. GRILLE DE CARTES PINTEREST */}
-        {/* 🚀 Modifié : px-2 (0.5rem), grille sur 3 colonnes et grand espace en bas (pb-[180px]) pour laisser la place à la recherche flottante */}
         <div className="px-2 grid grid-cols-3 gap-3 pb-[180px] auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
@@ -236,7 +266,6 @@ export default function CollectionPage() {
                   className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
                 >
                   {card.image_url ? (
-                    /* 🚀 Modifié : Suppression de opacity-80 */
                     <img 
                       src={card.image_url} 
                       alt={card.lastname} 
@@ -263,22 +292,6 @@ export default function CollectionPage() {
       </>
     );
   };
-
-  // Composant Réutilisable pour la Barre de Recherche Flottante
-  const FloatingSearchBar = () => (
-    <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none">
-      <div className="relative w-full max-w-md mx-auto pointer-events-auto">
-        <input 
-          type="text" 
-          placeholder="Rechercher joueur ou club..." 
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#040221] border border-white/20 rounded-full py-3.5 pl-[20px] pr-[44px] text-white placeholder-white/40 focus:outline-none focus:border-[#AFFF25] transition-colors shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
-        />
-        <Search className="absolute right-[16px] top-1/2 -translate-y-1/2 text-[#AFFF25]" size={20} />
-      </div>
-    </div>
-  );
 
   // ==========================================
   // VUE INTÉRIEURE D'UN DOSSIER
@@ -309,7 +322,8 @@ export default function CollectionPage() {
         </div>
 
         {renderCardsAndFilters()}
-        <FloatingSearchBar />
+        {/* On laisse la barre de recherche accessible ici, puisqu'on est dans un dossier spécifique (et non sur l'onglet principal des dossiers) */}
+        <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
     );
   }
@@ -324,7 +338,6 @@ export default function CollectionPage() {
       <div className="pt-8 pb-4">
         <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">Ma Collection</h1>
         
-        {/* 🚀 Modifié : Onglets centrés et sans bordure */}
         <div className="flex justify-center px-6 gap-8 mb-4">
           <button 
             onClick={() => setActiveTab('cartes')}
@@ -359,7 +372,7 @@ export default function CollectionPage() {
             </button>
           </div>
 
-          <div className="overflow-x-auto no-scrollbar mb-10">
+          <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mb-10">
             <div className="flex gap-4 px-6 pb-4 w-max">
               {favoriteFolders.map(folder => (
                 <div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-[180px] h-[180px] rounded-[24px] p-5 border border-white/10 bg-gradient-to-br from-white/10 to-white/5 flex flex-col justify-between relative group cursor-pointer active:scale-95 transition-transform">
@@ -434,8 +447,10 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* 🚀 Barre de recherche Flottante Fixée (Visible sur Collection ET Dossiers) */}
-      <FloatingSearchBar />
+      {/* Barre de recherche masquée dans l'onglet Dossiers */}
+      {activeTab !== 'dossiers' && (
+        <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      )}
     </div>
   );
 }

@@ -8,3 +8,13 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* App.css */
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+.hide-scroll {
+  -ms-overflow-style: none;  /* IE et Edge */
+  scrollbar-width: none;  /* Firefox */
+  overflow-x: auto;
+}
