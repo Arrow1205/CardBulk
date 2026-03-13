@@ -1,0 +1,17 @@
+{
+  "name": "Scan Hobby",
+  "short_name": "Scan Hobby",
+  "description": "Collection et scan de cartes de sport",
+  "start_url": "/",
+  "display": "standalone", 
+  "background_color": "#040221",
+  "theme_color": "#040221",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

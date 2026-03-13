@@ -28,7 +28,7 @@ export default function ClubPage() {
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // NOUVEAU : State pour forcer la détection des cartes horizontales
+  // State pour forcer la détection des cartes horizontales
   const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
 
   // Filtres
@@ -54,7 +54,7 @@ export default function ClubPage() {
     setLoading(false);
   };
 
-  // NOUVEAU : Fonction qui détecte si l'image est horizontale au chargement
+  // Fonction qui détecte si l'image est horizontale au chargement
   const handleImageLoad = (id: string, e: React.SyntheticEvent<HTMLImageElement>) => {
     if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) {
       setHorizontalCards(prev => ({ ...prev, [id]: true }));
@@ -185,11 +185,11 @@ export default function ClubPage() {
             </div>
           </div>
 
-          {/* GRILLE DE CARTES (3 Colonnes - Gestion des cartes horizontales) */}
-          <div className="grid grid-cols-3 gap-2">
+          {/* GRILLE DE CARTES (3 Colonnes - Ajout de grid-flow-dense) */}
+          <div className="grid grid-cols-3 gap-2 grid-flow-dense auto-rows-max">
             {filteredCards.length > 0 ? (
               filteredCards.map(card => {
-                // NOUVEAU : On vérifie soit le state calculé par l'image, soit la base de données
+                // On vérifie soit le state calculé par l'image, soit la base de données
                 const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
                 
                 return (

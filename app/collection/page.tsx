@@ -89,7 +89,6 @@ export default function CollectionPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
 
-    // AJOUT ICI : .order('created_at', { ascending: false }) pour avoir les plus récentes en premier
     const { data: cardsData } = await supabase
       .from('cards')
       .select('*')
@@ -329,7 +328,7 @@ export default function CollectionPage() {
         </div>
 
         {/* 3. GRILLE DE CARTES PINTEREST */}
-        <div className="px-2 grid grid-cols-3 gap-3 pb-[180px] auto-rows-max">
+        <div className="px-2 grid grid-cols-3 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
