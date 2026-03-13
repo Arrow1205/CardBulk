@@ -216,7 +216,7 @@ export default function CardDetailsPage() {
     ].filter(Boolean).join(' ');
 
     const searchQuery = encodeURIComponent(keywords);
-    let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
+    let ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=${searchQuery}`;
 
     if (soldOnly) {
       ebayUrl += '&LH_Sold=1&LH_Complete=1';
