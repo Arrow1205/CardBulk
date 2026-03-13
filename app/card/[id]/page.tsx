@@ -70,16 +70,14 @@ export default function CardDetailsPage() {
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
-      // Vérifie si l'appareil est sous iOS 13+ (nécessite une permission explicite via un bouton)
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         const savedPermission = localStorage.getItem('gyro_permission');
         if (savedPermission === 'granted') {
           startGyro();
         } else {
-          setShowGyroOverlay(true); // Affiche le calque par-dessus la carte
+          setShowGyroOverlay(true);
         }
       } else {
-        // Android / PC : Pas besoin de permission explicite
         startGyro();
       }
     }
@@ -102,24 +100,22 @@ export default function CardDetailsPage() {
   };
 
   const startGyro = () => { 
-    window.removeEventListener('deviceorientation', handleOrientation, true); // Sécurité anti-doublon
+    window.removeEventListener('deviceorientation', handleOrientation, true);
     window.addEventListener('deviceorientation', handleOrientation, true); 
   };
 
   const handleOrientation = (e: DeviceOrientationEvent) => {
     if (!e || e.gamma === null || e.beta === null) return;
     
-    let x = e.gamma; // Inclinaison gauche/droite [-90, 90]
-    let y = e.beta;  // Inclinaison avant/arrière [-180, 180]
+    let x = e.gamma; 
+    let y = e.beta;  
     
-    // On considère que l'utilisateur tient son téléphone à environ 45 degrés
     let adjustedY = y - 45;
 
-    const maxTilt = 25; // Degré maximum d'inclinaison de la carte
+    const maxTilt = 25;
     x = Math.max(-maxTilt, Math.min(maxTilt, x));
     adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
 
-    // Inversion pour un effet naturel de "fenêtre"
     const rotateY = x * 0.8; 
     const rotateX = -adjustedY * 0.8;
 
@@ -192,6 +188,33 @@ export default function CardDetailsPage() {
     setIsFavoriting(false);
   };
 
+  // ==========================================
+  // RECHERCHE EBAY
+  // ==========================================
+  const checkEbayPrices = (soldOnly: boolean = true) => {
+    if (!card) return;
+
+    // On assemble les mots-clés pertinents de la carte
+    const keywords = [
+      card.firstname, 
+      card.lastname, 
+      card.year, 
+      card.brand, 
+      card.series
+    ].filter(Boolean).join(' ');
+
+    const searchQuery = encodeURIComponent(keywords);
+    let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
+
+    // Si on veut voir le "vrai" prix (Ventes réussies uniquement)
+    if (soldOnly) {
+      ebayUrl += '&LH_Sold=1&LH_Complete=1';
+    }
+
+    // Ouvre la page eBay dans un nouvel onglet
+    window.open(ebayUrl, '_blank');
+  };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#040221]"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
   if (!card) return null;
 
@@ -250,7 +273,7 @@ export default function CardDetailsPage() {
           {/* L'EFFET DE REFLET (GLARE) */}
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay z-20" style={glareStyle}></div>
 
-          {/* 📱 LE LAYER D'AUTORISATION POUR iOS (Vient se superposer sur l'image) */}
+          {/* 📱 LE LAYER D'AUTORISATION POUR iOS */}
           {showGyroOverlay && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#040221]/80 backdrop-blur-md rounded-[12px] border border-[#AFFF25]/30 p-6 text-center shadow-xl">
               <Smartphone size={32} className="text-[#AFFF25] mb-3 animate-pulse" />
@@ -304,14 +327,40 @@ export default function CardDetailsPage() {
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-lg font-bold text-white capitalize">{card.brand || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-lg font-bold text-white capitalize">{card.series || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-lg font-bold text-white">{card.year || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix</div><div className="text-lg font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div><div className="text-lg font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
         </div>
 
-        {card.website_url && (
-          <div className="pt-8 flex justify-center pb-6">
-            <button onClick={() => window.open(card.website_url, '_blank')} className="w-[80%] max-w-[300px] border-2 border-[#AFFF25] text-[#AFFF25] py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#AFFF25]/10">View on website</button>
-          </div>
-        )}
+        {/* BOUTONS D'ACTION (Website + eBay) */}
+        <div className="pt-8 flex flex-col gap-3 pb-6 items-center">
+          
+          {/* Bouton eBay (Ventes réussies) */}
+          <button 
+            onClick={() => checkEbayPrices(true)} 
+            className="w-[80%] max-w-[300px] bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(175,255,37,0.3)]"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Cote eBay (Vendus)
+          </button>
+          
+          {/* Lien eBay (Annonces en cours) */}
+          <button 
+            onClick={() => checkEbayPrices(false)} 
+            className="text-white/50 text-xs font-medium underline mt-1 hover:text-white transition-colors"
+          >
+            Voir les annonces en cours
+          </button>
+
+          {/* Bouton vers le site web (s'il existe) */}
+          {card.website_url && (
+            <button 
+              onClick={() => window.open(card.website_url, '_blank')} 
+              className="w-[80%] max-w-[300px] border-2 border-[#AFFF25]/30 text-[#AFFF25] mt-4 py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#AFFF25]/10 active:scale-95 transition-transform"
+            >
+              Voir sur le site
+            </button>
+          )}
+
+        </div>
       </div>
     </div>
   );
