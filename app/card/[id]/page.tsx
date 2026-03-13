@@ -194,17 +194,25 @@ export default function CardDetailsPage() {
   const checkEbayPrices = (soldOnly: boolean = true) => {
     if (!card) return;
 
+    // Règle de formatage de l'année (ex: 2024 devient 2023-24)
+    let formattedYear = card.year;
+    if (card.year && /^\d{4}$/.test(card.year.toString())) {
+      const yearNum = parseInt(card.year, 10);
+      const prevYear = yearNum - 1;
+      const shortYear = card.year.toString().slice(-2);
+      formattedYear = `${prevYear}-${shortYear}`;
+    }
+
     // Construction dynamique des mots-clés
     const keywords = [
       card.firstname, 
       card.lastname, 
-      card.year, 
+      formattedYear, 
       card.brand, 
       card.series,
       card.is_auto ? 'auto' : '',
       card.is_patch ? 'patch' : '',
-      // Si la carte est numérotée, on ajoute "/99" (adapte "numbered_to" par le vrai nom de ton champ en DB)
-      (card.is_numbered && card.numbered_to) ? `/${card.numbered_to}` : '' 
+      (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' 
     ].filter(Boolean).join(' ');
 
     const searchQuery = encodeURIComponent(keywords);
