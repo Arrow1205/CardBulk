@@ -36,10 +36,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-[#040221] text-white overflow-x-hidden min-h-screen relative`}>
         
         {/* LE DÉGRADÉ FIXÉ EN HAUT (z-0 pour qu'il reste en arrière-plan) */}
-        <div 
-          className="fixed top-0 left-0 w-full h-[85px] pointer-events-none z-0" 
-          style={{ background: 'linear-gradient(0deg, rgba(217, 217, 217, 0.00) 0%, #AFFF25 100%)' }}
-        ></div>
+        
         
         {/* LE CONTENU DE TES PAGES (z-10 pour que les titres/textes passent au-dessus du dégradé) */}
         <div className="relative z-10">

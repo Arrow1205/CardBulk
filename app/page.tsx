@@ -75,10 +75,13 @@ export default function HomePage() {
       
       <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
-      <header className="pt-6 pb-2 text-center">
-        <div className="inline-block border-2 border-[#AFFF25] px-4 py-1 rounded-xl shadow-[0_0_15px_rgba(175,255,37,0.3)] bg-[#040221]/50 backdrop-blur-md">
-          <h1 className="text-2xl font-black italic uppercase tracking-tighter"><span className="text-[#AFFF25]">CARD</span>BULK</h1>
-        </div>
+      {/* HEADER MIS À JOUR AVEC LE LOGO */}
+      <header className="pt-6 pb-2 text-center flex justify-center items-center">
+        <img 
+          src="/Logo-scan-hobby.svg" 
+          alt="Scan Hobby Logo" 
+          className="h-10 object-contain drop-shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95 transition-transform" 
+        />
       </header>
 
       {/* PADDING DE 2% */}
@@ -98,18 +101,14 @@ export default function HomePage() {
                 <div 
                   key={card.id}
                   onClick={() => offset === 0 ? router.push(`/card/${card.id}`) : setActiveIndex(index)}
-                  // Suppression totale des classes aspect-ratio
                   className="absolute flex items-center justify-center transition-transform duration-500 ease-out cursor-pointer"
                   style={{
-                    // 🚀 TAILLES EXPLICITES POUR ESQUIVER LE BUG SAFARI
                     width: isHorizontal ? '434px' : '240px',
                     height: isHorizontal ? '280px' : '320px',
-                    maxWidth: isHorizontal ? '90vw' : '70vw', // Sécurité pour pas déborder de l'écran mobile
-                    
+                    maxWidth: isHorizontal ? '90vw' : '70vw',
                     transform: `translateX(${Math.sign(offset) * (absOffset * 50)}%) translateZ(${absOffset * -150}px) rotateY(${Math.sign(offset) * -35}deg)`,
                     zIndex: 10 - absOffset,
                     opacity: absOffset > 1 ? 0.4 : (absOffset > 1 ? 0 : 1)
-                    // Ombres bien supprimées
                   }}
                 >
                   <div 
@@ -117,7 +116,6 @@ export default function HomePage() {
                     style={{
                       borderRadius: '16px',
                       overflow: 'hidden',
-                      // Double sécurité matérielle
                       transform: 'translateZ(0)',
                       WebkitMaskImage: '-webkit-radial-gradient(white, black)'
                     }}
