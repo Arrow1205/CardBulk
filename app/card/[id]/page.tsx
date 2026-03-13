@@ -189,29 +189,31 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // RECHERCHE EBAY
+  // RECHERCHE EBAY INTELLIGENTE
   // ==========================================
   const checkEbayPrices = (soldOnly: boolean = true) => {
     if (!card) return;
 
-    // On assemble les mots-clés pertinents de la carte
+    // Construction dynamique des mots-clés
     const keywords = [
       card.firstname, 
       card.lastname, 
       card.year, 
       card.brand, 
-      card.series
+      card.series,
+      card.is_auto ? 'auto' : '',
+      card.is_patch ? 'patch' : '',
+      // Si la carte est numérotée, on ajoute "/99" (adapte "numbered_to" par le vrai nom de ton champ en DB)
+      (card.is_numbered && card.numbered_to) ? `/${card.numbered_to}` : '' 
     ].filter(Boolean).join(' ');
 
     const searchQuery = encodeURIComponent(keywords);
     let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
 
-    // Si on veut voir le "vrai" prix (Ventes réussies uniquement)
     if (soldOnly) {
       ebayUrl += '&LH_Sold=1&LH_Complete=1';
     }
 
-    // Ouvre la page eBay dans un nouvel onglet
     window.open(ebayUrl, '_blank');
   };
 
@@ -333,21 +335,20 @@ export default function CardDetailsPage() {
         {/* BOUTONS D'ACTION (Website + eBay) */}
         <div className="pt-8 flex flex-col gap-3 pb-6 items-center">
           
-          {/* Bouton eBay (Ventes réussies) */}
+          {/* Bouton eBay (Ventes réussies) : Style primaire sans SVG */}
           <button 
             onClick={() => checkEbayPrices(true)} 
-            className="w-[80%] max-w-[300px] bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(175,255,37,0.3)]"
+            className="w-[80%] max-w-[300px] bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_20px_rgba(175,255,37,0.3)]"
           >
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            Cote eBay (Vendus)
+            Ventes réussies
           </button>
           
-          {/* Lien eBay (Annonces en cours) */}
+          {/* Bouton eBay (Annonces en cours) : Style primaire identique */}
           <button 
             onClick={() => checkEbayPrices(false)} 
-            className="text-white/50 text-xs font-medium underline mt-1 hover:text-white transition-colors"
+            className="w-[80%] max-w-[300px] bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_20px_rgba(175,255,37,0.3)]"
           >
-            Voir les annonces en cours
+            Ventes en cours
           </button>
 
           {/* Bouton vers le site web (s'il existe) */}
