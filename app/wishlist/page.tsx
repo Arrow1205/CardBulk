@@ -60,8 +60,6 @@ export default function WishlistPage() {
     // 🚀 L'arrière-plan bg-[#040221] est bien ici pour éviter la transparence avec la navbar
     <div className="min-h-screen bg-[#040221] text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* 🚀 LE DEGRADÉ DÉBOGUÉ */}
-      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
 
       <div className="px-4">
         <header className="pt-8 pb-8 text-center">

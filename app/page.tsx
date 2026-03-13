@@ -73,8 +73,6 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden relative z-10">
       
-      <div className="absolute top-0 left-0 w-full h-[70px] pointer-events-none -z-10" style={{ background: 'linear-gradient(0deg, #040221 15.71%, #AFFF25 100%)', opacity: 0.8 }}></div>
-
       {/* HEADER MIS À JOUR AVEC LE LOGO */}
       <header className="pt-6 pb-2 text-center flex justify-center items-center">
         <img 
