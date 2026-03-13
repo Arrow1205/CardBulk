@@ -17,9 +17,8 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'TENNIS': { image: 'Tennis', label: 'Tennis' }
 };
 
-// NOUVEAU : Mapping entre les sports de la DB et tes noms de dossiers
 const SPORT_FOLDERS: Record<string, string> = {
-  'SOCCER': 'foot', // Par défaut dans le dossier foot (adapter si besoin pour MLS)
+  'SOCCER': 'foot', 
   'BASKETBALL': 'NBA',
   'BASEBALL': 'MLB',
   'NFL': 'NFL',
@@ -47,7 +46,7 @@ export default function CardDetailsPage() {
     transition: 'opacity 0.3s ease-out'
   });
   
-  const [showGyroButton, setShowGyroButton] = useState(false);
+  const [showGyroOverlay, setShowGyroOverlay] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { fetchCard(); }, [cardId]);
@@ -67,18 +66,20 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // 🧭 GYROSCOPE
+  // 🧭 GYROSCOPE (Compatibilité iOS & Android)
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
+      // Vérifie si l'appareil est sous iOS 13+ (nécessite une permission explicite via un bouton)
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         const savedPermission = localStorage.getItem('gyro_permission');
         if (savedPermission === 'granted') {
           startGyro();
         } else {
-          setShowGyroButton(true);
+          setShowGyroOverlay(true); // Affiche le calque par-dessus la carte
         }
       } else {
+        // Android / PC : Pas besoin de permission explicite
         startGyro();
       }
     }
@@ -91,29 +92,34 @@ export default function CardDetailsPage() {
         const permission = await (DeviceOrientationEvent as any).requestPermission();
         if (permission === 'granted') {
           localStorage.setItem('gyro_permission', 'granted');
-          setShowGyroButton(false);
+          setShowGyroOverlay(false);
           startGyro();
         }
       }
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+      console.error("Erreur de permission gyroscope :", e); 
+    }
   };
 
   const startGyro = () => { 
+    window.removeEventListener('deviceorientation', handleOrientation, true); // Sécurité anti-doublon
     window.addEventListener('deviceorientation', handleOrientation, true); 
   };
 
   const handleOrientation = (e: DeviceOrientationEvent) => {
     if (!e || e.gamma === null || e.beta === null) return;
     
-    let x = e.gamma; 
-    let y = e.beta;  
+    let x = e.gamma; // Inclinaison gauche/droite [-90, 90]
+    let y = e.beta;  // Inclinaison avant/arrière [-180, 180]
     
+    // On considère que l'utilisateur tient son téléphone à environ 45 degrés
     let adjustedY = y - 45;
 
-    const maxTilt = 30;
+    const maxTilt = 25; // Degré maximum d'inclinaison de la carte
     x = Math.max(-maxTilt, Math.min(maxTilt, x));
     adjustedY = Math.max(-maxTilt, Math.min(maxTilt, adjustedY)); 
 
+    // Inversion pour un effet naturel de "fenêtre"
     const rotateY = x * 0.8; 
     const rotateX = -adjustedY * 0.8;
 
@@ -125,14 +131,14 @@ export default function CardDetailsPage() {
     const glareX = (x / maxTilt) * 100;
     const glareY = (adjustedY / maxTilt) * 100;
     setGlareStyle({
-      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.35) 0%, transparent 60%)`,
+      background: `radial-gradient(circle at ${50 + glareX}% ${50 + glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
       opacity: Math.max(0.1, Math.abs(x) / maxTilt),
       transition: 'opacity 0.1s ease-out'
     });
   };
 
   // ==========================================
-  // 👆 TACTILE
+  // 👆 TACTILE & SOURIS (Fallback)
   // ==========================================
   const handleMove = (clientX: number, clientY: number) => {
     if (!cardRef.current) return;
@@ -190,8 +196,6 @@ export default function CardDetailsPage() {
   if (!card) return null;
 
   const sportData = SPORT_CONFIG[card.sport] || { image: 'Soccer', label: card.sport || 'Sport' };
-  
-  // Récupération du dossier associé au sport (ex: "NBA", "foot")
   const sportFolder = SPORT_FOLDERS[card.sport] || 'foot'; 
   
   const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
@@ -216,6 +220,7 @@ export default function CardDetailsPage() {
       {/* 🃏 CARTE 3D FIXE EN ARRIÈRE PLAN */}
       <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} left-0 w-full flex flex-col items-center justify-center z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         
+        {/* LE CONTENEUR DE LA CARTE AVEC REF */}
         <div 
           ref={cardRef}
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
@@ -235,22 +240,30 @@ export default function CardDetailsPage() {
                 }
               }}
               style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-              className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10" 
+              className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10 relative z-10" 
               alt="Card" 
             />
           ) : (
-            <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px]">No Image</div>
+            <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px] relative z-10">No Image</div>
           )}
           
-          <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay" style={glareStyle}></div>
-        </div>
+          {/* L'EFFET DE REFLET (GLARE) */}
+          <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay z-20" style={glareStyle}></div>
 
-        {/* Bouton Gyroscope collé à la carte pour iOS */}
-        {showGyroButton && (
-          <button onClick={requestGyroPermission} className="pointer-events-auto mt-6 flex items-center gap-2 px-6 py-3 bg-[#AFFF25] text-black rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95">
-            <Smartphone size={16} /> Activer la 3D
-          </button>
-        )}
+          {/* 📱 LE LAYER D'AUTORISATION POUR iOS (Vient se superposer sur l'image) */}
+          {showGyroOverlay && (
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#040221]/80 backdrop-blur-md rounded-[12px] border border-[#AFFF25]/30 p-6 text-center shadow-xl">
+              <Smartphone size={32} className="text-[#AFFF25] mb-3 animate-pulse" />
+              <p className="text-white text-xs font-bold mb-5 px-2">Active le gyroscope pour profiter de l'effet 3D</p>
+              <button 
+                onClick={requestGyroPermission} 
+                className="pointer-events-auto px-6 py-3 bg-[#AFFF25] text-[#040221] rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(175,255,37,0.4)] active:scale-95 transition-transform"
+              >
+                Activer
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 📄 SECTION INFORMATIONS */}
@@ -281,7 +294,6 @@ export default function CardDetailsPage() {
           </button>
           {card.club_name && (
             <button onClick={() => router.push(`/club/${clubSlug}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
-              {/* NOUVEAU CHEMIN D'IMAGE INCLUANT LE DOSSIER DU SPORT */}
               <img src={`/asset/logo-club/${sportFolder}/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
               <span className="text-sm font-medium text-white">{card.club_name}</span>
             </button>
