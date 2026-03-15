@@ -2,25 +2,39 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 
-// On indique explicitement à la librairie d'utiliser ta variable GEMINI_API_KEY
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
-
 export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    // 1. On vérifie en premier si Vercel a bien chargé la clé !
+    if (!process.env.GEMINI_API_KEY) {
+      console.error("🚨 ERREUR CRITIQUE : La variable GEMINI_API_KEY est introuvable dans Vercel !");
+      return NextResponse.json({ error: "La clé API Gemini n'est pas configurée sur ce serveur." }, { status: 500 });
+    }
 
+    const google = createGoogleGenerativeAI({
+      apiKey: process.env.GEMINI_API_KEY,
+    });
+
+    const body = await req.json();
+    
+    if (!body.prompt) {
+      return NextResponse.json({ error: "La question (prompt) est vide." }, { status: 400 });
+    }
+
+    // 2. On appelle Gemini
     const { text } = await generateText({
       model: google('gemini-1.5-flash'),
       system: "Tu es un expert mondial en cartes de sport à collectionner (Soccer, NBA, NFL, etc.) et en investissement (le 'Hobby'). Tu réponds toujours de manière ultra-courte, directe, comme un texto, en utilisant quelques emojis. Tu donnes ton avis tranché sur les joueurs.",
-      prompt: prompt,
+      prompt: body.prompt,
     });
 
     return NextResponse.json({ text });
     
-  } catch (error) {
-    console.error("Erreur IA:", error);
-    return NextResponse.json({ error: 'Erreur de connexion à l\'IA' }, { status: 500 });
+  } catch (error: any) {
+    // 3. Si ça crashe, on récupère le VRAI message d'erreur de Google
+    console.error("🚨 CRASH IA :", error);
+    return NextResponse.json({ 
+      error: "Le serveur IA a planté.", 
+      details: error.message || String(error) 
+    }, { status: 500 });
   }
 }
