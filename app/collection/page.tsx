@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check } from 'lucide-react';
+// N'oublie pas d'ajouter Sparkles dans les imports de lucide-react !
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -75,25 +76,27 @@ export default function CollectionPage() {
   const [folders, setFolders] = useState<any[]>([]);
   const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
 
-  // ==========================================
-  // STATES POUR LE MODE SÉLECTION
-  // ==========================================
+  // States Mode Sélection
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
+  // ==========================================
+  // STATES POUR L'AGENT IA
+  // ==========================================
+  const [isAIOpen, setIsAIOpen] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
+
   useEffect(() => {
-    // 1. On lit l'URL pour voir s'il y a des filtres demandés
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const searchParam = params.get('search');
       const sportParam = params.get('sport');
 
-      // 2. Si un paramètre existe, on met à jour le state correspondant
       if (searchParam) setSearchQuery(searchParam);
       if (sportParam) setSelectedSport(sportParam);
     }
-
-    // 3. On charge la collection comme d'habitude
     fetchCollection();
   }, []);
 
@@ -101,20 +104,10 @@ export default function CollectionPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
 
-    const { data: cardsData } = await supabase
-      .from('cards')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
-      
+    const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
     if (cardsData) setCards(cardsData.filter(c => c.is_wishlist !== true));
 
-    const { data: foldersData } = await supabase
-      .from('folders')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true });
-      
+    const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
     if (foldersData) setFolders(foldersData);
 
     setLoading(false);
@@ -133,10 +126,7 @@ export default function CollectionPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data } = await supabase.from('folders').insert([{
-      name: newFolderName, type: newFolderType, user_id: user.id, is_favorite: false
-    }]).select();
-
+    const { data } = await supabase.from('folders').insert([{ name: newFolderName, type: newFolderType, user_id: user.id, is_favorite: false }]).select();
     if (data && data.length > 0) setFolders([...folders, data[0]]);
     setIsModalOpen(false); setNewFolderName(''); setNewFolderType('Binder');
   };
@@ -162,17 +152,12 @@ export default function CollectionPage() {
     }
   };
 
-  // ==========================================
-  // GESTION SÉLECTION CARTES
-  // ==========================================
+  // Gestion Sélection Cartes
   const handleStartSelection = () => {
     if (!activeFolderId) return;
-    // On pré-sélectionne les cartes qui sont déjà dans ce dossier
     const alreadyInFolder = cards.filter(c => c.folder_id === activeFolderId).map(c => c.id);
     setSelectedForFolder(new Set(alreadyInFolder));
     setTargetFolderId(activeFolderId);
-    
-    // On sort de la vue "dossier unique" et on bascule sur l'onglet cartes
     setActiveFolderId(null);
     setActiveTab('cartes');
   };
@@ -187,7 +172,6 @@ export default function CollectionPage() {
   };
 
   const handleCancelSelection = () => {
-    // On annule et on retourne dans le dossier
     setActiveFolderId(targetFolderId);
     setTargetFolderId(null);
     setSelectedForFolder(new Set());
@@ -197,41 +181,54 @@ export default function CollectionPage() {
     if (!targetFolderId) return;
     const folderId = targetFolderId;
     
-    // 1. Mise à jour "Optimiste" immédiate pour l'UI
     const updatedCards = cards.map(c => {
-      // Si la carte est dans la sélection, on lui assigne le dossier
-      if (selectedForFolder.has(c.id)) {
-        return { ...c, folder_id: folderId };
-      } 
-      // Si la carte ÉTAIT dans le dossier mais n'est plus sélectionnée, on l'enlève
-      else if (c.folder_id === folderId && !selectedForFolder.has(c.id)) {
-        return { ...c, folder_id: null };
-      }
+      if (selectedForFolder.has(c.id)) return { ...c, folder_id: folderId };
+      else if (c.folder_id === folderId && !selectedForFolder.has(c.id)) return { ...c, folder_id: null };
       return c;
     });
     setCards(updatedCards);
     
-    // On ferme le mode sélection et on retourne dans le dossier
     setActiveFolderId(folderId);
     setTargetFolderId(null);
     setSelectedForFolder(new Set());
 
-    // 2. Synchronisation Supabase en arrière-plan
-    // On vide d'abord le dossier (folder_id = null pour les cartes du dossier actuel)
     await supabase.from('cards').update({ folder_id: null }).eq('folder_id', folderId);
-    
-    // Puis on assigne le dossier aux cartes sélectionnées (si on en a sélectionné au moins une)
     const selectedArray = Array.from(selectedForFolder);
-    if (selectedArray.length > 0) {
-       await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
+    if (selectedArray.length > 0) await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
+  };
+
+  // ==========================================
+  // APPEL À L'API GEMINI (VRAIE IA)
+  // ==========================================
+  const handleAskAI = async (question: string) => {
+    setAiQuestion(question);
+    setAiLoading(true);
+    setAiResponse('');
+
+    try {
+      // On appelle notre nouvelle route API
+      const response = await fetch('/api/scout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: question }),
+      });
+
+      if (!response.ok) throw new Error('Erreur réseau');
+
+      // On récupère la réponse de Gemini
+      const data = await response.json();
+      setAiResponse(data.text);
+
+    } catch (error) {
+      console.error(error);
+      setAiResponse("Désolé, le Scout IA est injoignable pour le moment. Réessaie plus tard ! 📡");
+    } finally {
+      setAiLoading(false);
     }
   };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
-  // ==========================================
-  // BLOC RÉUTILISABLE : FILTRES + GRILLE CARTES
-  // ==========================================
   const renderCardsAndFilters = () => {
     const baseCards = activeFolderId ? cards.filter(c => c.folder_id === activeFolderId) : cards;
     const uniqueSports = new Set(baseCards.map(c => c.sport));
@@ -240,16 +237,10 @@ export default function CollectionPage() {
 
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
-      
-      // On combine le prénom et le nom pour vérifier les espaces correctement
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
       const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
 
-      const searchMatch = !searchQuery || 
-        fullName.includes(searchTerm) ||
-        reverseFullName.includes(searchTerm) ||
-        card.club_name?.toLowerCase().includes(searchTerm);
-        
+      const searchMatch = !searchQuery || fullName.includes(searchTerm) || reverseFullName.includes(searchTerm) || card.club_name?.toLowerCase().includes(searchTerm);
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
       const autoMatch = !showAuto || card.is_auto;
@@ -261,6 +252,19 @@ export default function CollectionPage() {
 
     return (
       <>
+        {/* BOUTON SCOUT IA (Apparaît uniquement si on cherche un joueur) */}
+        {searchQuery.trim().length > 0 && !activeFolderId && (
+          <div className="px-6 mt-2 mb-4 animate-in fade-in slide-in-from-top-2">
+            <button 
+              onClick={() => setIsAIOpen(true)}
+              className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center gap-2 text-white font-black uppercase tracking-widest text-xs shadow-[0_5px_20px_rgba(147,51,234,0.4)] active:scale-95 transition-transform"
+            >
+              <Sparkles size={16} className="text-white" />
+              Scout IA : {searchQuery}
+            </button>
+          </div>
+        )}
+
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -283,7 +287,7 @@ export default function CollectionPage() {
         )}
 
         {/* 2. DROPDOWNS : SPÉCIFICITÉS ET MARQUES */}
-        <div className={`relative z-50 mb-6 px-6 ${!hasMultipleSports ? 'mt-4' : ''}`}>
+        <div className={`relative z-50 mb-6 px-6 ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
 
           <div className="flex gap-3">
@@ -311,7 +315,7 @@ export default function CollectionPage() {
                   </div>
                 </div>
               ))}
-              <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-colors">
+              <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">
                 Confirmer
               </button>
             </div>
@@ -337,7 +341,7 @@ export default function CollectionPage() {
                   );
                 })}
               </div>
-              <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-colors">
+              <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">
                 Confirmer
               </button>
             </div>
@@ -354,29 +358,20 @@ export default function CollectionPage() {
               return (
                 <div 
                   key={card.id} 
-                  // GESTION DU CLIC : Si mode sélection actif, on toggle. Sinon on va sur la carte
                   onClick={() => targetFolderId ? toggleCardSelection(card.id) : router.push(`/card/${card.id}`)} 
-                  className={`relative rounded-lg overflow-hidden cursor-pointer active:scale-95 transition-transform 
+                  className={`relative rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-transform 
                     ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}
                     ${isSelected ? 'ring-2 ring-[#AFFF25] ring-offset-2 ring-offset-[#040221]' : 'bg-white/5 border border-white/10'}
                   `}
                 >
-                  {/* OVERLAY DE SÉLECTION */}
                   {isSelected && (
                     <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center transition-all">
-                       <div className="bg-[#AFFF25] rounded-full p-1.5 shadow-lg">
-                          <Check size={20} className="text-[#040221] stroke-[3]" />
-                       </div>
+                       <div className="bg-[#AFFF25] rounded-full p-1.5 shadow-lg"><Check size={20} className="text-[#040221] stroke-[3]" /></div>
                     </div>
                   )}
 
                   {card.image_url ? (
-                    <img 
-                      src={card.image_url} 
-                      alt={card.lastname} 
-                      onLoad={(e) => handleImageLoad(card.id, e)}
-                      className="w-full h-full object-cover" 
-                    />
+                    <img src={card.image_url} alt={card.lastname} onLoad={(e) => handleImageLoad(card.id, e)} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px]">Pas d'image</div>
                   )}
@@ -399,76 +394,44 @@ export default function CollectionPage() {
   };
 
   // ==========================================
-  // VUE INTÉRIEURE D'UN DOSSIER
+  // RENDU DOSSIERS / COLLECTION 
   // ==========================================
   if (activeFolderId && currentFolder) {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
-        
         <div className="pt-8 pb-4 px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 overflow-hidden">
-            <button onClick={() => setActiveFolderId(null)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0">
-              <ChevronLeft size={20} />
-            </button>
+            <button onClick={() => setActiveFolderId(null)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0"><ChevronLeft size={20} /></button>
             <div className="overflow-hidden">
               <div className="text-xs text-[#AFFF25] font-bold uppercase tracking-widest">{currentFolder.type}</div>
               <h1 className="text-3xl font-black italic uppercase tracking-tighter leading-none truncate">{currentFolder.name}</h1>
             </div>
           </div>
-          
           <div className="flex items-center gap-1 shrink-0">
-            <button onClick={() => toggleFolderFavorite(currentFolder.id)} className="p-2 active:scale-90 transition-transform">
-              <Star size={24} strokeWidth={currentFolder.is_favorite ? 0 : 2} className={currentFolder.is_favorite ? "text-[#AFFF25] fill-[#AFFF25]" : "text-white/40 hover:text-white"} />
-            </button>
-            <button onClick={() => deleteFolder(currentFolder.id)} className="p-2 active:scale-90 transition-transform text-red-500/80 hover:text-red-500">
-              <Trash2 size={24} strokeWidth={1.5} />
-            </button>
+            <button onClick={() => toggleFolderFavorite(currentFolder.id)} className="p-2 active:scale-90 transition-transform"><Star size={24} strokeWidth={currentFolder.is_favorite ? 0 : 2} className={currentFolder.is_favorite ? "text-[#AFFF25] fill-[#AFFF25]" : "text-white/40 hover:text-white"} /></button>
+            <button onClick={() => deleteFolder(currentFolder.id)} className="p-2 active:scale-90 transition-transform text-red-500/80 hover:text-red-500"><Trash2 size={24} strokeWidth={1.5} /></button>
           </div>
         </div>
-
-        {/* BOUTON : Ajouter / Gérer les cartes */}
         <div className="px-6 pb-4">
-          <button 
-            onClick={handleStartSelection} 
-            className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"
-          >
-            <Plus size={18} /> Gérer les cartes du dossier
-          </button>
+          <button onClick={handleStartSelection} className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"><Plus size={18} /> Gérer les cartes du dossier</button>
         </div>
-
         {renderCardsAndFilters()}
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
     );
   }
 
-  // ==========================================
-  // VUE PRINCIPALE (COLLECTION)
-  // ==========================================
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 relative">
-      
-      {/* HEADER */}
       <div className="pt-8 pb-4">
-        {/* On adapte le titre si on est en mode sélection */}
-        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">
-          {targetFolderId ? "Sélection" : "Ma Collection"}
-        </h1>
-        
-        {/* On masque les tabs si on est en mode sélection pour éviter les erreurs de navigation */}
+        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Ma Collection"}</h1>
         {!targetFolderId && (
           <div className="flex justify-center px-6 gap-8 mb-4">
-            <button 
-              onClick={() => setActiveTab('cartes')}
-              className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
-            >
+            <button onClick={() => setActiveTab('cartes')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
               Cartes
               {activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
             </button>
-            <button 
-              onClick={() => setActiveTab('dossiers')}
-              className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
-            >
+            <button onClick={() => setActiveTab('dossiers')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
               Dossiers
               {activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
             </button>
@@ -476,29 +439,19 @@ export default function CollectionPage() {
         )}
       </div>
 
-      {/* VUE CARTES */}
       {activeTab === 'cartes' && renderCardsAndFilters()}
 
-      {/* VUE DOSSIERS */}
       {activeTab === 'dossiers' && !targetFolderId && (
         <div className="animate-in fade-in duration-300">
-          
           <div className="px-6 flex justify-between items-center mb-4 mt-2">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris
-            </h2>
-            <button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors">
-              <Plus size={18} />
-            </button>
+            <h2 className="text-lg font-bold text-white flex items-center gap-2"><Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris</h2>
+            <button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors"><Plus size={18} /></button>
           </div>
-
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mb-10">
             <div className="flex gap-4 px-6 pb-4 w-max">
               {favoriteFolders.map(folder => (
                 <div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-[180px] h-[180px] rounded-[24px] p-5 border border-white/10 bg-gradient-to-br from-white/10 to-white/5 flex flex-col justify-between relative group cursor-pointer active:scale-95 transition-transform">
-                  <div className="w-12 h-12 rounded-full bg-[#AFFF25]/10 flex items-center justify-center border border-[#AFFF25]/20">
-                    <Folder size={24} className="text-[#AFFF25]" />
-                  </div>
+                  <div className="w-12 h-12 rounded-full bg-[#AFFF25]/10 flex items-center justify-center border border-[#AFFF25]/20"><Folder size={24} className="text-[#AFFF25]" /></div>
                   <div>
                     <div className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1">{folder.type}</div>
                     <div className="text-xl font-black text-white leading-tight mb-1">{folder.name}</div>
@@ -510,21 +463,15 @@ export default function CollectionPage() {
               <div className="w-2 shrink-0"></div>
             </div>
           </div>
-
           <div className="px-6 flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-white">Tous les dossiers</h2>
-            <button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform">
-              <Plus size={20} />
-            </button>
+            <button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform"><Plus size={20} /></button>
           </div>
-          
           <div className="px-6 flex flex-col gap-3 pb-[180px]">
             {otherFolders.map(folder => (
               <div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-full flex items-center justify-between p-4 rounded-[20px] border border-white/10 bg-white/5 cursor-pointer active:scale-95 transition-transform hover:bg-white/10">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                    <Folder size={20} className="text-white/60" />
-                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Folder size={20} className="text-white/60" /></div>
                   <div>
                     <div className="text-base font-bold text-white leading-tight">{folder.name}</div>
                     <div className="text-xs text-[#AFFF25] mt-0.5">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div>
@@ -538,20 +485,18 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* MODAL / POPIN AJOUT DE DOSSIER */}
+      {/* MODAL AJOUT DE DOSSIER */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full sm:max-w-md bg-[#040221] rounded-t-[32px] sm:rounded-[32px] p-6 pb-32 sm:pb-6 border-t sm:border border-white/10 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 duration-300">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-white uppercase italic">Nouveau Dossier</h3>
-              <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-white/60 hover:text-white transition-colors">
-                <X size={18} />
-              </button>
+              <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-white/60 hover:text-white transition-colors"><X size={18} /></button>
             </div>
             <form onSubmit={handleCreateFolder}>
               <div className="mb-6">
                 <label className="block text-xs font-bold text-[#AFFF25] uppercase tracking-widest mb-2">Nom du dossier</label>
-                <input type="text" autoFocus required value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)} placeholder="Ex: PC Mbappé, Classeur NBA..." className="w-full bg-[#040221] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-colors" />
+                <input type="text" autoFocus required value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)} placeholder="Ex: PC Mbappé, Classeur NBA..." className="w-full bg-[#040221] border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-colors" />
               </div>
               <div className="mb-8">
                 <label className="block text-xs font-bold text-[#AFFF25] uppercase tracking-widest mb-2">Type de rangement</label>
@@ -561,13 +506,13 @@ export default function CollectionPage() {
                   ))}
                 </div>
               </div>
-              <button type="submit" className="w-full py-4 bg-[#AFFF25] text-[#040221] rounded-lg font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] transition-colors shadow-[0_0_20px_rgba(175,255,37,0.3)]">Créer le dossier</button>
+              <button type="submit" className="w-full py-4 bg-[#AFFF25] text-[#040221] rounded-xl font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] transition-colors shadow-[0_0_20px_rgba(175,255,37,0.3)]">Créer le dossier</button>
             </form>
           </div>
         </div>
       )}
 
-      {/* POPIN FLOTTANTE DE VALIDATION (Active uniquement en mode sélection) */}
+      {/* POPIN SÉLECTION CARTES */}
       {targetFolderId && (
         <div className="fixed bottom-[180px] left-0 w-full px-6 z-50 pointer-events-none animate-in slide-in-from-bottom-4">
           <div className="relative w-full max-w-md mx-auto pointer-events-auto bg-[#AFFF25] rounded-2xl p-4 shadow-[0_10px_40px_rgba(175,255,37,0.3)] border border-[#9ee615]">
@@ -576,17 +521,94 @@ export default function CollectionPage() {
               <span className="bg-[#040221] text-[#AFFF25] px-3 py-1 rounded-full text-xs font-bold">{selectedForFolder.size} incluse(s)</span>
             </div>
             <div className="flex gap-2">
-              <button onClick={handleCancelSelection} className="flex-1 py-3 border border-[#040221]/20 text-[#040221] font-bold rounded-lg uppercase text-xs active:scale-95 transition-transform">Annuler</button>
-              <button onClick={handleConfirmSelection} className="flex-1 py-3 bg-[#040221] text-[#AFFF25] font-bold rounded-lg uppercase text-xs active:scale-95 transition-transform">Confirmer</button>
+              <button onClick={handleCancelSelection} className="flex-1 py-3 border border-[#040221]/20 text-[#040221] font-bold rounded-xl uppercase text-xs active:scale-95 transition-transform">Annuler</button>
+              <button onClick={handleConfirmSelection} className="flex-1 py-3 bg-[#040221] text-[#AFFF25] font-bold rounded-xl uppercase text-xs active:scale-95 transition-transform">Confirmer</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Barre de recherche classique (masquée dans les dossiers et inactive pour le mode tab, mais présente sous la popin sélection si on veut chercher pendant la sélection) */}
+      {/* RECHERCHE CLASSIQUE */}
       {activeTab !== 'dossiers' && (
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
+
+      {/* ========================================== */}
+      {/* OVERLAY SCOUT IA (MODAL) */}
+      {/* ========================================== */}
+      {isAIOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full sm:max-w-md bg-[#040221] rounded-t-[32px] sm:rounded-[32px] p-6 pb-12 sm:pb-6 border-t sm:border border-purple-500/30 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 duration-300 relative">
+
+            {/* Header Modal IA */}
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 uppercase italic flex items-center gap-2">
+                <Sparkles size={20} className="text-purple-400" /> Scout IA
+              </h3>
+              <button 
+                onClick={() => { setIsAIOpen(false); setAiResponse(''); setAiQuestion(''); }} 
+                className="w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-white/60 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Contenu IA */}
+            <div className="space-y-4">
+              {!aiResponse && !aiLoading ? (
+                // Écran de choix de questions
+                <>
+                  <p className="text-sm text-white/70 mb-4">Que veux-tu analyser concernant <strong className="text-white">{searchQuery}</strong> ?</p>
+                  
+                  <button 
+                    onClick={() => handleAskAI(`Quelles sont les dernières perf de ${searchQuery} ?`)} 
+                    className="w-full text-left p-4 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
+                  >
+                    🔥 Quelles sont ses dernières perfs ?
+                  </button>
+                  
+                  <button 
+                    onClick={() => handleAskAI(`Faut-il investir sur les cartes de ${searchQuery} ?`)} 
+                    className="w-full text-left p-4 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
+                  >
+                    📈 Faut-il investir sur ses cartes ?
+                  </button>
+                </>
+              ) : (
+                // Écran de réponse ou de chargement
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-inner">
+                  <div className="text-xs text-white/40 mb-3 pb-3 border-b border-white/10 italic">
+                    {aiQuestion}
+                  </div>
+                  
+                  {aiLoading ? (
+                    <div className="flex flex-col items-center justify-center py-6 gap-3 text-purple-400">
+                      <Loader2 size={24} className="animate-spin" />
+                      <span className="text-sm animate-pulse font-medium tracking-wide text-white/80">L'IA analyse les données...</span>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-white leading-relaxed whitespace-pre-wrap">
+                      {aiResponse}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Bouton pour réinitialiser la vue IA */}
+              {aiResponse && !aiLoading && (
+                <button 
+                  onClick={() => { setAiResponse(''); setAiQuestion(''); }} 
+                  className="w-full mt-2 py-3 border border-white/10 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 active:scale-95 transition-all"
+                >
+                  Poser une autre question
+                </button>
+              )}
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

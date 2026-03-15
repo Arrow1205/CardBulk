@@ -112,7 +112,7 @@ export default function HomePage() {
                   <div 
                     className="w-full h-full relative bg-[#080531]"
                     style={{
-                      borderRadius: '16px',
+                      borderRadius: '8px',
                       overflow: 'hidden',
                       transform: 'translateZ(0)',
                       WebkitMaskImage: '-webkit-radial-gradient(white, black)'
@@ -129,7 +129,7 @@ export default function HomePage() {
                       <div className="w-full h-full flex items-center justify-center text-white/30 text-xs">No Image</div>
                     )}
                     
-                    <div className="absolute inset-0 border border-white/10 rounded-[16px] pointer-events-none"></div>
+                    <div className="absolute inset-0 border border-white/10 rounded-[8px] pointer-events-none"></div>
                   </div>
                 </div>
               );
