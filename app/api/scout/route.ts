@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    // 1. On vérifie en premier si Vercel a bien chargé la clé !
     if (!process.env.GEMINI_API_KEY) {
       console.error("🚨 ERREUR CRITIQUE : La variable GEMINI_API_KEY est introuvable dans Vercel !");
       return NextResponse.json({ error: "La clé API Gemini n'est pas configurée sur ce serveur." }, { status: 500 });
@@ -20,9 +19,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "La question (prompt) est vide." }, { status: 400 });
     }
 
-    // 2. On appelle Gemini
+    // On utilise le nom exact du modèle avec "-latest"
     const { text } = await generateText({
-      model: google('gemini-1.5-flash'),
+      model: google('gemini-1.5-flash-latest'),
       system: "Tu es un expert mondial en cartes de sport à collectionner (Soccer, NBA, NFL, etc.) et en investissement (le 'Hobby'). Tu réponds toujours de manière ultra-courte, directe, comme un texto, en utilisant quelques emojis. Tu donnes ton avis tranché sur les joueurs.",
       prompt: body.prompt,
     });
@@ -30,7 +29,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ text });
     
   } catch (error: any) {
-    // 3. Si ça crashe, on récupère le VRAI message d'erreur de Google
     console.error("🚨 CRASH IA :", error);
     return NextResponse.json({ 
       error: "Le serveur IA a planté.", 
