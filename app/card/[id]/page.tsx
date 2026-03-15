@@ -216,7 +216,7 @@ export default function CardDetailsPage() {
     ].filter(Boolean).join(' ');
 
     const searchQuery = encodeURIComponent(keywords);
-    let ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=${searchQuery}`;
+    let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
 
     if (soldOnly) {
       ebayUrl += '&LH_Sold=1&LH_Complete=1';
@@ -314,22 +314,33 @@ export default function CardDetailsPage() {
           )}
         </div>
 
+        {/* Badges */}
         <div className="flex flex-wrap gap-2 mb-6">
           {card.is_patch && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Patch</span>}
           {card.is_auto && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Autographe</span>}
           {card.is_numbered && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Numéroté</span>}
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-6">
-          <button onClick={() => router.push(`/collection?sport=${card.sport}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
-            <img src={`/asset/sports/${sportData.image}.png`} className="w-4 h-4 object-contain" alt={sportData.label} />
-            <span className="text-sm font-medium text-white">{sportData.label}</span>
-          </button>
-          {card.club_name && (
-            <button onClick={() => router.push(`/club/${clubSlug}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
-              <img src={`/asset/logo-club/${sportFolder}/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
-              <span className="text-sm font-medium text-white">{card.club_name}</span>
+        {/* Sport, Club et Numérotation alignés */}
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div className="flex flex-wrap gap-3">
+            <button onClick={() => router.push(`/collection?sport=${card.sport}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
+              <img src={`/asset/sports/${sportData.image}.png`} className="w-4 h-4 object-contain" alt={sportData.label} />
+              <span className="text-sm font-medium text-white">{sportData.label}</span>
             </button>
+            {card.club_name && (
+              <button onClick={() => router.push(`/club/${clubSlug}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
+                <img src={`/asset/logo-club/${sportFolder}/${clubSlug}.svg`} className="w-4 h-4 object-contain" alt={card.club_name} onError={(e) => e.currentTarget.style.display = 'none'} />
+                <span className="text-sm font-medium text-white">{card.club_name}</span>
+              </button>
+            )}
+          </div>
+          
+          {/* L'affichage de la numérotation aligné à droite */}
+          {card.is_numbered && card.numbering_max && (
+            <div className="text-xl font-black italic text-white/60 tracking-widest whitespace-nowrap shrink-0">
+              /{card.numbering_max}
+            </div>
           )}
         </div>
 
@@ -341,29 +352,30 @@ export default function CardDetailsPage() {
         </div>
 
         {/* BOUTONS D'ACTION (Website + eBay) */}
-        <div className="pt-8 flex flex-col gap-3 pb-6 items-center">
+        <div className="pt-8 flex flex-col gap-4 pb-6 items-center">
           
-          {/* Bouton eBay (Ventes réussies) : Style primaire sans SVG */}
-          <button 
-            onClick={() => checkEbayPrices(true)} 
-            className="w-[80%] max-w-[300px] bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_20px_rgba(175,255,37,0.3)]"
-          >
-            Ventes réussies
-          </button>
-          
-          {/* Bouton eBay (Annonces en cours) : Style primaire identique */}
-          <button 
-            onClick={() => checkEbayPrices(false)} 
-            className="w-[80%] max-w-[300px] bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_20px_rgba(175,255,37,0.3)]"
-          >
-            Ventes en cours
-          </button>
+          {/* Les 2 boutons eBay sur la même ligne avec une police réduite (0.675rem) */}
+          <div className="flex gap-3 w-full max-w-[320px]">
+            <button 
+              onClick={() => checkEbayPrices(true)} 
+              className="flex-1 bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-[0.675rem] hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.3)]"
+            >
+              Ventes réussies
+            </button>
+            
+            <button 
+              onClick={() => checkEbayPrices(false)} 
+              className="flex-1 bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-[0.675rem] hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.3)]"
+            >
+              Ventes en cours
+            </button>
+          </div>
 
           {/* Bouton vers le site web (s'il existe) */}
           {card.website_url && (
             <button 
               onClick={() => window.open(card.website_url, '_blank')} 
-              className="w-[80%] max-w-[300px] border-2 border-[#AFFF25]/30 text-[#AFFF25] mt-4 py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#AFFF25]/10 active:scale-95 transition-transform"
+              className="w-full max-w-[320px] border-2 border-[#AFFF25]/30 text-[#AFFF25] py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#AFFF25]/10 active:scale-95 transition-transform"
             >
               Voir sur le site
             </button>

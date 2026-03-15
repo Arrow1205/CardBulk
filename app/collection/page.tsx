@@ -82,6 +82,18 @@ export default function CollectionPage() {
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    // 1. On lit l'URL pour voir s'il y a des filtres demandés
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const searchParam = params.get('search');
+      const sportParam = params.get('sport');
+
+      // 2. Si un paramètre existe, on met à jour le state correspondant
+      if (searchParam) setSearchQuery(searchParam);
+      if (sportParam) setSelectedSport(sportParam);
+    }
+
+    // 3. On charge la collection comme d'habitude
     fetchCollection();
   }, []);
 

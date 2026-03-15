@@ -13,16 +13,23 @@
           "Match Attax",
           "Bowman Chrome",
           "Museum Collection",
+          "Inception",
           "Tier One",
           "Dynasty",
           "Merlin",
+          "Premiere League",
+          "Premiere League Chrome",
           "Stadium Club",
           "UEFA Club Competitions",
           "Bundesliga",
           "MLS",
           "Living set",
           "Now",
-          "Summer Signing"
+          "Summer Signing",
+          "Super Star",
+          "Team Set",
+          "Fan Set",
+          "Total Football"
         ],
        
         "tennis": [
@@ -79,6 +86,9 @@
           "Immaculate",
           "National Treasures",
           "Obsidian",
+          "Serie A",
+          "Adrenalyn",
+          "Score",
           "Chronicles",
           "Revolution",
           "Flawless",
@@ -150,6 +160,19 @@
           "Pro Set",
           "Valiant",
           "Ultimate Draft"
+        ]
+             }
+    },
+
+    {
+      "name": "Leaf",
+      "sports": {
+        "football_soccer": [
+          "Unique",
+          "Fans Selection",
+          "Live",
+          "Vintage",
+          "Fans Selection"
         ]
              }
     },
