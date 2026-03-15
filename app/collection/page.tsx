@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-// Ajout de l'icône "Send" pour le bouton d'envoi du chat
 import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
@@ -23,9 +22,6 @@ const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
 type Message = { role: 'user' | 'assistant', content: string };
 
-// ==========================================
-// COMPOSANT RECHERCHE
-// ==========================================
 const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
   <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none">
     <div className="relative w-full max-w-md mx-auto pointer-events-auto">
@@ -41,12 +37,7 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
         {searchQuery.length === 0 ? (
           <Search className="text-[#AFFF25]" size={20} />
         ) : (
-          <button 
-            onClick={() => setSearchQuery('')} 
-            className="text-red-500 hover:text-red-400 transition-colors flex items-center justify-center p-1"
-          >
-            <X size={20} strokeWidth={3} />
-          </button>
+          <button onClick={() => setSearchQuery('')} className="text-red-500 hover:text-red-400 transition-colors flex items-center justify-center p-1"><X size={20} strokeWidth={3} /></button>
         )}
       </div>
     </div>
@@ -80,36 +71,40 @@ export default function CollectionPage() {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
-  // ==========================================
-  // STATES POUR LE TCHAT IA (SCOUTY')
-  // ==========================================
+  // IA STATES
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
+  
+  // Réf. pour scroller le chat en bas
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const searchParam = params.get('search');
       const sportParam = params.get('sport');
-
       if (searchParam) setSearchQuery(searchParam);
       if (sportParam) setSelectedSport(sportParam);
     }
     fetchCollection();
   }, []);
 
+  // Effet pour auto-scroller le chat
+  useEffect(() => {
+    if (isAIOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, aiLoading, isAIOpen]);
+
   const fetchCollection = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
-
     const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
     if (cardsData) setCards(cardsData.filter(c => c.is_wishlist !== true));
-
     const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
     if (foldersData) setFolders(foldersData);
-
     setLoading(false);
   };
 
@@ -188,13 +183,9 @@ export default function CollectionPage() {
     if (selectedArray.length > 0) await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
   };
 
-  // ==========================================
-  // FONCTION TCHAT IA (SCOUTY')
-  // ==========================================
   const handleAskAI = async (questionText: string) => {
     if (!questionText.trim()) return;
 
-    // Ajout de la question au tchat
     const newMessages = [...messages, { role: 'user' as const, content: questionText }];
     setMessages(newMessages);
     setChatInput('');
@@ -204,7 +195,6 @@ export default function CollectionPage() {
       const response = await fetch('/api/scout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // On envoie tout l'historique + le nom du joueur
         body: JSON.stringify({ messages: newMessages, playerName: searchQuery }),
       });
 
@@ -215,7 +205,7 @@ export default function CollectionPage() {
 
     } catch (error) {
       console.error(error);
-      setMessages([...newMessages, { role: 'assistant' as const, content: "Désolé, je n'arrive pas à joindre le réseau pour le moment. 📡" }]);
+      setMessages([...newMessages, { role: 'assistant' as const, content: "Erreur réseau. Veuillez réessayer plus tard." }]);
     } finally {
       setAiLoading(false);
     }
@@ -244,7 +234,6 @@ export default function CollectionPage() {
 
     return (
       <>
-        {/* BOUTON D'ACTION IA - Design Jaune Fluo */}
         {searchQuery.trim().length > 0 && !activeFolderId && (
           <div className="px-6 mt-2 mb-4 animate-in fade-in slide-in-from-top-2">
             <button 
@@ -252,12 +241,11 @@ export default function CollectionPage() {
               className="w-full py-3.5 bg-[#AFFF25] text-[#040221] rounded-2xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs shadow-[0_5px_20px_rgba(175,255,37,0.3)] active:scale-95 transition-transform"
             >
               <Sparkles size={16} />
-              Scouty' : {searchQuery}
+              Scouty, Cards Agent
             </button>
           </div>
         )}
 
-        {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex gap-3 px-6 pb-2 w-max">
@@ -276,14 +264,12 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* 2. DROPDOWNS : SPÉCIFICITÉS ET MARQUES */}
         <div className={`relative z-50 mb-6 px-6 ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
           <div className="flex gap-3">
             <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} /></button>
             <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}><span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} /></button>
           </div>
-          {/* ... (Menu dropdown conservé tel quel) ... */}
           {openDropdown === 'spec' && (
             <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
               {[ { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) }, { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) }, { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) } ].map((item, idx) => (
@@ -306,7 +292,6 @@ export default function CollectionPage() {
           )}
         </div>
 
-        {/* 3. GRILLE DE CARTES PINTEREST */}
         <div className="px-2 grid grid-cols-3 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
@@ -408,18 +393,15 @@ export default function CollectionPage() {
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
 
-      {/* ========================================== */}
-      {/* OVERLAY TCHAT IA (SCOUTY') */}
-      {/* ========================================== */}
+      {/* OVERLAY TCHAT IA (SCOUTY) */}
       {isAIOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          {/* Ajout de mb-[90px] pour passer au dessus de la tab bar sur mobile */}
-          <div className="w-full sm:max-w-md bg-[#040221] rounded-t-[32px] sm:rounded-[32px] p-6 mb-[90px] sm:mb-0 border-t sm:border border-[#AFFF25]/30 shadow-[0_-20px_40px_rgba(0,0,0,0.9)] relative flex flex-col h-[75vh] sm:h-[600px] animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 duration-300">
+          <div className="w-full sm:max-w-md bg-[#040221] rounded-t-[32px] sm:rounded-[32px] pt-6 px-6 pb-[110px] sm:pb-6 border-t sm:border border-[#AFFF25]/30 shadow-[0_-20px_40px_rgba(0,0,0,0.9)] relative flex flex-col h-[85vh] sm:h-[600px] animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 duration-300">
 
             {/* Header Modal IA */}
             <div className="flex justify-between items-center mb-6 shrink-0">
               <h3 className="text-xl font-black text-[#AFFF25] uppercase italic flex items-center gap-2">
-                <Sparkles size={20} className="text-[#AFFF25]" /> Scouty'
+                <Sparkles size={20} className="text-[#AFFF25]" /> Scouty
               </h3>
               <button 
                 onClick={() => { setIsAIOpen(false); setMessages([]); setChatInput(''); }} 
@@ -432,28 +414,39 @@ export default function CollectionPage() {
             {/* Zone de Tchat Scrollable */}
             <div className="flex-1 overflow-y-auto no-scrollbar space-y-4 mb-4 flex flex-col">
               {messages.length === 0 ? (
-                // Écran de bienvenue avec questions pré-guidées
                 <div>
-                  <p className="text-sm text-white/70 mb-4">Que veux-tu analyser concernant <strong className="text-white">{searchQuery}</strong> ?</p>
+                  {/* NOUVELLE PRÉSENTATION DE SCOUTY */}
+                  <div className="flex items-start gap-4 mb-6 bg-white/5 p-4 rounded-2xl border border-white/10">
+                    <div className="w-12 h-12 rounded-full bg-[#AFFF25]/20 flex items-center justify-center shrink-0 overflow-hidden border border-[#AFFF25]/50">
+                      <img src="/asset/scouty.svg" alt="Scouty Avatar" className="w-8 h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
+                    </div>
+                    <div>
+                      <h4 className="text-[#AFFF25] font-black italic text-sm mb-1">Scouty, Cards Agent</h4>
+                      <p className="text-xs text-white/80 leading-relaxed">
+                        Expert en cartes de sport et investissement. Je suis là pour t'aider à analyser le marché et évaluer tes cartes !
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-white/70 mb-4">Analyse de marché pour : <strong className="text-white">{searchQuery}</strong></p>
                   
                   <div className="space-y-3">
                     <button 
-                      onClick={() => handleAskAI(`Quelles sont les dernières perf de ${searchQuery} ?`)} 
+                      onClick={() => handleAskAI(`Quelles sont les dernières performances de ${searchQuery} ?`)} 
                       className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
                     >
-                      🔥 Quelles sont ses dernières perfs ?
+                      Quelles sont ses dernières perfs ?
                     </button>
                     
                     <button 
                       onClick={() => handleAskAI(`Faut-il investir sur les cartes de ${searchQuery} ?`)} 
                       className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
                     >
-                      📈 Faut-il investir sur ses cartes ?
+                      Faut-il investir sur ses cartes ?
                     </button>
                   </div>
                 </div>
               ) : (
-                // Historique des messages
                 messages.map((msg, idx) => (
                   <div key={idx} className={`p-3.5 rounded-2xl max-w-[85%] text-sm shadow-md ${msg.role === 'user' ? 'bg-[#AFFF25] text-[#040221] self-end rounded-tr-sm font-medium' : 'bg-white/10 text-white self-start rounded-tl-sm leading-relaxed whitespace-pre-wrap'}`}>
                     {msg.content}
@@ -461,23 +454,25 @@ export default function CollectionPage() {
                 ))
               )}
               
-              {/* Loader quand l'IA réfléchit */}
               {aiLoading && (
                 <div className="bg-white/10 text-white self-start p-3.5 rounded-2xl rounded-tl-sm flex items-center gap-2">
                   <Loader2 size={16} className="animate-spin text-[#AFFF25]" />
-                  <span className="text-xs font-medium text-white/70">Scouty' tape...</span>
+                  <span className="text-xs font-medium text-white/70">Scouty analyse...</span>
                 </div>
               )}
+              
+              {/* Le point d'ancrage pour le scroll automatique */}
+              <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Chat libre (Fixé en bas) */}
+            {/* Input Chat libre (Fixé en bas, au dessus du padding) */}
             <div className="shrink-0 flex gap-2 pt-2 border-t border-white/10">
               <input 
                 type="text" 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAskAI(chatInput)}
-                placeholder="Pose une question à Scouty'..."
+                placeholder="Pose une question à Scouty..."
                 className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-3 text-sm text-white focus:outline-none focus:border-[#AFFF25] transition-colors"
               />
               <button 
