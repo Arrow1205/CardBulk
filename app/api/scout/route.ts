@@ -1,6 +1,11 @@
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
+
+// On indique explicitement à la librairie d'utiliser ta variable GEMINI_API_KEY
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
 
 export async function POST(req: Request) {
   try {
@@ -15,7 +20,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ text });
     
   } catch (error) {
-    console.error(error);
+    console.error("Erreur IA:", error);
     return NextResponse.json({ error: 'Erreur de connexion à l\'IA' }, { status: 500 });
   }
 }
