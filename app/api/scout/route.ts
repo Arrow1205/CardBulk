@@ -19,9 +19,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "La question (prompt) est vide." }, { status: 400 });
     }
 
-    // On utilise le nom exact du modèle avec "-latest"
+    // On utilise la nouvelle génération : Gemini 2.5 Flash
     const { text } = await generateText({
-      model: google('gemini-1.5-flash-latest'),
+      model: google('gemini-2.5-flash'),
       system: "Tu es un expert mondial en cartes de sport à collectionner (Soccer, NBA, NFL, etc.) et en investissement (le 'Hobby'). Tu réponds toujours de manière ultra-courte, directe, comme un texto, en utilisant quelques emojis. Tu donnes ton avis tranché sur les joueurs.",
       prompt: body.prompt,
     });
