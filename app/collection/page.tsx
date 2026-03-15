@@ -239,10 +239,15 @@ export default function CollectionPage() {
     const hasMultipleSports = availableSports.length > 1;
 
     const filteredCards = baseCards.filter(card => {
-      const searchTerm = searchQuery.toLowerCase();
+      const searchTerm = searchQuery.toLowerCase().trim();
+      
+      // On combine le prénom et le nom pour vérifier les espaces correctement
+      const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
+      const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
+
       const searchMatch = !searchQuery || 
-        card.lastname?.toLowerCase().includes(searchTerm) || 
-        card.firstname?.toLowerCase().includes(searchTerm) ||
+        fullName.includes(searchTerm) ||
+        reverseFullName.includes(searchTerm) ||
         card.club_name?.toLowerCase().includes(searchTerm);
         
       const sportMatch = !selectedSport || card.sport === selectedSport;
@@ -306,7 +311,7 @@ export default function CollectionPage() {
                   </div>
                 </div>
               ))}
-              <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">
+              <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-colors">
                 Confirmer
               </button>
             </div>
@@ -332,7 +337,7 @@ export default function CollectionPage() {
                   );
                 })}
               </div>
-              <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">
+              <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition-colors">
                 Confirmer
               </button>
             </div>
@@ -351,7 +356,7 @@ export default function CollectionPage() {
                   key={card.id} 
                   // GESTION DU CLIC : Si mode sélection actif, on toggle. Sinon on va sur la carte
                   onClick={() => targetFolderId ? toggleCardSelection(card.id) : router.push(`/card/${card.id}`)} 
-                  className={`relative rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-transform 
+                  className={`relative rounded-lg overflow-hidden cursor-pointer active:scale-95 transition-transform 
                     ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}
                     ${isSelected ? 'ring-2 ring-[#AFFF25] ring-offset-2 ring-offset-[#040221]' : 'bg-white/5 border border-white/10'}
                   `}
@@ -425,7 +430,7 @@ export default function CollectionPage() {
         <div className="px-6 pb-4">
           <button 
             onClick={handleStartSelection} 
-            className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"
+            className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"
           >
             <Plus size={18} /> Gérer les cartes du dossier
           </button>
@@ -546,7 +551,7 @@ export default function CollectionPage() {
             <form onSubmit={handleCreateFolder}>
               <div className="mb-6">
                 <label className="block text-xs font-bold text-[#AFFF25] uppercase tracking-widest mb-2">Nom du dossier</label>
-                <input type="text" autoFocus required value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)} placeholder="Ex: PC Mbappé, Classeur NBA..." className="w-full bg-[#040221] border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-colors" />
+                <input type="text" autoFocus required value={newFolderName} onChange={(e) => setNewFolderName(e.target.value)} placeholder="Ex: PC Mbappé, Classeur NBA..." className="w-full bg-[#040221] border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-colors" />
               </div>
               <div className="mb-8">
                 <label className="block text-xs font-bold text-[#AFFF25] uppercase tracking-widest mb-2">Type de rangement</label>
@@ -556,7 +561,7 @@ export default function CollectionPage() {
                   ))}
                 </div>
               </div>
-              <button type="submit" className="w-full py-4 bg-[#AFFF25] text-[#040221] rounded-xl font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] transition-colors shadow-[0_0_20px_rgba(175,255,37,0.3)]">Créer le dossier</button>
+              <button type="submit" className="w-full py-4 bg-[#AFFF25] text-[#040221] rounded-lg font-black uppercase tracking-widest text-sm hover:bg-[#9ee615] transition-colors shadow-[0_0_20px_rgba(175,255,37,0.3)]">Créer le dossier</button>
             </form>
           </div>
         </div>
@@ -571,8 +576,8 @@ export default function CollectionPage() {
               <span className="bg-[#040221] text-[#AFFF25] px-3 py-1 rounded-full text-xs font-bold">{selectedForFolder.size} incluse(s)</span>
             </div>
             <div className="flex gap-2">
-              <button onClick={handleCancelSelection} className="flex-1 py-3 border border-[#040221]/20 text-[#040221] font-bold rounded-xl uppercase text-xs active:scale-95 transition-transform">Annuler</button>
-              <button onClick={handleConfirmSelection} className="flex-1 py-3 bg-[#040221] text-[#AFFF25] font-bold rounded-xl uppercase text-xs active:scale-95 transition-transform">Confirmer</button>
+              <button onClick={handleCancelSelection} className="flex-1 py-3 border border-[#040221]/20 text-[#040221] font-bold rounded-lg uppercase text-xs active:scale-95 transition-transform">Annuler</button>
+              <button onClick={handleConfirmSelection} className="flex-1 py-3 bg-[#040221] text-[#AFFF25] font-bold rounded-lg uppercase text-xs active:scale-95 transition-transform">Confirmer</button>
             </div>
           </div>
         </div>
