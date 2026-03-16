@@ -77,7 +77,6 @@ export default function CollectionPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
   
-  // Réf. pour scroller le chat en bas
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,7 +90,6 @@ export default function CollectionPage() {
     fetchCollection();
   }, []);
 
-  // Effet pour auto-scroller le chat
   useEffect(() => {
     if (isAIOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -183,6 +181,9 @@ export default function CollectionPage() {
     if (selectedArray.length > 0) await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
   };
 
+  // ==========================================
+  // FONCTION TCHAT IA AVEC ENVOI DE LA COLLECTION
+  // ==========================================
   const handleAskAI = async (questionText: string) => {
     if (!questionText.trim()) return;
 
@@ -191,11 +192,32 @@ export default function CollectionPage() {
     setChatInput('');
     setAiLoading(true);
 
+    // 1. On récupère les cartes du joueur recherché
+    const searchTerm = searchQuery.toLowerCase().trim();
+    const userPlayerCards = cards.filter(card => {
+      const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
+      const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
+      return searchTerm && (fullName.includes(searchTerm) || reverseFullName.includes(searchTerm));
+    }).map(c => ({
+      // 2. On formate les données pour l'IA (pour économiser des jetons)
+      carte: `${c.brand || 'Inconnu'} ${c.series || ''} ${c.year || ''}`.trim(),
+      details: [
+        c.is_numbered ? `Numérotée /${c.numbering_max}` : '',
+        c.is_auto ? 'Auto' : '',
+        c.is_patch ? 'Patch' : ''
+      ].filter(Boolean).join(' - ') || 'Base',
+      prix_paye: c.purchase_price ? `${c.purchase_price}€` : 'Non renseigné'
+    }));
+
     try {
       const response = await fetch('/api/scout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages, playerName: searchQuery }),
+        body: JSON.stringify({ 
+          messages: newMessages, 
+          playerName: searchQuery,
+          collectionData: userPlayerCards // 3. On envoie la collection à l'IA !
+        }),
       });
 
       if (!response.ok) throw new Error('Erreur réseau');
@@ -393,12 +415,10 @@ export default function CollectionPage() {
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
 
-      {/* OVERLAY TCHAT IA (SCOUTY) */}
       {isAIOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full sm:max-w-md bg-[#040221] rounded-t-[32px] sm:rounded-[32px] pt-6 px-6 pb-[110px] sm:pb-6 border-t sm:border border-[#AFFF25]/30 shadow-[0_-20px_40px_rgba(0,0,0,0.9)] relative flex flex-col h-[85vh] sm:h-[600px] animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 duration-300">
 
-            {/* Header Modal IA */}
             <div className="flex justify-between items-center mb-6 shrink-0">
               <h3 className="text-xl font-black text-[#AFFF25] uppercase italic flex items-center gap-2">
                 <Sparkles size={20} className="text-[#AFFF25]" /> Scouty
@@ -411,11 +431,9 @@ export default function CollectionPage() {
               </button>
             </div>
 
-            {/* Zone de Tchat Scrollable */}
             <div className="flex-1 overflow-y-auto no-scrollbar space-y-4 mb-4 flex flex-col">
               {messages.length === 0 ? (
                 <div>
-                  {/* NOUVELLE PRÉSENTATION DE SCOUTY */}
                   <div className="flex items-start gap-4 mb-6 bg-white/5 p-4 rounded-2xl border border-white/10">
                     <div className="w-12 h-12 rounded-full bg-[#AFFF25]/20 flex items-center justify-center shrink-0 overflow-hidden border border-[#AFFF25]/50">
                       <img src="/asset/scouty.svg" alt="Scouty Avatar" className="w-8 h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
@@ -432,17 +450,17 @@ export default function CollectionPage() {
                   
                   <div className="space-y-3">
                     <button 
-                      onClick={() => handleAskAI(`Quelles sont les dernières performances de ${searchQuery} ?`)} 
+                      onClick={() => handleAskAI(`Est-ce que j'ai acheté mes cartes de ${searchQuery} trop cher par rapport au marché actuel ?`)} 
                       className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
                     >
-                      Quelles sont ses dernières perfs ?
+                      Ai-je acheté mes cartes au bon prix ?
                     </button>
                     
                     <button 
-                      onClick={() => handleAskAI(`Faut-il investir sur les cartes de ${searchQuery} ?`)} 
+                      onClick={() => handleAskAI(`Quelles cartes me manquent typiquement pour faire un Rainbow ou compléter ma collection de ${searchQuery} ?`)} 
                       className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
                     >
-                      Faut-il investir sur ses cartes ?
+                      Que me manque-t-il pour un Rainbow ?
                     </button>
                   </div>
                 </div>
@@ -461,11 +479,9 @@ export default function CollectionPage() {
                 </div>
               )}
               
-              {/* Le point d'ancrage pour le scroll automatique */}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Chat libre (Fixé en bas, au dessus du padding) */}
             <div className="shrink-0 flex gap-2 pt-2 border-t border-white/10">
               <input 
                 type="text" 
