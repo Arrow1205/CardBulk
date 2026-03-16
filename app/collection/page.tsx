@@ -47,7 +47,8 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
 export default function CollectionPage() {
   const router = useRouter();
   
-  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers'>('cartes');
+  // 3 Onglets désormais : cartes, dossiers, scouty
+  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' | 'scouty'>('cartes');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   
@@ -72,7 +73,7 @@ export default function CollectionPage() {
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
   // IA STATES
-  const [isAIOpen, setIsAIOpen] = useState(false);
+  const [hasStartedScouty, setHasStartedScouty] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
@@ -91,10 +92,10 @@ export default function CollectionPage() {
   }, []);
 
   useEffect(() => {
-    if (isAIOpen) {
+    if (activeTab === 'scouty') {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, aiLoading, isAIOpen]);
+  }, [messages, aiLoading, activeTab]);
 
   const fetchCollection = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -187,19 +188,26 @@ export default function CollectionPage() {
   const handleAskAI = async (questionText: string) => {
     if (!questionText.trim()) return;
 
+    // Si on pose une question via les suggestions sans avoir cliqué sur "C'est parti", on force le passage.
+    if (!hasStartedScouty) setHasStartedScouty(true);
+
     const newMessages = [...messages, { role: 'user' as const, content: questionText }];
     setMessages(newMessages);
     setChatInput('');
     setAiLoading(true);
 
-    // 1. On récupère les cartes du joueur recherché
     const searchTerm = searchQuery.toLowerCase().trim();
-    const userPlayerCards = cards.filter(card => {
+    const isGlobal = searchTerm.length === 0;
+
+    const cardsToSend = isGlobal ? cards : cards.filter(card => {
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
       const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
-      return searchTerm && (fullName.includes(searchTerm) || reverseFullName.includes(searchTerm));
-    }).map(c => ({
-      // 2. On formate les données pour l'IA (pour économiser des jetons)
+      return fullName.includes(searchTerm) || reverseFullName.includes(searchTerm);
+    });
+
+    const formattedCollection = cardsToSend.map(c => ({
+      joueur: `${c.firstname || ''} ${c.lastname || ''}`.trim(),
+      sport: c.sport || 'Inconnu',
       carte: `${c.brand || 'Inconnu'} ${c.series || ''} ${c.year || ''}`.trim(),
       details: [
         c.is_numbered ? `Numérotée /${c.numbering_max}` : '',
@@ -215,8 +223,8 @@ export default function CollectionPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           messages: newMessages, 
-          playerName: searchQuery,
-          collectionData: userPlayerCards // 3. On envoie la collection à l'IA !
+          playerName: isGlobal ? "Global" : searchQuery,
+          collectionData: formattedCollection
         }),
       });
 
@@ -256,18 +264,20 @@ export default function CollectionPage() {
 
     return (
       <>
-        {searchQuery.trim().length > 0 && !activeFolderId && (
+        {/* BOUTON D'ACTION IA - Redirige maintenant vers l'onglet Scouty */}
+        {!activeFolderId && (
           <div className="px-6 mt-2 mb-4 animate-in fade-in slide-in-from-top-2">
             <button 
-              onClick={() => setIsAIOpen(true)}
+              onClick={() => setActiveTab('scouty')}
               className="w-full py-3.5 bg-[#AFFF25] text-[#040221] rounded-2xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs shadow-[0_5px_20px_rgba(175,255,37,0.3)] active:scale-95 transition-transform"
             >
               <Sparkles size={16} />
-              Scouty, Cards Agent
+              {searchQuery.trim().length > 0 ? `Scouty, Cards Agent : ${searchQuery}` : "Scouty Portfolio"}
             </button>
           </div>
         )}
 
+        {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex gap-3 px-6 pb-2 w-max">
@@ -358,36 +368,162 @@ export default function CollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 relative">
-      <div className="pt-8 pb-4">
+    <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden">
+      <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221]">
         <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Ma Collection"}</h1>
         {!targetFolderId && (
-          <div className="flex justify-center px-6 gap-8 mb-4">
+          <div className="flex justify-center px-6 gap-6 mb-4">
             <button onClick={() => setActiveTab('cartes')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Cartes{activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             <button onClick={() => setActiveTab('dossiers')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Dossiers{activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
+            
+            {/* NOUVEL ONGLET SCOUTY */}
+            <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
+              <Sparkles size={14} className={activeTab === 'scouty' ? "text-[#AFFF25]" : "text-white/40"} /> Scouty
+              {activeTab === 'scouty' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
+            </button>
           </div>
         )}
       </div>
 
-      {activeTab === 'cartes' && renderCardsAndFilters()}
+      {/* CONTENU SELON L'ONGLET ACTIF */}
+      <div className="relative h-[calc(100vh-140px)] overflow-y-auto pb-32">
+        
+        {activeTab === 'cartes' && renderCardsAndFilters()}
 
-      {activeTab === 'dossiers' && !targetFolderId && (
-        <div className="animate-in fade-in duration-300">
-          <div className="px-6 flex justify-between items-center mb-4 mt-2"><h2 className="text-lg font-bold text-white flex items-center gap-2"><Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris</h2><button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors"><Plus size={18} /></button></div>
-          <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mb-10">
-            <div className="flex gap-4 px-6 pb-4 w-max">
-              {favoriteFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-[180px] h-[180px] rounded-[24px] p-5 border border-white/10 bg-gradient-to-br from-white/10 to-white/5 flex flex-col justify-between relative group cursor-pointer active:scale-95 transition-transform"><div className="w-12 h-12 rounded-full bg-[#AFFF25]/10 flex items-center justify-center border border-[#AFFF25]/20"><Folder size={24} className="text-[#AFFF25]" /></div><div><div className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1">{folder.type}</div><div className="text-xl font-black text-white leading-tight mb-1">{folder.name}</div><div className="text-xs text-[#AFFF25] font-medium">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div>))}
-              {favoriteFolders.length === 0 && <div className="text-white/40 text-sm italic py-8">Aucun dossier favori.</div>}
-              <div className="w-2 shrink-0"></div>
+        {activeTab === 'dossiers' && !targetFolderId && (
+          <div className="animate-in fade-in duration-300">
+            <div className="px-6 flex justify-between items-center mb-4 mt-2"><h2 className="text-lg font-bold text-white flex items-center gap-2"><Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris</h2><button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors"><Plus size={18} /></button></div>
+            <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mb-10">
+              <div className="flex gap-4 px-6 pb-4 w-max">
+                {favoriteFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-[180px] h-[180px] rounded-[24px] p-5 border border-white/10 bg-gradient-to-br from-white/10 to-white/5 flex flex-col justify-between relative group cursor-pointer active:scale-95 transition-transform"><div className="w-12 h-12 rounded-full bg-[#AFFF25]/10 flex items-center justify-center border border-[#AFFF25]/20"><Folder size={24} className="text-[#AFFF25]" /></div><div><div className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1">{folder.type}</div><div className="text-xl font-black text-white leading-tight mb-1">{folder.name}</div><div className="text-xs text-[#AFFF25] font-medium">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div>))}
+                {favoriteFolders.length === 0 && <div className="text-white/40 text-sm italic py-8">Aucun dossier favori.</div>}
+                <div className="w-2 shrink-0"></div>
+              </div>
+            </div>
+            <div className="px-6 flex justify-between items-center mb-4"><h2 className="text-lg font-bold text-white">Tous les dossiers</h2><button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform"><Plus size={20} /></button></div>
+            <div className="px-6 flex flex-col gap-3 pb-[180px]">
+              {otherFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-full flex items-center justify-between p-4 rounded-[20px] border border-white/10 bg-white/5 cursor-pointer active:scale-95 transition-transform hover:bg-white/10"><div className="flex items-center gap-4"><div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Folder size={20} className="text-white/60" /></div><div><div className="text-base font-bold text-white leading-tight">{folder.name}</div><div className="text-xs text-[#AFFF25] mt-0.5">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div><span className="text-[10px] px-3 py-1 rounded-full bg-white/10 text-white/60 font-bold uppercase tracking-widest">{folder.type}</span></div>))}
+              {otherFolders.length === 0 && <div className="text-white/40 text-sm italic">Aucun autre dossier.</div>}
             </div>
           </div>
-          <div className="px-6 flex justify-between items-center mb-4"><h2 className="text-lg font-bold text-white">Tous les dossiers</h2><button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform"><Plus size={20} /></button></div>
-          <div className="px-6 flex flex-col gap-3 pb-[180px]">
-            {otherFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-full flex items-center justify-between p-4 rounded-[20px] border border-white/10 bg-white/5 cursor-pointer active:scale-95 transition-transform hover:bg-white/10"><div className="flex items-center gap-4"><div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Folder size={20} className="text-white/60" /></div><div><div className="text-base font-bold text-white leading-tight">{folder.name}</div><div className="text-xs text-[#AFFF25] mt-0.5">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div><span className="text-[10px] px-3 py-1 rounded-full bg-white/10 text-white/60 font-bold uppercase tracking-widest">{folder.type}</span></div>))}
-            {otherFolders.length === 0 && <div className="text-white/40 text-sm italic">Aucun autre dossier.</div>}
+        )}
+
+        {/* NOUVELLE VUE SCOUTY */}
+        {activeTab === 'scouty' && (
+          <div className="px-6 flex flex-col h-full relative animate-in fade-in duration-300">
+            {!hasStartedScouty ? (
+              // 1. ECRAN DE BIENVENUE SCOUTY
+              <div className="flex flex-col items-center justify-center h-full text-center pb-20">
+                <img src="/asset/scouty.svg" className="w-36 h-36 object-contain mb-6" alt="Scouty Avatar" />
+                <h2 className="text-2xl font-black italic text-[#AFFF25] mb-4">Salut moi c'est Scouty !</h2>
+                <p className="text-sm text-white/80 leading-relaxed px-2 mb-auto">
+                  Je suis ton assistant expert en cartes de sport et investissement.<br/>
+                  Je suis là pour t'aider à analyser le marché et évaluer tes cartes {searchQuery ? `de ${searchQuery}` : "!"}
+                </p>
+                <div className="w-full mt-10">
+                  <p className="text-[10px] text-white/40 italic mb-4">Attention : je peux faire des erreurs verifis toujours avant de faire des investissement ou des ventes</p>
+                  <button onClick={() => setHasStartedScouty(true)} className="w-full py-4 bg-[#2544ff] text-white rounded-full font-bold text-base active:scale-95 transition-transform shadow-[0_4px_20px_rgba(37,68,255,0.4)]">
+                    C'est parti !
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // 2. INTERFACE DE TCHAT
+              <div className="flex flex-col h-full">
+                <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col space-y-4 pb-[220px]">
+                  
+                  {messages.length === 0 ? (
+                    // Écran d'accueil du tchat (avec petite bulle d'introduction et presets)
+                    <div className="space-y-6 pt-4">
+                      <div className="flex items-start gap-3">
+                        <img src="/asset/scouty.svg" alt="Scouty Avatar" className="w-10 h-10 object-contain shrink-0" onError={(e) => e.currentTarget.style.display = 'none'} />
+                        <div className="bg-white/10 text-white p-3.5 rounded-2xl rounded-tl-sm text-sm font-medium">
+                          Voici quelques questions pour te guider.
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        {searchQuery.trim().length > 0 ? (
+                          <>
+                            <button onClick={() => handleAskAI(`Ai-je acheté mes cartes de ${searchQuery} au bon prix par rapport au marché actuel ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Ai-je acheté mes cartes au bon prix ?
+                            </button>
+                            <button onClick={() => handleAskAI(`Que me manque-t-il pour faire un Rainbow de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Que me manque-t-il pour un Rainbow ?
+                            </button>
+                              <button onClick={() => handleAskAI(`Est ce le moment de vendre mes cartes de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Est ce le moment pour vendre cette carte ?
+                            </button>
+                              <button onClick={() => handleAskAI(`Est-ce que ${searchQuery} est en forme en ce moment ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                             Est-ce que le joueur est en forme en ce moment ?"
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button onClick={() => handleAskAI(`Fais-moi un résumé de ma collection. Quels sont mes points forts et les plus belles pièces selon toi ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Quels sont les points forts de ma collection ?
+                            </button>
+                            <button onClick={() => handleAskAI(`Si je devais me séparer de quelques cartes, lesquelles me conseilles-tu de vendre en priorité vu le marché actuel ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Quelles cartes me conseilles-tu de vendre ?
+                            </button>
+                              <button onClick={() => handleAskAI(`Est ce que j'ai trop de collection differentes, sports ou joueurs ? peux tu m'aider a bien réflechir sur ma facon de collectionner ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Est-ce que je diversifie trop ma collection ?
+                            </button>
+                             <button onClick={() => handleAskAI(`Quel sont les  joueurs émergents en ce moment ou la valeur n'est pas encore trop forte et qui valent le coup d'acheter maintenant ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                             Quels joueurs émergents valent le coup d'acheter maintenant ?
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    // Historique des messages
+                    messages.map((msg, idx) => (
+                      <div key={idx} className={`p-3.5 rounded-2xl max-w-[85%] text-sm shadow-md ${msg.role === 'user' ? 'bg-[#AFFF25] text-[#040221] self-end rounded-tr-sm font-semibold' : 'bg-white/10 text-white self-start rounded-tl-sm leading-relaxed whitespace-pre-wrap'}`}>
+                        {msg.content}
+                      </div>
+                    ))
+                  )}
+                  
+                  {aiLoading && (
+                    <div className="bg-white/10 text-white self-start p-3.5 rounded-2xl rounded-tl-sm flex items-center gap-2">
+                      <Loader2 size={16} className="animate-spin text-[#AFFF25]" />
+                      <span className="text-xs font-medium text-white/70">Scouty analyse...</span>
+                    </div>
+                  )}
+                  
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Champ de saisie fixé en bas de l'onglet Scouty */}
+                <div className="fixed bottom-[108px] left-0 w-full px-6 bg-[#040221] pt-4 pb-2 z-40">
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAskAI(chatInput)}
+                      placeholder="Pose une question à Scouty..."
+                      className="flex-1 bg-white/5 border border-white/10 rounded-full px-5 py-3.5 text-sm text-white focus:outline-none focus:border-[#2544ff] transition-colors"
+                    />
+                    <button 
+                      onClick={() => handleAskAI(chatInput)}
+                      disabled={aiLoading || !chatInput.trim()}
+                      className="w-12 h-12 rounded-full bg-[#2544ff] text-white flex items-center justify-center disabled:opacity-50 active:scale-95 transition-transform shrink-0 shadow-[0_4px_15px_rgba(37,68,255,0.4)]"
+                    >
+                      <Send size={18} className="mr-0.5" />
+                    </button>
+                  </div>
+                  <p className="text-[9px] text-white/40 italic text-center mt-3">
+                    Attention : je peux faire des erreurs verifis toujours avant de faire des investissement ou des ventes
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -411,99 +547,10 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {activeTab !== 'dossiers' && (
+      {/* Barre de recherche classique */}
+      {activeTab === 'cartes' && !targetFolderId && (
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
-
-      {isAIOpen && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full sm:max-w-md bg-[#040221] rounded-t-[32px] sm:rounded-[32px] pt-6 px-6 pb-[110px] sm:pb-6 border-t sm:border border-[#AFFF25]/30 shadow-[0_-20px_40px_rgba(0,0,0,0.9)] relative flex flex-col h-[85vh] sm:h-[600px] animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 duration-300">
-
-            <div className="flex justify-between items-center mb-6 shrink-0">
-              <h3 className="text-xl font-black text-[#AFFF25] uppercase italic flex items-center gap-2">
-                <Sparkles size={20} className="text-[#AFFF25]" /> Scouty
-              </h3>
-              <button 
-                onClick={() => { setIsAIOpen(false); setMessages([]); setChatInput(''); }} 
-                className="w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-white/60 hover:text-white transition-colors"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto no-scrollbar space-y-4 mb-4 flex flex-col">
-              {messages.length === 0 ? (
-                <div>
-                  <div className="flex items-start gap-4 mb-6 bg-white/5 p-4 rounded-2xl border border-white/10">
-                    <div className="w-12 h-12 rounded-full bg-[#AFFF25]/20 flex items-center justify-center shrink-0 overflow-hidden border border-[#AFFF25]/50">
-                      <img src="/asset/scouty.svg" alt="Scouty Avatar" className="w-8 h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                    </div>
-                    <div>
-                      <h4 className="text-[#AFFF25] font-black italic text-sm mb-1">Scouty, Cards Agent</h4>
-                      <p className="text-xs text-white/80 leading-relaxed">
-                        Expert en cartes de sport et investissement. Je suis là pour t'aider à analyser le marché et évaluer tes cartes !
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-white/70 mb-4">Analyse de marché pour : <strong className="text-white">{searchQuery}</strong></p>
-                  
-                  <div className="space-y-3">
-                    <button 
-                      onClick={() => handleAskAI(`Est-ce que j'ai acheté mes cartes de ${searchQuery} trop cher par rapport au marché actuel ?`)} 
-                      className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
-                    >
-                      Ai-je acheté mes cartes au bon prix ?
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleAskAI(`Quelles cartes me manquent typiquement pour faire un Rainbow ou compléter ma collection de ${searchQuery} ?`)} 
-                      className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-medium text-white flex items-center gap-3"
-                    >
-                      Que me manque-t-il pour un Rainbow ?
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                messages.map((msg, idx) => (
-                  <div key={idx} className={`p-3.5 rounded-2xl max-w-[85%] text-sm shadow-md ${msg.role === 'user' ? 'bg-[#AFFF25] text-[#040221] self-end rounded-tr-sm font-medium' : 'bg-white/10 text-white self-start rounded-tl-sm leading-relaxed whitespace-pre-wrap'}`}>
-                    {msg.content}
-                  </div>
-                ))
-              )}
-              
-              {aiLoading && (
-                <div className="bg-white/10 text-white self-start p-3.5 rounded-2xl rounded-tl-sm flex items-center gap-2">
-                  <Loader2 size={16} className="animate-spin text-[#AFFF25]" />
-                  <span className="text-xs font-medium text-white/70">Scouty analyse...</span>
-                </div>
-              )}
-              
-              <div ref={messagesEndRef} />
-            </div>
-
-            <div className="shrink-0 flex gap-2 pt-2 border-t border-white/10">
-              <input 
-                type="text" 
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAskAI(chatInput)}
-                placeholder="Pose une question à Scouty..."
-                className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-3 text-sm text-white focus:outline-none focus:border-[#AFFF25] transition-colors"
-              />
-              <button 
-                onClick={() => handleAskAI(chatInput)}
-                disabled={aiLoading || !chatInput.trim()}
-                className="w-11 h-11 rounded-full bg-[#AFFF25] text-[#040221] flex items-center justify-center disabled:opacity-50 active:scale-95 transition-transform shrink-0"
-              >
-                <Send size={18} className="mr-0.5" />
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
