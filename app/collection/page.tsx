@@ -47,7 +47,6 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
 export default function CollectionPage() {
   const router = useRouter();
   
-  // 3 Onglets désormais : cartes, dossiers, scouty
   const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' | 'scouty'>('cartes');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -182,13 +181,9 @@ export default function CollectionPage() {
     if (selectedArray.length > 0) await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
   };
 
-  // ==========================================
-  // FONCTION TCHAT IA AVEC ENVOI DE LA COLLECTION
-  // ==========================================
   const handleAskAI = async (questionText: string) => {
     if (!questionText.trim()) return;
 
-    // Si on pose une question via les suggestions sans avoir cliqué sur "C'est parti", on force le passage.
     if (!hasStartedScouty) setHasStartedScouty(true);
 
     const newMessages = [...messages, { role: 'user' as const, content: questionText }];
@@ -264,19 +259,6 @@ export default function CollectionPage() {
 
     return (
       <>
-        {/* BOUTON D'ACTION IA - Redirige maintenant vers l'onglet Scouty */}
-        {!activeFolderId && (
-          <div className="px-6 mt-2 mb-4 animate-in fade-in slide-in-from-top-2">
-            <button 
-              onClick={() => setActiveTab('scouty')}
-              className="w-full py-3.5 bg-[#AFFF25] text-[#040221] rounded-2xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs shadow-[0_5px_20px_rgba(175,255,37,0.3)] active:scale-95 transition-transform"
-            >
-              <Sparkles size={16} />
-              {searchQuery.trim().length > 0 ? `Scouty, Cards Agent : ${searchQuery}` : "Scouty Portfolio"}
-            </button>
-          </div>
-        )}
-
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -370,13 +352,14 @@ export default function CollectionPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden">
       <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221]">
-        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Ma Collection"}</h1>
+        <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Collection"}</h1>
         {!targetFolderId && (
           <div className="flex justify-center px-6 gap-6 mb-4">
             <button onClick={() => setActiveTab('cartes')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Cartes{activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
-            <button onClick={() => setActiveTab('dossiers')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Dossiers{activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             
-            {/* NOUVEL ONGLET SCOUTY */}
+            {/* Clic sur l'onglet Dossiers = on vide la recherche pour éviter les bugs */}
+            <button onClick={() => { setActiveTab('dossiers'); setSearchQuery(''); }} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Dossiers{activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
+            
             <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
               <Sparkles size={14} className={activeTab === 'scouty' ? "text-[#AFFF25]" : "text-white/40"} /> Scouty
               {activeTab === 'scouty' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
@@ -408,11 +391,9 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* NOUVELLE VUE SCOUTY */}
         {activeTab === 'scouty' && (
           <div className="px-6 flex flex-col h-full relative animate-in fade-in duration-300">
             {!hasStartedScouty ? (
-              // 1. ECRAN DE BIENVENUE SCOUTY
               <div className="flex flex-col items-center justify-center h-full text-center pb-20">
                 <img src="/asset/scouty.svg" className="w-36 h-36 object-contain mb-6" alt="Scouty Avatar" />
                 <h2 className="text-2xl font-black italic text-[#AFFF25] mb-4">Salut moi c'est Scouty !</h2>
@@ -421,19 +402,17 @@ export default function CollectionPage() {
                   Je suis là pour t'aider à analyser le marché et évaluer tes cartes {searchQuery ? `de ${searchQuery}` : "!"}
                 </p>
                 <div className="w-full mt-10">
-                  <p className="text-[10px] text-white/40 italic mb-4">Attention : je peux faire des erreurs verifis toujours avant de faire des investissement ou des ventes</p>
+                  <p className="text-[10px] text-white/40 italic mb-4">Attention : je peux faire des erreurs, vérifie toujours avant de faire des investissements ou des ventes.</p>
                   <button onClick={() => setHasStartedScouty(true)} className="w-full py-4 bg-[#2544ff] text-white rounded-full font-bold text-base active:scale-95 transition-transform shadow-[0_4px_20px_rgba(37,68,255,0.4)]">
                     C'est parti !
                   </button>
                 </div>
               </div>
             ) : (
-              // 2. INTERFACE DE TCHAT
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col space-y-4 pb-[220px]">
                   
                   {messages.length === 0 ? (
-                    // Écran d'accueil du tchat (avec petite bulle d'introduction et presets)
                     <div className="space-y-6 pt-4">
                       <div className="flex items-start gap-3">
                         <img src="/asset/scouty.svg" alt="Scouty Avatar" className="w-10 h-10 object-contain shrink-0" onError={(e) => e.currentTarget.style.display = 'none'} />
@@ -448,14 +427,8 @@ export default function CollectionPage() {
                             <button onClick={() => handleAskAI(`Ai-je acheté mes cartes de ${searchQuery} au bon prix par rapport au marché actuel ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Ai-je acheté mes cartes au bon prix ?
                             </button>
-                            <button onClick={() => handleAskAI(`Que me manque-t-il pour faire un Rainbow de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                            <button onClick={() => handleAskAI(`Que me manque-t-il typiquement pour faire un Rainbow ou compléter ma collection de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Que me manque-t-il pour un Rainbow ?
-                            </button>
-                              <button onClick={() => handleAskAI(`Est ce le moment de vendre mes cartes de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
-                              Est ce le moment pour vendre cette carte ?
-                            </button>
-                              <button onClick={() => handleAskAI(`Est-ce que ${searchQuery} est en forme en ce moment ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
-                             Est-ce que le joueur est en forme en ce moment ?"
                             </button>
                           </>
                         ) : (
@@ -466,18 +439,11 @@ export default function CollectionPage() {
                             <button onClick={() => handleAskAI(`Si je devais me séparer de quelques cartes, lesquelles me conseilles-tu de vendre en priorité vu le marché actuel ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Quelles cartes me conseilles-tu de vendre ?
                             </button>
-                              <button onClick={() => handleAskAI(`Est ce que j'ai trop de collection differentes, sports ou joueurs ? peux tu m'aider a bien réflechir sur ma facon de collectionner ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
-                              Est-ce que je diversifie trop ma collection ?
-                            </button>
-                             <button onClick={() => handleAskAI(`Quel sont les  joueurs émergents en ce moment ou la valeur n'est pas encore trop forte et qui valent le coup d'acheter maintenant ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
-                             Quels joueurs émergents valent le coup d'acheter maintenant ?
-                            </button>
                           </>
                         )}
                       </div>
                     </div>
                   ) : (
-                    // Historique des messages
                     messages.map((msg, idx) => (
                       <div key={idx} className={`p-3.5 rounded-2xl max-w-[85%] text-sm shadow-md ${msg.role === 'user' ? 'bg-[#AFFF25] text-[#040221] self-end rounded-tr-sm font-semibold' : 'bg-white/10 text-white self-start rounded-tl-sm leading-relaxed whitespace-pre-wrap'}`}>
                         {msg.content}
@@ -495,7 +461,6 @@ export default function CollectionPage() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Champ de saisie fixé en bas de l'onglet Scouty */}
                 <div className="fixed bottom-[108px] left-0 w-full px-6 bg-[#040221] pt-4 pb-2 z-40">
                   <div className="flex gap-2">
                     <input 
@@ -515,7 +480,7 @@ export default function CollectionPage() {
                     </button>
                   </div>
                   <p className="text-[9px] text-white/40 italic text-center mt-3">
-                    Attention : je peux faire des erreurs verifis toujours avant de faire des investissement ou des ventes
+                    Attention : je peux faire des erreurs, vérifie toujours avant de faire des investissements ou des ventes.
                   </p>
                 </div>
               </div>
