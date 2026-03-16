@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, Link as LinkIcon, SlidersHorizontal, Wand2, X, Check } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check } from 'lucide-react';
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import SET_DATA from '@/data/set.json';
 
@@ -159,15 +159,27 @@ function ScannerContent() {
       const data = await res.json();
       
       if (!data.error) {
+        // FILTRE INTELLIGENT DE NETTOYAGE
+        // On vire toutes les réponses inutiles que l'IA peut parfois renvoyer
+        const cleanValue = (val: any) => {
+          if (!val) return '';
+          const str = String(val).trim();
+          const lower = str.toLowerCase();
+          if (['n/a', 'na', 'none', 'inconnu', 'brand', 'null', 'undefined', '-', 'unknown'].includes(lower)) return '';
+          return str;
+        };
+
+        const cleanPlayerName = cleanValue(data.playerName);
         let fname = ''; let lname = '';
-        if (data.playerName) {
-          const parts = data.playerName.split(' ');
+        
+        if (cleanPlayerName) {
+          const parts = cleanPlayerName.split(' ');
           fname = parts[0]?.toUpperCase() || '';
           lname = parts.slice(1).join(' ')?.toUpperCase() || '';
         }
 
         setFormData(prev => {
-          let aiSport = data.sport?.toUpperCase() || '';
+          let aiSport = cleanValue(data.sport).toUpperCase();
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
           
           return {
@@ -175,16 +187,16 @@ function ScannerContent() {
             sport: aiSport,
             firstname: fname,
             lastname: lname,
-            club: data.club || '',
-            brand: data.brand || '',
-            series: data.series || '',
-            year: data.year ? data.year.toString() : '',
+            club: cleanValue(data.club),
+            brand: cleanValue(data.brand),
+            series: cleanValue(data.series),
+            year: cleanValue(data.year),
             is_auto: !!data.is_auto,
             is_patch: !!data.is_patch,
             is_rookie: !!data.is_rookie,
             is_numbered: !!data.is_numbered,
-            num_low: data.num_low ? data.num_low.toString() : '',
-            num_high: data.num_high ? data.num_high.toString() : '',
+            num_low: cleanValue(data.num_low),
+            num_high: cleanValue(data.num_high),
             website_url: resetForm ? '' : currentUrl
           };
         });
@@ -417,12 +429,11 @@ function ScannerContent() {
       {isWishlistMode && (
         <div className="relative w-full max-w-[300px] mx-auto mb-10 flex items-center gap-2 z-10">
           <div className="relative flex-1">
-            <LinkIcon className="absolute left-4 top-3 text-[#AFFF25]/50" size={16} />
             <input 
               value={formData.website_url} 
               onChange={e => setFormData({...formData, website_url: e.target.value})} 
               placeholder="Coller un lien (Vinted, eBay...)" 
-              className="w-full bg-[#040221]/60 backdrop-blur-md border border-white/20 focus:border-[#AFFF25] py-2.5 pl-10 pr-4 rounded-full text-xs outline-none text-white transition-colors" 
+              className="w-full bg-[#040221]/60 backdrop-blur-md border border-white/20 focus:border-[#AFFF25] py-2.5 px-4 rounded-full text-xs outline-none text-white transition-colors" 
             />
           </div>
           <button 

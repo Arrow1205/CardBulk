@@ -256,7 +256,7 @@ export default function CardDetailsPage() {
         {/* LE CONTENEUR DE LA CARTE AVEC REF */}
         <div 
           ref={cardRef}
-          style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '8px' }} 
+          style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
           className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleLeave}
@@ -272,7 +272,7 @@ export default function CardDetailsPage() {
                   setIsHorizontal(true);
                 }
               }}
-              style={{ borderRadius: '8px', pointerEvents: 'none' }} 
+              style={{ borderRadius: '12px', pointerEvents: 'none' }} 
               className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10 relative z-10" 
               alt="Card" 
             />
@@ -336,12 +336,22 @@ export default function CardDetailsPage() {
             )}
           </div>
           
-          {/* L'affichage de la numérotation complète aligné à droite (1rem, font-weight 500, jaune fluo) */}
-          {card.is_numbered && card.numbering_max && (
-            <div className="text-base font-medium text-[#AFFF25] whitespace-nowrap shrink-0">
-              {card.card_number ? `${card.card_number}/` : ''}{card.numbering_max}
-            </div>
-          )}
+          {/* Affichage du Numéro de carte (Set) et de la Numérotation (Série) */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Numéro de la carte dans la série (ex: N° 45) */}
+            {card.print_number && (
+              <div className="text-sm font-bold text-white/60">
+                N° {card.print_number}
+              </div>
+            )}
+
+            {/* Numérotation de la carte (ex: 25/99) en jaune fluo avec numbering_low */}
+            {card.is_numbered && card.numbering_max && (
+              <div className="text-base font-medium text-[#AFFF25] whitespace-nowrap">
+                {card.numbering_low ? `${card.numbering_low}/` : ''}{card.numbering_max}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-y-6 pt-6 border-t border-white/10">

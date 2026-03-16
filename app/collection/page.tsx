@@ -430,6 +430,12 @@ export default function CollectionPage() {
                             <button onClick={() => handleAskAI(`Que me manque-t-il typiquement pour faire un Rainbow ou compléter ma collection de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Que me manque-t-il pour un Rainbow ?
                             </button>
+                            <button onClick={() => handleAskAI(`Quelles sont les performances actuelles de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                             Quelles sont les performances actuelle du joueur ?
+                            </button>
+                            <button onClick={() => handleAskAI(`Est ce que je dois vendre mes cartes de ${searchQuery} en ce moment ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Quel est le meilleur moment pour vendre cette carte ?
+                            </button>
                           </>
                         ) : (
                           <>
@@ -438,6 +444,12 @@ export default function CollectionPage() {
                             </button>
                             <button onClick={() => handleAskAI(`Si je devais me séparer de quelques cartes, lesquelles me conseilles-tu de vendre en priorité vu le marché actuel ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Quelles cartes me conseilles-tu de vendre ?
+                            </button>
+                              <button onClick={() => handleAskAI(`Est ce que j'ai trop de cartes differentes dans ma collection ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Est-ce que je diversifie trop ma collection ?"
+                            </button>
+                              <button onClick={() => handleAskAI(`Qui sont les rookies du moment en soccer, basket, baseball .. sur lesquel investir en 2026 ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Quels joueurs émergents valent le coup d'acheter maintenant ?
                             </button>
                           </>
                         )}
