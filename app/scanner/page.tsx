@@ -17,7 +17,7 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
   'TENNIS': { image: 'Tennis', jsonKey: 'tennis', label: 'Tennis' }
 };
 
-const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '' };
+const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 export default function ScannerPage() { 
   return (
@@ -64,7 +64,26 @@ function ScannerContent() {
         const { data } = await supabase.from('cards').select('*').eq('id', editId).single();
         if (data) {
           setIsWishlistMode(data.is_wishlist || false);
-          setFormData({ sport: data.sport || '', firstname: data.firstname || '', lastname: data.lastname || '', club: data.club_name || '', brand: data.brand || '', series: data.series || '', year: data.year?.toString() || '', is_auto: data.is_auto || false, is_patch: data.is_patch || false, is_rookie: data.is_rookie || false, is_numbered: data.is_numbered || false, num_low: data.numbering_low?.toString() || '', num_high: data.numbering_max?.toString() || '', price: data.purchase_price?.toString() || '', website_url: data.website_url || '' });
+          setFormData({ 
+            sport: data.sport || '', 
+            firstname: data.firstname || '', 
+            lastname: data.lastname || '', 
+            club: data.club_name || '', 
+            brand: data.brand || '', 
+            series: data.series || '', 
+            year: data.year?.toString() || '', 
+            is_auto: data.is_auto || false, 
+            is_patch: data.is_patch || false, 
+            is_rookie: data.is_rookie || false, 
+            is_numbered: data.is_numbered || false, 
+            num_low: data.numbering_low?.toString() || '', 
+            num_high: data.numbering_max?.toString() || '', 
+            price: data.purchase_price?.toString() || '', 
+            website_url: data.website_url || '',
+            is_graded: data.is_graded || false,
+            grading_company: data.grading_company || '',
+            grading_grade: data.grading_grade || ''
+          });
           setPreviewUrl(data.image_url);
         }
         setIsFetchingEdit(false);
@@ -160,7 +179,6 @@ function ScannerContent() {
       
       if (!data.error) {
         // FILTRE INTELLIGENT DE NETTOYAGE
-        // On vire toutes les réponses inutiles que l'IA peut parfois renvoyer
         const cleanValue = (val: any) => {
           if (!val) return '';
           const str = String(val).trim();
@@ -197,6 +215,9 @@ function ScannerContent() {
             is_numbered: !!data.is_numbered,
             num_low: cleanValue(data.num_low),
             num_high: cleanValue(data.num_high),
+            is_graded: !!data.is_graded,
+            grading_company: cleanValue(data.grading_company),
+            grading_grade: cleanValue(data.grading_grade),
             website_url: resetForm ? '' : currentUrl
           };
         });
@@ -299,7 +320,29 @@ function ScannerContent() {
         finalImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
       }
       
-      const cardDataToSave = { user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, series: formData.series, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url };
+      const cardDataToSave = { 
+        user_id: user.id, 
+        sport: formData.sport, 
+        firstname: formData.firstname, 
+        lastname: formData.lastname, 
+        brand: formData.brand, 
+        series: formData.series, 
+        year: parseInt(formData.year) || null, 
+        is_rookie: formData.is_rookie, 
+        is_auto: formData.is_auto, 
+        is_patch: formData.is_patch, 
+        is_numbered: formData.is_numbered, 
+        numbering_low: parseInt(formData.num_low) || null, 
+        numbering_max: parseInt(formData.num_high) || null, 
+        purchase_price: parseFloat(formData.price) || 0, 
+        image_url: finalImageUrl, 
+        club_name: formData.club, 
+        is_wishlist: isWishlistMode, 
+        website_url: formData.website_url,
+        is_graded: formData.is_graded,
+        grading_company: formData.is_graded ? formData.grading_company : null,
+        grading_grade: formData.is_graded ? formData.grading_grade : null
+      };
       
       if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
       else await supabase.from('cards').insert([cardDataToSave]);
@@ -511,13 +554,40 @@ function ScannerContent() {
                 <ChevronDown className="absolute right-4 top-3 text-white/50 pointer-events-none" size={16} />
               </div>
               
-              {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE'].map((l) => {
-                const k = l === 'NUMÉROTÉE' ? 'is_numbered' : `is_${l.toLowerCase()}`;
+              {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE', 'GRADÉE'].map((l) => {
+                let k = `is_${l.toLowerCase()}`;
+                if (l === 'NUMÉROTÉE') k = 'is_numbered';
+                if (l === 'GRADÉE') k = 'is_graded';
+                
                 const active = formData[k as keyof typeof formData];
                 return (
-                  <div key={l} className="flex justify-between items-center px-2"><span className="font-black text-sm">{l}</span><button onClick={() => setFormData({...formData, [k]: !active})} className={`w-12 h-6 rounded-full relative border ${active ? 'border-[#AFFF25] bg-[#AFFF25]/20' : 'border-white/30'}`}><div className={`absolute top-[3px] w-4 h-4 rounded-full ${active ? 'right-1 bg-[#AFFF25]' : 'left-1 bg-white/50'}`} /></button></div>
+                  <div key={l} className="flex justify-between items-center px-2">
+                    <span className="font-black text-sm">{l}</span>
+                    <button onClick={() => setFormData({...formData, [k]: !active})} className={`w-12 h-6 rounded-full relative border ${active ? 'border-[#AFFF25] bg-[#AFFF25]/20' : 'border-white/30'}`}>
+                      <div className={`absolute top-[3px] w-4 h-4 rounded-full ${active ? 'right-1 bg-[#AFFF25]' : 'left-1 bg-white/50'}`} />
+                    </button>
+                  </div>
                 )
               })}
+
+              {formData.is_graded && (
+                <div className="flex items-center gap-4">
+                  <div className="relative w-1/2">
+                    <select value={formData.grading_company} onChange={e => setFormData({...formData, grading_company: e.target.value})} className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3 rounded-full text-sm pl-4 appearance-none outline-none">
+                      <option value="">Société</option>
+                      {['PSA', 'PCA', 'Becket', 'Collect Aura', 'MTG', 'GCC'].map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-3 text-[#AFFF25]/50 pointer-events-none" size={16} />
+                  </div>
+                  <div className="relative w-1/2">
+                    <select value={formData.grading_grade} onChange={e => setFormData({...formData, grading_grade: e.target.value})} className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3 rounded-full text-sm pl-4 appearance-none outline-none">
+                      <option value="">Note</option>
+                      {['10+', '10', '9.5', '9', '8.5', '8', '7.5', '7', '6.5', '6', '5.5', '5', '4.5', '4', '3.5', '3', '2.5', '2', 'officielle'].map(n => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-3 text-[#AFFF25]/50 pointer-events-none" size={16} />
+                  </div>
+                </div>
+              )}
               
               {formData.is_numbered && (
                 <div className="flex items-center gap-4">

@@ -319,9 +319,10 @@ export default function CardDetailsPage() {
           {card.is_patch && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Patch</span>}
           {card.is_auto && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Autographe</span>}
           {card.is_numbered && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Numéroté</span>}
+          {card.is_graded && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Gradée</span>}
         </div>
 
-        {/* Sport, Club et Numérotation alignés */}
+        {/* Sport, Club alignés */}
         <div className="flex items-center justify-between gap-4 mb-6">
           <div className="flex flex-wrap gap-3">
             <button onClick={() => router.push(`/collection?sport=${card.sport}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
@@ -336,7 +337,7 @@ export default function CardDetailsPage() {
             )}
           </div>
           
-          {/* Affichage du Numéro de carte (Set) et de la Numérotation (Série) */}
+          {/* Affichage du Numéro de carte (Set) */}
           <div className="flex items-center gap-3 shrink-0">
             {/* Numéro de la carte dans la série (ex: N° 45) */}
             {card.print_number && (
@@ -344,21 +345,30 @@ export default function CardDetailsPage() {
                 N° {card.print_number}
               </div>
             )}
-
-            {/* Numérotation de la carte (ex: 25/99) en jaune fluo avec numbering_low */}
-            {card.is_numbered && card.numbering_max && (
-              <div className="text-base font-medium text-[#AFFF25] whitespace-nowrap">
-                {card.numbering_low ? `${card.numbering_low}/` : ''}{card.numbering_max}
-              </div>
-            )}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-y-6 pt-6 border-t border-white/10">
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-lg font-bold text-white capitalize">{card.brand || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-lg font-bold text-white capitalize">{card.series || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-lg font-bold text-white">{card.year || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div><div className="text-lg font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
+        {/* NOUVELLE GRILLE 3 COLONNES */}
+        <div className="grid grid-cols-3 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-sm sm:text-base font-bold text-white">{card.year || "-"}</div></div>
+          
+          <div>
+            <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Numérotation</div>
+            <div className="text-sm sm:text-base font-bold text-white truncate">
+              {card.is_numbered && card.numbering_max ? `${card.numbering_low ? card.numbering_low + '/' : ''}${card.numbering_max}` : "-"}
+            </div>
+          </div>
+          
+          <div>
+            <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Gradation</div>
+            <div className="text-sm sm:text-base font-bold text-white truncate">
+              {card.is_graded && card.grading_company ? `${card.grading_company} ${card.grading_grade || ''}`.trim() : "-"}
+            </div>
+          </div>
+
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div><div className="text-sm sm:text-base font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
         </div>
 
         {/* BOUTONS D'ACTION (Website + eBay) */}
