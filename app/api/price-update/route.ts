@@ -10,8 +10,11 @@ export async function POST(req: Request) {
     const { cardId, keywords } = await req.json();
     console.log("1. Recherche Google lancée pour :", keywords);
 
+    // LE MOUCHARD ULTIME : On affiche le début de la clé que Vercel utilise VRAIMENT
+    console.log("🔑 Clé API Vercel :", process.env.GOOGLE_API_KEY?.substring(0, 15) + "...");
+
     if (!process.env.GOOGLE_API_KEY || !process.env.GOOGLE_CX) {
-      console.error("❌ ERREUR : Clés GOOGLE_API_KEY ou GOOGLE_CX manquantes ! As-tu fait un Redeploy sur Vercel ?");
+      console.error("❌ ERREUR : Clés GOOGLE_API_KEY ou GOOGLE_CX manquantes !");
       return NextResponse.json({ error: "Clés API Google manquantes." }, { status: 500 });
     }
 
@@ -33,6 +36,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Aucun résultat trouvé." });
     }
 
+    // Extraction des prix avec une Regex
     const priceRegex = /(?:EUR|USD|GBP|\$|€|£)\s*(\d+(?:[.,]\d+)?)/gi;
     let prices: number[] = [];
 
@@ -52,7 +56,7 @@ export async function POST(req: Request) {
       const sum = prices.reduce((a, b) => a + b, 0);
       const averagePrice = +(sum / prices.length).toFixed(2);
 
-      console.log(`4. Prix calculé avec succès : ${averagePrice} €`);
+      console.log(`4. Prix moyen calculé avec succès : ${averagePrice} €`);
 
       const { error: dbError } = await supabase.from('card_prices').insert([{
         card_id: cardId,
@@ -76,4 +80,4 @@ export async function POST(req: Request) {
     console.error("❌ CRASH FATAL DE L'API :", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-} 
+}
