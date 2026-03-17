@@ -258,7 +258,7 @@ export default function CollectionPage() {
     });
 
     return (
-      <>
+      <div className="w-full">
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -312,7 +312,6 @@ export default function CollectionPage() {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
               const isSelected = targetFolderId && selectedForFolder.has(card.id);
               return (
-                {/* Passage de rounded-xl à rounded-lg (8px) */}
                 <div key={card.id} onClick={() => targetFolderId ? toggleCardSelection(card.id) : router.push(`/card/${card.id}`)} className={`relative rounded-lg overflow-hidden cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'} ${isSelected ? 'ring-2 ring-[#AFFF25] ring-offset-2 ring-offset-[#040221]' : 'bg-white/5 border border-white/10'}`}>
                   {isSelected && <div className="absolute inset-0 bg-black/50 z-20 flex items-center justify-center transition-all"><div className="bg-[#AFFF25] rounded-full p-1.5 shadow-lg"><Check size={20} className="text-[#040221] stroke-[3]" /></div></div>}
                   {card.image_url ? <img src={card.image_url} alt={card.lastname} onLoad={(e) => handleImageLoad(card.id, e)} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px]">Pas d'image</div>}
@@ -324,7 +323,7 @@ export default function CollectionPage() {
             <div className="col-span-3 text-center py-10 text-white/40 italic">Aucune carte ne correspond.</div>
           )}
         </div>
-      </>
+      </div>
     );
   };
 
@@ -432,9 +431,9 @@ export default function CollectionPage() {
                               Que me manque-t-il pour un Rainbow ?
                             </button>
                             <button onClick={() => handleAskAI(`Quelles sont les performances actuelles de ${searchQuery} ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
-                             Quelles sont les performances actuelle du joueur ?
+                             Quelles sont les performances actuelles du joueur ?
                             </button>
-                            <button onClick={() => handleAskAI(`Est ce que je dois vendre mes cartes de ${searchQuery} en ce moment ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                            <button onClick={() => handleAskAI(`Est-ce que je dois vendre mes cartes de ${searchQuery} en ce moment ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Quel est le meilleur moment pour vendre cette carte ?
                             </button>
                           </>
@@ -446,10 +445,10 @@ export default function CollectionPage() {
                             <button onClick={() => handleAskAI(`Si je devais me séparer de quelques cartes, lesquelles me conseilles-tu de vendre en priorité vu le marché actuel ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Quelles cartes me conseilles-tu de vendre ?
                             </button>
-                              <button onClick={() => handleAskAI(`Est ce que j'ai trop de cartes differentes dans ma collection ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
-                              Est-ce que je diversifie trop ma collection ?"
+                            <button onClick={() => handleAskAI(`Est-ce que j'ai trop de cartes différentes dans ma collection ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                              Est-ce que je diversifie trop ma collection ?
                             </button>
-                              <button onClick={() => handleAskAI(`Qui sont les rookies du moment en soccer, basket, baseball .. sur lesquel investir en 2026 ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
+                            <button onClick={() => handleAskAI(`Qui sont les rookies du moment en soccer, basket, baseball... sur lesquels investir en 2026 ?`)} className="w-full text-left p-4 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-sm font-semibold text-white">
                               Quels joueurs émergents valent le coup d'acheter maintenant ?
                             </button>
                           </>
