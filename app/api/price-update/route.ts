@@ -76,4 +76,4 @@ export async function POST(req: Request) {
     console.error("❌ CRASH FATAL DE L'API :", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-}
+} 
