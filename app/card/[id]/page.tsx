@@ -51,7 +51,6 @@ export default function CardDetailsPage() {
     fetchPriceHistory();
   }, [cardId]);
 
-  // 1. Récupération des infos de la carte
   const fetchCard = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login'); 
@@ -60,34 +59,30 @@ export default function CardDetailsPage() {
     if (data) {
       setCard(data);
       setIsHorizontal(data.is_horizontal || false);
-      // NOTE: L'appel automatique a été retiré ici pour économiser les tokens !
     } else {
       router.push('/collection');
     }
     setLoading(false);
   };
 
-  // 2. Récupération de l'historique des prix dans la BDD
   const fetchPriceHistory = async () => {
     const { data } = await supabase.from('card_prices').select('*').eq('card_id', cardId).order('created_at', { ascending: true });
     
     if (data && data.length > 0) {
-      // Formatage pour le graphique Recharts
       const formattedData = data.map(item => ({
         date: new Date(item.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }),
         prix: parseFloat(item.price)
       }));
       setPriceHistory(formattedData);
-      setAveragePrice(parseFloat(data[data.length - 1].price)); // Dernier prix connu
+      setAveragePrice(parseFloat(data[data.length - 1].price)); 
     }
   };
 
-  // 3. MISE À JOUR MANUELLE (Remplace la fonction d'arrière-plan)
   const handleManualPriceUpdate = async () => {
     if (!card) return;
     setIsUpdatingPrice(true);
     
-    const keywords = [card.firstname, card.lastname, card.year, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
+    const keywords = [card.firstname, card.lastname, card.club_name, card.year, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
 
     try {
       const res = await fetch('/api/price-update', {
@@ -99,7 +94,7 @@ export default function CardDetailsPage() {
       
       if (data.success) {
         alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
-        fetchPriceHistory(); // Met à jour le graphique visuellement
+        fetchPriceHistory(); 
       } else {
         alert("Aucun nouveau prix exploitable trouvé sur eBay pour le moment.");
       }
@@ -196,7 +191,9 @@ export default function CardDetailsPage() {
       const yearNum = parseInt(card.year, 10); const prevYear = yearNum - 1; const shortYear = card.year.toString().slice(-2);
       formattedYear = `${prevYear}-${shortYear}`;
     }
-    const keywords = [card.firstname, card.lastname, formattedYear, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
+    
+    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
+    
     const searchQuery = encodeURIComponent(keywords);
     let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
     if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
@@ -213,7 +210,6 @@ export default function CardDetailsPage() {
   const selectedClub = safeFootballClubs.find((c: any) => searchName === c.name?.toLowerCase() || searchName === c.slug?.toLowerCase() || c.slug?.includes(searchName));
   const clubSlug = selectedClub ? selectedClub.slug : searchName.replace(/\s+/g, '-');
 
-  // Custom Tooltip pour Recharts
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -229,19 +225,28 @@ export default function CardDetailsPage() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
+      {/* 🌌 BACKGROUND GLOBAL */}
       <div className="fixed inset-0 z-0 bg-[#040221]">
         {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
       </div>
 
-      <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6">
+      {/* 🔘 HEADER */}
+      <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} left-0 w-full flex flex-col items-center justify-center z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
+      {/* 🖼️ PARTIE GAUCHE (CARTE) : Fixe sur PC (w-2/3), absolue sur Mobile */}
+      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         <div ref={cardRef} style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchMove={handleTouchMove} onTouchEnd={handleLeave} onTouchCancel={handleLeave}>
           {card.image_url ? (
-            <img src={card.image_url} onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="w-auto h-auto max-w-full max-h-[420px] object-contain border border-white/10 relative z-10" alt="Card" />
+            <img 
+              src={card.image_url} 
+              onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} 
+              style={{ borderRadius: '12px', pointerEvents: 'none' }} 
+              className="w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] lg:max-w-[80%] object-contain border border-white/10 relative z-10" 
+              alt="Card" 
+            />
           ) : (
             <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px] relative z-10">No Image</div>
           )}
@@ -257,12 +262,13 @@ export default function CardDetailsPage() {
         </div>
       </div>
 
-      <div className="relative z-30 w-full mt-[450px] bg-[#040221] rounded-t-[32px] px-6 pt-8 pb-12 min-h-[calc(100vh-88px)] shadow-[0_-20px_40px_rgba(0,0,0,0.8)] border-t border-white/5">
+      {/* 📊 PARTIE DROITE (INFOS) : Scrollable sur PC (w-1/3 placé à droite), fond d'écran sur Mobile */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[450px] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-[calc(100vh-88px)] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
             <div className="text-xl text-white uppercase tracking-wider font-light">{card.firstname || "Prénom"}</div>
-            <div className="text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter">{card.lastname || "Nom"}</div>
+            <div className="text-5xl lg:text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter break-words">{card.lastname || "Nom"}</div>
           </div>
           {!card.is_wishlist && (
             <button onClick={toggleFavorite} disabled={isFavoriting} className="active:scale-90 transition-transform p-1 self-start mt-2">
@@ -278,7 +284,7 @@ export default function CardDetailsPage() {
           {card.is_graded && <span className="px-3 py-1 bg-[#10243E] border border-[#1E3A8A] rounded-full text-[11px] font-bold text-white">Gradée</span>}
         </div>
 
-        <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row sm:items-center lg:items-start xl:items-center justify-between gap-4 mb-6">
           <div className="flex flex-wrap gap-3">
             <button onClick={() => router.push(`/collection?sport=${card.sport}`)} className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#AFFF25]/50 hover:bg-[#AFFF25]/10">
               <img src={`/asset/sports/${sportData.image}.png`} className="w-4 h-4 object-contain" alt={sportData.label} />
@@ -296,7 +302,8 @@ export default function CardDetailsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
+        {/* Note : On passe en grid-cols-2 sur PC (lg) car l'espace d'1/3 d'écran est trop serré pour 3 colonnes */}
+        <div className="grid grid-cols-3 lg:grid-cols-2 2xl:grid-cols-3 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-sm sm:text-base font-bold text-white">{card.year || "-"}</div></div>
@@ -318,7 +325,6 @@ export default function CardDetailsPage() {
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div><div className="text-sm sm:text-base font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
         </div>
 
-        {/* BLOC GRAPHIQUE DES PRIX + BOUTON DE MISE À JOUR */}
         <div className="mt-8 pt-8 border-t border-white/10">
           <div className="flex justify-between items-end mb-6">
             <div>
@@ -336,7 +342,6 @@ export default function CardDetailsPage() {
               </div>
             </div>
             
-            {/* LE NOUVEAU BOUTON EST ICI */}
             <div className="flex flex-col items-end gap-2">
               <button 
                 onClick={handleManualPriceUpdate} 

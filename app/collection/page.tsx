@@ -258,7 +258,7 @@ export default function CollectionPage() {
     });
 
     return (
-      <div className="w-full">
+      <div className="w-full lg:max-w-6xl mx-auto">
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -306,7 +306,8 @@ export default function CollectionPage() {
           )}
         </div>
 
-        <div className="px-2 grid grid-cols-3 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
+        {/* 🚨 CHANGEMENT DE GRILLE ICI (lg:grid-cols-5) 🚨 */}
+        <div className="px-6 lg:px-6 grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
@@ -320,7 +321,7 @@ export default function CollectionPage() {
               );
             })
           ) : (
-            <div className="col-span-3 text-center py-10 text-white/40 italic">Aucune carte ne correspond.</div>
+            <div className="col-span-3 lg:col-span-5 text-center py-10 text-white/40 italic">Aucune carte ne correspond.</div>
           )}
         </div>
       </div>
@@ -330,7 +331,7 @@ export default function CollectionPage() {
   if (activeFolderId && currentFolder) {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
-        <div className="pt-8 pb-4 px-6 flex items-center justify-between gap-4">
+        <div className="pt-8 pb-4 px-6 flex items-center justify-between gap-4 lg:max-w-6xl lg:mx-auto">
           <div className="flex items-center gap-4 overflow-hidden">
             <button onClick={() => setActiveFolderId(null)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0"><ChevronLeft size={20} /></button>
             <div className="overflow-hidden"><div className="text-xs text-[#AFFF25] font-bold uppercase tracking-widest">{currentFolder.type}</div><h1 className="text-3xl font-black italic uppercase tracking-tighter leading-none truncate">{currentFolder.name}</h1></div>
@@ -340,7 +341,7 @@ export default function CollectionPage() {
             <button onClick={() => deleteFolder(currentFolder.id)} className="p-2 active:scale-90 transition-transform text-red-500/80 hover:text-red-500"><Trash2 size={24} strokeWidth={1.5} /></button>
           </div>
         </div>
-        <div className="px-6 pb-4">
+        <div className="px-6 pb-4 lg:max-w-6xl lg:mx-auto">
           <button onClick={handleStartSelection} className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"><Plus size={18} /> Gérer les cartes du dossier</button>
         </div>
         {renderCardsAndFilters()}
@@ -351,13 +352,12 @@ export default function CollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden">
-      <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221]">
+      <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221] lg:max-w-6xl lg:mx-auto">
         <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Collection"}</h1>
         {!targetFolderId && (
           <div className="flex justify-center px-6 gap-6 mb-4">
             <button onClick={() => setActiveTab('cartes')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Cartes{activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             
-            {/* Clic sur l'onglet Dossiers = on vide la recherche pour éviter les bugs */}
             <button onClick={() => { setActiveTab('dossiers'); setSearchQuery(''); }} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Dossiers{activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             
             <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
@@ -368,13 +368,12 @@ export default function CollectionPage() {
         )}
       </div>
 
-      {/* CONTENU SELON L'ONGLET ACTIF */}
       <div className="relative h-[calc(100vh-140px)] overflow-y-auto pb-32">
         
         {activeTab === 'cartes' && renderCardsAndFilters()}
 
         {activeTab === 'dossiers' && !targetFolderId && (
-          <div className="animate-in fade-in duration-300">
+          <div className="animate-in fade-in duration-300 lg:max-w-6xl lg:mx-auto">
             <div className="px-6 flex justify-between items-center mb-4 mt-2"><h2 className="text-lg font-bold text-white flex items-center gap-2"><Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris</h2><button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors"><Plus size={18} /></button></div>
             <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mb-10">
               <div className="flex gap-4 px-6 pb-4 w-max">
@@ -384,7 +383,7 @@ export default function CollectionPage() {
               </div>
             </div>
             <div className="px-6 flex justify-between items-center mb-4"><h2 className="text-lg font-bold text-white">Tous les dossiers</h2><button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform"><Plus size={20} /></button></div>
-            <div className="px-6 flex flex-col gap-3 pb-[180px]">
+            <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-3 pb-[180px]">
               {otherFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-full flex items-center justify-between p-4 rounded-[20px] border border-white/10 bg-white/5 cursor-pointer active:scale-95 transition-transform hover:bg-white/10"><div className="flex items-center gap-4"><div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Folder size={20} className="text-white/60" /></div><div><div className="text-base font-bold text-white leading-tight">{folder.name}</div><div className="text-xs text-[#AFFF25] mt-0.5">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div><span className="text-[10px] px-3 py-1 rounded-full bg-white/10 text-white/60 font-bold uppercase tracking-widest">{folder.type}</span></div>))}
               {otherFolders.length === 0 && <div className="text-white/40 text-sm italic">Aucun autre dossier.</div>}
             </div>
@@ -392,7 +391,7 @@ export default function CollectionPage() {
         )}
 
         {activeTab === 'scouty' && (
-          <div className="px-6 flex flex-col h-full relative animate-in fade-in duration-300">
+          <div className="px-6 flex flex-col h-full relative animate-in fade-in duration-300 lg:max-w-2xl lg:mx-auto">
             {!hasStartedScouty ? (
               <div className="flex flex-col items-center justify-center h-full text-center pb-20">
                 <img src="/asset/scouty.svg" className="w-36 h-36 object-contain mb-6" alt="Scouty Avatar" />
@@ -474,7 +473,7 @@ export default function CollectionPage() {
                 </div>
 
                 <div className="fixed bottom-[108px] left-0 w-full px-6 bg-[#040221] pt-4 pb-2 z-40">
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 lg:max-w-2xl lg:mx-auto">
                     <input 
                       type="text" 
                       value={chatInput}
