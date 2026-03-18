@@ -60,8 +60,7 @@ export default function CardDetailsPage() {
     if (data) {
       setCard(data);
       setIsHorizontal(data.is_horizontal || false);
-      // On lance la recherche de prix en tâche de fond dès qu'on a la carte
-      triggerBackgroundPriceUpdate(data);
+      // NOTE: L'appel automatique a été retiré ici pour économiser les tokens !
     } else {
       router.push('/collection');
     }
@@ -83,33 +82,37 @@ export default function CardDetailsPage() {
     }
   };
 
-  // 3. Lancement de la mise à jour Google/eBay en arrière-plan
-  const triggerBackgroundPriceUpdate = async (cardData: any) => {
+  // 3. MISE À JOUR MANUELLE (Remplace la fonction d'arrière-plan)
+  const handleManualPriceUpdate = async () => {
+    if (!card) return;
     setIsUpdatingPrice(true);
     
-    const keywords = [cardData.firstname, cardData.lastname, cardData.year, cardData.brand, cardData.series, cardData.is_auto ? 'auto' : '', cardData.is_patch ? 'patch' : '', (cardData.is_numbered && cardData.numbering_max) ? `/${cardData.numbering_max}` : '' ].filter(Boolean).join(' ');
+    const keywords = [card.firstname, card.lastname, card.year, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
 
     try {
       const res = await fetch('/api/price-update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cardId: cardData.id, keywords })
+        body: JSON.stringify({ cardId: card.id, keywords })
       });
       const data = await res.json();
       
       if (data.success) {
-        // Si on a un nouveau prix, on rafraîchit l'historique visuellement
-        fetchPriceHistory();
+        alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
+        fetchPriceHistory(); // Met à jour le graphique visuellement
+      } else {
+        alert("Aucun nouveau prix exploitable trouvé sur eBay pour le moment.");
       }
     } catch (e) {
       console.error("Erreur de MAJ des prix", e);
+      alert("Erreur lors de la recherche du prix.");
     } finally {
       setIsUpdatingPrice(false);
     }
   };
 
   // ==========================================
-  // GYROSCOPE & SOURIS (Conservés à l'identique)
+  // GYROSCOPE & SOURIS
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
@@ -315,7 +318,7 @@ export default function CardDetailsPage() {
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div><div className="text-sm sm:text-base font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
         </div>
 
-        {/* NOUVEAU BLOC : LE GRAPHIQUE DES PRIX */}
+        {/* BLOC GRAPHIQUE DES PRIX + BOUTON DE MISE À JOUR */}
         <div className="mt-8 pt-8 border-t border-white/10">
           <div className="flex justify-between items-end mb-6">
             <div>
@@ -327,12 +330,23 @@ export default function CardDetailsPage() {
                   <span className="text-4xl font-black text-white">{averagePrice} €</span>
                 ) : (
                   <span className="text-3xl font-black text-white/40 italic">
-                    {isUpdatingPrice ? "Analyse..." : "En attente"}
+                    {isUpdatingPrice ? "Analyse..." : "-"}
                   </span>
                 )}
               </div>
             </div>
-            <span className="text-[9px] text-white/30 uppercase tracking-widest text-right max-w-[120px]">Source ventes réussies eBay</span>
+            
+            {/* LE NOUVEAU BOUTON EST ICI */}
+            <div className="flex flex-col items-end gap-2">
+              <button 
+                onClick={handleManualPriceUpdate} 
+                disabled={isUpdatingPrice}
+                className="bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#AFFF25]/20 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2"
+              >
+                {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
+              </button>
+              <span className="text-[9px] text-white/30 uppercase tracking-widest max-w-[120px] text-right">Source eBay via SerpApi</span>
+            </div>
           </div>
 
           {priceHistory.length > 0 ? (

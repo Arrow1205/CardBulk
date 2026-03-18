@@ -6,29 +6,23 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env
 export async function POST(req: Request) {
   try {
     const { cardId, keywords } = await req.json();
-    
-    console.log("🚀 APPEL API REÇU POUR :", keywords);
-    console.log("🔑 VERIF CLÉ SERPAPI :", process.env.SERPAPI_KEY ? "PRÉSENTE (Début: " + process.env.SERPAPI_KEY.substring(0, 5) + "...)" : "❌ MANQUANTE");
-    
     const apiKey = process.env.SERPAPI_KEY;
 
     if (!apiKey) {
-      console.error("❌ ERREUR : La variable SERPAPI_KEY est manquante dans Vercel !");
-      return NextResponse.json({ error: "Clé SerpApi manquante." }, { status: 500 });
+      return NextResponse.json({ error: "Clé SerpApi manquante dans Vercel." }, { status: 500 });
     }
 
+    // Requête SerpApi ciblée sur les ventes réussies eBay
     const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(keywords + " ebay sold price")}&api_key=${apiKey}`;
 
     const response = await fetch(url);
     const data = await response.json();
 
     if (data.error) {
-      console.error("❌ ERREUR SERPAPI :", data.error);
       return NextResponse.json({ error: data.error }, { status: 500 });
     }
 
     if (!data.organic_results) {
-      console.log("⚠️ Aucun résultat organique trouvé.");
       return NextResponse.json({ message: "Aucun résultat trouvé sur Google." });
     }
 
@@ -40,14 +34,16 @@ export async function POST(req: Request) {
       let match;
       while ((match = priceRegex.exec(text)) !== null) {
         const p = parseFloat(match[1].replace(',', '.'));
+        // On filtre les prix aberrants (ex: < 1€ ou > 50 000€)
         if (p > 1 && p < 50000) prices.push(p);
       }
     });
 
     if (prices.length > 0) {
+      // Calcul de la moyenne
       const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
-      console.log("✅ Prix moyen trouvé :", avg);
 
+      // Sauvegarde dans Supabase
       const { error: dbError } = await supabase.from('card_prices').insert([{
         card_id: cardId,
         price: avg,
@@ -56,7 +52,7 @@ export async function POST(req: Request) {
 
       if (dbError) {
         console.error("❌ ERREUR SUPABASE :", dbError);
-        return NextResponse.json({ error: "Erreur DB" }, { status: 500 });
+        return NextResponse.json({ error: "Erreur Base de données" }, { status: 500 });
       }
 
       return NextResponse.json({ success: true, averagePrice: avg });
@@ -65,7 +61,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Aucun prix extrait des résultats." });
 
   } catch (error: any) {
-    console.error("❌ CRASH :", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
