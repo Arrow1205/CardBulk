@@ -1,83 +1,53 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export async function POST(req: Request) {
   try {
     const { cardId, keywords } = await req.json();
-    console.log("1. Recherche Google lancée pour :", keywords);
+    const apiKey = process.env.SERPAPI_KEY;
 
-    // LE MOUCHARD ULTIME : On affiche le début de la clé que Vercel utilise VRAIMENT
-    console.log("🔑 Clé API Vercel :", process.env.GOOGLE_API_KEY?.substring(0, 15) + "...");
+    if (!apiKey) return NextResponse.json({ error: "Clé SerpApi manquante." }, { status: 500 });
 
-    if (!process.env.GOOGLE_API_KEY || !process.env.GOOGLE_CX) {
-      console.error("❌ ERREUR : Clés GOOGLE_API_KEY ou GOOGLE_CX manquantes !");
-      return NextResponse.json({ error: "Clés API Google manquantes." }, { status: 500 });
-    }
+    // On cherche spécifiquement les ventes terminées sur eBay via SerpApi
+    const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(keywords + " ebay sold price")}&api_key=${apiKey}`;
 
-    const query = encodeURIComponent(`${keywords} sold price`);
-    const googleUrl = `https://www.googleapis.com/customsearch/v1?key=${process.env.GOOGLE_API_KEY}&cx=${process.env.GOOGLE_CX}&q=${query}`;
-
-    console.log("2. Appel de l'API Google...");
-    const response = await fetch(googleUrl);
+    const response = await fetch(url);
     const data = await response.json();
 
-    // Vérification d'une erreur renvoyée par Google
-    if (data.error) {
-        console.error("❌ ERREUR API GOOGLE :", JSON.stringify(data.error));
-        return NextResponse.json({ error: "Erreur renvoyée par Google." }, { status: 500 });
+    if (!data.organic_results) {
+      return NextResponse.json({ message: "Aucun résultat trouvé sur Google." });
     }
 
-    if (!data.items || data.items.length === 0) {
-      console.log("3. Aucun résultat pertinent trouvé par Google.");
-      return NextResponse.json({ message: "Aucun résultat trouvé." });
-    }
-
-    // Extraction des prix avec une Regex
     const priceRegex = /(?:EUR|USD|GBP|\$|€|£)\s*(\d+(?:[.,]\d+)?)/gi;
     let prices: number[] = [];
 
-    data.items.forEach((item: any) => {
-      const textToSearch = item.title + " " + item.snippet;
+    // On scanne les titres et les descriptions renvoyés par SerpApi
+    data.organic_results.forEach((result: any) => {
+      const text = (result.title + " " + result.snippet).replace(/\s/g, ' ');
       let match;
-      while ((match = priceRegex.exec(textToSearch)) !== null) {
-        const priceVal = parseFloat(match[1].replace(',', '.'));
-        if (priceVal > 0 && priceVal < 100000) prices.push(priceVal);
+      while ((match = priceRegex.exec(text)) !== null) {
+        const p = parseFloat(match[1].replace(',', '.'));
+        if (p > 1 && p < 50000) prices.push(p);
       }
     });
 
     if (prices.length > 0) {
-      prices.sort((a, b) => a - b);
-      if (prices.length > 4) prices = prices.slice(1, prices.length - 1);
+      const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
       
-      const sum = prices.reduce((a, b) => a + b, 0);
-      const averagePrice = +(sum / prices.length).toFixed(2);
-
-      console.log(`4. Prix moyen calculé avec succès : ${averagePrice} €`);
-
-      const { error: dbError } = await supabase.from('card_prices').insert([{
+      await supabase.from('card_prices').insert([{
         card_id: cardId,
-        price: averagePrice,
-        source: 'eBay via Google'
+        price: avg,
+        source: 'eBay via SerpApi'
       }]);
 
-      if (dbError) {
-          console.error("❌ ERREUR SUPABASE (Insertion) :", dbError);
-          return NextResponse.json({ error: "Erreur Base de données." }, { status: 500 });
-      }
-
-      console.log("5. ✅ Historique sauvegardé !");
-      return NextResponse.json({ success: true, averagePrice });
+      return NextResponse.json({ success: true, averagePrice: avg });
     }
 
-    console.log("3. Des résultats trouvés, mais aucun prix exploitable extrait.");
-    return NextResponse.json({ message: "Aucun prix extrait." });
+    return NextResponse.json({ error: "Aucun prix extrait des résultats." });
 
   } catch (error: any) {
-    console.error("❌ CRASH FATAL DE L'API :", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
