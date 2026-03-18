@@ -108,7 +108,7 @@ export default function StatsPage() {
     datasets: statsUniques.map((stat, i) => ({
       label: stat.label,
       data: [stat.value, maxScaleValue - stat.value],
-      backgroundColor: [stat.color, 'rgba(255, 255, 255, 0.05)'], // La partie "vide" est grise/transparente
+      backgroundColor: [stat.color, 'rgba(255, 255, 255, 0.05)'],
       borderWidth: 4, 
       borderColor: '#040221', 
       borderRadius: 20, 
@@ -116,7 +116,7 @@ export default function StatsPage() {
     }))
   };
 
-const doughnutOptions = {
+  const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -128,8 +128,8 @@ const doughnutOptions = {
              return statsUniques.map((stat, i) => ({
                text: `${stat.label} (${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value})`,
                fillStyle: stat.color,
-               fontColor: '#FFFFFF', // 👈 C'est ICI qu'on force le texte en blanc
-               strokeStyle: '#040221', // Petite astuce : bordure foncée autour du carré de couleur
+               fontColor: '#FFFFFF',
+               strokeStyle: '#040221',
                lineWidth: 2,
                hidden: false,
                index: i
@@ -152,152 +152,156 @@ const doughnutOptions = {
   };
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white font-sans pb-32">
+    <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:h-screen lg:overflow-hidden">
       
-      {/* HEADER (Centré, sans bouton retour) */}
-      <div className="pt-8 pb-4 px-6 flex justify-center items-center">
-        <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none">Statistiques</h1>
-      </div>
-
-      {/* FILTRES (Sports + Spécificités - Style Collection) */}
-      <div className="mb-6">
-        <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <div className="flex gap-3 px-6 pb-2 w-max">
-            <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-              <LayoutGrid size={16} /> <span className="text-sm font-bold">Tout</span>
-            </button>
-            {availableSports.map(sportKey => {
-              const isSelected = selectedSport === sportKey;
-              return (
-                <button key={sportKey} onClick={() => setSelectedSport(sportKey)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${isSelected ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  <img src={`/asset/sports/${isSelected ? 'neg-' : ''}${SPORT_CONFIG[sportKey].image}.png`} className="h-4 object-contain" alt={SPORT_CONFIG[sportKey].label} />
-                  <span className="text-sm font-bold whitespace-nowrap">{SPORT_CONFIG[sportKey].label}</span>
-                </button>
-              );
-            })}
-          </div>
+      {/* 📊 PARTIE GAUCHE (FILTRES ET KPI) : Scrollable sur PC (w-2/3), complète sur Mobile */}
+      <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-32 lg:pb-20 no-scrollbar">
+        
+        {/* HEADER */}
+        <div className="pt-8 pb-4 px-6 flex justify-center items-center">
+          <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none drop-shadow-lg">Statistiques</h1>
         </div>
 
-        <div className="relative z-50 mt-4 px-6">
-          {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
-          <div className="flex gap-3">
-            <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-              Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
-            </button>
-            <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-              <span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span>
-              <ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
-            </button>
-          </div>
-
-          {/* Menus Dropdown */}
-          {openDropdown === 'spec' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl">
-              {[
-                { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) },
-                { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) },
-                { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) }
-              ].map((item, idx) => (
-                <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer">
-                  <span className="text-sm font-bold text-white">{item.label}</span>
-                  <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors border border-white/20 ${item.state ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
-                    <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {openDropdown === 'brand' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl max-h-80 overflow-y-auto">
-              {BRANDS.map(brand => {
-                const isActive = selectedBrands.includes(brand);
+        {/* FILTRES (Sports + Spécificités) */}
+        <div className="mb-6">
+          <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-3 px-6 pb-2 w-max">
+              <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                <LayoutGrid size={16} /> <span className="text-sm font-bold">Tout</span>
+              </button>
+              {availableSports.map(sportKey => {
+                const isSelected = selectedSport === sportKey;
                 return (
-                  <div key={brand} onClick={() => setSelectedBrands(prev => isActive ? prev.filter(b => b !== brand) : [...prev, brand])} className="w-full flex items-center justify-between py-3 cursor-pointer">
-                    <span className="text-sm font-bold text-white">{brand}</span>
-                    <div className={`w-10 h-6 rounded-full flex items-center p-1 border border-white/20 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
-                      <div className={`w-4 h-4 rounded-full transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
-                    </div>
-                  </div>
+                  <button key={sportKey} onClick={() => setSelectedSport(sportKey)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${isSelected ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                    <img src={`/asset/sports/${isSelected ? 'neg-' : ''}${SPORT_CONFIG[sportKey].image}.png`} className="h-4 object-contain" alt={SPORT_CONFIG[sportKey].label} />
+                    <span className="text-sm font-bold whitespace-nowrap">{SPORT_CONFIG[sportKey].label}</span>
+                  </button>
                 );
               })}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      {/* KPI GLOBAUX */}
-      <div className="px-6 grid grid-cols-2 gap-4 mb-8">
-        <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
-          <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Nombre de cartes</div>
-          <div className="text-4xl font-black text-[#AFFF25]">{filteredCards.length}</div>
+          <div className="relative z-40 mt-4 px-6">
+            {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
+            <div className="flex gap-3">
+              <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
+              </button>
+              <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                <span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span>
+                <ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
+              </button>
+            </div>
+
+            {/* Menus Dropdown */}
+            {openDropdown === 'spec' && (
+              <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl">
+                {[
+                  { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) },
+                  { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) },
+                  { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) }
+                ].map((item, idx) => (
+                  <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer">
+                    <span className="text-sm font-bold text-white">{item.label}</span>
+                    <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors border border-white/20 ${item.state ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
+                      <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {openDropdown === 'brand' && (
+              <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl max-h-80 overflow-y-auto">
+                {BRANDS.map(brand => {
+                  const isActive = selectedBrands.includes(brand);
+                  return (
+                    <div key={brand} onClick={() => setSelectedBrands(prev => isActive ? prev.filter(b => b !== brand) : [...prev, brand])} className="w-full flex items-center justify-between py-3 cursor-pointer">
+                      <span className="text-sm font-bold text-white">{brand}</span>
+                      <div className={`w-10 h-6 rounded-full flex items-center p-1 border border-white/20 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-transparent'}`}>
+                        <div className={`w-4 h-4 rounded-full transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
-          <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Valeur collection</div>
-          <div className="text-3xl font-black text-[#AFFF25] truncate">
-            {filteredCards.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0).toLocaleString('fr-FR')} €
+
+        {/* KPI GLOBAUX */}
+        <div className="px-6 grid grid-cols-2 gap-4 mb-8">
+          <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
+            <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Nombre de cartes</div>
+            <div className="text-4xl font-black text-[#AFFF25]">{filteredCards.length}</div>
+          </div>
+          <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
+            <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Valeur collection</div>
+            <div className="text-3xl font-black text-[#AFFF25] truncate">
+              {filteredCards.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0).toLocaleString('fr-FR')} €
+            </div>
+          </div>
+        </div>
+
+        {/* BLOCS SPÉCIFICITÉS & TOGGLE */}
+        <div className="px-6 mb-10">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-sm font-bold text-white uppercase tracking-widest">Spécificités (Global)</h2>
+            
+            {/* TOGGLE NOMBRE / VALEUR */}
+            <div className="flex bg-transparent border border-[#AFFF25] rounded-full p-1 cursor-pointer">
+              <button 
+                onClick={() => setDisplayMode('count')}
+                className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${displayMode === 'count' ? 'bg-[#AFFF25] text-[#040221]' : 'text-[#AFFF25]'}`}
+              >
+                <Hash size={16} strokeWidth={3} />
+              </button>
+              <button 
+                onClick={() => setDisplayMode('value')}
+                className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${displayMode === 'value' ? 'bg-[#AFFF25] text-[#040221]' : 'text-[#AFFF25]'}`}
+              >
+                <Euro size={16} strokeWidth={3} />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            <button onClick={() => setActiveDetail('auto')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform hover:bg-white/5">
+              <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
+                {displayMode === 'value' ? `${getVal(autosGlobal).toLocaleString('fr-FR')} €` : autosGlobal.length}
+              </div>
+              <div className="text-[10px] text-white uppercase font-bold tracking-wider">Autos</div>
+            </button>
+            
+            <button onClick={() => setActiveDetail('patch')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform hover:bg-white/5">
+              <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
+                {displayMode === 'value' ? `${getVal(patchesGlobal).toLocaleString('fr-FR')} €` : patchesGlobal.length}
+              </div>
+              <div className="text-[10px] text-white uppercase font-bold tracking-wider">Patchs</div>
+            </button>
+            
+            <button onClick={() => setActiveDetail('numbered')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform hover:bg-white/5">
+              <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
+                {displayMode === 'value' ? `${getVal(numberedsGlobal).toLocaleString('fr-FR')} €` : numberedsGlobal.length}
+              </div>
+              <div className="text-[10px] text-white uppercase font-bold tracking-wider">Numérotés</div>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* BLOCS SPÉCIFICITÉS & TOGGLE */}
-      <div className="px-6 mb-10">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-sm font-bold text-white uppercase tracking-widest">Spécificités (Global)</h2>
-          
-          {/* TOGGLE NOMBRE / VALEUR */}
-          <div className="flex bg-transparent border border-[#AFFF25] rounded-full p-1 cursor-pointer">
-            <button 
-              onClick={() => setDisplayMode('count')}
-              className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${displayMode === 'count' ? 'bg-[#AFFF25] text-[#040221]' : 'text-[#AFFF25]'}`}
-            >
-              <Hash size={16} strokeWidth={3} />
-            </button>
-            <button 
-              onClick={() => setDisplayMode('value')}
-              className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${displayMode === 'value' ? 'bg-[#AFFF25] text-[#040221]' : 'text-[#AFFF25]'}`}
-            >
-              <Euro size={16} strokeWidth={3} />
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          <button onClick={() => setActiveDetail('auto')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform">
-            <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
-              {displayMode === 'value' ? `${getVal(autosGlobal).toLocaleString('fr-FR')} €` : autosGlobal.length}
-            </div>
-            <div className="text-[10px] text-white uppercase font-bold tracking-wider">Autos</div>
-          </button>
-          
-          <button onClick={() => setActiveDetail('patch')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform">
-            <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
-              {displayMode === 'value' ? `${getVal(patchesGlobal).toLocaleString('fr-FR')} €` : patchesGlobal.length}
-            </div>
-            <div className="text-[10px] text-white uppercase font-bold tracking-wider">Patchs</div>
-          </button>
-          
-          <button onClick={() => setActiveDetail('numbered')} className="bg-transparent border border-[#AFFF25] rounded-2xl p-4 text-center active:scale-95 transition-transform">
-            <div className="text-xl font-black text-[#AFFF25] mb-1 truncate">
-              {displayMode === 'value' ? `${getVal(numberedsGlobal).toLocaleString('fr-FR')} €` : numberedsGlobal.length}
-            </div>
-            <div className="text-[10px] text-white uppercase font-bold tracking-wider">Numérotés</div>
-          </button>
-        </div>
-      </div>
-
-      {/* GRAPHIQUE ANNEAUX IMBRIQUÉS (Sans bordure ni titre) */}
-      <div className="px-6 mb-10">
-        <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center">
-          
-          {/* Données au centre de l'anneau (Texte en blanc et regular) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none pb-6">
-            <div className="text-xs font-normal uppercase tracking-widest text-white">Total</div>
-            <div className="text-2xl font-normal text-white">
+      {/* 📈 PARTIE DROITE (GRAPHIQUE) : Fixe sur PC (w-1/3 placé à droite), sous les filtres sur Mobile */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center py-10 lg:py-0 px-6 transition-all duration-300">
+        
+        <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full">
+          {/* Données au centre de l'anneau */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none pb-6 z-10">
+            <div className="text-xs font-normal uppercase tracking-widest text-white drop-shadow-md">Total</div>
+            <div className="text-2xl font-normal text-white drop-shadow-md">
               {displayMode === 'value' ? `${totalCardsVal.toLocaleString('fr-FR')} €` : totalCardsVal}
             </div>
           </div>
 
-          <div className="w-full aspect-square max-w-[300px]">
+          <div className="w-full aspect-square max-w-[320px] relative z-20">
             {statsUniques.length > 0 ? (
               <Doughnut data={doughnutData} options={doughnutOptions} />
             ) : (
@@ -311,7 +315,7 @@ const doughnutOptions = {
           POPIN DE DÉTAILS (MODAL)
       ========================================== */}
       {activeDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-[#040221] border border-[#AFFF25] rounded-[32px] p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             
             <div className="flex justify-between items-center mb-6">

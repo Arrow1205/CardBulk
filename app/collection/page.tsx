@@ -22,8 +22,9 @@ const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
 type Message = { role: 'user' | 'assistant', content: string };
 
+// La barre de recherche flottante n'apparaît plus sur PC (lg:hidden)
 const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
-  <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none">
+  <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none lg:hidden">
     <div className="relative w-full max-w-md mx-auto pointer-events-auto">
       <input 
         type="text" 
@@ -258,11 +259,11 @@ export default function CollectionPage() {
     });
 
     return (
-      <div className="w-full lg:max-w-6xl mx-auto">
+      <div className="w-full">
         {/* 1. FILTRE SPORT */}
         {hasMultipleSports && (
           <div className="overflow-x-auto mb-4 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <div className="flex gap-3 px-6 pb-2 w-max">
+            <div className="flex gap-3 px-6 lg:px-[80px] pb-2 w-max">
               <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}><LayoutGrid size={16} /> <span className="text-sm font-bold">Tout</span></button>
               {availableSports.map(sportKey => {
                 const isSelected = selectedSport === sportKey;
@@ -278,36 +279,64 @@ export default function CollectionPage() {
           </div>
         )}
 
-        <div className={`relative z-50 mb-6 px-6 ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
+        {/* 2. FILTRES SPÉCIFICITÉS + RECHERCHE DESKTOP */}
+        <div className={`relative z-50 mb-6 px-6 lg:px-[80px] ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
-          <div className="flex gap-3">
-            <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} /></button>
-            <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}><span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} /></button>
-          </div>
-          {openDropdown === 'spec' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
-              {[ { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) }, { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) }, { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) } ].map((item, idx) => (
-                <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer group"><span className={`text-sm font-bold transition-colors ${item.state ? 'text-white' : 'text-white/60'}`}>{item.label}</span><div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${item.state ? 'bg-[#AFFF25]' : 'bg-white/20'}`}><div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div></div></div>
-              ))}
-              <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
-            </div>
-          )}
-          {openDropdown === 'brand' && (
-            <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
-              <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
-                {BRANDS.map(brand => {
-                  const slug = brand.toLowerCase().replace(/\s+/g, '-'); const isActive = selectedBrands.includes(brand);
-                  const toggleBrand = () => setSelectedBrands(prev => isActive ? prev.filter(b => b !== brand) : [...prev, brand]);
-                  return (<div key={brand} onClick={toggleBrand} className="w-full flex items-center justify-between py-2 cursor-pointer group"><div className="flex items-center gap-4"><img src={`/asset/logo-marque/${slug}.png`} alt={brand} className="h-5 object-contain mix-blend-screen" onError={(e) => e.currentTarget.style.display = 'none'} /><span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'}`}>{brand}</span></div><div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}><div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div></div></div>);
-                })}
+          
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            
+            {/* 50% GAUCHE : Boutons Spécificités & Marques */}
+            <div className="relative w-full lg:w-1/2">
+              <div className="flex gap-3">
+                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} /></button>
+                <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}><span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} /></button>
               </div>
-              <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
+
+              {/* Contenu des dropdowns confinés dans les 50% de gauche */}
+              {openDropdown === 'spec' && (
+                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
+                  {[ { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) }, { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) }, { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) } ].map((item, idx) => (
+                    <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer group"><span className={`text-sm font-bold transition-colors ${item.state ? 'text-white' : 'text-white/60'}`}>{item.label}</span><div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${item.state ? 'bg-[#AFFF25]' : 'bg-white/20'}`}><div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div></div></div>
+                  ))}
+                  <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
+                </div>
+              )}
+              {openDropdown === 'brand' && (
+                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
+                  <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
+                    {BRANDS.map(brand => {
+                      const slug = brand.toLowerCase().replace(/\s+/g, '-'); const isActive = selectedBrands.includes(brand);
+                      const toggleBrand = () => setSelectedBrands(prev => isActive ? prev.filter(b => b !== brand) : [...prev, brand]);
+                      return (<div key={brand} onClick={toggleBrand} className="w-full flex items-center justify-between py-2 cursor-pointer group"><div className="flex items-center gap-4"><img src={`/asset/logo-marque/${slug}.png`} alt={brand} className="h-5 object-contain mix-blend-screen" onError={(e) => e.currentTarget.style.display = 'none'} /><span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'}`}>{brand}</span></div><div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}><div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div></div></div>);
+                    })}
+                  </div>
+                  <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
+                </div>
+              )}
             </div>
-          )}
+
+            {/* 50% DROITE : Barre de recherche uniquement sur Desktop (lg) */}
+            <div className="hidden lg:block w-full lg:w-1/2 relative z-[70]">
+              <input 
+                type="text" 
+                placeholder="Rechercher joueur ou club..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pl-5 pr-12 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#AFFF25] transition-all"
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                {searchQuery.length === 0 ? (
+                  <Search className="text-[#AFFF25]" size={18} />
+                ) : (
+                  <button onClick={() => setSearchQuery('')} className="text-red-500 hover:text-red-400 transition-colors flex items-center justify-center p-1"><X size={18} strokeWidth={3} /></button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 🚨 CHANGEMENT DE GRILLE ICI (lg:grid-cols-5) 🚨 */}
-        <div className="px-6 lg:px-6 grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
+        {/* 🚨 GRILLE DES CARTES : Full width avec marges lg:px-[80px] 🚨 */}
+        <div className="px-6 lg:px-[80px] grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
@@ -331,7 +360,7 @@ export default function CollectionPage() {
   if (activeFolderId && currentFolder) {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
-        <div className="pt-8 pb-4 px-6 flex items-center justify-between gap-4 lg:max-w-6xl lg:mx-auto">
+        <div className="pt-8 pb-4 px-6 lg:px-[80px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 overflow-hidden">
             <button onClick={() => setActiveFolderId(null)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0"><ChevronLeft size={20} /></button>
             <div className="overflow-hidden"><div className="text-xs text-[#AFFF25] font-bold uppercase tracking-widest">{currentFolder.type}</div><h1 className="text-3xl font-black italic uppercase tracking-tighter leading-none truncate">{currentFolder.name}</h1></div>
@@ -341,7 +370,7 @@ export default function CollectionPage() {
             <button onClick={() => deleteFolder(currentFolder.id)} className="p-2 active:scale-90 transition-transform text-red-500/80 hover:text-red-500"><Trash2 size={24} strokeWidth={1.5} /></button>
           </div>
         </div>
-        <div className="px-6 pb-4 lg:max-w-6xl lg:mx-auto">
+        <div className="px-6 lg:px-[80px] pb-4">
           <button onClick={handleStartSelection} className="w-full py-3.5 border border-dashed border-[#AFFF25]/50 text-[#AFFF25] rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#AFFF25]/10 active:scale-[0.98] transition-all"><Plus size={18} /> Gérer les cartes du dossier</button>
         </div>
         {renderCardsAndFilters()}
@@ -351,8 +380,8 @@ export default function CollectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden">
-      <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221] lg:max-w-6xl lg:mx-auto">
+    <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden w-full">
+      <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221] w-full">
         <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Collection"}</h1>
         {!targetFolderId && (
           <div className="flex justify-center px-6 gap-6 mb-4">
@@ -373,17 +402,17 @@ export default function CollectionPage() {
         {activeTab === 'cartes' && renderCardsAndFilters()}
 
         {activeTab === 'dossiers' && !targetFolderId && (
-          <div className="animate-in fade-in duration-300 lg:max-w-6xl lg:mx-auto">
-            <div className="px-6 flex justify-between items-center mb-4 mt-2"><h2 className="text-lg font-bold text-white flex items-center gap-2"><Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris</h2><button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors"><Plus size={18} /></button></div>
+          <div className="animate-in fade-in duration-300 w-full">
+            <div className="px-6 lg:px-[80px] flex justify-between items-center mb-4 mt-2"><h2 className="text-lg font-bold text-white flex items-center gap-2"><Star size={18} className="text-[#AFFF25] fill-[#AFFF25]" /> Favoris</h2><button onClick={() => setIsModalOpen(true)} className="w-8 h-8 rounded-full bg-[#AFFF25]/20 text-[#AFFF25] flex items-center justify-center hover:bg-[#AFFF25]/30 transition-colors"><Plus size={18} /></button></div>
             <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] mb-10">
-              <div className="flex gap-4 px-6 pb-4 w-max">
+              <div className="flex gap-4 px-6 lg:px-[80px] pb-4 w-max">
                 {favoriteFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-[180px] h-[180px] rounded-[24px] p-5 border border-white/10 bg-gradient-to-br from-white/10 to-white/5 flex flex-col justify-between relative group cursor-pointer active:scale-95 transition-transform"><div className="w-12 h-12 rounded-full bg-[#AFFF25]/10 flex items-center justify-center border border-[#AFFF25]/20"><Folder size={24} className="text-[#AFFF25]" /></div><div><div className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-1">{folder.type}</div><div className="text-xl font-black text-white leading-tight mb-1">{folder.name}</div><div className="text-xs text-[#AFFF25] font-medium">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div>))}
                 {favoriteFolders.length === 0 && <div className="text-white/40 text-sm italic py-8">Aucun dossier favori.</div>}
                 <div className="w-2 shrink-0"></div>
               </div>
             </div>
-            <div className="px-6 flex justify-between items-center mb-4"><h2 className="text-lg font-bold text-white">Tous les dossiers</h2><button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform"><Plus size={20} /></button></div>
-            <div className="px-6 grid grid-cols-1 lg:grid-cols-2 gap-3 pb-[180px]">
+            <div className="px-6 lg:px-[80px] flex justify-between items-center mb-4"><h2 className="text-lg font-bold text-white">Tous les dossiers</h2><button onClick={() => setIsModalOpen(true)} className="text-[#AFFF25] p-2 active:scale-90 transition-transform"><Plus size={20} /></button></div>
+            <div className="px-6 lg:px-[80px] grid grid-cols-1 lg:grid-cols-4 gap-3 pb-[180px]">
               {otherFolders.map(folder => (<div key={folder.id} onClick={() => setActiveFolderId(folder.id)} className="w-full flex items-center justify-between p-4 rounded-[20px] border border-white/10 bg-white/5 cursor-pointer active:scale-95 transition-transform hover:bg-white/10"><div className="flex items-center gap-4"><div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Folder size={20} className="text-white/60" /></div><div><div className="text-base font-bold text-white leading-tight">{folder.name}</div><div className="text-xs text-[#AFFF25] mt-0.5">{getFolderCardCount(folder.id)} carte{getFolderCardCount(folder.id) > 1 ? 's' : ''}</div></div></div><span className="text-[10px] px-3 py-1 rounded-full bg-white/10 text-white/60 font-bold uppercase tracking-widest">{folder.type}</span></div>))}
               {otherFolders.length === 0 && <div className="text-white/40 text-sm italic">Aucun autre dossier.</div>}
             </div>
@@ -523,7 +552,7 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* Barre de recherche classique */}
+      {/* Barre de recherche flottante sur mobile uniquement */}
       {activeTab === 'cartes' && !targetFolderId && (
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}

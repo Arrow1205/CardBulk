@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp } from 'lucide-react';
+import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -322,7 +322,36 @@ export default function CardDetailsPage() {
             </div>
           </div>
 
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div><div className="text-sm sm:text-base font-bold text-white">{card.purchase_price ? `${card.purchase_price}€` : "-"}</div></div>
+          <div>
+            <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div>
+            <div className="flex flex-col">
+              <span className="text-sm sm:text-base font-bold text-white">
+                {card.purchase_price ? `${card.purchase_price} €` : "-"}
+              </span>
+              
+              {/* === AFFICHAGE DU DELTA (Bénéfice/Perte) === */}
+              {card.purchase_price > 0 && averagePrice !== null && (
+                (() => {
+                  const diff = averagePrice - card.purchase_price;
+                  const percent = (diff / card.purchase_price) * 100;
+                  const isPositive = diff >= 0;
+                  // Si on est à 0 pile, on l'affiche en gris neutre
+                  if (diff === 0) return (
+                    <div className="flex items-center gap-1 text-[11px] font-black mt-1 text-white/50">
+                      <span>0.00 € (0.0%)</span>
+                    </div>
+                  );
+                  // Sinon, on applique le vert émeraude ou rouge rose
+                  return (
+                    <div className={`flex items-center gap-1 text-[11px] font-black mt-1 ${isPositive ? 'text-emerald-400' : 'text-rose-500'}`}>
+                      {isPositive ? <TrendingUp size={12} strokeWidth={3} /> : <TrendingDown size={12} strokeWidth={3} />}
+                      <span>{isPositive ? '+' : ''}{diff.toFixed(2)} € ({isPositive ? '+' : ''}{percent.toFixed(1)}%)</span>
+                    </div>
+                  );
+                })()
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 pt-8 border-t border-white/10">
@@ -332,7 +361,7 @@ export default function CardDetailsPage() {
                 <TrendingUp size={14} className="text-[#AFFF25]" /> Prix Moyen Actuel
               </h3>
               <div className="flex items-baseline gap-2">
-                {averagePrice ? (
+                {averagePrice !== null ? (
                   <span className="text-4xl font-black text-white">{averagePrice} €</span>
                 ) : (
                   <span className="text-3xl font-black text-white/40 italic">
