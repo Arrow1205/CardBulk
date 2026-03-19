@@ -111,17 +111,17 @@ export default function ClubPage() {
   });
 
   return (
-    <div className="min-h-screen text-white font-sans relative bg-[#040221] w-full">
+    <div className="min-h-screen text-white font-sans relative bg-[#040221]">
       
-      {/* HEADER FIXE : Ajout de lg:px-[80px] pour aligner le bouton sur Desktop */}
-      <header className="fixed top-0 left-0 w-full z-50 flex items-center p-6 lg:px-[80px] pointer-events-none">
-        <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
+      {/* HEADER FIXE */}
+      <header className="fixed top-0 left-0 w-full z-50 flex items-center p-6">
+        <button onClick={() => router.back()} className="w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
           <ChevronLeft size={20} />
         </button>
       </header>
 
       {/* BACKGROUND BLURRÉ AVEC LE LOGO */}
-      <div className="absolute top-0 left-0 w-full h-[450px] overflow-hidden z-0 pointer-events-none">
+      <div className="absolute top-0 left-0 w-full h-[450px] overflow-hidden z-0">
         <img 
           src={logoUrl} 
           alt="Club Background" 
@@ -144,10 +144,10 @@ export default function ClubPage() {
           />
         </div>
 
-        {/* CONTAINER DU BAS : Ajout de lg:px-[80px] pour occuper toute la largeur avec les marges sur PC */}
-        <div className="w-full bg-[#040221] rounded-t-[32px] px-4 lg:px-[80px] pt-6 pb-32 min-h-[50vh] shadow-[0_-20px_40px_rgba(0,0,0,0.4)] relative">
+        {/* CONTAINER DU BAS (Arrondi) */}
+        <div className="w-full bg-[#040221] rounded-t-[32px] px-4 pt-6 pb-32 min-h-[50vh] shadow-[0_-20px_40px_rgba(0,0,0,0.4)] relative">
           
-          <h1 className="text-3xl lg:text-4xl font-black italic uppercase text-center mb-6 lg:mb-8 tracking-tighter">
+          <h1 className="text-3xl font-black italic uppercase text-center mb-6 tracking-tighter">
             {clubName}
           </h1>
 
@@ -156,7 +156,7 @@ export default function ClubPage() {
             {openDropdown && <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)}></div>}
 
             {/* Dropdown Joueurs */}
-            <div className="relative flex-[2] lg:flex-1">
+            <div className="relative flex-[2]">
               <button 
                 onClick={() => setOpenDropdown(openDropdown === 'player' ? null : 'player')}
                 className="w-full border border-white/20 rounded-full px-4 py-2.5 flex items-center justify-between bg-transparent active:scale-95 transition-transform relative z-20"
@@ -204,23 +204,25 @@ export default function ClubPage() {
             </div>
           </div>
 
-          {/* 🚨 GRILLE DE CARTES : Passage en lg:grid-cols-5 sur Desktop 🚨 */}
-          <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3 grid-flow-dense auto-rows-max">
+          {/* GRILLE DE CARTES (3 Colonnes - Ajout de grid-flow-dense) */}
+          <div className="grid grid-cols-3 gap-2 grid-flow-dense auto-rows-max">
             {filteredCards.length > 0 ? (
               filteredCards.map(card => {
+                // On vérifie soit le state calculé par l'image, soit la base de données
                 const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
                 
                 return (
                   <div 
                     key={card.id} 
                     onClick={() => router.push(`/card/${card.id}`)} 
+                    // Si isHorizontal = true -> col-span-2. Sinon -> col-span-1
                     className={`relative rounded-xl overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
                   >
                     {card.image_url ? (
                       <img 
                         src={card.image_url} 
                         alt={card.lastname} 
-                        onLoad={(e) => handleImageLoad(card.id, e)}
+                        onLoad={(e) => handleImageLoad(card.id, e)} // Appel au moment du chargement de l'image
                         className="w-full h-full object-cover" 
                       />
                     ) : (
@@ -228,13 +230,13 @@ export default function ClubPage() {
                     )}
                     <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/90 to-transparent">
                       <div className="text-[9px] text-white/70 uppercase truncate">{card.firstname}</div>
-                      <div className="text-[11px] lg:text-xs font-black text-[#AFFF25] uppercase italic leading-none truncate">{card.lastname}</div>
+                      <div className="text-[11px] font-black text-[#AFFF25] uppercase italic leading-none truncate">{card.lastname}</div>
                     </div>
                   </div>
                 );
               })
             ) : (
-              <div className="col-span-3 lg:col-span-5 text-center py-10 text-white/40 italic">
+              <div className="col-span-3 text-center py-10 text-white/40 italic">
                 Aucune carte ne correspond aux filtres.
               </div>
             )}
