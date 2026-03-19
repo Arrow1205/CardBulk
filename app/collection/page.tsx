@@ -97,45 +97,13 @@ export default function CollectionPage() {
   }, [messages, aiLoading, activeTab]);
 
   const fetchCollection = async () => {
-    // 1️⃣ CHARGEMENT HORS-LIGNE IMMÉDIAT (CACHE)
-    if (typeof window !== 'undefined') {
-      const savedCards = localStorage.getItem('cardbulk_offline_cards');
-      const savedFolders = localStorage.getItem('cardbulk_offline_folders');
-      
-      if (savedCards) setCards(JSON.parse(savedCards).filter((c: any) => c.is_wishlist !== true));
-      if (savedFolders) setFolders(JSON.parse(savedFolders));
-      
-      // On coupe le loader direct pour un affichage instantané !
-      if (savedCards || savedFolders) setLoading(false);
-    }
-
-    // 2️⃣ TENTATIVE DE CONNEXION À SUPABASE (EN ARRIÈRE-PLAN)
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      // Si on n'a pas d'utilisateur mais qu'on a du réseau -> page login
-      if (!user && !userError) return router.push('/login');
-      if (!user) throw new Error("Pas de réseau ou non connecté");
-
-      const { data: cardsData, error: cardsError } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-      const { data: foldersData, error: foldersError } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
-
-      // 3️⃣ MISE À JOUR DU CACHE SI LE RÉSEAU FONCTIONNE
-      if (!cardsError && cardsData) {
-        setCards(cardsData.filter(c => c.is_wishlist !== true));
-        localStorage.setItem('cardbulk_offline_cards', JSON.stringify(cardsData));
-      }
-      if (!foldersError && foldersData) {
-        setFolders(foldersData);
-        localStorage.setItem('cardbulk_offline_folders', JSON.stringify(foldersData));
-      }
-
-    } catch (error) {
-      console.log("🌐 Mode hors-ligne activé (ou erreur réseau)");
-      // L'appli ne plante pas : l'utilisateur regarde déjà les données du cache LocalStorage !
-    } finally {
-      setLoading(false);
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return router.push('/login');
+    const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    if (cardsData) setCards(cardsData.filter(c => c.is_wishlist !== true));
+    const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
+    if (foldersData) setFolders(foldersData);
+    setLoading(false);
   };
 
   const favoriteFolders = folders.filter(f => f.is_favorite);

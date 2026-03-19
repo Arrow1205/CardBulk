@@ -48,32 +48,13 @@ export default function StatsPage() {
   }, []);
 
   const fetchCards = async () => {
-    // 1️⃣ CHARGEMENT HORS-LIGNE (CACHE)
-    if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem('cardbulk_offline_cards');
-      if (cached) {
-        setCards(JSON.parse(cached).filter((c: any) => !c.is_wishlist));
-        setLoading(false); // Coupe le loader direct !
-      }
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return router.push('/login');
 
-    // 2️⃣ MISE À JOUR DEPUIS SUPABASE (EN ARRIÈRE-PLAN)
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (!user && !userError) return router.push('/login');
-      if (!user) throw new Error("Offline");
-
-      const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
-      if (data) {
-        setCards(data.filter(c => !c.is_wishlist));
-        // On met à jour le cache global
-        localStorage.setItem('cardbulk_offline_cards', JSON.stringify(data));
-      }
-    } catch (error) {
-      console.log("🌐 Mode hors-ligne activé pour les Stats");
-    } finally {
-      setLoading(false);
-    }
+    const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
+    if (data) setCards(data.filter(c => !c.is_wishlist));
+    
+    setLoading(false);
   };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;

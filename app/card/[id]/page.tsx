@@ -52,72 +52,29 @@ export default function CardDetailsPage() {
   }, [cardId]);
 
   const fetchCard = async () => {
-    // 1️⃣ CHARGEMENT HORS-LIGNE INFO CARTE (CACHE)
-    if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem('cardbulk_offline_cards');
-      if (cached) {
-        const allCards = JSON.parse(cached);
-        const found = allCards.find((c: any) => c.id === cardId);
-        if (found) {
-          setCard(found);
-          setIsHorizontal(found.is_horizontal || false);
-          setLoading(false); // Affiche instantanément !
-        }
-      }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return router.push('/login'); 
+    
+    const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
+    if (data) {
+      setCard(data);
+      setIsHorizontal(data.is_horizontal || false);
+    } else {
+      router.push('/collection');
     }
-
-    // 2️⃣ MISE À JOUR DEPUIS SUPABASE (EN ARRIÈRE-PLAN)
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (!user && !userError) return router.push('/login'); 
-      if (!user) throw new Error("Offline");
-      
-      const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
-      if (data) {
-        setCard(data);
-        setIsHorizontal(data.is_horizontal || false);
-      } else {
-        router.push('/collection');
-      }
-    } catch (error) {
-      console.log("🌐 Mode hors-ligne : Carte chargée depuis le cache");
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
   };
 
   const fetchPriceHistory = async () => {
-    // 1️⃣ CHARGEMENT HORS-LIGNE DES PRIX (CACHE)
-    if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem(`cardbulk_prices_${cardId}`);
-      if (cached) {
-        const { history, avg } = JSON.parse(cached);
-        setPriceHistory(history);
-        setAveragePrice(avg);
-      }
-    }
-
-    // 2️⃣ MISE À JOUR DEPUIS SUPABASE (EN ARRIÈRE-PLAN)
-    try {
-      const { data } = await supabase.from('card_prices').select('*').eq('card_id', cardId).order('created_at', { ascending: true });
-      
-      if (data && data.length > 0) {
-        const formattedData = data.map(item => ({
-          date: new Date(item.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }),
-          prix: parseFloat(item.price)
-        }));
-        const avg = parseFloat(data[data.length - 1].price);
-        
-        setPriceHistory(formattedData);
-        setAveragePrice(avg);
-
-        // Sauvegarde en cache uniquement pour CETTE carte
-        if (typeof window !== 'undefined') {
-           localStorage.setItem(`cardbulk_prices_${cardId}`, JSON.stringify({ history: formattedData, avg }));
-        }
-      }
-    } catch (error) {
-      console.log("🌐 Mode hors-ligne : Prix chargés depuis le cache");
+    const { data } = await supabase.from('card_prices').select('*').eq('card_id', cardId).order('created_at', { ascending: true });
+    
+    if (data && data.length > 0) {
+      const formattedData = data.map(item => ({
+        date: new Date(item.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }),
+        prix: parseFloat(item.price)
+      }));
+      setPriceHistory(formattedData);
+      setAveragePrice(parseFloat(data[data.length - 1].price)); 
     }
   };
 
@@ -273,14 +230,14 @@ export default function CardDetailsPage() {
         {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
       </div>
 
-      {/* 🔘 HEADER (Mise à jour lg:px-[80px]) */}
-      <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 lg:px-[80px] pointer-events-none">
+      {/* 🔘 HEADER */}
+      <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* 🖼️ PARTIE GAUCHE (CARTE) : Fixe sur PC (w-2/3), absolue sur Mobile (Mise à jour lg:pl-[80px] lg:pr-8) */}
-      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 lg:pl-[80px] lg:pr-8 transition-all duration-300`}>
+      {/* 🖼️ PARTIE GAUCHE (CARTE) : Fixe sur PC (w-2/3), absolue sur Mobile */}
+      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         <div ref={cardRef} style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchMove={handleTouchMove} onTouchEnd={handleLeave} onTouchCancel={handleLeave}>
           {card.image_url ? (
             <img 
@@ -305,8 +262,8 @@ export default function CardDetailsPage() {
         </div>
       </div>
 
-      {/* 📊 PARTIE DROITE (INFOS) : Scrollable sur PC (w-1/3 placé à droite), fond d'écran sur Mobile (Mise à jour lg:pl-8 lg:pr-[80px]) */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[450px] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 lg:pl-8 lg:pr-[80px] pt-8 lg:pt-[100px] pb-12 min-h-[calc(100vh-88px)] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
+      {/* 📊 PARTIE DROITE (INFOS) : Scrollable sur PC (w-1/3 placé à droite), fond d'écran sur Mobile */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[450px] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-[calc(100vh-88px)] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">

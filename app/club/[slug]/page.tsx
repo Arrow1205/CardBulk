@@ -41,36 +41,17 @@ export default function ClubPage() {
   }, [slug]);
 
   const fetchClubCards = async () => {
-    // 1️⃣ CHARGEMENT HORS-LIGNE (CACHE)
-    if (typeof window !== 'undefined') {
-      const cached = localStorage.getItem('cardbulk_offline_cards');
-      if (cached) {
-        const allCards = JSON.parse(cached);
-        const clubCards = allCards.filter((c: any) => c.club_name && slugify(c.club_name) === slug && !c.is_wishlist);
-        setCards(clubCards);
-        setLoading(false); // Coupe le loader direct !
-      }
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return router.push('/login');
 
-    // 2️⃣ MISE À JOUR DEPUIS SUPABASE (EN ARRIÈRE-PLAN)
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (!user && !userError) return router.push('/login');
-      if (!user) throw new Error("Offline");
-
-      const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
-      
-      if (data) {
-        // On sauvegarde toute la collection en cache pour garder les autres pages à jour
-        localStorage.setItem('cardbulk_offline_cards', JSON.stringify(data));
-        const clubCards = data.filter(c => c.club_name && slugify(c.club_name) === slug && !c.is_wishlist);
-        setCards(clubCards);
-      }
-    } catch (error) {
-      console.log("🌐 Mode hors-ligne activé pour la page Club");
-    } finally {
-      setLoading(false);
+    const { data } = await supabase.from('cards').select('*').eq('user_id', user.id);
+    
+    if (data) {
+      const clubCards = data.filter(c => c.club_name && slugify(c.club_name) === slug && !c.is_wishlist);
+      setCards(clubCards);
     }
+    
+    setLoading(false);
   };
 
   // Fonction qui détecte si l'image est horizontale au chargement
