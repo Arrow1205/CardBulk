@@ -138,11 +138,9 @@ function ScannerContent() {
     return () => stopCamera();
   }, []);
 
-  // LE FAMEUX USE-EFFECT QUI RÈGLE LE BUG DU DOM REACT
   useEffect(() => {
     if (isCameraOpen && videoRef.current && streamRef.current) {
       videoRef.current.srcObject = streamRef.current;
-      // On force la lecture pour être sûr que iOS l'affiche
       videoRef.current.play().catch(e => console.error("Erreur lecture vidéo:", e));
     }
   }, [isCameraOpen]);
@@ -174,29 +172,38 @@ function ScannerContent() {
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   // ==========================================
-  // CUSTOM CAMERA LOGIC
+  // CUSTOM CAMERA LOGIC (AVEC FORÇAGE 4K / HD)
   // ==========================================
   const startCamera = async () => {
+    setIsCameraOpen(true);
+    
     try {
-      // 1. On demande le flux vidéo de la caméra ARRIRÈRE de manière très stricte
+      // 1. TENTATIVE N°1 : On force la très haute définition (idéalement 4K)
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: "environment" } }
-      }).catch(async () => {
-        // Fallback si "exact" bloque sur certains téléphones : on prend la caméra dispo
-        return await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" }
-        });
+        video: { 
+          facingMode: { ideal: "environment" },
+          width: { ideal: 3840, min: 1920 },
+          height: { ideal: 2160, min: 1080 },
+          frameRate: { ideal: 30 }
+        }
       });
-
-      // 2. On stocke le flux en mémoire
       streamRef.current = stream;
-
-      // 3. ON AFFICHE L'UI (ce qui va déclencher le useEffect juste au dessus pour lier la vidéo)
-      setIsCameraOpen(true);
+      if (videoRef.current) videoRef.current.srcObject = stream;
       
     } catch (err) {
-      console.error("Erreur accès caméra", err);
-      alert("Impossible d'accéder à la caméra. Avez-vous autorisé l'accès ?");
+      console.warn("Échec du forçage 4K, passage au Fallback standard", err);
+      
+      // 2. TENTATIVE N°2 (Fallback) : Si le téléphone refuse les contraintes, on prend la meilleure dispo
+      try {
+        const fallbackStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } }
+        });
+        streamRef.current = fallbackStream;
+        if (videoRef.current) videoRef.current.srcObject = fallbackStream;
+      } catch (fallbackErr) {
+        alert("Impossible d'accéder à la caméra. Vérifiez vos permissions.");
+        setIsCameraOpen(false);
+      }
     }
   };
 
@@ -218,11 +225,11 @@ function ScannerContent() {
     const video = videoRef.current;
     const guide = guideRef.current;
     
-    // Création d'un canvas pour cropper
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Dimensions réelles de la vidéo (qui seront maintenant potentiellement en 4K ou 1080p !)
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
     const videoRect = video.getBoundingClientRect();
@@ -240,8 +247,13 @@ function ScannerContent() {
     const cropW = guideRect.width / scale;
     const cropH = guideRect.height / scale;
 
+    // La taille du canvas sera de la très haute qualité issue du flux forcé
     canvas.width = cropW;
     canvas.height = cropH;
+
+    // Optimisation de la qualité de dessin sur le canvas
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     ctx.drawImage(
       video,
@@ -249,6 +261,7 @@ function ScannerContent() {
       0, 0, cropW, cropH
     );
 
+    // Export en JPEG qualité max (1.0) avant compression ultérieure
     canvas.toBlob((blob) => {
       if (!blob) return;
       const file = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
@@ -261,7 +274,7 @@ function ScannerContent() {
       } else {
         processBulkItem([file], 0, true);
       }
-    }, 'image/jpeg', 0.9);
+    }, 'image/jpeg', 1.0);
   };
 
   const handleUrlImport = async () => {
@@ -372,7 +385,10 @@ function ScannerContent() {
         });
       }
     } catch (err) { console.error(err); } 
-    finally { setAnalyzing(false); if (fileInputRef.current) fileInputRef.current.value = ''; }
+    finally { 
+      setAnalyzing(false); 
+      if (fileInputRef.current) fileInputRef.current.value = ''; 
+    }
   };
 
   const rotateImage = async () => {
@@ -558,7 +574,7 @@ function ScannerContent() {
              </button>
           </div>
 
-          {/* Bouton Capturer (remonté avec pb-32 au lieu de pb-12) */}
+          {/* Bouton Capturer */}
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex justify-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
              <button 
                onClick={captureImageAndCrop} 
@@ -581,7 +597,7 @@ function ScannerContent() {
         </div>
       </header>
 
-      {/* 🖌️ EDITEUR PHOTO MODAL (Reste inchangé) */}
+      {/* 🖌️ EDITEUR PHOTO MODAL */}
       {showEditor && previewUrl && (
         <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
           <header className="flex justify-between items-center mb-6 pt-4">
@@ -652,7 +668,7 @@ function ScannerContent() {
           ) : (
             <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl gap-4 p-6">
               
-              {/* NOUVEAU BOUTON : Appareil Photo Custom */}
+              {/* BOUTON : Custom Camera */}
               <button 
                 onClick={startCamera} 
                 className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group"
@@ -890,7 +906,7 @@ function ScannerContent() {
         </div>
       </div>
       
-      {/* Input natif masqué conservé pour la sélection Galerie */}
+      {/* INPUT POUR IMPORTER UN FICHIER DEPUIS LA GALERIE (Conserve la sélection multiple pour le mode "Lot") */}
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={scanMode === 'lot'} />
     </div>
   );
