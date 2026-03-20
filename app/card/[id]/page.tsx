@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown } from 'lucide-react';
+import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw, Camera } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -40,6 +40,16 @@ export default function CardDetailsPage() {
   const [priceHistory, setPriceHistory] = useState<any[]>([]);
   const [averagePrice, setAveragePrice] = useState<number | null>(null);
   const [isUpdatingPrice, setIsUpdatingPrice] = useState(false);
+
+  // ÉTATS POUR LE RECTO/VERSO (FLIP) ET UPLOAD
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [isUploadingFront, setIsUploadingFront] = useState(false);
+  const [isUploadingBack, setIsUploadingBack] = useState(false);
+  const frontFileInputRef = useRef<HTMLInputElement>(null);
+  const backFileInputRef = useRef<HTMLInputElement>(null);
+  
+  // GESTION DU SWIPE
+  const [touchStart, setTouchStart] = useState<{x: number, y: number, time: number} | null>(null);
 
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', transition: 'transform 0.3s ease-out' });
   const [glareStyle, setGlareStyle] = useState({ background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 0%, transparent 50%)', opacity: 0, transition: 'opacity 0.3s ease-out' });
@@ -107,7 +117,72 @@ export default function CardDetailsPage() {
   };
 
   // ==========================================
-  // GYROSCOPE & SOURIS
+  // COMPRESSION ET UPLOAD D'IMAGE (RECTO/VERSO)
+  // ==========================================
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1000; 
+        const scaleSize = MAX_WIDTH / img.width;
+        
+        if (scaleSize < 1) {
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+        } else {
+          canvas.width = img.width;
+          canvas.height = img.height;
+        }
+
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob((blob) => {
+          if (blob) resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }));
+          else resolve(file);
+        }, 'image/jpeg', 0.8); 
+      };
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, side: 'front' | 'back') => {
+    const file = e.target.files?.[0];
+    if (!file || !card) return;
+
+    if (side === 'front') setIsUploadingFront(true);
+    else setIsUploadingBack(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const compressedFile = await compressImage(file);
+      const filePath = `${user.id}/${Date.now()}-${side}.jpg`; 
+      await supabase.storage.from('card-images').upload(filePath, compressedFile);
+      const newImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
+
+      const updateData = side === 'front' ? { image_url: newImageUrl } : { image_url_back: newImageUrl };
+      await supabase.from('cards').update(updateData).eq('id', card.id);
+
+      setCard((prev: any) => ({ ...prev, ...updateData }));
+
+      // Si on vient d'ajouter un verso et qu'on était de face, on retourne la carte pour l'admirer !
+      if (side === 'back' && !isFlipped) setIsFlipped(true);
+
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'upload de l'image.");
+    } finally {
+      if (side === 'front') setIsUploadingFront(false);
+      else setIsUploadingBack(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
+  // ==========================================
+  // GYROSCOPE, SOURIS & GESTION DU SWIPE
   // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
@@ -166,7 +241,35 @@ export default function CardDetailsPage() {
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => handleMove(e.clientX, e.clientY);
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => handleMove(e.touches[0].clientX, e.touches[0].clientY);
+  
+  // Gestion du Swipe Mobile (Début)
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY, time: Date.now() });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    handleMove(e.touches[0].clientX, e.touches[0].clientY);
+  };
+
+  // Gestion du Swipe Mobile (Fin et calcul)
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStart) {
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStart.x;
+      const deltaY = touchEndY - touchStart.y;
+      const deltaTime = Date.now() - touchStart.time;
+
+      // Condition de Swipe : Doit être rapide (< 300ms), long (> 50px) et surtout horizontal
+      if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) && deltaTime < 300) {
+        if (card?.image_url_back) {
+          setIsFlipped(!isFlipped);
+        }
+      }
+      setTouchStart(null);
+    }
+    handleLeave();
+  };
 
   const handleLeave = () => {
     const savedPermission = localStorage.getItem('gyro_permission');
@@ -225,9 +328,14 @@ export default function CardDetailsPage() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* 🌌 BACKGROUND GLOBAL */}
-      <div className="fixed inset-0 z-0 bg-[#040221]">
-        {card.image_url && <><img src={card.image_url} alt="Background" className="w-full h-full object-cover opacity-20" /><div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div></>}
+      {/* 🌌 BACKGROUND GLOBAL (S'adapte au Recto ou Verso selon le flip !) */}
+      <div className="fixed inset-0 z-0 bg-[#040221] transition-opacity duration-500">
+        {(isFlipped && card.image_url_back ? card.image_url_back : card.image_url) && (
+          <>
+            <img src={isFlipped && card.image_url_back ? card.image_url_back : card.image_url} alt="Background" className="w-full h-full object-cover opacity-20 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#040221]/40 via-transparent to-[#040221]"></div>
+          </>
+        )}
       </div>
 
       {/* 🔘 HEADER */}
@@ -236,21 +344,65 @@ export default function CardDetailsPage() {
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* 🖼️ PARTIE GAUCHE (CARTE) : Fixe sur PC (w-2/3), absolue sur Mobile */}
+      {/* 🖼️ PARTIE GAUCHE (CARTE) */}
       <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
-        <div ref={cardRef} style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchMove={handleTouchMove} onTouchEnd={handleLeave} onTouchCancel={handleLeave}>
-          {card.image_url ? (
-            <img 
-              src={card.image_url} 
-              onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} 
-              style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-              className="w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] lg:max-w-[80%] object-contain border border-white/10 relative z-10" 
-              alt="Card" 
-            />
-          ) : (
-            <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center pointer-events-none rounded-[12px] relative z-10">No Image</div>
-          )}
+        
+        <div 
+          ref={cardRef} 
+          style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
+          className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" 
+          onMouseMove={handleMouseMove} 
+          onMouseLeave={handleLeave} 
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove} 
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleLeave}
+        >
+          {/* 🔄 CONTENEUR DE FLIP 3D */}
+          <div 
+            className="relative"
+            style={{
+              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              transformStyle: 'preserve-3d',
+              transition: 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)'
+            }}
+          >
+            {/* FACADE (RECTO) */}
+            <div style={{ backfaceVisibility: 'hidden' }}>
+              {card.image_url ? (
+                <img 
+                  src={card.image_url} 
+                  onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} 
+                  style={{ borderRadius: '12px', pointerEvents: 'none' }} 
+                  className={`w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] ${isHorizontal ? 'lg:max-w-[80%]' : ''} object-contain border border-white/10`} 
+                  alt="Recto" 
+                />
+              ) : (
+                <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center rounded-[12px]">No Image</div>
+              )}
+            </div>
+
+            {/* DOS (VERSO) - Positionné en absolu pour recouvrir exactement le recto */}
+            {card.image_url_back && (
+              <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }} className="absolute inset-0 w-full h-full flex items-center justify-center">
+                <img 
+                  src={card.image_url_back} 
+                  style={{ borderRadius: '12px', pointerEvents: 'none' }} 
+                  className="w-full h-full object-cover border border-white/10" 
+                  alt="Verso" 
+                />
+              </div>
+            )}
+          </div>
+
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay z-20" style={glareStyle}></div>
+
+          {/* Bouton de Flip Manuel (Pratique sur Desktop) */}
+          {card.image_url_back && (
+             <button onClick={(e) => { e.stopPropagation(); setIsFlipped(!isFlipped); }} className="absolute bottom-4 right-4 bg-black/50 border border-white/20 backdrop-blur-md p-3 rounded-full text-[#AFFF25] shadow-xl pointer-events-auto z-50 transition-transform hover:scale-110 active:scale-95">
+                 <RotateCw size={20} />
+             </button>
+          )}
 
           {showGyroOverlay && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#040221]/80 backdrop-blur-md rounded-[12px] border border-[#AFFF25]/30 p-6 text-center shadow-xl">
@@ -260,9 +412,24 @@ export default function CardDetailsPage() {
             </div>
           )}
         </div>
+
+        {/* 📸 BOUTONS D'ÉDITION D'IMAGE (Sous la carte) */}
+        <div className="flex gap-4 mt-8 pointer-events-auto">
+           <button onClick={() => frontFileInputRef.current?.click()} className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 px-5 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all">
+             {isUploadingFront ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />} Changer Recto
+           </button>
+           <button onClick={() => backFileInputRef.current?.click()} className={`flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold px-5 py-3 rounded-full active:scale-95 transition-all ${card.image_url_back ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
+             {isUploadingBack ? <Loader2 size={14} className="animate-spin" /> : <RotateCw size={14} />} {card.image_url_back ? 'Changer Verso' : 'Ajouter Verso'}
+           </button>
+        </div>
+
+        {/* Inputs cachés pour déclencher l'upload */}
+        <input type="file" ref={frontFileInputRef} onChange={(e) => handleImageUpload(e, 'front')} className="hidden" accept="image/*" />
+        <input type="file" ref={backFileInputRef} onChange={(e) => handleImageUpload(e, 'back')} className="hidden" accept="image/*" />
+
       </div>
 
-      {/* 📊 PARTIE DROITE (INFOS) : Scrollable sur PC (w-1/3 placé à droite), fond d'écran sur Mobile */}
+      {/* 📊 PARTIE DROITE (INFOS) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[450px] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-[calc(100vh-88px)] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
@@ -302,7 +469,6 @@ export default function CardDetailsPage() {
           </div>
         </div>
 
-        {/* Note : On passe en grid-cols-2 sur PC (lg) car l'espace d'1/3 d'écran est trop serré pour 3 colonnes */}
         <div className="grid grid-cols-3 lg:grid-cols-2 2xl:grid-cols-3 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
@@ -335,13 +501,11 @@ export default function CardDetailsPage() {
                   const diff = averagePrice - card.purchase_price;
                   const percent = (diff / card.purchase_price) * 100;
                   const isPositive = diff >= 0;
-                  // Si on est à 0 pile, on l'affiche en gris neutre
                   if (diff === 0) return (
                     <div className="flex items-center gap-1 text-[11px] font-black mt-1 text-white/50">
                       <span>0.00 € (0.0%)</span>
                     </div>
                   );
-                  // Sinon, on applique le vert émeraude ou rouge rose
                   return (
                     <div className={`flex items-center gap-1 text-[11px] font-black mt-1 ${isPositive ? 'text-emerald-400' : 'text-rose-500'}`}>
                       {isPositive ? <TrendingUp size={12} strokeWidth={3} /> : <TrendingDown size={12} strokeWidth={3} />}
