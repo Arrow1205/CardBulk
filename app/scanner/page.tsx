@@ -269,12 +269,13 @@ function ScannerContent() {
       const file = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
       stopCamera();
       
-      if (scanMode === 'lot') {
+      // 🚨 On passe bien la face active pour ne pas écraser le Recto si on est sur Verso !
+      if (scanMode === 'lot' && activeSide === 'front') {
         setBulkFiles([file]); 
         setCurrentBulkIndex(0); 
-        processBulkItem([file], 0, true);
+        processImageScan(file, 'front', true);
       } else {
-        processBulkItem([file], 0, true);
+        processImageScan(file, activeSide, activeSide === 'front'); // On ne reset le form QUE si c'est le Recto
       }
     }, 'image/jpeg', 1.0);
   };
@@ -287,7 +288,7 @@ function ScannerContent() {
       if (files.length > 10) { alert("Max 10 cartes"); return; }
       setBulkFiles(files); 
       setCurrentBulkIndex(0); 
-      await processBulkItem(files, 0, true);
+      await processImageScan(files[0], 'front', true);
     } else {
       setCropPreview(URL.createObjectURL(files[0]));
       setCropZoom(1);
@@ -334,32 +335,35 @@ function ScannerContent() {
         setCropPreview(null);
         setIsApplyingEdit(false);
         
-        if (activeSide === 'back') {
-          setSelectedFileBack(croppedFile);
-          setPreviewUrlBack(URL.createObjectURL(croppedFile));
+        if (scanMode === 'lot' && activeSide === 'front') {
+           setBulkFiles([croppedFile]);
+           setCurrentBulkIndex(0);
+           processImageScan(croppedFile, 'front', true);
         } else {
-          if (scanMode === 'lot') {
-             setBulkFiles([croppedFile]);
-             setCurrentBulkIndex(0);
-             processBulkItem([croppedFile], 0, true);
-          } else {
-             processBulkItem([croppedFile], 0, true);
-          }
+           processImageScan(croppedFile, activeSide, activeSide === 'front'); // On ne reset le form QUE si c'est le Recto
         }
       }, 'image/jpeg', 0.9);
     };
   };
 
-  const processBulkItem = async (filesList: File[], index: number, resetForm: boolean = true) => {
+  // 🧠 LA FONCTION MAGIQUE DE SCAN (Gère le "ET" pour le Verso)
+  const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    const file = filesList[index];
-    
-    setSelectedFile(file); 
-    setPreviewUrl(URL.createObjectURL(file)); 
-    setAnalyzing(true);
     
     const currentUrl = formData.website_url;
-    if (resetForm) setFormData(DEFAULT_FORM);
+
+    // Assigner la bonne image sans écraser l'autre
+    if (side === 'front') {
+      setSelectedFile(file); 
+      setPreviewUrl(URL.createObjectURL(file)); 
+      if (resetForm) setFormData({ ...DEFAULT_FORM, website_url: currentUrl });
+    } else {
+      setSelectedFileBack(file);
+      setPreviewUrlBack(URL.createObjectURL(file));
+      // On ne reset SURTOUT PAS le form pour le Verso !
+    }
+    
+    setAnalyzing(true);
 
     try {
       const body = new FormData(); 
@@ -389,26 +393,49 @@ function ScannerContent() {
           let aiSport = cleanValue(data.sport).toUpperCase();
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
           
-          return {
-            ...prev,
-            sport: aiSport,
-            firstname: fname,
-            lastname: lname,
-            club: cleanValue(data.club),
-            brand: cleanValue(data.brand),
-            series: cleanValue(data.series),
-            year: cleanValue(data.year),
-            is_auto: !!data.is_auto,
-            is_patch: !!data.is_patch,
-            is_rookie: !!data.is_rookie,
-            is_numbered: !!data.is_numbered,
-            num_low: cleanValue(data.num_low),
-            num_high: cleanValue(data.num_high),
-            is_graded: !!data.is_graded,
-            grading_company: cleanValue(data.grading_company),
-            grading_grade: cleanValue(data.grading_grade),
-            website_url: resetForm ? '' : currentUrl
-          };
+          if (side === 'front') {
+            // SI RECTO : L'IA écrase tout avec ses nouvelles données (vu qu'on a reset juste avant)
+            return {
+              ...prev,
+              sport: aiSport || prev.sport,
+              firstname: fname || prev.firstname,
+              lastname: lname || prev.lastname,
+              club: cleanValue(data.club) || prev.club,
+              brand: cleanValue(data.brand) || prev.brand,
+              series: cleanValue(data.series) || prev.series,
+              year: cleanValue(data.year) || prev.year,
+              is_auto: !!data.is_auto || prev.is_auto,
+              is_patch: !!data.is_patch || prev.is_patch,
+              is_rookie: !!data.is_rookie || prev.is_rookie,
+              is_numbered: !!data.is_numbered || prev.is_numbered,
+              num_low: cleanValue(data.num_low) || prev.num_low,
+              num_high: cleanValue(data.num_high) || prev.num_high,
+              is_graded: !!data.is_graded || prev.is_graded,
+              grading_company: cleanValue(data.grading_company) || prev.grading_company,
+              grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+            };
+          } else {
+            // SI VERSO : C'EST DU "ET" ! On ne remplit que les cases qui sont encore vides dans prev.
+            return {
+              ...prev,
+              sport: prev.sport || aiSport,
+              firstname: prev.firstname || fname,
+              lastname: prev.lastname || lname,
+              club: prev.club || cleanValue(data.club),
+              brand: prev.brand || cleanValue(data.brand),
+              series: prev.series || cleanValue(data.series),
+              year: prev.year || cleanValue(data.year),
+              is_auto: prev.is_auto || !!data.is_auto, // Reste true si déjà coché, sinon prend la valeur du Verso
+              is_patch: prev.is_patch || !!data.is_patch,
+              is_rookie: prev.is_rookie || !!data.is_rookie,
+              is_numbered: prev.is_numbered || !!data.is_numbered,
+              num_low: prev.num_low || cleanValue(data.num_low),
+              num_high: prev.num_high || cleanValue(data.num_high),
+              is_graded: prev.is_graded || !!data.is_graded,
+              grading_company: prev.grading_company || cleanValue(data.grading_company),
+              grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+            };
+          }
         });
       }
     } catch (err) { console.error(err); } 
@@ -442,7 +469,7 @@ function ScannerContent() {
 
         setBulkFiles([file]);
         setCurrentBulkIndex(0);
-        await processBulkItem([file], 0, false); 
+        await processImageScan(file, 'front', false); 
       } else {
         alert("Impossible de trouver une image sur ce lien.");
         setAnalyzing(false);
@@ -598,7 +625,7 @@ function ScannerContent() {
         setLoading(false);
         const nextIndex = currentBulkIndex + 1;
         setCurrentBulkIndex(nextIndex);
-        await processBulkItem(bulkFiles, nextIndex, true);
+        await processImageScan(bulkFiles[nextIndex], 'front', true); // Le mode bulk reste uniquement pour le recto !
       } else {
         router.push(isWishlistMode ? '/wishlist' : '/collection');
       }
@@ -635,7 +662,6 @@ function ScannerContent() {
             Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}
           </h2>
 
-          {/* L'image en plein écran pour pouvoir la zoomer confortablement */}
           <img 
             src={cropPreview} 
             className="absolute inset-0 w-full h-full object-contain origin-center z-0" 
@@ -643,7 +669,6 @@ function ScannerContent() {
             alt="To Crop" 
           />
 
-          {/* Le masque assombrissant (Layer bleu/noir) par-dessus l'image */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div>
           </div>
@@ -764,7 +789,7 @@ function ScannerContent() {
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
-        {/* SWITCH RECTO / VERSO (Correction du bug visuel avec une structure en Grid solide) */}
+        {/* SWITCH RECTO / VERSO (Correction du bug visuel) */}
         {!isWishlistMode && (
           <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mx-auto mb-8 shadow-inner">
             <div
@@ -784,8 +809,8 @@ function ScannerContent() {
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
-              {/* Overlay d'analyse uniquement si on scanne le recto */}
-              {analyzing && !showEditor && activeSide === 'front' && (
+              {/* Overlay d'analyse */}
+              {analyzing && !showEditor && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
                    <span className="text-[#AFFF25] text-[10px] lg:text-xs font-bold tracking-widest animate-pulse mt-2 text-center px-4">
