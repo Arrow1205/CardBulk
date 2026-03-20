@@ -4,7 +4,17 @@ import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check } from 'lucide-react';
+
+// Importation des données Clubs
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
+import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
+import BASEBALL_CLUBS from '@/data/baseball-clubs.json';
+
+// Importation des données Joueurs
+import NBA_PLAYERS from '@/data/nba-player.json';
+import MLB_PLAYERS from '@/data/mlb-player.json';
+import TENNIS_PLAYERS from '@/data/tennis-player.json';
+
 import SET_DATA from '@/data/set.json';
 
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
@@ -15,6 +25,27 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
   'NFL': { image: 'NFL', jsonKey: 'nfl', label: 'Football Américain (NFL)' },
   'NHL': { image: 'NHL', jsonKey: 'nhl', label: 'Hockey (NHL)' },
   'TENNIS': { image: 'Tennis', jsonKey: 'tennis', label: 'Tennis' }
+};
+
+// Configuration pour lier le Sport au nom de ton sous-dossier de logos (foot, NBA, MLB...)
+const SPORT_FOLDERS: Record<string, string> = {
+  'SOCCER': 'foot',
+  'BASKETBALL': 'NBA',
+  'BASEBALL': 'MLB',
+  'NFL': 'NFL',
+  'NHL': 'NHL'
+};
+
+const CLUB_DATA: Record<string, any[]> = {
+  'SOCCER': FOOTBALL_CLUBS,
+  'BASKETBALL': BASKETBALL_CLUBS,
+  'BASEBALL': BASEBALL_CLUBS,
+};
+
+const PLAYER_DATA: Record<string, any[]> = {
+  'BASKETBALL': NBA_PLAYERS,
+  'BASEBALL': MLB_PLAYERS,
+  'TENNIS': TENNIS_PLAYERS?.atp_top_100 || []
 };
 
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
@@ -50,7 +81,10 @@ function ScannerContent() {
   const [showEditor, setShowEditor] = useState(false);
   const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
 
+  // Dropdowns Autocomplete
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
+  const [showPlayerSuggestions, setShowPlayerSuggestions] = useState(false);
+  
   const [isJoueurOpen, setIsJoueurOpen] = useState(true);
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
@@ -92,11 +126,32 @@ function ScannerContent() {
     }
   }, [editId]);
 
-  const safeFootballClubs = Array.isArray(FOOTBALL_CLUBS) ? FOOTBALL_CLUBS : [];
+  // ==========================================
+  // LOGIQUE DE DÉTECTION (CLUBS ET LOGOS)
+  // ==========================================
+  const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
   const searchStr = formData.club.toLowerCase();
-  const filteredClubs = safeFootballClubs.filter((c: any) => c.name?.toLowerCase().includes(searchStr) || c.slug?.toLowerCase().includes(searchStr)).sort((a: any, b: any) => { if (a.name.toLowerCase().startsWith(searchStr)) return -1; return 1; });
+  
+  const filteredClubs = safeClubs.filter((c: any) => 
+    c.name?.toLowerCase().includes(searchStr) || c.slug?.toLowerCase().includes(searchStr)
+  ).sort((a: any, b: any) => { 
+    if (a.name.toLowerCase().startsWith(searchStr)) return -1; return 1; 
+  });
+
   const selectedClub = filteredClubs[0];
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
+  
+  // 🚨 Récupération du bon nom de dossier en fonction du Sport sélectionné
+  const sportFolder = SPORT_FOLDERS[formData.sport] || 'foot';
+
+  // ==========================================
+  // LOGIQUE DE DÉTECTION (JOUEURS)
+  // ==========================================
+  const safePlayers = Array.isArray(PLAYER_DATA[formData.sport]) ? PLAYER_DATA[formData.sport] : [];
+  const searchPlayerStr = formData.lastname.toLowerCase();
+  const filteredPlayers = searchPlayerStr 
+    ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) 
+    : [];
 
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
@@ -499,8 +554,11 @@ function ScannerContent() {
             <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
               <h2 className="text-2xl font-black italic uppercase">Joueur</h2><div className="text-[#AFFF25]">{isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
             </div>
+            
             {isJoueurOpen && (
               <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
+                
+                {/* Sélecteur de Sport */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
                   <div className="relative flex items-center">
@@ -512,13 +570,48 @@ function ScannerContent() {
                     <ChevronDown className="absolute right-4 text-white/50 pointer-events-none" size={16} />
                   </div>
                 </div>
-                <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
-                <input value={formData.lastname} onChange={e => setFormData({...formData, lastname: e.target.value.toUpperCase()})} placeholder="Nom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
                 
+                <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
+                
+                {/* 🌟 NOUVEAU : Auto-complétion Joueur */}
+                <div className="relative">
+                  <input 
+                    value={formData.lastname} 
+                    onChange={e => { setFormData({...formData, lastname: e.target.value.toUpperCase()}); setShowPlayerSuggestions(true); }} 
+                    onFocus={() => setShowPlayerSuggestions(true)} 
+                    onBlur={() => setTimeout(() => setShowPlayerSuggestions(false), 200)} 
+                    placeholder="Nom" 
+                    className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
+                  />
+                  {showPlayerSuggestions && formData.lastname && filteredPlayers.length > 0 && (
+                    <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-xl">
+                      {filteredPlayers.map((p: any, i: number) => (
+                        <li key={i} onClick={() => { 
+                          const parts = p.name.split(' ');
+                          const fname = parts[0];
+                          const lname = parts.slice(1).join(' ');
+                          setFormData({
+                            ...formData, 
+                            firstname: fname.toUpperCase(), 
+                            lastname: lname.toUpperCase(), 
+                            club: p.team || formData.club // Remplissage Auto de l'équipe !
+                          }); 
+                          setShowPlayerSuggestions(false); 
+                        }} className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex flex-col gap-1 border-b border-white/5 last:border-0">
+                          <span className="text-sm font-bold uppercase text-white">{p.name}</span>
+                          {p.team && <span className="text-[10px] text-[#AFFF25]">{p.team}</span>}
+                          {p.country && <span className="text-[10px] text-[#AFFF25]">{p.country}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                
+                {/* 🌟 NOUVEAU : Logos de club dynamiques */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
-                    {formData.club && <img src={`/asset/logo-club/${clubSlug}.svg`} onError={(e) => e.currentTarget.style.display='none'} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Club" />}
+                    {formData.club && <img src={`/asset/logo-club/${sportFolder}/${clubSlug}.svg`} onError={(e) => e.currentTarget.style.display='none'} className="absolute left-4 w-6 h-6 object-contain z-10" alt="Club" />}
                     <input value={formData.club} onChange={e => { setFormData({...formData, club: e.target.value}); setShowClubSuggestions(true); }} onFocus={() => setShowClubSuggestions(true)} onBlur={() => setTimeout(() => setShowClubSuggestions(false), 200)} placeholder="Club" className={`w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm outline-none focus:border-[#AFFF25]/50 transition-colors ${formData.club ? 'pl-[44px]' : 'pl-4'}`} />
                     <Search className="absolute right-4 text-[#AFFF25] pointer-events-none" size={16} />
                   </div>
@@ -526,7 +619,8 @@ function ScannerContent() {
                     <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-xl">
                       {filteredClubs.slice(0, 20).map((c: any, i: number) => (
                         <li key={i} onClick={() => { setFormData({...formData, club: c.name}); setShowClubSuggestions(false); }} className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0">
-                          <img src={`/asset/logo-club/${c.slug}.svg`} onError={(e) => e.currentTarget.style.display='none'} className="w-6 h-6" /><span className="text-sm font-bold uppercase">{c.name}</span>
+                          <img src={`/asset/logo-club/${sportFolder}/${c.slug}.svg`} onError={(e) => e.currentTarget.style.display='none'} className="w-6 h-6" />
+                          <span className="text-sm font-bold uppercase">{c.name}</span>
                         </li>
                       ))}
                     </ul>

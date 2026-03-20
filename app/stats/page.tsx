@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, X, LayoutGrid, ChevronDown, Euro, Hash } from 'lucide-react';
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Radar } from 'react-chartjs-2';
+import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 
-// Initialisation de Chart.js pour le Doughnut
-ChartJS.register(ArcElement, Tooltip, Legend);
+// Initialisation de Chart.js pour le Radar
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -80,9 +80,6 @@ export default function StatsPage() {
   // ==========================================
   // CALCUL DES STATISTIQUES UNIQUES
   // ==========================================
-  const totalCardsVal = getVal(filteredCards);
-
-  // Catégories globales pour la Popin
   const autosGlobal = filteredCards.filter(c => c.is_auto);
   const patchesGlobal = filteredCards.filter(c => c.is_patch);
   const numberedsGlobal = filteredCards.filter(c => c.is_numbered);
@@ -99,52 +96,60 @@ export default function StatsPage() {
   ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0);
 
   // ==========================================
-  // GRAPHIQUE ANNEAUX IMBRIQUÉS (Nested Doughnut)
+  // GRAPHIQUE RADAR
   // ==========================================
-  const maxScaleValue = totalCardsVal > 0 ? totalCardsVal : 1; 
-
-  const doughnutData = {
+  const radarData = {
     labels: statsUniques.map(s => s.label),
-    datasets: statsUniques.map((stat, i) => ({
-      label: stat.label,
-      data: [stat.value, maxScaleValue - stat.value],
-      backgroundColor: [stat.color, 'rgba(255, 255, 255, 0.05)'],
-      borderWidth: 4, 
-      borderColor: '#040221', 
-      borderRadius: 20, 
-      cutout: '20%', 
-    }))
+    datasets: [
+      {
+        label: displayMode === 'value' ? 'Valeur' : 'Nombre',
+        data: statsUniques.map(s => s.value),
+        backgroundColor: 'rgba(175, 255, 37, 0.2)', // #AFFF25 avec 20% d'opacité
+        borderColor: '#AFFF25',
+        borderWidth: 2,
+        pointBackgroundColor: statsUniques.map(s => s.color), // Couleurs personnalisées pour chaque point
+        pointBorderColor: '#040221',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+    ],
   };
 
-  const doughnutOptions = {
+  const radarOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      r: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+        angleLines: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+        pointLabels: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          font: {
+            family: 'sans-serif',
+            size: 10,
+            weight: 'bold' as const,
+          }
+        },
+        ticks: {
+          display: false,
+          backdropColor: 'transparent',
+        }
+      }
+    },
     plugins: {
       legend: {
-        position: 'bottom' as const,
-        labels: { 
-          font: { family: 'sans-serif', size: 10, weight: 'normal' as const },
-          generateLabels: (chart: any) => {
-             return statsUniques.map((stat, i) => ({
-               text: `${stat.label} (${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value})`,
-               fillStyle: stat.color,
-               fontColor: '#FFFFFF',
-               strokeStyle: '#040221',
-               lineWidth: 2,
-               hidden: false,
-               index: i
-             }));
-          }
-        }
+        display: false, // Pas besoin de légende pour un seul dataset, les labels suffisent
       },
       tooltip: {
-        filter: function(tooltipItem: any) {
-          return tooltipItem.dataIndex !== 1;
-        },
         callbacks: {
           label: function(context: any) {
             const valueLabel = displayMode === 'value' ? `${context.raw.toLocaleString('fr-FR')} €` : `${context.raw}`;
-            return ` ${context.dataset.label} : ${valueLabel}`;
+            return ` ${valueLabel}`;
           }
         }
       }
@@ -154,8 +159,8 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:h-screen lg:overflow-hidden">
       
-      {/* 📊 PARTIE GAUCHE (FILTRES ET KPI) : Scrollable sur PC (w-2/3), complète sur Mobile */}
-      <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-32 lg:pb-20 no-scrollbar">
+      {/* 📊 PARTIE GAUCHE (FILTRES ET KPI) : Scrollable sur PC (w-2/3), complète sur Mobile (pb-12 sur mobile) */}
+      <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-12 lg:pb-20 no-scrollbar">
         
         {/* HEADER */}
         <div className="pt-8 pb-4 px-6 flex justify-center items-center">
@@ -292,18 +297,10 @@ export default function StatsPage() {
       {/* 📈 PARTIE DROITE (GRAPHIQUE) : Fixe sur PC (w-1/3 placé à droite), sous les filtres sur Mobile */}
       <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center py-10 lg:py-0 px-6 transition-all duration-300">
         
-        <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full">
-          {/* Données au centre de l'anneau */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none pb-6 z-10">
-            <div className="text-xs font-normal uppercase tracking-widest text-white drop-shadow-md">Total</div>
-            <div className="text-2xl font-normal text-white drop-shadow-md">
-              {displayMode === 'value' ? `${totalCardsVal.toLocaleString('fr-FR')} €` : totalCardsVal}
-            </div>
-          </div>
-
-          <div className="w-full aspect-square max-w-[320px] relative z-20">
+        <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
+          <div className="w-full aspect-square max-w-[350px] relative z-20">
             {statsUniques.length > 0 ? (
-              <Doughnut data={doughnutData} options={doughnutOptions} />
+              <Radar data={radarData} options={radarOptions} />
             ) : (
               <div className="h-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
             )}

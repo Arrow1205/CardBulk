@@ -17,10 +17,26 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'F1': { image: 'F1', label: 'Formule 1' }
 };
 
+const SPORT_FOLDERS: Record<string, string> = {
+  'SOCCER': 'foot',
+  'BASKETBALL': 'NBA',
+  'BASEBALL': 'MLB',
+  'NFL': 'NFL',
+  'NHL': 'NHL'
+};
+
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
 type Message = { role: 'user' | 'assistant', content: string };
+
+const slugify = (text: string) => {
+  if (!text) return '';
+  return text.toString().toLowerCase().trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
+};
 
 // La barre de recherche flottante n'apparaît plus sur PC (lg:hidden)
 const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
@@ -98,13 +114,41 @@ export default function CollectionPage() {
   }, [messages, aiLoading, activeTab]);
 
   const fetchCollection = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return router.push('/login');
-    const { data: cardsData } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-    if (cardsData) setCards(cardsData.filter(c => c.is_wishlist !== true));
-    const { data: foldersData } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
-    if (foldersData) setFolders(foldersData);
-    setLoading(false);
+    // 1️⃣ CHARGEMENT HORS-LIGNE IMMÉDIAT (CACHE)
+    if (typeof window !== 'undefined') {
+      const savedCards = localStorage.getItem('cardbulk_offline_cards');
+      const savedFolders = localStorage.getItem('cardbulk_offline_folders');
+      
+      if (savedCards) setCards(JSON.parse(savedCards).filter((c: any) => c.is_wishlist !== true));
+      if (savedFolders) setFolders(JSON.parse(savedFolders));
+      
+      if (savedCards || savedFolders) setLoading(false);
+    }
+
+    // 2️⃣ TENTATIVE DE CONNEXION À SUPABASE (EN ARRIÈRE-PLAN)
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (!user && !userError) return router.push('/login');
+      if (!user) throw new Error("Pas de réseau ou non connecté");
+
+      const { data: cardsData, error: cardsError } = await supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+      const { data: foldersData, error: foldersError } = await supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
+
+      if (!cardsError && cardsData) {
+        setCards(cardsData.filter(c => c.is_wishlist !== true));
+        localStorage.setItem('cardbulk_offline_cards', JSON.stringify(cardsData));
+      }
+      if (!foldersError && foldersData) {
+        setFolders(foldersData);
+        localStorage.setItem('cardbulk_offline_folders', JSON.stringify(foldersData));
+      }
+
+    } catch (error) {
+      console.log("🌐 Mode hors-ligne activé (ou erreur réseau)");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const favoriteFolders = folders.filter(f => f.is_favorite);
@@ -245,6 +289,23 @@ export default function CollectionPage() {
     const availableSports = SPORT_ORDER.filter(sportKey => uniqueSports.has(sportKey));
     const hasMultipleSports = availableSports.length > 1;
 
+    // Détection des clubs actifs pour les logos
+    const cardsForLogos = selectedSport ? baseCards.filter(c => c.sport === selectedSport) : baseCards;
+    const activeClubsMap = new Map();
+    cardsForLogos.forEach(c => {
+      if (c.club_name) {
+        const slug = slugify(c.club_name);
+        if (slug && !activeClubsMap.has(slug)) {
+          activeClubsMap.set(slug, {
+            name: c.club_name,
+            slug: slug,
+            sportFolder: SPORT_FOLDERS[c.sport] || 'foot'
+          });
+        }
+      }
+    });
+    const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
@@ -334,6 +395,30 @@ export default function CollectionPage() {
             </div>
           </div>
         </div>
+
+        {/* 3. LOGOS DES CLUBS ACTIFS */}
+        {activeClubs.length > 0 && (
+          <div className="mb-6 px-6 lg:px-[80px]">
+            <div className="flex gap-5 lg:gap-8 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-2 items-center">
+              {activeClubs.map(club => (
+                <button 
+                  key={club.slug} 
+                  onClick={() => router.push(`/club/${club.slug}`)} 
+                  className="shrink-0 active:scale-95 transition-transform hover:opacity-80"
+                  title={club.name}
+                >
+                  <img 
+                    src={`/asset/logo-club/${club.sportFolder}/${club.slug}.svg`} 
+                    alt={club.name} 
+                    className="h-[45px] lg:h-[60px] w-auto object-contain drop-shadow-md"
+                    onError={(e) => e.currentTarget.style.display = 'none'} 
+                  />
+                </button>
+              ))}
+              <div className="w-2 shrink-0"></div>
+            </div>
+          </div>
+        )}
 
         {/* 🚨 GRILLE DES CARTES : Full width avec marges lg:px-[80px] 🚨 */}
         <div className="px-6 lg:px-[80px] grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
