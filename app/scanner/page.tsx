@@ -93,6 +93,7 @@ function ScannerContent() {
   // CUSTOM CAMERA STATES & REFS
   // ==========================================
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isFlashing, setIsFlashing] = useState(false); // État pour l'effet de flash
   const videoRef = useRef<HTMLVideoElement>(null);
   const guideRef = useRef<HTMLDivElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -170,8 +171,9 @@ function ScannerContent() {
   // ==========================================
   const startCamera = async () => {
     try {
+      // 🚨 Fix: Demande prioritaire de la caméra arrière (environnement) sans bloquer la résolution
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+        video: { facingMode: { ideal: "environment" } }
       });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -195,6 +197,10 @@ function ScannerContent() {
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
     
+    // Effet de flash
+    setIsFlashing(true);
+    setTimeout(() => setIsFlashing(false), 150);
+
     const video = videoRef.current;
     const guide = guideRef.current;
     
@@ -246,7 +252,7 @@ function ScannerContent() {
       
       // On envoie le fichier croppé directement dans le flow d'analyse existant !
       if (scanMode === 'lot') {
-        setBulkFiles([file]); // Note: le bulk mode complet via caméra custom demanderait une UI spécifique, on l'utilise comme unitaire ici
+        setBulkFiles([file]); 
         setCurrentBulkIndex(0); 
         processBulkItem([file], 0, true);
       } else {
@@ -519,11 +525,13 @@ function ScannerContent() {
       ========================================== */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          {/* Flux Vidéo en arrière-plan */}
+          
+          {/* 🚨 Fix: L'attribut "muted" est obligatoire sur iOS pour que le flux vidéo s'affiche ! */}
           <video 
             ref={videoRef} 
             autoPlay 
             playsInline 
+            muted
             className="absolute inset-0 w-full h-full object-cover z-0" 
           />
           
@@ -537,6 +545,11 @@ function ScannerContent() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
+
+          {/* Effet de Flash lors de la capture */}
+          {isFlashing && (
+            <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>
+          )}
 
           {/* Bouton Annuler */}
           <div className="absolute top-0 left-0 w-full p-6 flex justify-between z-20">

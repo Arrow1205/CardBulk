@@ -128,12 +128,8 @@ export default function StatsPage() {
           color: 'rgba(255, 255, 255, 0.1)',
         },
         pointLabels: {
-          color: 'rgba(255, 255, 255, 0.7)',
-          font: {
-            family: 'sans-serif',
-            size: 10,
-            weight: 'bold' as const,
-          }
+          // NOUVEAU : On masque les textes autour de la toile pour agrandir le radar
+          display: false, 
         },
         ticks: {
           display: false,
@@ -143,7 +139,28 @@ export default function StatsPage() {
     },
     plugins: {
       legend: {
-        display: false, // Pas besoin de légende pour un seul dataset, les labels suffisent
+        // NOUVEAU : On affiche la légende en bas
+        display: true, 
+        position: 'bottom' as const,
+        labels: {
+          color: '#FFFFFF',
+          usePointStyle: true, // Utilise des ronds au lieu de carrés
+          padding: 15,
+          font: {
+            family: 'sans-serif',
+            size: 11,
+          },
+          // On génère manuellement la légende car il n'y a qu'un dataset
+          generateLabels: (chart: any) => {
+             return statsUniques.map((stat, i) => ({
+               text: `${stat.label} : ${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value}`,
+               fillStyle: stat.color,
+               strokeStyle: stat.color,
+               hidden: false,
+               index: i
+             }));
+          }
+        }
       },
       tooltip: {
         callbacks: {
@@ -298,11 +315,12 @@ export default function StatsPage() {
       <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center py-10 lg:py-0 px-6 transition-all duration-300">
         
         <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
-          <div className="w-full aspect-square max-w-[350px] relative z-20">
+          {/* NOUVEAU : Conteneur plus haut (h-[350px] minimum) pour que le radar et la légende aient de la place */}
+          <div className="w-full h-[350px] lg:h-[450px] max-w-[450px] relative z-20 flex justify-center">
             {statsUniques.length > 0 ? (
               <Radar data={radarData} options={radarOptions} />
             ) : (
-              <div className="h-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
+              <div className="h-full w-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
             )}
           </div>
         </div>
