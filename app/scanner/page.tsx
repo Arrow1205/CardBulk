@@ -174,7 +174,7 @@ function ScannerContent() {
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   // ==========================================
-  // CUSTOM CAMERA LOGIC (VRAIMENT CORRIGÉE)
+  // CUSTOM CAMERA LOGIC
   // ==========================================
   const startCamera = async () => {
     try {
@@ -552,15 +552,14 @@ function ScannerContent() {
           )}
 
           {/* Bouton Annuler */}
-          <div className="absolute top-0 left-0 w-full p-6 flex justify-between z-20">
+          <div className="absolute top-0 left-0 w-full p-6 z-20">
              <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto">
                <X size={20}/>
              </button>
-             <span className="text-[#AFFF25] font-bold tracking-widest text-xs uppercase mt-2 drop-shadow-md">Cadrage Auto</span>
           </div>
 
-          {/* Bouton Capturer */}
-          <div className="absolute bottom-0 left-0 w-full pb-12 pt-6 flex justify-center z-20 bg-gradient-to-t from-black/80 to-transparent pointer-events-auto">
+          {/* Bouton Capturer (remonté avec pb-32 au lieu de pb-12) */}
+          <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex justify-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
              <button 
                onClick={captureImageAndCrop} 
                className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"

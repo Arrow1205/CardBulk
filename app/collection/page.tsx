@@ -292,18 +292,28 @@ export default function CollectionPage() {
     // Détection des clubs actifs pour les logos
     const cardsForLogos = selectedSport ? baseCards.filter(c => c.sport === selectedSport) : baseCards;
     const activeClubsMap = new Map();
+    
+    // 🚨 LISTE NOIRE : Les mots considérés comme non-valides pour un club
+    const invalidClubs = ['n/a', 'na', 'n-a', 'none', 'inconnu', 'null', 'undefined', '-', 'unknown', ''];
+
     cardsForLogos.forEach(c => {
       if (c.club_name) {
-        const slug = slugify(c.club_name);
-        if (slug && !activeClubsMap.has(slug)) {
-          activeClubsMap.set(slug, {
-            name: c.club_name,
-            slug: slug,
-            sportFolder: SPORT_FOLDERS[c.sport] || 'foot'
-          });
+        const clubLower = c.club_name.toString().toLowerCase().trim();
+        
+        // On ne crée le logo que si le nom du club n'est pas dans la liste noire
+        if (!invalidClubs.includes(clubLower)) {
+          const slug = slugify(c.club_name);
+          if (slug && !activeClubsMap.has(slug)) {
+            activeClubsMap.set(slug, {
+              name: c.club_name,
+              slug: slug,
+              sportFolder: SPORT_FOLDERS[c.sport] || 'foot'
+            });
+          }
         }
       }
     });
+    
     const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
     const filteredCards = baseCards.filter(card => {
