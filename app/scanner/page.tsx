@@ -93,7 +93,7 @@ function ScannerContent() {
   // CUSTOM CAMERA STATES & REFS
   // ==========================================
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [isFlashing, setIsFlashing] = useState(false); // État pour l'effet de flash
+  const [isFlashing, setIsFlashing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const guideRef = useRef<HTMLDivElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -133,12 +133,19 @@ function ScannerContent() {
     }
   }, [editId]);
 
-  // Clean up camera stream on unmount
+  // Nettoyage de la caméra quand on quitte la page
   useEffect(() => {
-    return () => {
-      stopCamera();
-    };
+    return () => stopCamera();
   }, []);
+
+  // LE FAMEUX USE-EFFECT QUI RÈGLE LE BUG DU DOM REACT
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      // On force la lecture pour être sûr que iOS l'affiche
+      videoRef.current.play().catch(e => console.error("Erreur lecture vidéo:", e));
+    }
+  }, [isCameraOpen]);
 
   const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
   const searchStr = formData.club.toLowerCase();
@@ -167,22 +174,29 @@ function ScannerContent() {
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   // ==========================================
-  // CUSTOM CAMERA LOGIC
+  // CUSTOM CAMERA LOGIC (VRAIMENT CORRIGÉE)
   // ==========================================
   const startCamera = async () => {
     try {
-      // 🚨 Fix: Demande prioritaire de la caméra arrière (environnement) sans bloquer la résolution
+      // 1. On demande le flux vidéo de la caméra ARRIRÈRE de manière très stricte
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } }
+        video: { facingMode: { exact: "environment" } }
+      }).catch(async () => {
+        // Fallback si "exact" bloque sur certains téléphones : on prend la caméra dispo
+        return await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }
+        });
       });
+
+      // 2. On stocke le flux en mémoire
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
+
+      // 3. ON AFFICHE L'UI (ce qui va déclencher le useEffect juste au dessus pour lier la vidéo)
       setIsCameraOpen(true);
+      
     } catch (err) {
       console.error("Erreur accès caméra", err);
-      alert("Impossible d'accéder à la caméra. Vérifiez vos permissions.");
+      alert("Impossible d'accéder à la caméra. Avez-vous autorisé l'accès ?");
     }
   };
 
@@ -209,26 +223,18 @@ function ScannerContent() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Dimensions réelles de la vidéo
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
-
-    // Dimensions de l'élément vidéo affiché à l'écran (avec object-fit: cover)
     const videoRect = video.getBoundingClientRect();
     const guideRect = guide.getBoundingClientRect();
 
-    // Calcul du ratio pour un object-fit: cover centré
     const scale = Math.max(videoRect.width / videoWidth, videoRect.height / videoHeight);
-    
-    // Dimensions de la vidéo mise à l'échelle
     const scaledW = videoWidth * scale;
     const scaledH = videoHeight * scale;
 
-    // Offset (décalage) car la vidéo dépasse de l'écran avec le "cover"
     const offsetX = (videoRect.width - scaledW) / 2;
     const offsetY = (videoRect.height - scaledH) / 2;
 
-    // Coordonnées du crop ramenées à l'échelle de la vidéo d'origine (source)
     const cropX = (guideRect.left - videoRect.left - offsetX) / scale;
     const cropY = (guideRect.top - videoRect.top - offsetY) / scale;
     const cropW = guideRect.width / scale;
@@ -237,20 +243,17 @@ function ScannerContent() {
     canvas.width = cropW;
     canvas.height = cropH;
 
-    // Dessine UNIQUEMENT la partie de la vidéo contenue dans le cadre pointillé
     ctx.drawImage(
       video,
-      cropX, cropY, cropW, cropH, // Source
-      0, 0, cropW, cropH            // Destination sur le canvas
+      cropX, cropY, cropW, cropH,
+      0, 0, cropW, cropH
     );
 
-    // Convertir en Fichier
     canvas.toBlob((blob) => {
       if (!blob) return;
       const file = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
       stopCamera();
       
-      // On envoie le fichier croppé directement dans le flow d'analyse existant !
       if (scanMode === 'lot') {
         setBulkFiles([file]); 
         setCurrentBulkIndex(0); 
@@ -260,7 +263,6 @@ function ScannerContent() {
       }
     }, 'image/jpeg', 0.9);
   };
-
 
   const handleUrlImport = async () => {
     if (!formData.website_url) return;
@@ -526,7 +528,6 @@ function ScannerContent() {
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
           
-          {/* 🚨 Fix: L'attribut "muted" est obligatoire sur iOS pour que le flux vidéo s'affiche ! */}
           <video 
             ref={videoRef} 
             autoPlay 
@@ -541,7 +542,6 @@ function ScannerContent() {
               ref={guideRef}
               className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.8)]"
             >
-              {/* Petite croix centrale pour aider à viser */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
@@ -553,14 +553,14 @@ function ScannerContent() {
 
           {/* Bouton Annuler */}
           <div className="absolute top-0 left-0 w-full p-6 flex justify-between z-20">
-             <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95">
+             <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto">
                <X size={20}/>
              </button>
              <span className="text-[#AFFF25] font-bold tracking-widest text-xs uppercase mt-2 drop-shadow-md">Cadrage Auto</span>
           </div>
 
           {/* Bouton Capturer */}
-          <div className="absolute bottom-0 left-0 w-full pb-12 pt-6 flex justify-center z-20 bg-gradient-to-t from-black/80 to-transparent">
+          <div className="absolute bottom-0 left-0 w-full pb-12 pt-6 flex justify-center z-20 bg-gradient-to-t from-black/80 to-transparent pointer-events-auto">
              <button 
                onClick={captureImageAndCrop} 
                className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"

@@ -128,7 +128,6 @@ export default function StatsPage() {
           color: 'rgba(255, 255, 255, 0.1)',
         },
         pointLabels: {
-          // NOUVEAU : On masque les textes autour de la toile pour agrandir le radar
           display: false, 
         },
         ticks: {
@@ -139,12 +138,11 @@ export default function StatsPage() {
     },
     plugins: {
       legend: {
-        // NOUVEAU : On affiche la légende en bas
         display: true, 
         position: 'bottom' as const,
         labels: {
           color: '#FFFFFF',
-          usePointStyle: true, // Utilise des ronds au lieu de carrés
+          usePointStyle: true, 
           padding: 15,
           font: {
             family: 'sans-serif',
@@ -156,6 +154,7 @@ export default function StatsPage() {
                text: `${stat.label} : ${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value}`,
                fillStyle: stat.color,
                strokeStyle: stat.color,
+               fontColor: '#FFFFFF',
                hidden: false,
                index: i
              }));
@@ -176,8 +175,8 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:h-screen lg:overflow-hidden">
       
-      {/* 📊 PARTIE GAUCHE (FILTRES ET KPI) : Scrollable sur PC (w-2/3), complète sur Mobile (pb-12 sur mobile) */}
-      <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-12 lg:pb-20 no-scrollbar">
+      {/* 📊 PARTIE GAUCHE (FILTRES ET KPI) : On réduit l'espace en bas (pb-6 au lieu de pb-12) pour rapprocher le panneau */}
+      <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
         
         {/* HEADER */}
         <div className="pt-8 pb-4 px-6 flex justify-center items-center">
@@ -311,11 +310,14 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 📈 PARTIE DROITE (GRAPHIQUE) : Fixe sur PC (w-1/3 placé à droite), sous les filtres sur Mobile */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center py-10 lg:py-0 px-6 transition-all duration-300">
+      {/* 📈 PARTIE DROITE (GRAPHIQUE) : 
+          1. -mt-6 lg:mt-0 pour remonter sur les filtres sur mobile. 
+          2. rounded-t-[32px] pour l'effet "Sheet"
+          3. pt-8 pb-32 pour dégager la tab bar en bas
+      */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
         
         <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
-          {/* NOUVEAU : Conteneur plus haut (h-[350px] minimum) pour que le radar et la légende aient de la place */}
           <div className="w-full h-[350px] lg:h-[450px] max-w-[450px] relative z-20 flex justify-center">
             {statsUniques.length > 0 ? (
               <Radar data={radarData} options={radarOptions} />

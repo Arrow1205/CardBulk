@@ -1,18 +1,78 @@
 [
   {
+    "id": "atlanta-united-fc",
+    "name": "Atlanta United Fc",
+    "slug": "atlanta-united-fc"
+  },
+  {
+    "id": "austin-fc",
+    "name": "Austin Fc",
+    "slug": "austin-fc"
+  },
+  {
+    "id": "charlotte-fc-1",
+    "name": "Charlotte Fc 1",
+    "slug": "charlotte-fc-1"
+  },
+  {
+    "id": "dc-united",
+    "name": "Dc United",
+    "slug": "dc-united"
+  },
+  {
+    "id": "houston-dynamo-fc",
+    "name": "Houston Dynamo Fc",
+    "slug": "houston-dynamo-fc"
+  },
+  {
+    "id": "la-fc",
+    "name": "La Fc",
+    "slug": "la-fc"
+  },
+  {
+    "id": "mls",
+    "name": "Mls",
+    "slug": "mls"
+  },
+  {
+    "id": "orlando-city-sc",
+    "name": "Orlando City Sc",
+    "slug": "orlando-city-sc"
+  },
+  {
+    "id": "st-louis-city-sc",
+    "name": "St Louis City Sc",
+    "slug": "st-louis-city-sc"
+  },
+  {
+    "id": "aaland-island",
+    "name": "Aaland Island",
+    "slug": "aaland-island"
+  },
+  {
     "id": "aberdeen",
     "name": "Aberdeen",
     "slug": "aberdeen"
   },
   {
+    "id": "ac-milan",
+    "name": "Ac Milan",
+    "slug": "ac-milan"
+  },
+  {
     "id": "aek-athens",
-    "name": "AEK Athens",
+    "name": "Aek Athens",
     "slug": "aek-athens"
   },
   {
     "id": "aek-larnaca",
-    "name": "AEK Larnaca",
+    "name": "Aek Larnaca",
     "slug": "aek-larnaca"
+  },
+  {
+    "id": "afghanistan",
+    "name": "Afghanistan",
+    "slug": "afghanistan"
   },
   {
     "id": "ajax",
@@ -100,14 +160,59 @@
     "slug": "al-taawoun"
   },
   {
+    "id": "albania",
+    "name": "Albania",
+    "slug": "albania"
+  },
+  {
+    "id": "algeria",
+    "name": "Algeria",
+    "slug": "algeria"
+  },
+  {
     "id": "alverca",
     "name": "Alverca",
     "slug": "alverca"
   },
   {
+    "id": "andorra",
+    "name": "Andorra",
+    "slug": "andorra"
+  },
+  {
     "id": "angers",
     "name": "Angers",
     "slug": "angers"
+  },
+  {
+    "id": "angola",
+    "name": "Angola",
+    "slug": "angola"
+  },
+  {
+    "id": "anguilla",
+    "name": "Anguilla",
+    "slug": "anguilla"
+  },
+  {
+    "id": "antartica",
+    "name": "Antartica",
+    "slug": "antartica"
+  },
+  {
+    "id": "antigua-barbuda",
+    "name": "Antigua Barbuda",
+    "slug": "antigua-barbuda"
+  },
+  {
+    "id": "argentina",
+    "name": "Argentina",
+    "slug": "argentina"
+  },
+  {
+    "id": "armenia",
+    "name": "Armenia",
+    "slug": "armenia"
   },
   {
     "id": "arouca",
@@ -120,8 +225,13 @@
     "slug": "arsenal"
   },
   {
+    "id": "aruba",
+    "name": "Aruba",
+    "slug": "aruba"
+  },
+  {
     "id": "as-monaco",
-    "name": "AS Monaco",
+    "name": "As Monaco",
     "slug": "as-monaco"
   },
   {
@@ -155,9 +265,19 @@
     "slug": "augsburg"
   },
   {
-    "id": "austin-fc",
-    "name": "Austin FC",
-    "slug": "austin-fc"
+    "id": "austins-fc",
+    "name": "Austins Fc",
+    "slug": "austins-fc"
+  },
+  {
+    "id": "austrailia",
+    "name": "Austrailia",
+    "slug": "austrailia"
+  },
+  {
+    "id": "austria",
+    "name": "Austria",
+    "slug": "austria"
   },
   {
     "id": "auxerre",
@@ -175,9 +295,29 @@
     "slug": "az-alkmaar"
   },
   {
-    "id": "barcelona",
-    "name": "Barcelona",
-    "slug": "barcelona"
+    "id": "azerbaijan",
+    "name": "Azerbaijan",
+    "slug": "azerbaijan"
+  },
+  {
+    "id": "bahamas",
+    "name": "Bahamas",
+    "slug": "bahamas"
+  },
+  {
+    "id": "bahrain",
+    "name": "Bahrain",
+    "slug": "bahrain"
+  },
+  {
+    "id": "bangladesh",
+    "name": "Bangladesh",
+    "slug": "bangladesh"
+  },
+  {
+    "id": "barbados",
+    "name": "Barbados",
+    "slug": "barbados"
   },
   {
     "id": "basel",
@@ -185,14 +325,34 @@
     "slug": "basel"
   },
   {
+    "id": "basque",
+    "name": "Basque",
+    "slug": "basque"
+  },
+  {
     "id": "bayer-leverkusen",
     "name": "Bayer Leverkusen",
     "slug": "bayer-leverkusen"
   },
   {
-    "id": "bayern-munchen",
-    "name": "Bayern Munchen",
-    "slug": "bayern-munchen"
+    "id": "bayern-munich",
+    "name": "Bayern Munich",
+    "slug": "bayern-munich"
+  },
+  {
+    "id": "belarus",
+    "name": "Belarus",
+    "slug": "belarus"
+  },
+  {
+    "id": "belgium",
+    "name": "Belgium",
+    "slug": "belgium"
+  },
+  {
+    "id": "belize",
+    "name": "Belize",
+    "slug": "belize"
   },
   {
     "id": "benfica",
@@ -200,9 +360,29 @@
     "slug": "benfica"
   },
   {
+    "id": "benin",
+    "name": "Benin",
+    "slug": "benin"
+  },
+  {
+    "id": "bermuda",
+    "name": "Bermuda",
+    "slug": "bermuda"
+  },
+  {
+    "id": "bhutan",
+    "name": "Bhutan",
+    "slug": "bhutan"
+  },
+  {
     "id": "bodo-glimt",
     "name": "Bodo Glimt",
     "slug": "bodo-glimt"
+  },
+  {
+    "id": "boliivia",
+    "name": "Boliivia",
+    "slug": "boliivia"
   },
   {
     "id": "bologna",
@@ -220,6 +400,16 @@
     "slug": "borussia-monchengladbach"
   },
   {
+    "id": "bosnia-herzegovina",
+    "name": "Bosnia Herzegovina",
+    "slug": "bosnia-herzegovina"
+  },
+  {
+    "id": "botswana",
+    "name": "Botswana",
+    "slug": "botswana"
+  },
+  {
     "id": "bournemouth",
     "name": "Bournemouth",
     "slug": "bournemouth"
@@ -228,6 +418,11 @@
     "id": "brann",
     "name": "Brann",
     "slug": "brann"
+  },
+  {
+    "id": "brazil",
+    "name": "Brazil",
+    "slug": "brazil"
   },
   {
     "id": "breidablik",
@@ -250,9 +445,34 @@
     "slug": "brighton"
   },
   {
+    "id": "british-virgin-islands",
+    "name": "British Virgin Islands",
+    "slug": "british-virgin-islands"
+  },
+  {
+    "id": "brunei",
+    "name": "Brunei",
+    "slug": "brunei"
+  },
+  {
+    "id": "bukina-faso",
+    "name": "Bukina Faso",
+    "slug": "bukina-faso"
+  },
+  {
+    "id": "bulgaria",
+    "name": "Bulgaria",
+    "slug": "bulgaria"
+  },
+  {
     "id": "burnley",
     "name": "Burnley",
     "slug": "burnley"
+  },
+  {
+    "id": "burundi",
+    "name": "Burundi",
+    "slug": "burundi"
   },
   {
     "id": "cagliari",
@@ -260,9 +480,39 @@
     "slug": "cagliari"
   },
   {
+    "id": "cambodia",
+    "name": "Cambodia",
+    "slug": "cambodia"
+  },
+  {
+    "id": "cameroon",
+    "name": "Cameroon",
+    "slug": "cameroon"
+  },
+  {
+    "id": "canada",
+    "name": "Canada",
+    "slug": "canada"
+  },
+  {
+    "id": "canary-islands",
+    "name": "Canary Islands",
+    "slug": "canary-islands"
+  },
+  {
+    "id": "cape-verde",
+    "name": "Cape Verde",
+    "slug": "cape-verde"
+  },
+  {
     "id": "casa-pia-ac",
-    "name": "Casa Pia AC",
+    "name": "Casa Pia Ac",
     "slug": "casa-pia-ac"
+  },
+  {
+    "id": "cayman-islands",
+    "name": "Cayman Islands",
+    "slug": "cayman-islands"
   },
   {
     "id": "celje",
@@ -280,13 +530,23 @@
     "slug": "celtic"
   },
   {
+    "id": "central-african-republic",
+    "name": "Central African Republic",
+    "slug": "central-african-republic"
+  },
+  {
     "id": "cf-montreal",
-    "name": "CF Montreal",
+    "name": "Cf Montreal",
     "slug": "cf-montreal"
   },
   {
+    "id": "chad",
+    "name": "Chad",
+    "slug": "chad"
+  },
+  {
     "id": "charlotte-fc",
-    "name": "Charlotte FC",
+    "name": "Charlotte Fc",
     "slug": "charlotte-fc"
   },
   {
@@ -296,8 +556,18 @@
   },
   {
     "id": "chicago-fire-fc",
-    "name": "Chicago Fire FC",
+    "name": "Chicago Fire Fc",
     "slug": "chicago-fire-fc"
+  },
+  {
+    "id": "chile",
+    "name": "Chile",
+    "slug": "chile"
+  },
+  {
+    "id": "china",
+    "name": "China",
+    "slug": "china"
   },
   {
     "id": "club-brugge",
@@ -310,6 +580,11 @@
     "slug": "colorado-rapids"
   },
   {
+    "id": "columbia",
+    "name": "Columbia",
+    "slug": "columbia"
+  },
+  {
     "id": "columbus-crew",
     "name": "Columbus Crew",
     "slug": "columbus-crew"
@@ -320,14 +595,34 @@
     "slug": "como-1907"
   },
   {
+    "id": "comoros",
+    "name": "Comoros",
+    "slug": "comoros"
+  },
+  {
+    "id": "cook-islands",
+    "name": "Cook Islands",
+    "slug": "cook-islands"
+  },
+  {
     "id": "copenhagen",
     "name": "Copenhagen",
     "slug": "copenhagen"
   },
   {
+    "id": "costa-rica",
+    "name": "Costa Rica",
+    "slug": "costa-rica"
+  },
+  {
     "id": "cremonese",
     "name": "Cremonese",
     "slug": "cremonese"
+  },
+  {
+    "id": "croatia",
+    "name": "Croatia",
+    "slug": "croatia"
   },
   {
     "id": "crvena-zvezda",
@@ -340,14 +635,49 @@
     "slug": "crystal-palace"
   },
   {
+    "id": "cuba",
+    "name": "Cuba",
+    "slug": "cuba"
+  },
+  {
+    "id": "curacao",
+    "name": "Curacao",
+    "slug": "curacao"
+  },
+  {
+    "id": "cyprus",
+    "name": "Cyprus",
+    "slug": "cyprus"
+  },
+  {
+    "id": "czech-republic",
+    "name": "Czech Republic",
+    "slug": "czech-republic"
+  },
+  {
+    "id": "czechia",
+    "name": "Czechia",
+    "slug": "czechia"
+  },
+  {
     "id": "damac",
     "name": "Damac",
     "slug": "damac"
   },
   {
     "id": "dc-united",
-    "name": "DC United",
+    "name": "Dc United",
     "slug": "dc-united"
+  },
+  {
+    "id": "democratic-republic-of-congo",
+    "name": "Democratic Republic Of Congo",
+    "slug": "democratic-republic-of-congo"
+  },
+  {
+    "id": "denmark",
+    "name": "Denmark",
+    "slug": "denmark"
   },
   {
     "id": "deportivo",
@@ -360,6 +690,21 @@
     "slug": "dinamo-zagreb"
   },
   {
+    "id": "djibouti",
+    "name": "Djibouti",
+    "slug": "djibouti"
+  },
+  {
+    "id": "dominca",
+    "name": "Dominca",
+    "slug": "dominca"
+  },
+  {
+    "id": "dominican-republic",
+    "name": "Dominican Republic",
+    "slug": "dominican-republic"
+  },
+  {
     "id": "drita",
     "name": "Drita",
     "slug": "drita"
@@ -370,9 +715,29 @@
     "slug": "dynamo-kyiv"
   },
   {
+    "id": "east-timor",
+    "name": "East Timor",
+    "slug": "east-timor"
+  },
+  {
+    "id": "ecuador",
+    "name": "Ecuador",
+    "slug": "ecuador"
+  },
+  {
+    "id": "egypt",
+    "name": "Egypt",
+    "slug": "egypt"
+  },
+  {
     "id": "eintracht-frankfurt",
     "name": "Eintracht Frankfurt",
     "slug": "eintracht-frankfurt"
+  },
+  {
+    "id": "el-savador",
+    "name": "El Savador",
+    "slug": "el-savador"
   },
   {
     "id": "elche",
@@ -380,9 +745,29 @@
     "slug": "elche"
   },
   {
+    "id": "england",
+    "name": "England",
+    "slug": "england"
+  },
+  {
+    "id": "equitorial-gineau",
+    "name": "Equitorial Gineau",
+    "slug": "equitorial-gineau"
+  },
+  {
+    "id": "eritrea",
+    "name": "Eritrea",
+    "slug": "eritrea"
+  },
+  {
     "id": "espanyol",
     "name": "Espanyol",
     "slug": "espanyol"
+  },
+  {
+    "id": "estonia",
+    "name": "Estonia",
+    "slug": "estonia"
   },
   {
     "id": "estoril",
@@ -395,6 +780,21 @@
     "slug": "estrela-da-amadora"
   },
   {
+    "id": "eswatini",
+    "name": "Eswatini",
+    "slug": "eswatini"
+  },
+  {
+    "id": "ethopia",
+    "name": "Ethopia",
+    "slug": "ethopia"
+  },
+  {
+    "id": "europe",
+    "name": "Europe",
+    "slug": "europe"
+  },
+  {
     "id": "everton",
     "name": "Everton",
     "slug": "everton"
@@ -405,44 +805,64 @@
     "slug": "excelsior-rotterdam"
   },
   {
+    "id": "falklands-island",
+    "name": "Falklands Island",
+    "slug": "falklands-island"
+  },
+  {
     "id": "famalicao",
     "name": "Famalicao",
     "slug": "famalicao"
   },
   {
+    "id": "faroe-island",
+    "name": "Faroe Island",
+    "slug": "faroe-island"
+  },
+  {
+    "id": "fc-barcelona",
+    "name": "Fc Barcelona",
+    "slug": "fc-barcelona"
+  },
+  {
     "id": "fc-cincinnati",
-    "name": "FC Cincinnati",
+    "name": "Fc Cincinnati",
     "slug": "fc-cincinnati"
   },
   {
     "id": "fc-dallas",
-    "name": "FC Dallas",
+    "name": "Fc Dallas",
     "slug": "fc-dallas"
   },
   {
     "id": "fc-groningen",
-    "name": "FC Groningen",
+    "name": "Fc Groningen",
     "slug": "fc-groningen"
   },
   {
     "id": "fc-heidenheim",
-    "name": "FC Heidenheim",
+    "name": "Fc Heidenheim",
     "slug": "fc-heidenheim"
   },
   {
     "id": "fc-metz",
-    "name": "FC Metz",
+    "name": "Fc Metz",
     "slug": "fc-metz"
   },
   {
     "id": "fc-porto",
-    "name": "FC Porto",
+    "name": "Fc Porto",
     "slug": "fc-porto"
   },
   {
     "id": "fc-utrecht",
-    "name": "FC Utrecht",
+    "name": "Fc Utrecht",
     "slug": "fc-utrecht"
+  },
+  {
+    "id": "fcsb",
+    "name": "Fcsb",
+    "slug": "fcsb"
   },
   {
     "id": "fenerbahce",
@@ -455,14 +875,19 @@
     "slug": "ferencvaros"
   },
   {
-    "id": "fesb",
-    "name": "Fesb",
-    "slug": "fesb"
-  },
-  {
     "id": "feyenoord",
     "name": "Feyenoord",
     "slug": "feyenoord"
+  },
+  {
+    "id": "fiji",
+    "name": "Fiji",
+    "slug": "fiji"
+  },
+  {
+    "id": "finland",
+    "name": "Finland",
+    "slug": "finland"
   },
   {
     "id": "fiorentina",
@@ -475,9 +900,24 @@
     "slug": "fortuna-sittard"
   },
   {
+    "id": "france",
+    "name": "France",
+    "slug": "france"
+  },
+  {
+    "id": "franch-polynesia",
+    "name": "Franch Polynesia",
+    "slug": "franch-polynesia"
+  },
+  {
     "id": "freiburg",
     "name": "Freiburg",
     "slug": "freiburg"
+  },
+  {
+    "id": "french-guiana",
+    "name": "French Guiana",
+    "slug": "french-guiana"
   },
   {
     "id": "fulham",
@@ -485,9 +925,19 @@
     "slug": "fulham"
   },
   {
+    "id": "gabon",
+    "name": "Gabon",
+    "slug": "gabon"
+  },
+  {
     "id": "galatasaray",
     "name": "Galatasaray",
     "slug": "galatasaray"
+  },
+  {
+    "id": "gambia",
+    "name": "Gambia",
+    "slug": "gambia"
   },
   {
     "id": "genk",
@@ -500,14 +950,34 @@
     "slug": "genoa"
   },
   {
+    "id": "georgia",
+    "name": "Georgia",
+    "slug": "georgia"
+  },
+  {
+    "id": "germany",
+    "name": "Germany",
+    "slug": "germany"
+  },
+  {
     "id": "getafe",
     "name": "Getafe",
     "slug": "getafe"
   },
   {
+    "id": "ghana",
+    "name": "Ghana",
+    "slug": "ghana"
+  },
+  {
     "id": "gil-vicente",
     "name": "Gil Vicente",
     "slug": "gil-vicente"
+  },
+  {
+    "id": "gilbraltar",
+    "name": "Gilbraltar",
+    "slug": "gilbraltar"
   },
   {
     "id": "girona",
@@ -520,19 +990,74 @@
     "slug": "go-ahead-eagles"
   },
   {
+    "id": "gredaloupe",
+    "name": "Gredaloupe",
+    "slug": "gredaloupe"
+  },
+  {
+    "id": "greece",
+    "name": "Greece",
+    "slug": "greece"
+  },
+  {
+    "id": "greenland",
+    "name": "Greenland",
+    "slug": "greenland"
+  },
+  {
+    "id": "grenada",
+    "name": "Grenada",
+    "slug": "grenada"
+  },
+  {
+    "id": "guatemala",
+    "name": "Guatemala",
+    "slug": "guatemala"
+  },
+  {
+    "id": "guersney",
+    "name": "Guersney",
+    "slug": "guersney"
+  },
+  {
+    "id": "guinea-bissau",
+    "name": "Guinea Bissau",
+    "slug": "guinea-bissau"
+  },
+  {
+    "id": "guinea",
+    "name": "Guinea",
+    "slug": "guinea"
+  },
+  {
+    "id": "guyana",
+    "name": "Guyana",
+    "slug": "guyana"
+  },
+  {
     "id": "hacken",
     "name": "Hacken",
     "slug": "hacken"
   },
   {
+    "id": "haiti",
+    "name": "Haiti",
+    "slug": "haiti"
+  },
+  {
     "id": "hamburger-sv",
-    "name": "Hamburger SV",
+    "name": "Hamburger Sv",
     "slug": "hamburger-sv"
   },
   {
     "id": "hamrun-spartans",
     "name": "Hamrun Spartans",
     "slug": "hamrun-spartans"
+  },
+  {
+    "id": "hawaii",
+    "name": "Hawaii",
+    "slug": "hawaii"
   },
   {
     "id": "heracles-almelo",
@@ -545,14 +1070,44 @@
     "slug": "hoffenheim"
   },
   {
+    "id": "honduras-1",
+    "name": "Honduras 1",
+    "slug": "honduras-1"
+  },
+  {
+    "id": "honduras",
+    "name": "Honduras",
+    "slug": "honduras"
+  },
+  {
+    "id": "hong-kong",
+    "name": "Hong Kong",
+    "slug": "hong-kong"
+  },
+  {
     "id": "houston-dynamo",
     "name": "Houston Dynamo",
     "slug": "houston-dynamo"
   },
   {
-    "id": "iille",
-    "name": "Iille",
-    "slug": "iille"
+    "id": "iceland",
+    "name": "Iceland",
+    "slug": "iceland"
+  },
+  {
+    "id": "india",
+    "name": "India",
+    "slug": "india"
+  },
+  {
+    "id": "indonesia",
+    "name": "Indonesia",
+    "slug": "indonesia"
+  },
+  {
+    "id": "inter-miami-cf",
+    "name": "Inter Miami Cf",
+    "slug": "inter-miami-cf"
   },
   {
     "id": "inter",
@@ -560,14 +1115,64 @@
     "slug": "inter"
   },
   {
-    "id": "inter-miami-cf",
-    "name": "Inter Miami CF",
-    "slug": "inter-miami-cf"
+    "id": "iran",
+    "name": "Iran",
+    "slug": "iran"
+  },
+  {
+    "id": "iraq",
+    "name": "Iraq",
+    "slug": "iraq"
+  },
+  {
+    "id": "ireland",
+    "name": "Ireland",
+    "slug": "ireland"
+  },
+  {
+    "id": "isle-of-man",
+    "name": "Isle Of Man",
+    "slug": "isle-of-man"
+  },
+  {
+    "id": "israel",
+    "name": "Israel",
+    "slug": "israel"
+  },
+  {
+    "id": "italy",
+    "name": "Italy",
+    "slug": "italy"
+  },
+  {
+    "id": "ivory-coast",
+    "name": "Ivory Coast",
+    "slug": "ivory-coast"
   },
   {
     "id": "jagiellonia",
     "name": "Jagiellonia",
     "slug": "jagiellonia"
+  },
+  {
+    "id": "jamaica",
+    "name": "Jamaica",
+    "slug": "jamaica"
+  },
+  {
+    "id": "japan",
+    "name": "Japan",
+    "slug": "japan"
+  },
+  {
+    "id": "jersey",
+    "name": "Jersey",
+    "slug": "jersey"
+  },
+  {
+    "id": "jordan",
+    "name": "Jordan",
+    "slug": "jordan"
   },
   {
     "id": "juventus",
@@ -580,9 +1185,34 @@
     "slug": "kairat"
   },
   {
+    "id": "kazakhstan",
+    "name": "Kazakhstan",
+    "slug": "kazakhstan"
+  },
+  {
+    "id": "kenya",
+    "name": "Kenya",
+    "slug": "kenya"
+  },
+  {
+    "id": "kiribati",
+    "name": "Kiribati",
+    "slug": "kiribati"
+  },
+  {
     "id": "koln",
     "name": "Koln",
     "slug": "koln"
+  },
+  {
+    "id": "kosovo",
+    "name": "Kosovo",
+    "slug": "kosovo"
+  },
+  {
+    "id": "krygzstan",
+    "name": "Krygzstan",
+    "slug": "krygzstan"
   },
   {
     "id": "kups",
@@ -590,9 +1220,29 @@
     "slug": "kups"
   },
   {
+    "id": "kurdistan",
+    "name": "Kurdistan",
+    "slug": "kurdistan"
+  },
+  {
+    "id": "kuwait",
+    "name": "Kuwait",
+    "slug": "kuwait"
+  },
+  {
     "id": "la-galaxy",
-    "name": "LA Galaxy",
+    "name": "La Galaxy",
     "slug": "la-galaxy"
+  },
+  {
+    "id": "laos",
+    "name": "Laos",
+    "slug": "laos"
+  },
+  {
+    "id": "latvia",
+    "name": "Latvia",
+    "slug": "latvia"
   },
   {
     "id": "lausanne-sport",
@@ -606,8 +1256,13 @@
   },
   {
     "id": "le-havre-ac",
-    "name": "Le Havre AC",
+    "name": "Le Havre Ac",
     "slug": "le-havre-ac"
+  },
+  {
+    "id": "lebanon",
+    "name": "Lebanon",
+    "slug": "lebanon"
   },
   {
     "id": "lecce",
@@ -630,9 +1285,34 @@
     "slug": "legia-warszawa"
   },
   {
+    "id": "lesotho",
+    "name": "Lesotho",
+    "slug": "lesotho"
+  },
+  {
     "id": "levante",
     "name": "Levante",
     "slug": "levante"
+  },
+  {
+    "id": "liberia",
+    "name": "Liberia",
+    "slug": "liberia"
+  },
+  {
+    "id": "libya",
+    "name": "Libya",
+    "slug": "libya"
+  },
+  {
+    "id": "liechtenstein",
+    "name": "Liechtenstein",
+    "slug": "liechtenstein"
+  },
+  {
+    "id": "lille-osc",
+    "name": "Lille Osc",
+    "slug": "lille-osc"
   },
   {
     "id": "lincoln-red-imps",
@@ -640,9 +1320,14 @@
     "slug": "lincoln-red-imps"
   },
   {
-    "id": "liverpool",
-    "name": "Liverpool",
-    "slug": "liverpool"
+    "id": "lithuania",
+    "name": "Lithuania",
+    "slug": "lithuania"
+  },
+  {
+    "id": "liverpool-fc",
+    "name": "Liverpool Fc",
+    "slug": "liverpool-fc"
   },
   {
     "id": "lorient",
@@ -651,7 +1336,7 @@
   },
   {
     "id": "los-angeles-fc",
-    "name": "Los Angeles FC",
+    "name": "Los Angeles Fc",
     "slug": "los-angeles-fc"
   },
   {
@@ -660,14 +1345,14 @@
     "slug": "ludogorets"
   },
   {
+    "id": "luxembourg",
+    "name": "Luxembourg",
+    "slug": "luxembourg"
+  },
+  {
     "id": "lyon",
     "name": "Lyon",
     "slug": "lyon"
-  },
-  {
-    "id": "lille",
-    "name": "lille OSC",
-    "slug": "lille-osc"
   },
   {
     "id": "m-tel-aviv",
@@ -675,9 +1360,39 @@
     "slug": "m-tel-aviv"
   },
   {
+    "id": "macau",
+    "name": "Macau",
+    "slug": "macau"
+  },
+  {
+    "id": "madagascar",
+    "name": "Madagascar",
+    "slug": "madagascar"
+  },
+  {
     "id": "mainz-05",
     "name": "Mainz 05",
     "slug": "mainz-05"
+  },
+  {
+    "id": "malawi",
+    "name": "Malawi",
+    "slug": "malawi"
+  },
+  {
+    "id": "malaysia",
+    "name": "Malaysia",
+    "slug": "malaysia"
+  },
+  {
+    "id": "maldives",
+    "name": "Maldives",
+    "slug": "maldives"
+  },
+  {
+    "id": "mali",
+    "name": "Mali",
+    "slug": "mali"
   },
   {
     "id": "mallorca",
@@ -688,6 +1403,11 @@
     "id": "malmo",
     "name": "Malmo",
     "slug": "malmo"
+  },
+  {
+    "id": "malta",
+    "name": "Malta",
+    "slug": "malta"
   },
   {
     "id": "manchester-city",
@@ -705,24 +1425,89 @@
     "slug": "marseille"
   },
   {
+    "id": "marshall-islands",
+    "name": "Marshall Islands",
+    "slug": "marshall-islands"
+  },
+  {
+    "id": "martinique",
+    "name": "Martinique",
+    "slug": "martinique"
+  },
+  {
+    "id": "mauritania",
+    "name": "Mauritania",
+    "slug": "mauritania"
+  },
+  {
+    "id": "mauritius",
+    "name": "Mauritius",
+    "slug": "mauritius"
+  },
+  {
+    "id": "mexico",
+    "name": "Mexico",
+    "slug": "mexico"
+  },
+  {
+    "id": "micronesia",
+    "name": "Micronesia",
+    "slug": "micronesia"
+  },
+  {
     "id": "midtjylland",
     "name": "Midtjylland",
     "slug": "midtjylland"
   },
   {
-    "id": "milan",
-    "name": "Milan",
-    "slug": "milan"
+    "id": "minnesota-united-fc",
+    "name": "Minnesota United Fc",
+    "slug": "minnesota-united-fc"
   },
   {
-    "id": "minnesota-united-fc",
-    "name": "Minnesota United FC",
-    "slug": "minnesota-united-fc"
+    "id": "moldova",
+    "name": "Moldova",
+    "slug": "moldova"
+  },
+  {
+    "id": "monaco",
+    "name": "Monaco",
+    "slug": "monaco"
+  },
+  {
+    "id": "mongolia",
+    "name": "Mongolia",
+    "slug": "mongolia"
+  },
+  {
+    "id": "montegro",
+    "name": "Montegro",
+    "slug": "montegro"
   },
   {
     "id": "moreirense",
     "name": "Moreirense",
     "slug": "moreirense"
+  },
+  {
+    "id": "morocco",
+    "name": "Morocco",
+    "slug": "morocco"
+  },
+  {
+    "id": "morroco",
+    "name": "Morroco",
+    "slug": "morroco"
+  },
+  {
+    "id": "mozambique",
+    "name": "Mozambique",
+    "slug": "mozambique"
+  },
+  {
+    "id": "myanmar",
+    "name": "Myanmar",
+    "slug": "myanmar"
   },
   {
     "id": "nac-breda",
@@ -733,6 +1518,11 @@
     "id": "nacional-da-madeira",
     "name": "Nacional Da Madeira",
     "slug": "nacional-da-madeira"
+  },
+  {
+    "id": "namibia",
+    "name": "Namibia",
+    "slug": "namibia"
   },
   {
     "id": "nantes",
@@ -746,8 +1536,13 @@
   },
   {
     "id": "nashville-sc",
-    "name": "Nashville SC",
+    "name": "Nashville Sc",
     "slug": "nashville-sc"
+  },
+  {
+    "id": "nauru",
+    "name": "Nauru",
+    "slug": "nauru"
   },
   {
     "id": "nec-nijmegen",
@@ -760,13 +1555,38 @@
     "slug": "neom"
   },
   {
+    "id": "nepal",
+    "name": "Nepal",
+    "slug": "nepal"
+  },
+  {
+    "id": "netherlands-antilles",
+    "name": "Netherlands Antilles",
+    "slug": "netherlands-antilles"
+  },
+  {
+    "id": "netherlands",
+    "name": "Netherlands",
+    "slug": "netherlands"
+  },
+  {
+    "id": "new-caledonia",
+    "name": "New Caledonia",
+    "slug": "new-caledonia"
+  },
+  {
+    "id": "new-zealand",
+    "name": "New Zealand",
+    "slug": "new-zealand"
+  },
+  {
     "id": "new-england-revolution",
     "name": "New England Revolution",
     "slug": "new-england-revolution"
   },
   {
     "id": "new-york-city-fc",
-    "name": "New York City FC",
+    "name": "New York City Fc",
     "slug": "new-york-city-fc"
   },
   {
@@ -780,9 +1600,24 @@
     "slug": "newcastle"
   },
   {
+    "id": "nicaragua",
+    "name": "Nicaragua",
+    "slug": "nicaragua"
+  },
+  {
     "id": "nice",
     "name": "Nice",
     "slug": "nice"
+  },
+  {
+    "id": "niger",
+    "name": "Niger",
+    "slug": "niger"
+  },
+  {
+    "id": "nigeria",
+    "name": "Nigeria",
+    "slug": "nigeria"
   },
   {
     "id": "noah",
@@ -790,9 +1625,34 @@
     "slug": "noah"
   },
   {
+    "id": "north-korea",
+    "name": "North Korea",
+    "slug": "north-korea"
+  },
+  {
+    "id": "north-macedonia",
+    "name": "North Macedonia",
+    "slug": "north-macedonia"
+  },
+  {
+    "id": "northern-ireland",
+    "name": "Northern Ireland",
+    "slug": "northern-ireland"
+  },
+  {
+    "id": "norway",
+    "name": "Norway",
+    "slug": "norway"
+  },
+  {
     "id": "nottingham-forest",
     "name": "Nottingham Forest",
     "slug": "nottingham-forest"
+  },
+  {
+    "id": "nuie",
+    "name": "Nuie",
+    "slug": "nuie"
   },
   {
     "id": "olomouc",
@@ -803,6 +1663,11 @@
     "id": "olympiacos",
     "name": "Olympiacos",
     "slug": "olympiacos"
+  },
+  {
+    "id": "oman",
+    "name": "Oman",
+    "slug": "oman"
   },
   {
     "id": "omonoia",
@@ -830,6 +1695,26 @@
     "slug": "pafos"
   },
   {
+    "id": "pakistan",
+    "name": "Pakistan",
+    "slug": "pakistan"
+  },
+  {
+    "id": "palau",
+    "name": "Palau",
+    "slug": "palau"
+  },
+  {
+    "id": "palestine",
+    "name": "Palestine",
+    "slug": "palestine"
+  },
+  {
+    "id": "panama",
+    "name": "Panama",
+    "slug": "panama"
+  },
+  {
     "id": "panathinaikos",
     "name": "Panathinaikos",
     "slug": "panathinaikos"
@@ -840,8 +1725,18 @@
     "slug": "paok"
   },
   {
+    "id": "papau-new-guinea",
+    "name": "Papau New Guinea",
+    "slug": "papau-new-guinea"
+  },
+  {
+    "id": "paraguay",
+    "name": "Paraguay",
+    "slug": "paraguay"
+  },
+  {
     "id": "paris-fc",
-    "name": "Paris FC",
+    "name": "Paris Fc",
     "slug": "paris-fc"
   },
   {
@@ -860,9 +1755,19 @@
     "slug": "pec-zwolle"
   },
   {
+    "id": "peru",
+    "name": "Peru",
+    "slug": "peru"
+  },
+  {
     "id": "philadelphia-union",
     "name": "Philadelphia Union",
     "slug": "philadelphia-union"
+  },
+  {
+    "id": "philipinnes",
+    "name": "Philipinnes",
+    "slug": "philipinnes"
   },
   {
     "id": "pisa",
@@ -870,19 +1775,39 @@
     "slug": "pisa"
   },
   {
+    "id": "poland",
+    "name": "Poland",
+    "slug": "poland"
+  },
+  {
     "id": "portland-timbers",
     "name": "Portland Timbers",
     "slug": "portland-timbers"
   },
   {
+    "id": "portugal",
+    "name": "Portugal",
+    "slug": "portugal"
+  },
+  {
     "id": "psv-eindhoven",
-    "name": "psv-eindhoven",
+    "name": "Psv Eindhoven",
     "slug": "psv-eindhoven"
+  },
+  {
+    "id": "puerto-rico",
+    "name": "Puerto Rico",
+    "slug": "puerto-rico"
   },
   {
     "id": "qarabag",
     "name": "Qarabag",
     "slug": "qarabag"
+  },
+  {
+    "id": "qatar",
+    "name": "Qatar",
+    "slug": "qatar"
   },
   {
     "id": "rakow",
@@ -906,18 +1831,18 @@
   },
   {
     "id": "rb-leipzig",
-    "name": "RB Leipzig",
+    "name": "Rb Leipzig",
     "slug": "rb-leipzig"
   },
   {
-    "id": "rc-strasbourg-alsace",
-    "name": "RC Strasbourg Alsace",
-    "slug": "rc-strasbourg-alsace"
+    "id": "rc-lens",
+    "name": "Rc Lens",
+    "slug": "rc-lens"
   },
   {
-    "id": "rce-lens",
-    "name": "Rc Lens",
-    "slug": "rce-lens"
+    "id": "rc-strasbourg-alsace",
+    "name": "Rc Strasbourg Alsace",
+    "slug": "rc-strasbourg-alsace"
   },
   {
     "id": "real-betis",
@@ -945,6 +1870,11 @@
     "slug": "rennes"
   },
   {
+    "id": "republic-of-congo",
+    "name": "Republic Of Congo",
+    "slug": "republic-of-congo"
+  },
+  {
     "id": "rijeka",
     "name": "Rijeka",
     "slug": "rijeka"
@@ -960,9 +1890,39 @@
     "slug": "roma"
   },
   {
+    "id": "romania",
+    "name": "Romania",
+    "slug": "romania"
+  },
+  {
+    "id": "russia",
+    "name": "Russia",
+    "slug": "russia"
+  },
+  {
+    "id": "rwanda",
+    "name": "Rwanda",
+    "slug": "rwanda"
+  },
+  {
     "id": "s-bratislava",
     "name": "S Bratislava",
     "slug": "s-bratislava"
+  },
+  {
+    "id": "saint-kitts-nevis",
+    "name": "Saint Kitts Nevis",
+    "slug": "saint-kitts-nevis"
+  },
+  {
+    "id": "saint-levis",
+    "name": "Saint Levis",
+    "slug": "saint-levis"
+  },
+  {
+    "id": "saint-vincent-and-the-grenadines",
+    "name": "Saint Vincent And The Grenadines",
+    "slug": "saint-vincent-and-the-grenadines"
   },
   {
     "id": "salzburg",
@@ -970,13 +1930,23 @@
     "slug": "salzburg"
   },
   {
+    "id": "samoa",
+    "name": "Samoa",
+    "slug": "samoa"
+  },
+  {
     "id": "samsunspor",
     "name": "Samsunspor",
     "slug": "samsunspor"
   },
   {
+    "id": "san-marino",
+    "name": "San Marino",
+    "slug": "san-marino"
+  },
+  {
     "id": "san-diego-fc",
-    "name": "San Diego FC",
+    "name": "San Diego Fc",
     "slug": "san-diego-fc"
   },
   {
@@ -990,29 +1960,59 @@
     "slug": "santa-clara"
   },
   {
+    "id": "sao-tome-principe",
+    "name": "Sao Tome Principe",
+    "slug": "sao-tome-principe"
+  },
+  {
     "id": "sassuolo",
     "name": "Sassuolo",
     "slug": "sassuolo"
   },
   {
+    "id": "saudi-arabia",
+    "name": "Saudi Arabia",
+    "slug": "saudi-arabia"
+  },
+  {
     "id": "sc-braga",
-    "name": "SC Braga",
+    "name": "Sc Braga",
     "slug": "sc-braga"
   },
   {
     "id": "sc-heerenveen",
-    "name": "SC Heerenveen",
+    "name": "Sc Heerenveen",
     "slug": "sc-heerenveen"
   },
   {
+    "id": "scotland",
+    "name": "Scotland",
+    "slug": "scotland"
+  },
+  {
     "id": "seattle-sounders-fc",
-    "name": "Seattle Sounders FC",
+    "name": "Seattle Sounders Fc",
     "slug": "seattle-sounders-fc"
+  },
+  {
+    "id": "senegal",
+    "name": "Senegal",
+    "slug": "senegal"
+  },
+  {
+    "id": "serbia",
+    "name": "Serbia",
+    "slug": "serbia"
   },
   {
     "id": "sevilla",
     "name": "Sevilla",
     "slug": "sevilla"
+  },
+  {
+    "id": "seychelles",
+    "name": "Seychelles",
+    "slug": "seychelles"
   },
   {
     "id": "shakhtar",
@@ -1035,9 +2035,69 @@
     "slug": "shkendija"
   },
   {
+    "id": "sierra-leonne",
+    "name": "Sierra Leonne",
+    "slug": "sierra-leonne"
+  },
+  {
+    "id": "singapore",
+    "name": "Singapore",
+    "slug": "singapore"
+  },
+  {
+    "id": "sint-maarten",
+    "name": "Sint Maarten",
+    "slug": "sint-maarten"
+  },
+  {
     "id": "slavia-praha",
     "name": "Slavia Praha",
     "slug": "slavia-praha"
+  },
+  {
+    "id": "slovakia",
+    "name": "Slovakia",
+    "slug": "slovakia"
+  },
+  {
+    "id": "slovenia",
+    "name": "Slovenia",
+    "slug": "slovenia"
+  },
+  {
+    "id": "solomon-islands",
+    "name": "Solomon Islands",
+    "slug": "solomon-islands"
+  },
+  {
+    "id": "somalia",
+    "name": "Somalia",
+    "slug": "somalia"
+  },
+  {
+    "id": "south-africa",
+    "name": "South Africa",
+    "slug": "south-africa"
+  },
+  {
+    "id": "south-georgia-and-the-south-sandwich-islands",
+    "name": "South Georgia And The South Sandwich Islands",
+    "slug": "south-georgia-and-the-south-sandwich-islands"
+  },
+  {
+    "id": "south-korea",
+    "name": "South Korea",
+    "slug": "south-korea"
+  },
+  {
+    "id": "south-sudan",
+    "name": "South Sudan",
+    "slug": "south-sudan"
+  },
+  {
+    "id": "spain",
+    "name": "Spain",
+    "slug": "spain"
   },
   {
     "id": "sparta-praha",
@@ -1060,13 +2120,18 @@
     "slug": "sporting-kansas-city"
   },
   {
+    "id": "sri-lanka",
+    "name": "Sri Lanka",
+    "slug": "sri-lanka"
+  },
+  {
     "id": "st-louis-city-sc",
-    "name": "ST Louis City SC",
+    "name": "St Louis City Sc",
     "slug": "st-louis-city-sc"
   },
   {
     "id": "st-pauli",
-    "name": "ST Pauli",
+    "name": "St Pauli",
     "slug": "st-pauli"
   },
   {
@@ -1075,9 +2140,49 @@
     "slug": "sturm-graz"
   },
   {
+    "id": "sudan",
+    "name": "Sudan",
+    "slug": "sudan"
+  },
+  {
     "id": "sunderland",
     "name": "Sunderland",
     "slug": "sunderland"
+  },
+  {
+    "id": "suriname",
+    "name": "Suriname",
+    "slug": "suriname"
+  },
+  {
+    "id": "sweden",
+    "name": "Sweden",
+    "slug": "sweden"
+  },
+  {
+    "id": "switzerland",
+    "name": "Switzerland",
+    "slug": "switzerland"
+  },
+  {
+    "id": "syria",
+    "name": "Syria",
+    "slug": "syria"
+  },
+  {
+    "id": "taiwan",
+    "name": "Taiwan",
+    "slug": "taiwan"
+  },
+  {
+    "id": "tajikistan",
+    "name": "Tajikistan",
+    "slug": "tajikistan"
+  },
+  {
+    "id": "tanzania",
+    "name": "Tanzania",
+    "slug": "tanzania"
   },
   {
     "id": "telstar",
@@ -1085,9 +2190,24 @@
     "slug": "telstar"
   },
   {
+    "id": "thailand",
+    "name": "Thailand",
+    "slug": "thailand"
+  },
+  {
+    "id": "togo",
+    "name": "Togo",
+    "slug": "togo"
+  },
+  {
     "id": "tondela",
     "name": "Tondela",
     "slug": "tondela"
+  },
+  {
+    "id": "tonga",
+    "name": "Tonga",
+    "slug": "tonga"
   },
   {
     "id": "torino",
@@ -1096,7 +2216,7 @@
   },
   {
     "id": "toronto-fc",
-    "name": "Toronto FC",
+    "name": "Toronto Fc",
     "slug": "toronto-fc"
   },
   {
@@ -1108,6 +2228,36 @@
     "id": "toulouse",
     "name": "Toulouse",
     "slug": "toulouse"
+  },
+  {
+    "id": "trinidad-and-tobago",
+    "name": "Trinidad And Tobago",
+    "slug": "trinidad-and-tobago"
+  },
+  {
+    "id": "tunisia",
+    "name": "Tunisia",
+    "slug": "tunisia"
+  },
+  {
+    "id": "turkey",
+    "name": "Turkey",
+    "slug": "turkey"
+  },
+  {
+    "id": "turkmenistan",
+    "name": "Turkmenistan",
+    "slug": "turkmenistan"
+  },
+  {
+    "id": "turks-and-caicos",
+    "name": "Turks And Caicos",
+    "slug": "turks-and-caicos"
+  },
+  {
+    "id": "tuvalu",
+    "name": "Tuvalu",
+    "slug": "tuvalu"
   },
   {
     "id": "twente",
@@ -1125,6 +2275,16 @@
     "slug": "udinese"
   },
   {
+    "id": "uganda",
+    "name": "Uganda",
+    "slug": "uganda"
+  },
+  {
+    "id": "ukraine",
+    "name": "Ukraine",
+    "slug": "ukraine"
+  },
+  {
     "id": "union-berlin",
     "name": "Union Berlin",
     "slug": "union-berlin"
@@ -1135,14 +2295,64 @@
     "slug": "union-saint-gilloise"
   },
   {
+    "id": "united-arab-emirates",
+    "name": "United Arab Emirates",
+    "slug": "united-arab-emirates"
+  },
+  {
+    "id": "united-kingdom",
+    "name": "United Kingdom",
+    "slug": "united-kingdom"
+  },
+  {
+    "id": "united-states",
+    "name": "United States",
+    "slug": "united-states"
+  },
+  {
+    "id": "uruguay",
+    "name": "Uruguay",
+    "slug": "uruguay"
+  },
+  {
+    "id": "usa-virgin-islands",
+    "name": "Usa Virgin Islands",
+    "slug": "usa-virgin-islands"
+  },
+  {
+    "id": "usa",
+    "name": "Usa",
+    "slug": "usa"
+  },
+  {
+    "id": "uzbekistan",
+    "name": "Uzbekistan",
+    "slug": "uzbekistan"
+  },
+  {
     "id": "valencia",
     "name": "Valencia",
     "slug": "valencia"
   },
   {
     "id": "vancouver-whitecaps-fc",
-    "name": "Vancouver Whitecaps FC",
+    "name": "Vancouver Whitecaps Fc",
     "slug": "vancouver-whitecaps-fc"
+  },
+  {
+    "id": "vanuatu",
+    "name": "Vanuatu",
+    "slug": "vanuatu"
+  },
+  {
+    "id": "vatican-city",
+    "name": "Vatican City",
+    "slug": "vatican-city"
+  },
+  {
+    "id": "venezuela",
+    "name": "Venezuela",
+    "slug": "venezuela"
   },
   {
     "id": "verona",
@@ -1151,13 +2361,18 @@
   },
   {
     "id": "vfb-stuttgart",
-    "name": "VFB Stuttgart",
+    "name": "Vfb Stuttgart",
     "slug": "vfb-stuttgart"
   },
   {
-    "id": "viktoria-pizen",
-    "name": "Viktoria Pizen",
-    "slug": "viktoria-pizen"
+    "id": "vietnam",
+    "name": "Vietnam",
+    "slug": "vietnam"
+  },
+  {
+    "id": "viktoria-plzen",
+    "name": "Viktoria Plzen",
+    "slug": "viktoria-plzen"
   },
   {
     "id": "villarreal",
@@ -1175,6 +2390,11 @@
     "slug": "volendam"
   },
   {
+    "id": "wales",
+    "name": "Wales",
+    "slug": "wales"
+  },
+  {
     "id": "werder-bremen",
     "name": "Werder Bremen",
     "slug": "werder-bremen"
@@ -1183,6 +2403,11 @@
     "id": "west-ham",
     "name": "West Ham",
     "slug": "west-ham"
+  },
+  {
+    "id": "western-sahara",
+    "name": "Western Sahara",
+    "slug": "western-sahara"
   },
   {
     "id": "wolfsburg",
@@ -1195,220 +2420,2473 @@
     "slug": "wolves"
   },
   {
+    "id": "yemen",
+    "name": "Yemen",
+    "slug": "yemen"
+  },
+  {
     "id": "young-boys",
     "name": "Young Boys",
     "slug": "young-boys"
+  },
+  {
+    "id": "zambia",
+    "name": "Zambia",
+    "slug": "zambia"
+  },
+  {
+    "id": "zimbabwe",
+    "name": "Zimbabwe",
+    "slug": "zimbabwe"
   },
   {
     "id": "zrinjski",
     "name": "Zrinjski",
     "slug": "zrinjski"
   },
-  { "id": "afghanistan", "name": "Afghanistan", "slug": "afghanistan" },
-  { "id": "albania", "name": "Albanie", "slug": "albania" },
-  { "id": "algeria", "name": "Algérie", "slug": "algeria" },
-  { "id": "andorra", "name": "Andorre", "slug": "andorra" },
-  { "id": "angola", "name": "Angola", "slug": "angola" },
-  { "id": "antigua-and-barbuda", "name": "Antigua-et-Barbuda", "slug": "antigua-and-barbuda" },
-  { "id": "argentina", "name": "Argentine", "slug": "argentina" },
-  { "id": "armenia", "name": "Arménie", "slug": "armenia" },
-  { "id": "aruba", "name": "Aruba", "slug": "aruba" },
-  { "id": "australia", "name": "Australie", "slug": "australia" },
-  { "id": "austria", "name": "Autriche", "slug": "austria" },
-  { "id": "azerbaijan", "name": "Azerbaïdjan", "slug": "azerbaijan" },
-  { "id": "bahamas", "name": "Bahamas", "slug": "bahamas" },
-  { "id": "bahrain", "name": "Bahreïn", "slug": "bahrain" },
-  { "id": "bangladesh", "name": "Bangladesh", "slug": "bangladesh" },
-  { "id": "barbados", "name": "Barbade", "slug": "barbados" },
-  { "id": "belarus", "name": "Biélorussie", "slug": "belarus" },
-  { "id": "belgium", "name": "Belgique", "slug": "belgium" },
-  { "id": "belize", "name": "Belize", "slug": "belize" },
-  { "id": "benin", "name": "Bénin", "slug": "benin" },
-  { "id": "bermuda", "name": "Bermudes", "slug": "bermuda" },
-  { "id": "bhutan", "name": "Bhoutan", "slug": "bhutan" },
-  { "id": "bolivia", "name": "Bolivie", "slug": "bolivia" },
-  { "id": "bosnia-and-herzegovina", "name": "Bosnie-Herzégovine", "slug": "bosnia-and-herzegovina" },
-  { "id": "botswana", "name": "Botswana", "slug": "botswana" },
-  { "id": "brazil", "name": "Brésil", "slug": "brazil" },
-  { "id": "british-virgin-islands", "name": "Îles Vierges britanniques", "slug": "british-virgin-islands" },
-  { "id": "brunei", "name": "Brunei", "slug": "brunei" },
-  { "id": "bulgaria", "name": "Bulgarie", "slug": "bulgaria" },
-  { "id": "burkina-faso", "name": "Burkina Faso", "slug": "burkina-faso" },
-  { "id": "burundi", "name": "Burundi", "slug": "burundi" },
-  { "id": "cambodia", "name": "Cambodge", "slug": "cambodia" },
-  { "id": "cameroon", "name": "Cameroun", "slug": "cameroon" },
-  { "id": "canada", "name": "Canada", "slug": "canada" },
-  { "id": "cape-verde", "name": "Cap-Vert", "slug": "cape-verde" },
-  { "id": "cayman-islands", "name": "Îles Caïmans", "slug": "cayman-islands" },
-  { "id": "central-african-republic", "name": "République centrafricaine", "slug": "central-african-republic" },
-  { "id": "chad", "name": "Tchad", "slug": "chad" },
-  { "id": "chile", "name": "Chili", "slug": "chile" },
-  { "id": "china", "name": "Chine", "slug": "china" },
-  { "id": "chinese-taipei", "name": "Taïwan", "slug": "chinese-taipei" },
-  { "id": "colombia", "name": "Colombie", "slug": "colombia" },
-  { "id": "comoros", "name": "Comores", "slug": "comoros" },
-  { "id": "congo", "name": "Congo", "slug": "congo" },
-  { "id": "congo-dr", "name": "RD Congo", "slug": "congo-dr" },
-  { "id": "costa-rica", "name": "Costa Rica", "slug": "costa-rica" },
-  { "id": "croatia", "name": "Croatie", "slug": "croatia" },
-  { "id": "cuba", "name": "Cuba", "slug": "cuba" },
-  { "id": "curacao", "name": "Curaçao", "slug": "curacao" },
-  { "id": "cyprus", "name": "Chypre", "slug": "cyprus" },
-  { "id": "czech-republic", "name": "République tchèque", "slug": "czech-republic" },
-  { "id": "denmark", "name": "Danemark", "slug": "denmark" },
-  { "id": "djibouti", "name": "Djibouti", "slug": "djibouti" },
-  { "id": "dominica", "name": "Dominique", "slug": "dominica" },
-  { "id": "dominican-republic", "name": "République dominicaine", "slug": "dominican-republic" },
-  { "id": "ecuador", "name": "Équateur", "slug": "ecuador" },
-  { "id": "egypt", "name": "Égypte", "slug": "egypt" },
-  { "id": "el-salvador", "name": "Salvador", "slug": "el-salvador" },
-  { "id": "england", "name": "Angleterre", "slug": "england" },
-  { "id": "equatorial-guinea", "name": "Guinée équatoriale", "slug": "equatorial-guinea" },
-  { "id": "eritrea", "name": "Érythrée", "slug": "eritrea" },
-  { "id": "estonia", "name": "Estonie", "slug": "estonia" },
-  { "id": "eswatini", "name": "Eswatini", "slug": "eswatini" },
-  { "id": "ethiopia", "name": "Éthiopie", "slug": "ethiopia" },
-  { "id": "faroe-islands", "name": "Îles Féroé", "slug": "faroe-islands" },
-  { "id": "fiji", "name": "Fidji", "slug": "fiji" },
-  { "id": "finland", "name": "Finlande", "slug": "finland" },
-  { "id": "france", "name": "France", "slug": "france" },
-  { "id": "gabon", "name": "Gabon", "slug": "gabon" },
-  { "id": "gambia", "name": "Gambie", "slug": "gambia" },
-  { "id": "georgia", "name": "Géorgie", "slug": "georgia" },
-  { "id": "germany", "name": "Allemagne", "slug": "germany" },
-  { "id": "ghana", "name": "Ghana", "slug": "ghana" },
-  { "id": "gibraltar", "name": "Gibraltar", "slug": "gibraltar" },
-  { "id": "greece", "name": "Grèce", "slug": "greece" },
-  { "id": "grenada", "name": "Grenade", "slug": "grenada" },
-  { "id": "guam", "name": "Guam", "slug": "guam" },
-  { "id": "guatemala", "name": "Guatemala", "slug": "guatemala" },
-  { "id": "guinea", "name": "Guinée", "slug": "guinea" },
-  { "id": "guinea-bissau", "name": "Guinée-Bissau", "slug": "guinea-bissau" },
-  { "id": "guyana", "name": "Guyana", "slug": "guyana" },
-  { "id": "haiti", "name": "Haïti", "slug": "haiti" },
-  { "id": "honduras", "name": "Honduras", "slug": "honduras" },
-  { "id": "hong-kong", "name": "Hong Kong", "slug": "hong-kong" },
-  { "id": "hungary", "name": "Hongrie", "slug": "hungary" },
-  { "id": "iceland", "name": "Islande", "slug": "iceland" },
-  { "id": "india", "name": "Inde", "slug": "india" },
-  { "id": "indonesia", "name": "Indonésie", "slug": "indonesia" },
-  { "id": "iran", "name": "Iran", "slug": "iran" },
-  { "id": "iraq", "name": "Irak", "slug": "iraq" },
-  { "id": "ireland", "name": "Irlande", "slug": "ireland" },
-  { "id": "israel", "name": "Israël", "slug": "israel" },
-  { "id": "italy", "name": "Italie", "slug": "italy" },
-  { "id": "ivory-coast", "name": "Côte d'Ivoire", "slug": "ivory-coast" },
-  { "id": "jamaica", "name": "Jamaïque", "slug": "jamaica" },
-  { "id": "japan", "name": "Japon", "slug": "japan" },
-  { "id": "jordan", "name": "Jordanie", "slug": "jordan" },
-  { "id": "kazakhstan", "name": "Kazakhstan", "slug": "kazakhstan" },
-  { "id": "kenya", "name": "Kenya", "slug": "kenya" },
-  { "id": "kiribati", "name": "Kiribati", "slug": "kiribati" },
-  { "id": "kosovo", "name": "Kosovo", "slug": "kosovo" },
-  { "id": "kuwait", "name": "Koweït", "slug": "kuwait" },
-  { "id": "kyrgyzstan", "name": "Kirghizistan", "slug": "kyrgyzstan" },
-  { "id": "laos", "name": "Laos", "slug": "laos" },
-  { "id": "latvia", "name": "Lettonie", "slug": "latvia" },
-  { "id": "lebanon", "name": "Liban", "slug": "lebanon" },
-  { "id": "lesotho", "name": "Lesotho", "slug": "lesotho" },
-  { "id": "liberia", "name": "Libéria", "slug": "liberia" },
-  { "id": "libya", "name": "Libye", "slug": "libya" },
-  { "id": "liechtenstein", "name": "Liechtenstein", "slug": "liechtenstein" },
-  { "id": "lithuania", "name": "Lituanie", "slug": "lithuania" },
-  { "id": "luxembourg", "name": "Luxembourg", "slug": "luxembourg" },
-  { "id": "macau", "name": "Macao", "slug": "macau" },
-  { "id": "madagascar", "name": "Madagascar", "slug": "madagascar" },
-  { "id": "malawi", "name": "Malawi", "slug": "malawi" },
-  { "id": "malaysia", "name": "Malaisie", "slug": "malaysia" },
-  { "id": "maldives", "name": "Maldives", "slug": "maldives" },
-  { "id": "mali", "name": "Mali", "slug": "mali" },
-  { "id": "malta", "name": "Malte", "slug": "malta" },
-  { "id": "marshall-islands", "name": "Îles Marshall", "slug": "marshall-islands" },
-  { "id": "mauritania", "name": "Mauritanie", "slug": "mauritania" },
-  { "id": "mauritius", "name": "Maurice", "slug": "mauritius" },
-  { "id": "mexico", "name": "Mexique", "slug": "mexico" },
-  { "id": "micronesia", "name": "Micronésie", "slug": "micronesia" },
-  { "id": "moldova", "name": "Moldavie", "slug": "moldova" },
-  { "id": "monaco", "name": "Monaco", "slug": "monaco" },
-  { "id": "mongolia", "name": "Mongolie", "slug": "mongolia" },
-  { "id": "montenegro", "name": "Monténégro", "slug": "montenegro" },
-  { "id": "morocco", "name": "Maroc", "slug": "morocco" },
-  { "id": "mozambique", "name": "Mozambique", "slug": "mozambique" },
-  { "id": "myanmar", "name": "Myanmar", "slug": "myanmar" },
-  { "id": "namibia", "name": "Namibie", "slug": "namibia" },
-  { "id": "nauru", "name": "Nauru", "slug": "nauru" },
-  { "id": "nepal", "name": "Népal", "slug": "nepal" },
-  { "id": "netherlands", "name": "Pays-Bas", "slug": "netherlands" },
-  { "id": "new-zealand", "name": "Nouvelle-Zélande", "slug": "new-zealand" },
-  { "id": "nicaragua", "name": "Nicaragua", "slug": "nicaragua" },
-  { "id": "niger", "name": "Niger", "slug": "niger" },
-  { "id": "nigeria", "name": "Nigéria", "slug": "nigeria" },
-  { "id": "north-korea", "name": "Corée du Nord", "slug": "north-korea" },
-  { "id": "north-macedonia", "name": "Macédoine du Nord", "slug": "north-macedonia" },
-  { "id": "northern-ireland", "name": "Irlande du Nord", "slug": "northern-ireland" },
-  { "id": "norway", "name": "Norvège", "slug": "norway" },
-  { "id": "oman", "name": "Oman", "slug": "oman" },
-  { "id": "pakistan", "name": "Pakistan", "slug": "pakistan" },
-  { "id": "palestine", "name": "Palestine", "slug": "palestine" },
-  { "id": "panama", "name": "Panama", "slug": "panama" },
-  { "id": "papua-new-guinea", "name": "Papouasie-Nouvelle-Guinée", "slug": "papua-new-guinea" },
-  { "id": "paraguay", "name": "Paraguay", "slug": "paraguay" },
-  { "id": "peru", "name": "Pérou", "slug": "peru" },
-  { "id": "philippines", "name": "Philippines", "slug": "philippines" },
-  { "id": "poland", "name": "Pologne", "slug": "poland" },
-  { "id": "portugal", "name": "Portugal", "slug": "portugal" },
-  { "id": "qatar", "name": "Qatar", "slug": "qatar" },
-  { "id": "romania", "name": "Roumanie", "slug": "romania" },
-  { "id": "russia", "name": "Russie", "slug": "russia" },
-  { "id": "rwanda", "name": "Rwanda", "slug": "rwanda" },
-  { "id": "saint-kitts-and-nevis", "name": "Saint-Kitts-et-Nevis", "slug": "saint-kitts-and-nevis" },
-  { "id": "saint-lucia", "name": "Sainte-Lucie", "slug": "saint-lucia" },
-  { "id": "saint-vincent-and-the-grenadines", "name": "Saint-Vincent-et-les-Grenadines", "slug": "saint-vincent-and-the-grenadines" },
-  { "id": "samoa", "name": "Samoa", "slug": "samoa" },
-  { "id": "san-marino", "name": "Saint-Marin", "slug": "san-marino" },
-  { "id": "sao-tome-and-principe", "name": "Sao Tomé-et-Principe", "slug": "sao-tome-and-principe" },
-  { "id": "saudi-arabia", "name": "Arabie saoudite", "slug": "saudi-arabia" },
-  { "id": "scotland", "name": "Écosse", "slug": "scotland" },
-  { "id": "senegal", "name": "Sénégal", "slug": "senegal" },
-  { "id": "serbia", "name": "Serbie", "slug": "serbia" },
-  { "id": "seychelles", "name": "Seychelles", "slug": "seychelles" },
-  { "id": "sierra-leone", "name": "Sierra Leone", "slug": "sierra-leone" },
-  { "id": "singapore", "name": "Singapour", "slug": "singapore" },
-  { "id": "slovakia", "name": "Slovaquie", "slug": "slovakia" },
-  { "id": "slovenia", "name": "Slovénie", "slug": "slovenia" },
-  { "id": "solomon-islands", "name": "Îles Salomon", "slug": "solomon-islands" },
-  { "id": "somalia", "name": "Somalie", "slug": "somalia" },
-  { "id": "south-africa", "name": "Afrique du Sud", "slug": "south-africa" },
-  { "id": "south-korea", "name": "Corée du Sud", "slug": "south-korea" },
-  { "id": "south-sudan", "name": "Soudan du Sud", "slug": "south-sudan" },
-  { "id": "spain", "name": "Espagne", "slug": "spain" },
-  { "id": "sri-lanka", "name": "Sri Lanka", "slug": "sri-lanka" },
-  { "id": "sudan", "name": "Soudan", "slug": "sudan" },
-  { "id": "suriname", "name": "Suriname", "slug": "suriname" },
-  { "id": "sweden", "name": "Suède", "slug": "sweden" },
-  { "id": "switzerland", "name": "Suisse", "slug": "switzerland" },
-  { "id": "syria", "name": "Syrie", "slug": "syria" },
-  { "id": "tajikistan", "name": "Tadjikistan", "slug": "tajikistan" },
-  { "id": "tanzania", "name": "Tanzanie", "slug": "tanzania" },
-  { "id": "thailand", "name": "Thaïlande", "slug": "thailand" },
-  { "id": "timor-leste", "name": "Timor oriental", "slug": "timor-leste" },
-  { "id": "togo", "name": "Togo", "slug": "togo" },
-  { "id": "tonga", "name": "Tonga", "slug": "tonga" },
-  { "id": "trinidad-and-tobago", "name": "Trinité-et-Tobago", "slug": "trinidad-and-tobago" },
-  { "id": "tunisia", "name": "Tunisie", "slug": "tunisia" },
-  { "id": "turkey", "name": "Turquie", "slug": "turkey" },
-  { "id": "turkmenistan", "name": "Turkménistan", "slug": "turkmenistan" },
-  { "id": "uganda", "name": "Ouganda", "slug": "uganda" },
-  { "id": "ukraine", "name": "Ukraine", "slug": "ukraine" },
-  { "id": "united-arab-emirates", "name": "Émirats arabes unis", "slug": "united-arab-emirates" },
-  { "id": "united-states", "name": "États-Unis", "slug": "united-states" },
-  { "id": "uruguay", "name": "Uruguay", "slug": "uruguay" },
-  { "id": "uzbekistan", "name": "Ouzbékistan", "slug": "uzbekistan" },
-  { "id": "vanuatu", "name": "Vanuatu", "slug": "vanuatu" },
-  { "id": "venezuela", "name": "Venezuela", "slug": "venezuela" },
-  { "id": "vietnam", "name": "Viêt Nam", "slug": "vietnam" },
-  { "id": "wales", "name": "Pays de Galles", "slug": "wales" },
-  { "id": "yemen", "name": "Yémen", "slug": "yemen" },
-  { "id": "zambia", "name": "Zambie", "slug": "zambia" },
-  { "id": "zimbabwe", "name": "Zimbabwe", "slug": "zimbabwe" }
+  {
+    "id": "atlanta-united-fc",
+    "name": "Atlanta United Fc",
+    "slug": "atlanta-united-fc"
+  },
+  {
+    "id": "austin-fc",
+    "name": "Austin Fc",
+    "slug": "austin-fc"
+  },
+  {
+    "id": "charlotte-fc-1",
+    "name": "Charlotte Fc 1",
+    "slug": "charlotte-fc-1"
+  },
+  {
+    "id": "dc-united",
+    "name": "Dc United",
+    "slug": "dc-united"
+  },
+  {
+    "id": "houston-dynamo-fc",
+    "name": "Houston Dynamo Fc",
+    "slug": "houston-dynamo-fc"
+  },
+  {
+    "id": "la-fc",
+    "name": "La Fc",
+    "slug": "la-fc"
+  },
+  {
+    "id": "mls",
+    "name": "Mls",
+    "slug": "mls"
+  },
+  {
+    "id": "orlando-city-sc",
+    "name": "Orlando City Sc",
+    "slug": "orlando-city-sc"
+  },
+  {
+    "id": "st-louis-city-sc",
+    "name": "St Louis City Sc",
+    "slug": "st-louis-city-sc"
+  },
+  {
+    "id": "aaland-island",
+    "name": "Aaland Island",
+    "slug": "aaland-island"
+  },
+  {
+    "id": "aberdeen",
+    "name": "Aberdeen",
+    "slug": "aberdeen"
+  },
+  {
+    "id": "ac-milan",
+    "name": "Ac Milan",
+    "slug": "ac-milan"
+  },
+  {
+    "id": "aek-athens",
+    "name": "Aek Athens",
+    "slug": "aek-athens"
+  },
+  {
+    "id": "aek-larnaca",
+    "name": "Aek Larnaca",
+    "slug": "aek-larnaca"
+  },
+  {
+    "id": "afghanistan",
+    "name": "Afghanistan",
+    "slug": "afghanistan"
+  },
+  {
+    "id": "ajax",
+    "name": "Ajax",
+    "slug": "ajax"
+  },
+  {
+    "id": "al-ahli",
+    "name": "Al Ahli",
+    "slug": "al-ahli"
+  },
+  {
+    "id": "al-ettifaq",
+    "name": "Al Ettifaq",
+    "slug": "al-ettifaq"
+  },
+  {
+    "id": "al-fateh",
+    "name": "Al Fateh",
+    "slug": "al-fateh"
+  },
+  {
+    "id": "al-fayha",
+    "name": "Al Fayha",
+    "slug": "al-fayha"
+  },
+  {
+    "id": "al-hazem",
+    "name": "Al Hazem",
+    "slug": "al-hazem"
+  },
+  {
+    "id": "al-hilal",
+    "name": "Al Hilal",
+    "slug": "al-hilal"
+  },
+  {
+    "id": "al-ittihad",
+    "name": "Al Ittihad",
+    "slug": "al-ittihad"
+  },
+  {
+    "id": "al-khaleej",
+    "name": "Al Khaleej",
+    "slug": "al-khaleej"
+  },
+  {
+    "id": "al-kholood",
+    "name": "Al Kholood",
+    "slug": "al-kholood"
+  },
+  {
+    "id": "al-najma",
+    "name": "Al Najma",
+    "slug": "al-najma"
+  },
+  {
+    "id": "al-nassr",
+    "name": "Al Nassr",
+    "slug": "al-nassr"
+  },
+  {
+    "id": "al-okhdood",
+    "name": "Al Okhdood",
+    "slug": "al-okhdood"
+  },
+  {
+    "id": "al-qadsiah",
+    "name": "Al Qadsiah",
+    "slug": "al-qadsiah"
+  },
+  {
+    "id": "al-riyadh",
+    "name": "Al Riyadh",
+    "slug": "al-riyadh"
+  },
+  {
+    "id": "al-shabab",
+    "name": "Al Shabab",
+    "slug": "al-shabab"
+  },
+  {
+    "id": "al-taawoun",
+    "name": "Al Taawoun",
+    "slug": "al-taawoun"
+  },
+  {
+    "id": "albania",
+    "name": "Albania",
+    "slug": "albania"
+  },
+  {
+    "id": "algeria",
+    "name": "Algeria",
+    "slug": "algeria"
+  },
+  {
+    "id": "alverca",
+    "name": "Alverca",
+    "slug": "alverca"
+  },
+  {
+    "id": "andorra",
+    "name": "Andorra",
+    "slug": "andorra"
+  },
+  {
+    "id": "angers",
+    "name": "Angers",
+    "slug": "angers"
+  },
+  {
+    "id": "angola",
+    "name": "Angola",
+    "slug": "angola"
+  },
+  {
+    "id": "anguilla",
+    "name": "Anguilla",
+    "slug": "anguilla"
+  },
+  {
+    "id": "antartica",
+    "name": "Antartica",
+    "slug": "antartica"
+  },
+  {
+    "id": "antigua-barbuda",
+    "name": "Antigua Barbuda",
+    "slug": "antigua-barbuda"
+  },
+  {
+    "id": "argentina",
+    "name": "Argentina",
+    "slug": "argentina"
+  },
+  {
+    "id": "armenia",
+    "name": "Armenia",
+    "slug": "armenia"
+  },
+  {
+    "id": "arouca",
+    "name": "Arouca",
+    "slug": "arouca"
+  },
+  {
+    "id": "arsenal",
+    "name": "Arsenal",
+    "slug": "arsenal"
+  },
+  {
+    "id": "aruba",
+    "name": "Aruba",
+    "slug": "aruba"
+  },
+  {
+    "id": "as-monaco",
+    "name": "As Monaco",
+    "slug": "as-monaco"
+  },
+  {
+    "id": "aston-villa",
+    "name": "Aston Villa",
+    "slug": "aston-villa"
+  },
+  {
+    "id": "atalanta",
+    "name": "Atalanta",
+    "slug": "atalanta"
+  },
+  {
+    "id": "athletic-club",
+    "name": "Athletic Club",
+    "slug": "athletic-club"
+  },
+  {
+    "id": "atlanta-united",
+    "name": "Atlanta United",
+    "slug": "atlanta-united"
+  },
+  {
+    "id": "atletico-madrid",
+    "name": "Atletico Madrid",
+    "slug": "atletico-madrid"
+  },
+  {
+    "id": "augsburg",
+    "name": "Augsburg",
+    "slug": "augsburg"
+  },
+  {
+    "id": "austins-fc",
+    "name": "Austins Fc",
+    "slug": "austins-fc"
+  },
+  {
+    "id": "austrailia",
+    "name": "Austrailia",
+    "slug": "austrailia"
+  },
+  {
+    "id": "austria",
+    "name": "Austria",
+    "slug": "austria"
+  },
+  {
+    "id": "auxerre",
+    "name": "Auxerre",
+    "slug": "auxerre"
+  },
+  {
+    "id": "avs-futebol-sad",
+    "name": "Avs Futebol Sad",
+    "slug": "avs-futebol-sad"
+  },
+  {
+    "id": "az-alkmaar",
+    "name": "Az Alkmaar",
+    "slug": "az-alkmaar"
+  },
+  {
+    "id": "azerbaijan",
+    "name": "Azerbaijan",
+    "slug": "azerbaijan"
+  },
+  {
+    "id": "bahamas",
+    "name": "Bahamas",
+    "slug": "bahamas"
+  },
+  {
+    "id": "bahrain",
+    "name": "Bahrain",
+    "slug": "bahrain"
+  },
+  {
+    "id": "bangladesh",
+    "name": "Bangladesh",
+    "slug": "bangladesh"
+  },
+  {
+    "id": "barbados",
+    "name": "Barbados",
+    "slug": "barbados"
+  },
+  {
+    "id": "basel",
+    "name": "Basel",
+    "slug": "basel"
+  },
+  {
+    "id": "basque",
+    "name": "Basque",
+    "slug": "basque"
+  },
+  {
+    "id": "bayer-leverkusen",
+    "name": "Bayer Leverkusen",
+    "slug": "bayer-leverkusen"
+  },
+  {
+    "id": "bayern-munich",
+    "name": "Bayern Munich",
+    "slug": "bayern-munich"
+  },
+  {
+    "id": "belarus",
+    "name": "Belarus",
+    "slug": "belarus"
+  },
+  {
+    "id": "belgium",
+    "name": "Belgium",
+    "slug": "belgium"
+  },
+  {
+    "id": "belize",
+    "name": "Belize",
+    "slug": "belize"
+  },
+  {
+    "id": "benfica",
+    "name": "Benfica",
+    "slug": "benfica"
+  },
+  {
+    "id": "benin",
+    "name": "Benin",
+    "slug": "benin"
+  },
+  {
+    "id": "bermuda",
+    "name": "Bermuda",
+    "slug": "bermuda"
+  },
+  {
+    "id": "bhutan",
+    "name": "Bhutan",
+    "slug": "bhutan"
+  },
+  {
+    "id": "bodo-glimt",
+    "name": "Bodo Glimt",
+    "slug": "bodo-glimt"
+  },
+  {
+    "id": "boliivia",
+    "name": "Boliivia",
+    "slug": "boliivia"
+  },
+  {
+    "id": "bologna",
+    "name": "Bologna",
+    "slug": "bologna"
+  },
+  {
+    "id": "borussia-dortmund",
+    "name": "Borussia Dortmund",
+    "slug": "borussia-dortmund"
+  },
+  {
+    "id": "borussia-monchengladbach",
+    "name": "Borussia Monchengladbach",
+    "slug": "borussia-monchengladbach"
+  },
+  {
+    "id": "bosnia-herzegovina",
+    "name": "Bosnia Herzegovina",
+    "slug": "bosnia-herzegovina"
+  },
+  {
+    "id": "botswana",
+    "name": "Botswana",
+    "slug": "botswana"
+  },
+  {
+    "id": "bournemouth",
+    "name": "Bournemouth",
+    "slug": "bournemouth"
+  },
+  {
+    "id": "brann",
+    "name": "Brann",
+    "slug": "brann"
+  },
+  {
+    "id": "brazil",
+    "name": "Brazil",
+    "slug": "brazil"
+  },
+  {
+    "id": "breidablik",
+    "name": "Breidablik",
+    "slug": "breidablik"
+  },
+  {
+    "id": "brentford",
+    "name": "Brentford",
+    "slug": "brentford"
+  },
+  {
+    "id": "brest",
+    "name": "Brest",
+    "slug": "brest"
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton",
+    "slug": "brighton"
+  },
+  {
+    "id": "british-virgin-islands",
+    "name": "British Virgin Islands",
+    "slug": "british-virgin-islands"
+  },
+  {
+    "id": "brunei",
+    "name": "Brunei",
+    "slug": "brunei"
+  },
+  {
+    "id": "bukina-faso",
+    "name": "Bukina Faso",
+    "slug": "bukina-faso"
+  },
+  {
+    "id": "bulgaria",
+    "name": "Bulgaria",
+    "slug": "bulgaria"
+  },
+  {
+    "id": "burnley",
+    "name": "Burnley",
+    "slug": "burnley"
+  },
+  {
+    "id": "burundi",
+    "name": "Burundi",
+    "slug": "burundi"
+  },
+  {
+    "id": "cagliari",
+    "name": "Cagliari",
+    "slug": "cagliari"
+  },
+  {
+    "id": "cambodia",
+    "name": "Cambodia",
+    "slug": "cambodia"
+  },
+  {
+    "id": "cameroon",
+    "name": "Cameroon",
+    "slug": "cameroon"
+  },
+  {
+    "id": "canada",
+    "name": "Canada",
+    "slug": "canada"
+  },
+  {
+    "id": "canary-islands",
+    "name": "Canary Islands",
+    "slug": "canary-islands"
+  },
+  {
+    "id": "cape-verde",
+    "name": "Cape Verde",
+    "slug": "cape-verde"
+  },
+  {
+    "id": "casa-pia-ac",
+    "name": "Casa Pia Ac",
+    "slug": "casa-pia-ac"
+  },
+  {
+    "id": "cayman-islands",
+    "name": "Cayman Islands",
+    "slug": "cayman-islands"
+  },
+  {
+    "id": "celje",
+    "name": "Celje",
+    "slug": "celje"
+  },
+  {
+    "id": "celta",
+    "name": "Celta",
+    "slug": "celta"
+  },
+  {
+    "id": "celtic",
+    "name": "Celtic",
+    "slug": "celtic"
+  },
+  {
+    "id": "central-african-republic",
+    "name": "Central African Republic",
+    "slug": "central-african-republic"
+  },
+  {
+    "id": "cf-montreal",
+    "name": "Cf Montreal",
+    "slug": "cf-montreal"
+  },
+  {
+    "id": "chad",
+    "name": "Chad",
+    "slug": "chad"
+  },
+  {
+    "id": "charlotte-fc",
+    "name": "Charlotte Fc",
+    "slug": "charlotte-fc"
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea",
+    "slug": "chelsea"
+  },
+  {
+    "id": "chicago-fire-fc",
+    "name": "Chicago Fire Fc",
+    "slug": "chicago-fire-fc"
+  },
+  {
+    "id": "chile",
+    "name": "Chile",
+    "slug": "chile"
+  },
+  {
+    "id": "china",
+    "name": "China",
+    "slug": "china"
+  },
+  {
+    "id": "club-brugge",
+    "name": "Club Brugge",
+    "slug": "club-brugge"
+  },
+  {
+    "id": "colorado-rapids",
+    "name": "Colorado Rapids",
+    "slug": "colorado-rapids"
+  },
+  {
+    "id": "columbia",
+    "name": "Columbia",
+    "slug": "columbia"
+  },
+  {
+    "id": "columbus-crew",
+    "name": "Columbus Crew",
+    "slug": "columbus-crew"
+  },
+  {
+    "id": "como-1907",
+    "name": "Como 1907",
+    "slug": "como-1907"
+  },
+  {
+    "id": "comoros",
+    "name": "Comoros",
+    "slug": "comoros"
+  },
+  {
+    "id": "cook-islands",
+    "name": "Cook Islands",
+    "slug": "cook-islands"
+  },
+  {
+    "id": "copenhagen",
+    "name": "Copenhagen",
+    "slug": "copenhagen"
+  },
+  {
+    "id": "costa-rica",
+    "name": "Costa Rica",
+    "slug": "costa-rica"
+  },
+  {
+    "id": "cremonese",
+    "name": "Cremonese",
+    "slug": "cremonese"
+  },
+  {
+    "id": "croatia",
+    "name": "Croatia",
+    "slug": "croatia"
+  },
+  {
+    "id": "crvena-zvezda",
+    "name": "Crvena Zvezda",
+    "slug": "crvena-zvezda"
+  },
+  {
+    "id": "crystal-palace",
+    "name": "Crystal Palace",
+    "slug": "crystal-palace"
+  },
+  {
+    "id": "cuba",
+    "name": "Cuba",
+    "slug": "cuba"
+  },
+  {
+    "id": "curacao",
+    "name": "Curacao",
+    "slug": "curacao"
+  },
+  {
+    "id": "cyprus",
+    "name": "Cyprus",
+    "slug": "cyprus"
+  },
+  {
+    "id": "czech-republic",
+    "name": "Czech Republic",
+    "slug": "czech-republic"
+  },
+  {
+    "id": "czechia",
+    "name": "Czechia",
+    "slug": "czechia"
+  },
+  {
+    "id": "damac",
+    "name": "Damac",
+    "slug": "damac"
+  },
+  {
+    "id": "dc-united",
+    "name": "Dc United",
+    "slug": "dc-united"
+  },
+  {
+    "id": "democratic-republic-of-congo",
+    "name": "Democratic Republic Of Congo",
+    "slug": "democratic-republic-of-congo"
+  },
+  {
+    "id": "denmark",
+    "name": "Denmark",
+    "slug": "denmark"
+  },
+  {
+    "id": "deportivo",
+    "name": "Deportivo",
+    "slug": "deportivo"
+  },
+  {
+    "id": "dinamo-zagreb",
+    "name": "Dinamo Zagreb",
+    "slug": "dinamo-zagreb"
+  },
+  {
+    "id": "djibouti",
+    "name": "Djibouti",
+    "slug": "djibouti"
+  },
+  {
+    "id": "dominca",
+    "name": "Dominca",
+    "slug": "dominca"
+  },
+  {
+    "id": "dominican-republic",
+    "name": "Dominican Republic",
+    "slug": "dominican-republic"
+  },
+  {
+    "id": "drita",
+    "name": "Drita",
+    "slug": "drita"
+  },
+  {
+    "id": "dynamo-kyiv",
+    "name": "Dynamo Kyiv",
+    "slug": "dynamo-kyiv"
+  },
+  {
+    "id": "east-timor",
+    "name": "East Timor",
+    "slug": "east-timor"
+  },
+  {
+    "id": "ecuador",
+    "name": "Ecuador",
+    "slug": "ecuador"
+  },
+  {
+    "id": "egypt",
+    "name": "Egypt",
+    "slug": "egypt"
+  },
+  {
+    "id": "eintracht-frankfurt",
+    "name": "Eintracht Frankfurt",
+    "slug": "eintracht-frankfurt"
+  },
+  {
+    "id": "el-savador",
+    "name": "El Savador",
+    "slug": "el-savador"
+  },
+  {
+    "id": "elche",
+    "name": "Elche",
+    "slug": "elche"
+  },
+  {
+    "id": "england",
+    "name": "England",
+    "slug": "england"
+  },
+  {
+    "id": "equitorial-gineau",
+    "name": "Equitorial Gineau",
+    "slug": "equitorial-gineau"
+  },
+  {
+    "id": "eritrea",
+    "name": "Eritrea",
+    "slug": "eritrea"
+  },
+  {
+    "id": "espanyol",
+    "name": "Espanyol",
+    "slug": "espanyol"
+  },
+  {
+    "id": "estonia",
+    "name": "Estonia",
+    "slug": "estonia"
+  },
+  {
+    "id": "estoril",
+    "name": "Estoril",
+    "slug": "estoril"
+  },
+  {
+    "id": "estrela-da-amadora",
+    "name": "Estrela Da Amadora",
+    "slug": "estrela-da-amadora"
+  },
+  {
+    "id": "eswatini",
+    "name": "Eswatini",
+    "slug": "eswatini"
+  },
+  {
+    "id": "ethopia",
+    "name": "Ethopia",
+    "slug": "ethopia"
+  },
+  {
+    "id": "europe",
+    "name": "Europe",
+    "slug": "europe"
+  },
+  {
+    "id": "everton",
+    "name": "Everton",
+    "slug": "everton"
+  },
+  {
+    "id": "excelsior-rotterdam",
+    "name": "Excelsior Rotterdam",
+    "slug": "excelsior-rotterdam"
+  },
+  {
+    "id": "falklands-island",
+    "name": "Falklands Island",
+    "slug": "falklands-island"
+  },
+  {
+    "id": "famalicao",
+    "name": "Famalicao",
+    "slug": "famalicao"
+  },
+  {
+    "id": "faroe-island",
+    "name": "Faroe Island",
+    "slug": "faroe-island"
+  },
+  {
+    "id": "fc-barcelona",
+    "name": "Fc Barcelona",
+    "slug": "fc-barcelona"
+  },
+  {
+    "id": "fc-cincinnati",
+    "name": "Fc Cincinnati",
+    "slug": "fc-cincinnati"
+  },
+  {
+    "id": "fc-dallas",
+    "name": "Fc Dallas",
+    "slug": "fc-dallas"
+  },
+  {
+    "id": "fc-groningen",
+    "name": "Fc Groningen",
+    "slug": "fc-groningen"
+  },
+  {
+    "id": "fc-heidenheim",
+    "name": "Fc Heidenheim",
+    "slug": "fc-heidenheim"
+  },
+  {
+    "id": "fc-metz",
+    "name": "Fc Metz",
+    "slug": "fc-metz"
+  },
+  {
+    "id": "fc-porto",
+    "name": "Fc Porto",
+    "slug": "fc-porto"
+  },
+  {
+    "id": "fc-utrecht",
+    "name": "Fc Utrecht",
+    "slug": "fc-utrecht"
+  },
+  {
+    "id": "fcsb",
+    "name": "Fcsb",
+    "slug": "fcsb"
+  },
+  {
+    "id": "fenerbahce",
+    "name": "Fenerbahce",
+    "slug": "fenerbahce"
+  },
+  {
+    "id": "ferencvaros",
+    "name": "Ferencvaros",
+    "slug": "ferencvaros"
+  },
+  {
+    "id": "feyenoord",
+    "name": "Feyenoord",
+    "slug": "feyenoord"
+  },
+  {
+    "id": "fiji",
+    "name": "Fiji",
+    "slug": "fiji"
+  },
+  {
+    "id": "finland",
+    "name": "Finland",
+    "slug": "finland"
+  },
+  {
+    "id": "fiorentina",
+    "name": "Fiorentina",
+    "slug": "fiorentina"
+  },
+  {
+    "id": "fortuna-sittard",
+    "name": "Fortuna Sittard",
+    "slug": "fortuna-sittard"
+  },
+  {
+    "id": "france",
+    "name": "France",
+    "slug": "france"
+  },
+  {
+    "id": "franch-polynesia",
+    "name": "Franch Polynesia",
+    "slug": "franch-polynesia"
+  },
+  {
+    "id": "freiburg",
+    "name": "Freiburg",
+    "slug": "freiburg"
+  },
+  {
+    "id": "french-guiana",
+    "name": "French Guiana",
+    "slug": "french-guiana"
+  },
+  {
+    "id": "fulham",
+    "name": "Fulham",
+    "slug": "fulham"
+  },
+  {
+    "id": "gabon",
+    "name": "Gabon",
+    "slug": "gabon"
+  },
+  {
+    "id": "galatasaray",
+    "name": "Galatasaray",
+    "slug": "galatasaray"
+  },
+  {
+    "id": "gambia",
+    "name": "Gambia",
+    "slug": "gambia"
+  },
+  {
+    "id": "genk",
+    "name": "Genk",
+    "slug": "genk"
+  },
+  {
+    "id": "genoa",
+    "name": "Genoa",
+    "slug": "genoa"
+  },
+  {
+    "id": "georgia",
+    "name": "Georgia",
+    "slug": "georgia"
+  },
+  {
+    "id": "germany",
+    "name": "Germany",
+    "slug": "germany"
+  },
+  {
+    "id": "getafe",
+    "name": "Getafe",
+    "slug": "getafe"
+  },
+  {
+    "id": "ghana",
+    "name": "Ghana",
+    "slug": "ghana"
+  },
+  {
+    "id": "gil-vicente",
+    "name": "Gil Vicente",
+    "slug": "gil-vicente"
+  },
+  {
+    "id": "gilbraltar",
+    "name": "Gilbraltar",
+    "slug": "gilbraltar"
+  },
+  {
+    "id": "girona",
+    "name": "Girona",
+    "slug": "girona"
+  },
+  {
+    "id": "go-ahead-eagles",
+    "name": "Go Ahead Eagles",
+    "slug": "go-ahead-eagles"
+  },
+  {
+    "id": "gredaloupe",
+    "name": "Gredaloupe",
+    "slug": "gredaloupe"
+  },
+  {
+    "id": "greece",
+    "name": "Greece",
+    "slug": "greece"
+  },
+  {
+    "id": "greenland",
+    "name": "Greenland",
+    "slug": "greenland"
+  },
+  {
+    "id": "grenada",
+    "name": "Grenada",
+    "slug": "grenada"
+  },
+  {
+    "id": "guatemala",
+    "name": "Guatemala",
+    "slug": "guatemala"
+  },
+  {
+    "id": "guersney",
+    "name": "Guersney",
+    "slug": "guersney"
+  },
+  {
+    "id": "guinea-bissau",
+    "name": "Guinea Bissau",
+    "slug": "guinea-bissau"
+  },
+  {
+    "id": "guinea",
+    "name": "Guinea",
+    "slug": "guinea"
+  },
+  {
+    "id": "guyana",
+    "name": "Guyana",
+    "slug": "guyana"
+  },
+  {
+    "id": "hacken",
+    "name": "Hacken",
+    "slug": "hacken"
+  },
+  {
+    "id": "haiti",
+    "name": "Haiti",
+    "slug": "haiti"
+  },
+  {
+    "id": "hamburger-sv",
+    "name": "Hamburger Sv",
+    "slug": "hamburger-sv"
+  },
+  {
+    "id": "hamrun-spartans",
+    "name": "Hamrun Spartans",
+    "slug": "hamrun-spartans"
+  },
+  {
+    "id": "hawaii",
+    "name": "Hawaii",
+    "slug": "hawaii"
+  },
+  {
+    "id": "heracles-almelo",
+    "name": "Heracles Almelo",
+    "slug": "heracles-almelo"
+  },
+  {
+    "id": "hoffenheim",
+    "name": "Hoffenheim",
+    "slug": "hoffenheim"
+  },
+  {
+    "id": "honduras-1",
+    "name": "Honduras 1",
+    "slug": "honduras-1"
+  },
+  {
+    "id": "honduras",
+    "name": "Honduras",
+    "slug": "honduras"
+  },
+  {
+    "id": "hong-kong",
+    "name": "Hong Kong",
+    "slug": "hong-kong"
+  },
+  {
+    "id": "houston-dynamo",
+    "name": "Houston Dynamo",
+    "slug": "houston-dynamo"
+  },
+  {
+    "id": "iceland",
+    "name": "Iceland",
+    "slug": "iceland"
+  },
+  {
+    "id": "india",
+    "name": "India",
+    "slug": "india"
+  },
+  {
+    "id": "indonesia",
+    "name": "Indonesia",
+    "slug": "indonesia"
+  },
+  {
+    "id": "inter-miami-cf",
+    "name": "Inter Miami Cf",
+    "slug": "inter-miami-cf"
+  },
+  {
+    "id": "inter",
+    "name": "Inter",
+    "slug": "inter"
+  },
+  {
+    "id": "iran",
+    "name": "Iran",
+    "slug": "iran"
+  },
+  {
+    "id": "iraq",
+    "name": "Iraq",
+    "slug": "iraq"
+  },
+  {
+    "id": "ireland",
+    "name": "Ireland",
+    "slug": "ireland"
+  },
+  {
+    "id": "isle-of-man",
+    "name": "Isle Of Man",
+    "slug": "isle-of-man"
+  },
+  {
+    "id": "israel",
+    "name": "Israel",
+    "slug": "israel"
+  },
+  {
+    "id": "italy",
+    "name": "Italy",
+    "slug": "italy"
+  },
+  {
+    "id": "ivory-coast",
+    "name": "Ivory Coast",
+    "slug": "ivory-coast"
+  },
+  {
+    "id": "jagiellonia",
+    "name": "Jagiellonia",
+    "slug": "jagiellonia"
+  },
+  {
+    "id": "jamaica",
+    "name": "Jamaica",
+    "slug": "jamaica"
+  },
+  {
+    "id": "japan",
+    "name": "Japan",
+    "slug": "japan"
+  },
+  {
+    "id": "jersey",
+    "name": "Jersey",
+    "slug": "jersey"
+  },
+  {
+    "id": "jordan",
+    "name": "Jordan",
+    "slug": "jordan"
+  },
+  {
+    "id": "juventus",
+    "name": "Juventus",
+    "slug": "juventus"
+  },
+  {
+    "id": "kairat",
+    "name": "Kairat",
+    "slug": "kairat"
+  },
+  {
+    "id": "kazakhstan",
+    "name": "Kazakhstan",
+    "slug": "kazakhstan"
+  },
+  {
+    "id": "kenya",
+    "name": "Kenya",
+    "slug": "kenya"
+  },
+  {
+    "id": "kiribati",
+    "name": "Kiribati",
+    "slug": "kiribati"
+  },
+  {
+    "id": "koln",
+    "name": "Koln",
+    "slug": "koln"
+  },
+  {
+    "id": "kosovo",
+    "name": "Kosovo",
+    "slug": "kosovo"
+  },
+  {
+    "id": "krygzstan",
+    "name": "Krygzstan",
+    "slug": "krygzstan"
+  },
+  {
+    "id": "kups",
+    "name": "Kups",
+    "slug": "kups"
+  },
+  {
+    "id": "kurdistan",
+    "name": "Kurdistan",
+    "slug": "kurdistan"
+  },
+  {
+    "id": "kuwait",
+    "name": "Kuwait",
+    "slug": "kuwait"
+  },
+  {
+    "id": "la-galaxy",
+    "name": "La Galaxy",
+    "slug": "la-galaxy"
+  },
+  {
+    "id": "laos",
+    "name": "Laos",
+    "slug": "laos"
+  },
+  {
+    "id": "latvia",
+    "name": "Latvia",
+    "slug": "latvia"
+  },
+  {
+    "id": "lausanne-sport",
+    "name": "Lausanne Sport",
+    "slug": "lausanne-sport"
+  },
+  {
+    "id": "lazio",
+    "name": "Lazio",
+    "slug": "lazio"
+  },
+  {
+    "id": "le-havre-ac",
+    "name": "Le Havre Ac",
+    "slug": "le-havre-ac"
+  },
+  {
+    "id": "lebanon",
+    "name": "Lebanon",
+    "slug": "lebanon"
+  },
+  {
+    "id": "lecce",
+    "name": "Lecce",
+    "slug": "lecce"
+  },
+  {
+    "id": "lech-poznan",
+    "name": "Lech Poznan",
+    "slug": "lech-poznan"
+  },
+  {
+    "id": "leeds-united",
+    "name": "Leeds United",
+    "slug": "leeds-united"
+  },
+  {
+    "id": "legia-warszawa",
+    "name": "Legia Warszawa",
+    "slug": "legia-warszawa"
+  },
+  {
+    "id": "lesotho",
+    "name": "Lesotho",
+    "slug": "lesotho"
+  },
+  {
+    "id": "levante",
+    "name": "Levante",
+    "slug": "levante"
+  },
+  {
+    "id": "liberia",
+    "name": "Liberia",
+    "slug": "liberia"
+  },
+  {
+    "id": "libya",
+    "name": "Libya",
+    "slug": "libya"
+  },
+  {
+    "id": "liechtenstein",
+    "name": "Liechtenstein",
+    "slug": "liechtenstein"
+  },
+  {
+    "id": "lille-osc",
+    "name": "Lille Osc",
+    "slug": "lille-osc"
+  },
+  {
+    "id": "lincoln-red-imps",
+    "name": "Lincoln Red Imps",
+    "slug": "lincoln-red-imps"
+  },
+  {
+    "id": "lithuania",
+    "name": "Lithuania",
+    "slug": "lithuania"
+  },
+  {
+    "id": "liverpool-fc",
+    "name": "Liverpool Fc",
+    "slug": "liverpool-fc"
+  },
+  {
+    "id": "lorient",
+    "name": "Lorient",
+    "slug": "lorient"
+  },
+  {
+    "id": "los-angeles-fc",
+    "name": "Los Angeles Fc",
+    "slug": "los-angeles-fc"
+  },
+  {
+    "id": "ludogorets",
+    "name": "Ludogorets",
+    "slug": "ludogorets"
+  },
+  {
+    "id": "luxembourg",
+    "name": "Luxembourg",
+    "slug": "luxembourg"
+  },
+  {
+    "id": "lyon",
+    "name": "Lyon",
+    "slug": "lyon"
+  },
+  {
+    "id": "m-tel-aviv",
+    "name": "M Tel Aviv",
+    "slug": "m-tel-aviv"
+  },
+  {
+    "id": "macau",
+    "name": "Macau",
+    "slug": "macau"
+  },
+  {
+    "id": "madagascar",
+    "name": "Madagascar",
+    "slug": "madagascar"
+  },
+  {
+    "id": "mainz-05",
+    "name": "Mainz 05",
+    "slug": "mainz-05"
+  },
+  {
+    "id": "malawi",
+    "name": "Malawi",
+    "slug": "malawi"
+  },
+  {
+    "id": "malaysia",
+    "name": "Malaysia",
+    "slug": "malaysia"
+  },
+  {
+    "id": "maldives",
+    "name": "Maldives",
+    "slug": "maldives"
+  },
+  {
+    "id": "mali",
+    "name": "Mali",
+    "slug": "mali"
+  },
+  {
+    "id": "mallorca",
+    "name": "Mallorca",
+    "slug": "mallorca"
+  },
+  {
+    "id": "malmo",
+    "name": "Malmo",
+    "slug": "malmo"
+  },
+  {
+    "id": "malta",
+    "name": "Malta",
+    "slug": "malta"
+  },
+  {
+    "id": "manchester-city",
+    "name": "Manchester City",
+    "slug": "manchester-city"
+  },
+  {
+    "id": "manchester-united",
+    "name": "Manchester United",
+    "slug": "manchester-united"
+  },
+  {
+    "id": "marseille",
+    "name": "Marseille",
+    "slug": "marseille"
+  },
+  {
+    "id": "marshall-islands",
+    "name": "Marshall Islands",
+    "slug": "marshall-islands"
+  },
+  {
+    "id": "martinique",
+    "name": "Martinique",
+    "slug": "martinique"
+  },
+  {
+    "id": "mauritania",
+    "name": "Mauritania",
+    "slug": "mauritania"
+  },
+  {
+    "id": "mauritius",
+    "name": "Mauritius",
+    "slug": "mauritius"
+  },
+  {
+    "id": "mexico",
+    "name": "Mexico",
+    "slug": "mexico"
+  },
+  {
+    "id": "micronesia",
+    "name": "Micronesia",
+    "slug": "micronesia"
+  },
+  {
+    "id": "midtjylland",
+    "name": "Midtjylland",
+    "slug": "midtjylland"
+  },
+  {
+    "id": "minnesota-united-fc",
+    "name": "Minnesota United Fc",
+    "slug": "minnesota-united-fc"
+  },
+  {
+    "id": "moldova",
+    "name": "Moldova",
+    "slug": "moldova"
+  },
+  {
+    "id": "monaco",
+    "name": "Monaco",
+    "slug": "monaco"
+  },
+  {
+    "id": "mongolia",
+    "name": "Mongolia",
+    "slug": "mongolia"
+  },
+  {
+    "id": "montegro",
+    "name": "Montegro",
+    "slug": "montegro"
+  },
+  {
+    "id": "moreirense",
+    "name": "Moreirense",
+    "slug": "moreirense"
+  },
+  {
+    "id": "morocco",
+    "name": "Morocco",
+    "slug": "morocco"
+  },
+  {
+    "id": "morroco",
+    "name": "Morroco",
+    "slug": "morroco"
+  },
+  {
+    "id": "mozambique",
+    "name": "Mozambique",
+    "slug": "mozambique"
+  },
+  {
+    "id": "myanmar",
+    "name": "Myanmar",
+    "slug": "myanmar"
+  },
+  {
+    "id": "nac-breda",
+    "name": "Nac Breda",
+    "slug": "nac-breda"
+  },
+  {
+    "id": "nacional-da-madeira",
+    "name": "Nacional Da Madeira",
+    "slug": "nacional-da-madeira"
+  },
+  {
+    "id": "namibia",
+    "name": "Namibia",
+    "slug": "namibia"
+  },
+  {
+    "id": "nantes",
+    "name": "Nantes",
+    "slug": "nantes"
+  },
+  {
+    "id": "napoli",
+    "name": "Napoli",
+    "slug": "napoli"
+  },
+  {
+    "id": "nashville-sc",
+    "name": "Nashville Sc",
+    "slug": "nashville-sc"
+  },
+  {
+    "id": "nauru",
+    "name": "Nauru",
+    "slug": "nauru"
+  },
+  {
+    "id": "nec-nijmegen",
+    "name": "Nec Nijmegen",
+    "slug": "nec-nijmegen"
+  },
+  {
+    "id": "neom",
+    "name": "Neom",
+    "slug": "neom"
+  },
+  {
+    "id": "nepal",
+    "name": "Nepal",
+    "slug": "nepal"
+  },
+  {
+    "id": "netherlands-antilles",
+    "name": "Netherlands Antilles",
+    "slug": "netherlands-antilles"
+  },
+  {
+    "id": "netherlands",
+    "name": "Netherlands",
+    "slug": "netherlands"
+  },
+  {
+    "id": "new-caledonia",
+    "name": "New Caledonia",
+    "slug": "new-caledonia"
+  },
+  {
+    "id": "new-zealand",
+    "name": "New Zealand",
+    "slug": "new-zealand"
+  },
+  {
+    "id": "new-england-revolution",
+    "name": "New England Revolution",
+    "slug": "new-england-revolution"
+  },
+  {
+    "id": "new-york-city-fc",
+    "name": "New York City Fc",
+    "slug": "new-york-city-fc"
+  },
+  {
+    "id": "new-york-red-bulls",
+    "name": "New York Red Bulls",
+    "slug": "new-york-red-bulls"
+  },
+  {
+    "id": "newcastle",
+    "name": "Newcastle",
+    "slug": "newcastle"
+  },
+  {
+    "id": "nicaragua",
+    "name": "Nicaragua",
+    "slug": "nicaragua"
+  },
+  {
+    "id": "nice",
+    "name": "Nice",
+    "slug": "nice"
+  },
+  {
+    "id": "niger",
+    "name": "Niger",
+    "slug": "niger"
+  },
+  {
+    "id": "nigeria",
+    "name": "Nigeria",
+    "slug": "nigeria"
+  },
+  {
+    "id": "noah",
+    "name": "Noah",
+    "slug": "noah"
+  },
+  {
+    "id": "north-korea",
+    "name": "North Korea",
+    "slug": "north-korea"
+  },
+  {
+    "id": "north-macedonia",
+    "name": "North Macedonia",
+    "slug": "north-macedonia"
+  },
+  {
+    "id": "northern-ireland",
+    "name": "Northern Ireland",
+    "slug": "northern-ireland"
+  },
+  {
+    "id": "norway",
+    "name": "Norway",
+    "slug": "norway"
+  },
+  {
+    "id": "nottingham-forest",
+    "name": "Nottingham Forest",
+    "slug": "nottingham-forest"
+  },
+  {
+    "id": "nuie",
+    "name": "Nuie",
+    "slug": "nuie"
+  },
+  {
+    "id": "olomouc",
+    "name": "Olomouc",
+    "slug": "olomouc"
+  },
+  {
+    "id": "olympiacos",
+    "name": "Olympiacos",
+    "slug": "olympiacos"
+  },
+  {
+    "id": "oman",
+    "name": "Oman",
+    "slug": "oman"
+  },
+  {
+    "id": "omonoia",
+    "name": "Omonoia",
+    "slug": "omonoia"
+  },
+  {
+    "id": "orlando-city",
+    "name": "Orlando City",
+    "slug": "orlando-city"
+  },
+  {
+    "id": "osasuna",
+    "name": "Osasuna",
+    "slug": "osasuna"
+  },
+  {
+    "id": "oviedo",
+    "name": "Oviedo",
+    "slug": "oviedo"
+  },
+  {
+    "id": "pafos",
+    "name": "Pafos",
+    "slug": "pafos"
+  },
+  {
+    "id": "pakistan",
+    "name": "Pakistan",
+    "slug": "pakistan"
+  },
+  {
+    "id": "palau",
+    "name": "Palau",
+    "slug": "palau"
+  },
+  {
+    "id": "palestine",
+    "name": "Palestine",
+    "slug": "palestine"
+  },
+  {
+    "id": "panama",
+    "name": "Panama",
+    "slug": "panama"
+  },
+  {
+    "id": "panathinaikos",
+    "name": "Panathinaikos",
+    "slug": "panathinaikos"
+  },
+  {
+    "id": "paok",
+    "name": "Paok",
+    "slug": "paok"
+  },
+  {
+    "id": "papau-new-guinea",
+    "name": "Papau New Guinea",
+    "slug": "papau-new-guinea"
+  },
+  {
+    "id": "paraguay",
+    "name": "Paraguay",
+    "slug": "paraguay"
+  },
+  {
+    "id": "paris-fc",
+    "name": "Paris Fc",
+    "slug": "paris-fc"
+  },
+  {
+    "id": "paris-saint-germain",
+    "name": "Paris Saint Germain",
+    "slug": "paris-saint-germain"
+  },
+  {
+    "id": "parma",
+    "name": "Parma",
+    "slug": "parma"
+  },
+  {
+    "id": "pec-zwolle",
+    "name": "Pec Zwolle",
+    "slug": "pec-zwolle"
+  },
+  {
+    "id": "peru",
+    "name": "Peru",
+    "slug": "peru"
+  },
+  {
+    "id": "philadelphia-union",
+    "name": "Philadelphia Union",
+    "slug": "philadelphia-union"
+  },
+  {
+    "id": "philipinnes",
+    "name": "Philipinnes",
+    "slug": "philipinnes"
+  },
+  {
+    "id": "pisa",
+    "name": "Pisa",
+    "slug": "pisa"
+  },
+  {
+    "id": "poland",
+    "name": "Poland",
+    "slug": "poland"
+  },
+  {
+    "id": "portland-timbers",
+    "name": "Portland Timbers",
+    "slug": "portland-timbers"
+  },
+  {
+    "id": "portugal",
+    "name": "Portugal",
+    "slug": "portugal"
+  },
+  {
+    "id": "psv-eindhoven",
+    "name": "Psv Eindhoven",
+    "slug": "psv-eindhoven"
+  },
+  {
+    "id": "puerto-rico",
+    "name": "Puerto Rico",
+    "slug": "puerto-rico"
+  },
+  {
+    "id": "qarabag",
+    "name": "Qarabag",
+    "slug": "qarabag"
+  },
+  {
+    "id": "qatar",
+    "name": "Qatar",
+    "slug": "qatar"
+  },
+  {
+    "id": "rakow",
+    "name": "Rakow",
+    "slug": "rakow"
+  },
+  {
+    "id": "rangers",
+    "name": "Rangers",
+    "slug": "rangers"
+  },
+  {
+    "id": "rapid-vienna",
+    "name": "Rapid Vienna",
+    "slug": "rapid-vienna"
+  },
+  {
+    "id": "rayo-vallecano",
+    "name": "Rayo Vallecano",
+    "slug": "rayo-vallecano"
+  },
+  {
+    "id": "rb-leipzig",
+    "name": "Rb Leipzig",
+    "slug": "rb-leipzig"
+  },
+  {
+    "id": "rc-lens",
+    "name": "Rc Lens",
+    "slug": "rc-lens"
+  },
+  {
+    "id": "rc-strasbourg-alsace",
+    "name": "Rc Strasbourg Alsace",
+    "slug": "rc-strasbourg-alsace"
+  },
+  {
+    "id": "real-betis",
+    "name": "Real Betis",
+    "slug": "real-betis"
+  },
+  {
+    "id": "real-madrid",
+    "name": "Real Madrid",
+    "slug": "real-madrid"
+  },
+  {
+    "id": "real-salt-lake",
+    "name": "Real Salt Lake",
+    "slug": "real-salt-lake"
+  },
+  {
+    "id": "real-sociedad",
+    "name": "Real Sociedad",
+    "slug": "real-sociedad"
+  },
+  {
+    "id": "rennes",
+    "name": "Rennes",
+    "slug": "rennes"
+  },
+  {
+    "id": "republic-of-congo",
+    "name": "Republic Of Congo",
+    "slug": "republic-of-congo"
+  },
+  {
+    "id": "rijeka",
+    "name": "Rijeka",
+    "slug": "rijeka"
+  },
+  {
+    "id": "rio-ave",
+    "name": "Rio Ave",
+    "slug": "rio-ave"
+  },
+  {
+    "id": "roma",
+    "name": "Roma",
+    "slug": "roma"
+  },
+  {
+    "id": "romania",
+    "name": "Romania",
+    "slug": "romania"
+  },
+  {
+    "id": "russia",
+    "name": "Russia",
+    "slug": "russia"
+  },
+  {
+    "id": "rwanda",
+    "name": "Rwanda",
+    "slug": "rwanda"
+  },
+  {
+    "id": "s-bratislava",
+    "name": "S Bratislava",
+    "slug": "s-bratislava"
+  },
+  {
+    "id": "saint-kitts-nevis",
+    "name": "Saint Kitts Nevis",
+    "slug": "saint-kitts-nevis"
+  },
+  {
+    "id": "saint-levis",
+    "name": "Saint Levis",
+    "slug": "saint-levis"
+  },
+  {
+    "id": "saint-vincent-and-the-grenadines",
+    "name": "Saint Vincent And The Grenadines",
+    "slug": "saint-vincent-and-the-grenadines"
+  },
+  {
+    "id": "salzburg",
+    "name": "Salzburg",
+    "slug": "salzburg"
+  },
+  {
+    "id": "samoa",
+    "name": "Samoa",
+    "slug": "samoa"
+  },
+  {
+    "id": "samsunspor",
+    "name": "Samsunspor",
+    "slug": "samsunspor"
+  },
+  {
+    "id": "san-marino",
+    "name": "San Marino",
+    "slug": "san-marino"
+  },
+  {
+    "id": "san-diego-fc",
+    "name": "San Diego Fc",
+    "slug": "san-diego-fc"
+  },
+  {
+    "id": "san-jose-earthquakes",
+    "name": "San Jose Earthquakes",
+    "slug": "san-jose-earthquakes"
+  },
+  {
+    "id": "santa-clara",
+    "name": "Santa Clara",
+    "slug": "santa-clara"
+  },
+  {
+    "id": "sao-tome-principe",
+    "name": "Sao Tome Principe",
+    "slug": "sao-tome-principe"
+  },
+  {
+    "id": "sassuolo",
+    "name": "Sassuolo",
+    "slug": "sassuolo"
+  },
+  {
+    "id": "saudi-arabia",
+    "name": "Saudi Arabia",
+    "slug": "saudi-arabia"
+  },
+  {
+    "id": "sc-braga",
+    "name": "Sc Braga",
+    "slug": "sc-braga"
+  },
+  {
+    "id": "sc-heerenveen",
+    "name": "Sc Heerenveen",
+    "slug": "sc-heerenveen"
+  },
+  {
+    "id": "scotland",
+    "name": "Scotland",
+    "slug": "scotland"
+  },
+  {
+    "id": "seattle-sounders-fc",
+    "name": "Seattle Sounders Fc",
+    "slug": "seattle-sounders-fc"
+  },
+  {
+    "id": "senegal",
+    "name": "Senegal",
+    "slug": "senegal"
+  },
+  {
+    "id": "serbia",
+    "name": "Serbia",
+    "slug": "serbia"
+  },
+  {
+    "id": "sevilla",
+    "name": "Sevilla",
+    "slug": "sevilla"
+  },
+  {
+    "id": "seychelles",
+    "name": "Seychelles",
+    "slug": "seychelles"
+  },
+  {
+    "id": "shakhtar",
+    "name": "Shakhtar",
+    "slug": "shakhtar"
+  },
+  {
+    "id": "shamrock-rovers",
+    "name": "Shamrock Rovers",
+    "slug": "shamrock-rovers"
+  },
+  {
+    "id": "shelbourne",
+    "name": "Shelbourne",
+    "slug": "shelbourne"
+  },
+  {
+    "id": "shkendija",
+    "name": "Shkendija",
+    "slug": "shkendija"
+  },
+  {
+    "id": "sierra-leonne",
+    "name": "Sierra Leonne",
+    "slug": "sierra-leonne"
+  },
+  {
+    "id": "singapore",
+    "name": "Singapore",
+    "slug": "singapore"
+  },
+  {
+    "id": "sint-maarten",
+    "name": "Sint Maarten",
+    "slug": "sint-maarten"
+  },
+  {
+    "id": "slavia-praha",
+    "name": "Slavia Praha",
+    "slug": "slavia-praha"
+  },
+  {
+    "id": "slovakia",
+    "name": "Slovakia",
+    "slug": "slovakia"
+  },
+  {
+    "id": "slovenia",
+    "name": "Slovenia",
+    "slug": "slovenia"
+  },
+  {
+    "id": "solomon-islands",
+    "name": "Solomon Islands",
+    "slug": "solomon-islands"
+  },
+  {
+    "id": "somalia",
+    "name": "Somalia",
+    "slug": "somalia"
+  },
+  {
+    "id": "south-africa",
+    "name": "South Africa",
+    "slug": "south-africa"
+  },
+  {
+    "id": "south-georgia-and-the-south-sandwich-islands",
+    "name": "South Georgia And The South Sandwich Islands",
+    "slug": "south-georgia-and-the-south-sandwich-islands"
+  },
+  {
+    "id": "south-korea",
+    "name": "South Korea",
+    "slug": "south-korea"
+  },
+  {
+    "id": "south-sudan",
+    "name": "South Sudan",
+    "slug": "south-sudan"
+  },
+  {
+    "id": "spain",
+    "name": "Spain",
+    "slug": "spain"
+  },
+  {
+    "id": "sparta-praha",
+    "name": "Sparta Praha",
+    "slug": "sparta-praha"
+  },
+  {
+    "id": "sparta-rotterdam",
+    "name": "Sparta Rotterdam",
+    "slug": "sparta-rotterdam"
+  },
+  {
+    "id": "sporting-cp",
+    "name": "Sporting Cp",
+    "slug": "sporting-cp"
+  },
+  {
+    "id": "sporting-kansas-city",
+    "name": "Sporting Kansas City",
+    "slug": "sporting-kansas-city"
+  },
+  {
+    "id": "sri-lanka",
+    "name": "Sri Lanka",
+    "slug": "sri-lanka"
+  },
+  {
+    "id": "st-louis-city-sc",
+    "name": "St Louis City Sc",
+    "slug": "st-louis-city-sc"
+  },
+  {
+    "id": "st-pauli",
+    "name": "St Pauli",
+    "slug": "st-pauli"
+  },
+  {
+    "id": "sturm-graz",
+    "name": "Sturm Graz",
+    "slug": "sturm-graz"
+  },
+  {
+    "id": "sudan",
+    "name": "Sudan",
+    "slug": "sudan"
+  },
+  {
+    "id": "sunderland",
+    "name": "Sunderland",
+    "slug": "sunderland"
+  },
+  {
+    "id": "suriname",
+    "name": "Suriname",
+    "slug": "suriname"
+  },
+  {
+    "id": "sweden",
+    "name": "Sweden",
+    "slug": "sweden"
+  },
+  {
+    "id": "switzerland",
+    "name": "Switzerland",
+    "slug": "switzerland"
+  },
+  {
+    "id": "syria",
+    "name": "Syria",
+    "slug": "syria"
+  },
+  {
+    "id": "taiwan",
+    "name": "Taiwan",
+    "slug": "taiwan"
+  },
+  {
+    "id": "tajikistan",
+    "name": "Tajikistan",
+    "slug": "tajikistan"
+  },
+  {
+    "id": "tanzania",
+    "name": "Tanzania",
+    "slug": "tanzania"
+  },
+  {
+    "id": "telstar",
+    "name": "Telstar",
+    "slug": "telstar"
+  },
+  {
+    "id": "thailand",
+    "name": "Thailand",
+    "slug": "thailand"
+  },
+  {
+    "id": "togo",
+    "name": "Togo",
+    "slug": "togo"
+  },
+  {
+    "id": "tondela",
+    "name": "Tondela",
+    "slug": "tondela"
+  },
+  {
+    "id": "tonga",
+    "name": "Tonga",
+    "slug": "tonga"
+  },
+  {
+    "id": "torino",
+    "name": "Torino",
+    "slug": "torino"
+  },
+  {
+    "id": "toronto-fc",
+    "name": "Toronto Fc",
+    "slug": "toronto-fc"
+  },
+  {
+    "id": "tottenham",
+    "name": "Tottenham",
+    "slug": "tottenham"
+  },
+  {
+    "id": "toulouse",
+    "name": "Toulouse",
+    "slug": "toulouse"
+  },
+  {
+    "id": "trinidad-and-tobago",
+    "name": "Trinidad And Tobago",
+    "slug": "trinidad-and-tobago"
+  },
+  {
+    "id": "tunisia",
+    "name": "Tunisia",
+    "slug": "tunisia"
+  },
+  {
+    "id": "turkey",
+    "name": "Turkey",
+    "slug": "turkey"
+  },
+  {
+    "id": "turkmenistan",
+    "name": "Turkmenistan",
+    "slug": "turkmenistan"
+  },
+  {
+    "id": "turks-and-caicos",
+    "name": "Turks And Caicos",
+    "slug": "turks-and-caicos"
+  },
+  {
+    "id": "tuvalu",
+    "name": "Tuvalu",
+    "slug": "tuvalu"
+  },
+  {
+    "id": "twente",
+    "name": "Twente",
+    "slug": "twente"
+  },
+  {
+    "id": "u-craiova",
+    "name": "U Craiova",
+    "slug": "u-craiova"
+  },
+  {
+    "id": "udinese",
+    "name": "Udinese",
+    "slug": "udinese"
+  },
+  {
+    "id": "uganda",
+    "name": "Uganda",
+    "slug": "uganda"
+  },
+  {
+    "id": "ukraine",
+    "name": "Ukraine",
+    "slug": "ukraine"
+  },
+  {
+    "id": "union-berlin",
+    "name": "Union Berlin",
+    "slug": "union-berlin"
+  },
+  {
+    "id": "union-saint-gilloise",
+    "name": "Union Saint Gilloise",
+    "slug": "union-saint-gilloise"
+  },
+  {
+    "id": "united-arab-emirates",
+    "name": "United Arab Emirates",
+    "slug": "united-arab-emirates"
+  },
+  {
+    "id": "united-kingdom",
+    "name": "United Kingdom",
+    "slug": "united-kingdom"
+  },
+  {
+    "id": "united-states",
+    "name": "United States",
+    "slug": "united-states"
+  },
+  {
+    "id": "uruguay",
+    "name": "Uruguay",
+    "slug": "uruguay"
+  },
+  {
+    "id": "usa-virgin-islands",
+    "name": "Usa Virgin Islands",
+    "slug": "usa-virgin-islands"
+  },
+  {
+    "id": "usa",
+    "name": "Usa",
+    "slug": "usa"
+  },
+  {
+    "id": "uzbekistan",
+    "name": "Uzbekistan",
+    "slug": "uzbekistan"
+  },
+  {
+    "id": "valencia",
+    "name": "Valencia",
+    "slug": "valencia"
+  },
+  {
+    "id": "vancouver-whitecaps-fc",
+    "name": "Vancouver Whitecaps Fc",
+    "slug": "vancouver-whitecaps-fc"
+  },
+  {
+    "id": "vanuatu",
+    "name": "Vanuatu",
+    "slug": "vanuatu"
+  },
+  {
+    "id": "vatican-city",
+    "name": "Vatican City",
+    "slug": "vatican-city"
+  },
+  {
+    "id": "venezuela",
+    "name": "Venezuela",
+    "slug": "venezuela"
+  },
+  {
+    "id": "verona",
+    "name": "Verona",
+    "slug": "verona"
+  },
+  {
+    "id": "vfb-stuttgart",
+    "name": "Vfb Stuttgart",
+    "slug": "vfb-stuttgart"
+  },
+  {
+    "id": "vietnam",
+    "name": "Vietnam",
+    "slug": "vietnam"
+  },
+  {
+    "id": "viktoria-plzen",
+    "name": "Viktoria Plzen",
+    "slug": "viktoria-plzen"
+  },
+  {
+    "id": "villarreal",
+    "name": "Villarreal",
+    "slug": "villarreal"
+  },
+  {
+    "id": "vitoria-de-guimaraes",
+    "name": "Vitoria De Guimaraes",
+    "slug": "vitoria-de-guimaraes"
+  },
+  {
+    "id": "volendam",
+    "name": "Volendam",
+    "slug": "volendam"
+  },
+  {
+    "id": "wales",
+    "name": "Wales",
+    "slug": "wales"
+  },
+  {
+    "id": "werder-bremen",
+    "name": "Werder Bremen",
+    "slug": "werder-bremen"
+  },
+  {
+    "id": "west-ham",
+    "name": "West Ham",
+    "slug": "west-ham"
+  },
+  {
+    "id": "western-sahara",
+    "name": "Western Sahara",
+    "slug": "western-sahara"
+  },
+  {
+    "id": "wolfsburg",
+    "name": "Wolfsburg",
+    "slug": "wolfsburg"
+  },
+  {
+    "id": "wolves",
+    "name": "Wolves",
+    "slug": "wolves"
+  },
+  {
+    "id": "yemen",
+    "name": "Yemen",
+    "slug": "yemen"
+  },
+  {
+    "id": "young-boys",
+    "name": "Young Boys",
+    "slug": "young-boys"
+  },
+  {
+    "id": "zambia",
+    "name": "Zambia",
+    "slug": "zambia"
+  },
+  {
+    "id": "zimbabwe",
+    "name": "Zimbabwe",
+    "slug": "zimbabwe"
+  },
+  {
+    "id": "zrinjski",
+    "name": "Zrinjski",
+    "slug": "zrinjski"
+  }
 ]
