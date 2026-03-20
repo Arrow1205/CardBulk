@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop } from 'lucide-react';
 
 // Importation des données Clubs
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -64,19 +64,35 @@ function ScannerContent() {
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
   const [scanMode, setScanMode] = useState<'unitaire' | 'lot'>('unitaire');
+  
+  // 🚨 NOUVEAU : GESTION RECTO / VERSO
+  const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
+  
   const [bulkFiles, setBulkFiles] = useState<File[]>([]);
   const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [isApplyingEdit, setIsApplyingEdit] = useState(false);
   
   const [isFetchingEdit, setIsFetchingEdit] = useState(!!editId);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  
+  // RECTO
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // VERSO
+  const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
+  const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
   
+  // ÉTATS POUR LE RECADRAGE POST-CAPTURE
+  const [cropPreview, setCropPreview] = useState<string | null>(null);
+  const [cropZoom, setCropZoom] = useState(1);
+
   const [showEditor, setShowEditor] = useState(false);
   const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
 
@@ -88,15 +104,6 @@ function ScannerContent() {
 
   const [formData, setFormData] = useState(DEFAULT_FORM);
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
-
-  // ==========================================
-  // CUSTOM CAMERA STATES & REFS
-  // ==========================================
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [isFlashing, setIsFlashing] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const guideRef = useRef<HTMLDivElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     if (editId) {
@@ -126,24 +133,13 @@ function ScannerContent() {
             grading_grade: data.grading_grade || ''
           });
           setPreviewUrl(data.image_url);
+          setPreviewUrlBack(data.image_url_back || null); // Récupère le verso si existant
         }
         setIsFetchingEdit(false);
       };
       fetchCardForEdit();
     }
   }, [editId]);
-
-  // Nettoyage de la caméra quand on quitte la page
-  useEffect(() => {
-    return () => stopCamera();
-  }, []);
-
-  useEffect(() => {
-    if (isCameraOpen && videoRef.current && streamRef.current) {
-      videoRef.current.srcObject = streamRef.current;
-      videoRef.current.play().catch(e => console.error("Erreur lecture vidéo:", e));
-    }
-  }, [isCameraOpen]);
 
   const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
   const searchStr = formData.club.toLowerCase();
@@ -172,161 +168,87 @@ function ScannerContent() {
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   // ==========================================
-  // CUSTOM CAMERA LOGIC (AVEC FORÇAGE 4K / HD)
+  // GESTION DES FICHIERS & RECADRAGE
   // ==========================================
-  const startCamera = async () => {
-    setIsCameraOpen(true);
-    
-    try {
-      // 1. TENTATIVE N°1 : On force la très haute définition (idéalement 4K)
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: { ideal: "environment" },
-          width: { ideal: 3840, min: 1920 },
-          height: { ideal: 2160, min: 1080 },
-          frameRate: { ideal: 30 }
-        }
-      });
-      streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
-      
-    } catch (err) {
-      console.warn("Échec du forçage 4K, passage au Fallback standard", err);
-      
-      // 2. TENTATIVE N°2 (Fallback) : Si le téléphone refuse les contraintes, on prend la meilleure dispo
-      try {
-        const fallbackStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" } }
-        });
-        streamRef.current = fallbackStream;
-        if (videoRef.current) videoRef.current.srcObject = fallbackStream;
-      } catch (fallbackErr) {
-        alert("Impossible d'accéder à la caméra. Vérifiez vos permissions.");
-        setIsCameraOpen(false);
-      }
-    }
-  };
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setIsCameraOpen(false);
-  };
-
-  const captureImageAndCrop = () => {
-    if (!videoRef.current || !guideRef.current) return;
-    
-    // Effet de flash
-    setIsFlashing(true);
-    setTimeout(() => setIsFlashing(false), 150);
-
-    const video = videoRef.current;
-    const guide = guideRef.current;
-    
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Dimensions réelles de la vidéo (qui seront maintenant potentiellement en 4K ou 1080p !)
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-    const videoRect = video.getBoundingClientRect();
-    const guideRect = guide.getBoundingClientRect();
-
-    const scale = Math.max(videoRect.width / videoWidth, videoRect.height / videoHeight);
-    const scaledW = videoWidth * scale;
-    const scaledH = videoHeight * scale;
-
-    const offsetX = (videoRect.width - scaledW) / 2;
-    const offsetY = (videoRect.height - scaledH) / 2;
-
-    const cropX = (guideRect.left - videoRect.left - offsetX) / scale;
-    const cropY = (guideRect.top - videoRect.top - offsetY) / scale;
-    const cropW = guideRect.width / scale;
-    const cropH = guideRect.height / scale;
-
-    // La taille du canvas sera de la très haute qualité issue du flux forcé
-    canvas.width = cropW;
-    canvas.height = cropH;
-
-    // Optimisation de la qualité de dessin sur le canvas
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    ctx.drawImage(
-      video,
-      cropX, cropY, cropW, cropH,
-      0, 0, cropW, cropH
-    );
-
-    // Export en JPEG qualité max (1.0) avant compression ultérieure
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const file = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
-      stopCamera();
-      
-      if (scanMode === 'lot') {
-        setBulkFiles([file]); 
-        setCurrentBulkIndex(0); 
-        processBulkItem([file], 0, true);
-      } else {
-        processBulkItem([file], 0, true);
-      }
-    }, 'image/jpeg', 1.0);
-  };
-
-  const handleUrlImport = async () => {
-    if (!formData.website_url) return;
-    setAnalyzing(true);
-    
-    try {
-      const res = await fetch('/api/scrape', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: formData.website_url })
-      });
-      const data = await res.json();
-      
-      if (data.base64) {
-        const imgRes = await fetch(data.base64);
-        const blob = await imgRes.blob();
-        const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
-        
-        if (data.price) {
-          setFormData(prev => ({ ...prev, price: data.price }));
-        }
-
-        setBulkFiles([file]);
-        setCurrentBulkIndex(0);
-        await processBulkItem([file], 0, false); 
-      } else {
-        alert("Impossible de trouver une image sur ce lien.");
-        setAnalyzing(false);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'importation du lien.");
-      setAnalyzing(false);
-    }
-  };
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    if (scanMode === 'lot') {
+    if (files.length > 1 && activeSide === 'front') {
       if (files.length > 10) { alert("Max 10 cartes"); return; }
-      setBulkFiles(files); setCurrentBulkIndex(0); await processBulkItem(files, 0, true);
+      setBulkFiles(files); 
+      setCurrentBulkIndex(0); 
+      await processBulkItem(files, 0, true);
     } else {
-      await processBulkItem([files[0]], 0, true);
+      // 📸 On ouvre le RECADREUR
+      setCropPreview(URL.createObjectURL(files[0]));
+      setCropZoom(1);
     }
+  };
+
+  const confirmCrop = () => {
+    if (!cropPreview) return;
+    setIsApplyingEdit(true);
+
+    const img = new Image();
+    img.src = cropPreview;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 750;
+      canvas.height = 1050; 
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const imgRatio = img.width / img.height;
+      const targetRatio = canvas.width / canvas.height;
+      let sWidth, sHeight;
+
+      if (imgRatio > targetRatio) {
+        sHeight = img.height;
+        sWidth = img.height * targetRatio;
+      } else {
+        sWidth = img.width;
+        sHeight = img.width / targetRatio;
+      }
+
+      sWidth /= cropZoom;
+      sHeight /= cropZoom;
+
+      const sx = (img.width - sWidth) / 2;
+      const sy = (img.height - sHeight) / 2;
+
+      ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const croppedFile = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        
+        setCropPreview(null);
+        setIsApplyingEdit(false);
+        
+        if (activeSide === 'back') {
+          // Verso : On l'ajoute juste visuellement (PAS D'IA !)
+          setSelectedFileBack(croppedFile);
+          setPreviewUrlBack(URL.createObjectURL(croppedFile));
+        } else {
+          // Recto : L'IA lit la carte !
+          if (scanMode === 'lot') {
+             setBulkFiles([croppedFile]);
+             setCurrentBulkIndex(0);
+             processBulkItem([croppedFile], 0, true);
+          } else {
+             processBulkItem([croppedFile], 0, true);
+          }
+        }
+      }, 'image/jpeg', 0.9);
+    };
   };
 
   const processBulkItem = async (filesList: File[], index: number, resetForm: boolean = true) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const file = filesList[index];
+    
+    // Uniquement pour le Recto !
     setSelectedFile(file); 
     setPreviewUrl(URL.createObjectURL(file)); 
     setAnalyzing(true);
@@ -387,17 +309,54 @@ function ScannerContent() {
     } catch (err) { console.error(err); } 
     finally { 
       setAnalyzing(false); 
-      if (fileInputRef.current) fileInputRef.current.value = ''; 
+      if (cameraInputRef.current) cameraInputRef.current.value = ''; 
+      if (galleryInputRef.current) galleryInputRef.current.value = ''; 
+    }
+  };
+
+  const handleUrlImport = async () => {
+    if (!formData.website_url) return;
+    setAnalyzing(true);
+    
+    try {
+      const res = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: formData.website_url })
+      });
+      const data = await res.json();
+      
+      if (data.base64) {
+        const imgRes = await fetch(data.base64);
+        const blob = await imgRes.blob();
+        const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
+        
+        if (data.price) {
+          setFormData(prev => ({ ...prev, price: data.price }));
+        }
+
+        setBulkFiles([file]);
+        setCurrentBulkIndex(0);
+        await processBulkItem([file], 0, false); 
+      } else {
+        alert("Impossible de trouver une image sur ce lien.");
+        setAnalyzing(false);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'importation du lien.");
+      setAnalyzing(false);
     }
   };
 
   const rotateImage = async () => {
-    if (!previewUrl) return;
+    const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
+    if (!currentPreview) return;
     setIsApplyingEdit(true);
     try {
-      let currentBlob: Blob | File | null = selectedFile;
-      if (!currentBlob && previewUrl) {
-        const response = await fetch(previewUrl + "?t=" + new Date().getTime());
+      let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
+      if (!currentBlob && currentPreview) {
+        const response = await fetch(currentPreview + "?t=" + new Date().getTime());
         currentBlob = await response.blob();
       }
       if (!currentBlob) return;
@@ -409,16 +368,22 @@ function ScannerContent() {
       canvas.toBlob((blob) => {
         if (!blob) return;
         const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
-        setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); setIsApplyingEdit(false);
+        if (activeSide === 'front') {
+          setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile));
+        } else {
+          setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile));
+        }
+        setIsApplyingEdit(false);
       }, currentBlob.type || 'image/png');
     } catch (e) { setIsApplyingEdit(false); }
   };
 
   const applyImageEdits = async () => {
-    if (!previewUrl) return;
+    const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
+    if (!currentPreview) return;
     setIsApplyingEdit(true);
     try {
-      const img = new Image(); img.crossOrigin = "anonymous"; img.src = previewUrl;
+      const img = new Image(); img.crossOrigin = "anonymous"; img.src = currentPreview;
       await new Promise(resolve => { img.onload = resolve; });
       const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
       canvas.width = img.width; canvas.height = img.height;
@@ -429,7 +394,12 @@ function ScannerContent() {
       canvas.toBlob((blob) => {
         if (!blob) return;
         const newFile = new File([blob], `edited-${Date.now()}.png`, { type: 'image/png' });
-        setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); setShowEditor(false); setIsApplyingEdit(false);
+        if (activeSide === 'front') {
+          setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile));
+        } else {
+          setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile));
+        }
+        setShowEditor(false); setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }, 'image/png');
     } catch (e) { setIsApplyingEdit(false); }
@@ -473,13 +443,22 @@ function ScannerContent() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return; 
+      
       let finalImageUrl = previewUrl;
+      let finalImageUrlBack = previewUrlBack;
       
       if (selectedFile) {
         const compressedFile = await compressImage(selectedFile);
         const filePath = `${user.id}/${Date.now()}.jpg`; 
         await supabase.storage.from('card-images').upload(filePath, compressedFile);
         finalImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
+      }
+
+      if (selectedFileBack) {
+        const compressedBack = await compressImage(selectedFileBack);
+        const backPath = `${user.id}/${Date.now()}-back.jpg`; 
+        await supabase.storage.from('card-images').upload(backPath, compressedBack);
+        finalImageUrlBack = supabase.storage.from('card-images').getPublicUrl(backPath).data.publicUrl;
       }
       
       const cardDataToSave = { 
@@ -498,6 +477,7 @@ function ScannerContent() {
         numbering_max: parseInt(formData.num_high) || null, 
         purchase_price: parseFloat(formData.price) || 0, 
         image_url: finalImageUrl, 
+        image_url_back: finalImageUrlBack, // Sauvegarde du Verso !
         club_name: formData.club, 
         is_wishlist: isWishlistMode, 
         website_url: formData.website_url,
@@ -535,54 +515,61 @@ function ScannerContent() {
 
   const pageTitle = isWishlistMode ? 'WISHLIST' : (editId ? 'MODIFIER' : 'AJOUTER');
 
+  // Savoir quelle image on prévisualise selon l'onglet actif
+  const activePreviewUrl = activeSide === 'front' ? previewUrl : previewUrlBack;
+
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
       {/* ==========================================
-          OVERLAY CAMERA CUSTOM
+          MODAL DE RECADRAGE POST-CAPTURE
       ========================================== */}
-      {isCameraOpen && (
-        <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
+      {cropPreview && !analyzing && !activePreviewUrl && (
+        <div className="fixed inset-0 z-[200] bg-[#040221] flex flex-col items-center justify-center">
           
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            muted
-            className="absolute inset-0 w-full h-full object-cover z-0" 
-          />
-          
-          {/* Overlay Assombrissant (#040221 à 80%) et Cadre de Recadrage (#AFFF25) */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div 
-              ref={guideRef}
-              className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.8)]"
+          <h2 className="text-xl font-black italic text-[#AFFF25] tracking-widest mb-8 uppercase drop-shadow-md">
+            Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}
+          </h2>
+
+          <div className="relative w-[250px] lg:w-[300px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl flex items-center justify-center z-10 overflow-hidden shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+             <img 
+               src={cropPreview} 
+               className="w-full h-full object-cover origin-center" 
+               style={{ transform: `scale(${cropZoom})` }} 
+               alt="To Crop" 
+             />
+          </div>
+
+          <div className="relative z-20 w-[250px] lg:w-[300px] mt-12">
+            <label className="text-xs font-bold text-[#AFFF25] uppercase mb-3 flex justify-between tracking-widest">
+              <span>Ajuster la taille</span> <span>{cropZoom.toFixed(1)}x</span>
+            </label>
+            <input 
+              type="range" min="1" max="3" step="0.1" 
+              value={cropZoom} 
+              onChange={e => setCropZoom(parseFloat(e.target.value))} 
+              className="w-full accent-[#AFFF25]" 
+            />
+          </div>
+
+          <div className="relative z-20 flex gap-4 mt-10 w-[250px] lg:w-[300px]">
+            <button 
+              onClick={() => setCropPreview(null)} 
+              className="flex-1 py-3.5 border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
             >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
-            </div>
-          </div>
-
-          {/* Effet de Flash lors de la capture */}
-          {isFlashing && (
-            <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>
-          )}
-
-          {/* Bouton Annuler */}
-          <div className="absolute top-0 left-0 w-full p-6 z-20">
-             <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto">
-               <X size={20}/>
-             </button>
-          </div>
-
-          {/* Bouton Capturer */}
-          <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex justify-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
-             <button 
-               onClick={captureImageAndCrop} 
-               className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"
-             ></button>
+              Annuler
+            </button>
+            <button 
+              onClick={confirmCrop} 
+              disabled={isApplyingEdit}
+              className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2"
+            >
+              {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
+            </button>
           </div>
         </div>
       )}
+
 
       {/* 🔘 HEADER FIXE */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
@@ -598,17 +585,17 @@ function ScannerContent() {
       </header>
 
       {/* 🖌️ EDITEUR PHOTO MODAL */}
-      {showEditor && previewUrl && (
+      {showEditor && activePreviewUrl && (
         <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
           <header className="flex justify-between items-center mb-6 pt-4">
             <button onClick={() => setShowEditor(false)} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 active:scale-95"><X size={20} /></button>
-            <h2 className="text-xl font-black italic uppercase text-[#AFFF25] tracking-widest">Éditeur</h2>
+            <h2 className="text-xl font-black italic uppercase text-[#AFFF25] tracking-widest">Éditeur {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
             <button onClick={applyImageEdits} className="w-10 h-10 bg-[#AFFF25] text-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.5)] active:scale-95"><Check size={20} strokeWidth={3} /></button>
           </header>
 
           <div className="relative w-full flex-1 max-h-[50vh] rounded-2xl overflow-hidden border border-white/20 bg-black/50 shadow-2xl flex items-center justify-center">
             <img 
-              src={previewUrl} 
+              src={activePreviewUrl} 
               className="w-full h-full object-contain"
               style={{
                 filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`,
@@ -643,20 +630,24 @@ function ScannerContent() {
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
-        {!editId && !previewUrl && !isWishlistMode && (
-          <div className="flex justify-center gap-8 mb-8">
-            <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
-            <button onClick={() => setScanMode('lot')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
+        {/* SWITCH RECTO / VERSO (au lieu de Unitaire / Lot) */}
+        {!isWishlistMode && (
+          <div className="flex justify-center gap-2 mb-8 bg-white/5 p-1 rounded-full border border-white/10 relative w-fit mx-auto">
+            <div className={`absolute top-1 bottom-1 w-[100px] rounded-full transition-all duration-300 ${activeSide === 'front' ? 'left-1 bg-[#AFFF25]' : 'translate-x-[102px] bg-white/20'}`}></div>
+            <button onClick={() => setActiveSide('front')} className={`relative z-10 w-[100px] py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
+            <button onClick={() => setActiveSide('back')} className={`relative z-10 w-[100px] py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all ${activeSide === 'back' ? 'text-white' : 'text-white/60'}`}>Verso</button>
           </div>
         )}
 
         <div className="relative w-full max-w-[240px] lg:max-w-[350px] mx-auto mb-6 lg:mb-10">
           
           {/* Zone d'affichage d'image ou Boutons de Capture */}
-          {previewUrl ? (
+          {activePreviewUrl ? (
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
-              <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
-              {analyzing && !showEditor && (
+              <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
+              
+              {/* Overlay d'analyse uniquement si on scanne le recto */}
+              {analyzing && !showEditor && activeSide === 'front' && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
                    <span className="text-[#AFFF25] text-[10px] lg:text-xs font-bold tracking-widest animate-pulse mt-2 text-center px-4">
@@ -664,20 +655,27 @@ function ScannerContent() {
                    </span>
                 </div>
               )}
+              
+              {/* Bouton pour supprimer l'image et en reprendre une (seulement pour l'image active) */}
+              {!analyzing && (
+                <button onClick={() => activeSide === 'front' ? setPreviewUrl(null) : setPreviewUrlBack(null)} className="absolute top-4 right-4 w-8 h-8 bg-black/50 border border-white/20 text-white rounded-full flex items-center justify-center z-50">
+                  <X size={14} />
+                </button>
+              )}
             </div>
           ) : (
             <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl gap-4 p-6">
               
-              {/* BOUTON : Custom Camera */}
+              {/* BOUTON : Appareil Photo NATIF */}
               <button 
-                onClick={startCamera} 
+                onClick={() => cameraInputRef.current?.click()} 
                 className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group"
               >
                 <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] shadow-[0_0_15px_rgba(175,255,37,0.5)] group-hover:scale-110 transition-transform">
                   <Camera size={24} strokeWidth={2.5} />
                 </div>
                 <span className="text-xs lg:text-sm font-bold text-[#AFFF25] uppercase tracking-widest text-center">
-                  Prendre une Photo
+                  Prendre {activeSide === 'front' ? 'le Recto' : 'le Verso'}
                 </span>
               </button>
 
@@ -689,7 +687,7 @@ function ScannerContent() {
 
               {/* BOUTON : Importer depuis la galerie */}
               <button 
-                onClick={() => fileInputRef.current?.click()} 
+                onClick={() => galleryInputRef.current?.click()} 
                 className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"
               >
                 <ImageIcon size={18} />
@@ -698,8 +696,8 @@ function ScannerContent() {
             </div>
           )}
           
-          {/* Boutons Rotation et Édition (visibles seulement quand on a une image) */}
-          {previewUrl && (
+          {/* Boutons Rotation et Édition */}
+          {activePreviewUrl && (
             <>
               <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105">
                 <RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} />
@@ -906,8 +904,9 @@ function ScannerContent() {
         </div>
       </div>
       
-      {/* INPUT POUR IMPORTER UN FICHIER DEPUIS LA GALERIE (Conserve la sélection multiple pour le mode "Lot") */}
-      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={scanMode === 'lot'} />
+      {/* INPUTS NATIFS MASQUÉS (1 pour l'appareil photo direct, 1 pour la galerie) */}
+      <input type="file" ref={cameraInputRef} onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
+      <input type="file" ref={galleryInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={activeSide === 'front' && scanMode === 'lot'} />
     </div>
   );
 }
