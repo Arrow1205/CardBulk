@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon } from 'lucide-react';
 
 // Importation des données Clubs
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -27,7 +27,6 @@ const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: stri
   'TENNIS': { image: 'Tennis', jsonKey: 'tennis', label: 'Tennis' }
 };
 
-// Configuration pour lier le Sport au nom de ton sous-dossier de logos (foot, NBA, MLB...)
 const SPORT_FOLDERS: Record<string, string> = {
   'SOCCER': 'foot',
   'BASKETBALL': 'NBA',
@@ -81,7 +80,6 @@ function ScannerContent() {
   const [showEditor, setShowEditor] = useState(false);
   const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
 
-  // Dropdowns Autocomplete
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
   const [showPlayerSuggestions, setShowPlayerSuggestions] = useState(false);
   
@@ -90,6 +88,14 @@ function ScannerContent() {
 
   const [formData, setFormData] = useState(DEFAULT_FORM);
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
+
+  // ==========================================
+  // CUSTOM CAMERA STATES & REFS
+  // ==========================================
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const guideRef = useRef<HTMLDivElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     if (editId) {
@@ -126,32 +132,23 @@ function ScannerContent() {
     }
   }, [editId]);
 
-  // ==========================================
-  // LOGIQUE DE DÉTECTION (CLUBS ET LOGOS)
-  // ==========================================
+  // Clean up camera stream on unmount
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
   const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
   const searchStr = formData.club.toLowerCase();
-  
-  const filteredClubs = safeClubs.filter((c: any) => 
-    c.name?.toLowerCase().includes(searchStr) || c.slug?.toLowerCase().includes(searchStr)
-  ).sort((a: any, b: any) => { 
-    if (a.name.toLowerCase().startsWith(searchStr)) return -1; return 1; 
-  });
-
+  const filteredClubs = safeClubs.filter((c: any) => c.name?.toLowerCase().includes(searchStr) || c.slug?.toLowerCase().includes(searchStr)).sort((a: any, b: any) => { if (a.name.toLowerCase().startsWith(searchStr)) return -1; return 1; });
   const selectedClub = filteredClubs[0];
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
-  
-  // 🚨 Récupération du bon nom de dossier en fonction du Sport sélectionné
   const sportFolder = SPORT_FOLDERS[formData.sport] || 'foot';
 
-  // ==========================================
-  // LOGIQUE DE DÉTECTION (JOUEURS)
-  // ==========================================
   const safePlayers = Array.isArray(PLAYER_DATA[formData.sport]) ? PLAYER_DATA[formData.sport] : [];
   const searchPlayerStr = formData.lastname.toLowerCase();
-  const filteredPlayers = searchPlayerStr 
-    ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) 
-    : [];
+  const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
@@ -167,6 +164,97 @@ function ScannerContent() {
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
+
+  // ==========================================
+  // CUSTOM CAMERA LOGIC
+  // ==========================================
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setIsCameraOpen(true);
+    } catch (err) {
+      console.error("Erreur accès caméra", err);
+      alert("Impossible d'accéder à la caméra. Vérifiez vos permissions.");
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraOpen(false);
+  };
+
+  const captureImageAndCrop = () => {
+    if (!videoRef.current || !guideRef.current) return;
+    
+    const video = videoRef.current;
+    const guide = guideRef.current;
+    
+    // Création d'un canvas pour cropper
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Dimensions réelles de la vidéo
+    const videoWidth = video.videoWidth;
+    const videoHeight = video.videoHeight;
+
+    // Dimensions de l'élément vidéo affiché à l'écran (avec object-fit: cover)
+    const videoRect = video.getBoundingClientRect();
+    const guideRect = guide.getBoundingClientRect();
+
+    // Calcul du ratio pour un object-fit: cover centré
+    const scale = Math.max(videoRect.width / videoWidth, videoRect.height / videoHeight);
+    
+    // Dimensions de la vidéo mise à l'échelle
+    const scaledW = videoWidth * scale;
+    const scaledH = videoHeight * scale;
+
+    // Offset (décalage) car la vidéo dépasse de l'écran avec le "cover"
+    const offsetX = (videoRect.width - scaledW) / 2;
+    const offsetY = (videoRect.height - scaledH) / 2;
+
+    // Coordonnées du crop ramenées à l'échelle de la vidéo d'origine (source)
+    const cropX = (guideRect.left - videoRect.left - offsetX) / scale;
+    const cropY = (guideRect.top - videoRect.top - offsetY) / scale;
+    const cropW = guideRect.width / scale;
+    const cropH = guideRect.height / scale;
+
+    canvas.width = cropW;
+    canvas.height = cropH;
+
+    // Dessine UNIQUEMENT la partie de la vidéo contenue dans le cadre pointillé
+    ctx.drawImage(
+      video,
+      cropX, cropY, cropW, cropH, // Source
+      0, 0, cropW, cropH            // Destination sur le canvas
+    );
+
+    // Convertir en Fichier
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      stopCamera();
+      
+      // On envoie le fichier croppé directement dans le flow d'analyse existant !
+      if (scanMode === 'lot') {
+        setBulkFiles([file]); // Note: le bulk mode complet via caméra custom demanderait une UI spécifique, on l'utilise comme unitaire ici
+        setCurrentBulkIndex(0); 
+        processBulkItem([file], 0, true);
+      } else {
+        processBulkItem([file], 0, true);
+      }
+    }, 'image/jpeg', 0.9);
+  };
+
 
   const handleUrlImport = async () => {
     if (!formData.website_url) return;
@@ -426,6 +514,48 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
+      {/* ==========================================
+          OVERLAY CAMERA CUSTOM
+      ========================================== */}
+      {isCameraOpen && (
+        <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
+          {/* Flux Vidéo en arrière-plan */}
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            playsInline 
+            className="absolute inset-0 w-full h-full object-cover z-0" 
+          />
+          
+          {/* Overlay Assombrissant (#040221 à 80%) et Cadre de Recadrage (#AFFF25) */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <div 
+              ref={guideRef}
+              className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.8)]"
+            >
+              {/* Petite croix centrale pour aider à viser */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
+            </div>
+          </div>
+
+          {/* Bouton Annuler */}
+          <div className="absolute top-0 left-0 w-full p-6 flex justify-between z-20">
+             <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95">
+               <X size={20}/>
+             </button>
+             <span className="text-[#AFFF25] font-bold tracking-widest text-xs uppercase mt-2 drop-shadow-md">Cadrage Auto</span>
+          </div>
+
+          {/* Bouton Capturer */}
+          <div className="absolute bottom-0 left-0 w-full pb-12 pt-6 flex justify-center z-20 bg-gradient-to-t from-black/80 to-transparent">
+             <button 
+               onClick={captureImageAndCrop} 
+               className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"
+             ></button>
+          </div>
+        </div>
+      )}
+
       {/* 🔘 HEADER FIXE */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
@@ -439,7 +569,7 @@ function ScannerContent() {
         </div>
       </header>
 
-      {/* 🖌️ EDITEUR PHOTO MODAL */}
+      {/* 🖌️ EDITEUR PHOTO MODAL (Reste inchangé) */}
       {showEditor && previewUrl && (
         <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
           <header className="flex justify-between items-center mb-6 pt-4">
@@ -482,7 +612,7 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) : Fixe sur PC (w-2/3), absolue sur Mobile */}
+      {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!editId && !previewUrl && !isWishlistMode && (
@@ -493,25 +623,54 @@ function ScannerContent() {
         )}
 
         <div className="relative w-full max-w-[240px] lg:max-w-[350px] mx-auto mb-6 lg:mb-10">
-          <div onClick={() => fileInputRef.current?.click()} className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden cursor-pointer bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl hover:bg-white/10 transition-colors shadow-2xl">
-            {previewUrl ? (
-              <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
-            ) : (
-              <div className="text-[11px] lg:text-sm font-bold text-[#AFFF25] border border-[#AFFF25]/30 px-6 py-3 rounded-full uppercase text-center leading-tight">
-                {scanMode === 'lot' ? 'SCANNER EN MASSE\n(Max 10)' : 'SCANNER UNE CARTE'}
-              </div>
-            )}
-            
-            {analyzing && !showEditor && (
-              <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
-                 <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
-                 <span className="text-[#AFFF25] text-[10px] lg:text-xs font-bold tracking-widest animate-pulse mt-2 text-center px-4">
-                   {scanMode === 'lot' && bulkFiles.length > 0 ? `ANALYSE ${currentBulkIndex + 1} / ${bulkFiles.length}...` : 'ANALYSE IA EN COURS...'}
-                 </span>
-              </div>
-            )}
-          </div>
           
+          {/* Zone d'affichage d'image ou Boutons de Capture */}
+          {previewUrl ? (
+            <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
+              <img src={previewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
+              {analyzing && !showEditor && (
+                <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
+                   <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
+                   <span className="text-[#AFFF25] text-[10px] lg:text-xs font-bold tracking-widest animate-pulse mt-2 text-center px-4">
+                     {scanMode === 'lot' && bulkFiles.length > 0 ? `ANALYSE ${currentBulkIndex + 1} / ${bulkFiles.length}...` : 'ANALYSE IA EN COURS...'}
+                   </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl gap-4 p-6">
+              
+              {/* NOUVEAU BOUTON : Appareil Photo Custom */}
+              <button 
+                onClick={startCamera} 
+                className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group"
+              >
+                <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] shadow-[0_0_15px_rgba(175,255,37,0.5)] group-hover:scale-110 transition-transform">
+                  <Camera size={24} strokeWidth={2.5} />
+                </div>
+                <span className="text-xs lg:text-sm font-bold text-[#AFFF25] uppercase tracking-widest text-center">
+                  Prendre une Photo
+                </span>
+              </button>
+
+              <div className="flex items-center gap-2 w-full">
+                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span>
+                <div className="h-[1px] flex-1 bg-white/10"></div>
+              </div>
+
+              {/* BOUTON : Importer depuis la galerie */}
+              <button 
+                onClick={() => fileInputRef.current?.click()} 
+                className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"
+              >
+                <ImageIcon size={18} />
+                <span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span>
+              </button>
+            </div>
+          )}
+          
+          {/* Boutons Rotation et Édition (visibles seulement quand on a une image) */}
           {previewUrl && (
             <>
               <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105">
@@ -524,6 +683,7 @@ function ScannerContent() {
           )}
         </div>
 
+        {/* Option d'importation par URL */}
         {isWishlistMode && (
           <div className="relative w-full max-w-[300px] lg:max-w-[400px] mx-auto flex items-center gap-2 z-10">
             <div className="relative flex-1">
@@ -545,7 +705,7 @@ function ScannerContent() {
         )}
       </div>
 
-      {/* 📋 PARTIE DROITE (FORMULAIRE) : Scrollable sur PC (w-1/3 placé à droite), sous l'image sur Mobile */}
+      {/* 📋 PARTIE DROITE (FORMULAIRE) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="space-y-8">
@@ -573,7 +733,7 @@ function ScannerContent() {
                 
                 <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
                 
-                {/* 🌟 NOUVEAU : Auto-complétion Joueur */}
+                {/* Autocomplétion Joueur */}
                 <div className="relative">
                   <input 
                     value={formData.lastname} 
@@ -594,7 +754,7 @@ function ScannerContent() {
                             ...formData, 
                             firstname: fname.toUpperCase(), 
                             lastname: lname.toUpperCase(), 
-                            club: p.team || formData.club // Remplissage Auto de l'équipe !
+                            club: p.team || formData.club 
                           }); 
                           setShowPlayerSuggestions(false); 
                         }} className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex flex-col gap-1 border-b border-white/5 last:border-0">
@@ -607,7 +767,7 @@ function ScannerContent() {
                   )}
                 </div>
                 
-                {/* 🌟 NOUVEAU : Logos de club dynamiques */}
+                {/* Logos de club dynamiques */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
@@ -718,6 +878,7 @@ function ScannerContent() {
         </div>
       </div>
       
+      {/* Input natif masqué conservé pour la sélection Galerie */}
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={scanMode === 'lot'} />
     </div>
   );
