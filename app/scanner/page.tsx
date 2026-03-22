@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight } from 'lucide-react';
 
 // Importation des données Clubs
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -49,6 +49,15 @@ const PLAYER_DATA: Record<string, any[]> = {
 
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
+// 🚨 NOUVEAU TYPE POUR LE MODE RAFALE
+type PendingCard = {
+  id: string;
+  file: File;
+  previewUrl: string;
+  status: 'pending' | 'analyzing' | 'done' | 'error';
+  aiResult: any;
+};
+
 export default function ScannerPage() { 
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>}>
@@ -68,8 +77,10 @@ function ScannerContent() {
   // GESTION RECTO / VERSO
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
-  const [bulkFiles, setBulkFiles] = useState<File[]>([]);
-  const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
+  // 🚨 NOUVEAUX ÉTATS MODE RAFALE
+  const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
+  const [currentVerifyIndex, setCurrentVerifyIndex] = useState(0);
+  const [isVerifyingBulk, setIsVerifyingBulk] = useState(false);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -159,6 +170,28 @@ function ScannerContent() {
     }
   }, [isCameraOpen]);
 
+  // 🚨 SYNCHRONISATION VÉRIFICATION BULK (Charge la carte en cours + ses données IA)
+  useEffect(() => {
+    if (isVerifyingBulk && pendingCards.length > 0) {
+      const currentCard = pendingCards[currentVerifyIndex];
+      setSelectedFile(currentCard.file);
+      setPreviewUrl(currentCard.previewUrl);
+      setSelectedFileBack(null); // Reset du verso pour la nouvelle carte
+      setPreviewUrlBack(null);
+
+      if (currentCard.status === 'done' && currentCard.aiResult) {
+        setFormData({ ...DEFAULT_FORM, ...currentCard.aiResult });
+        setAnalyzing(false);
+      } else if (currentCard.status === 'analyzing') {
+        setFormData(DEFAULT_FORM);
+        setAnalyzing(true);
+      } else {
+        setFormData(DEFAULT_FORM);
+        setAnalyzing(false);
+      }
+    }
+  }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
+
   const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
   const searchStr = formData.club.toLowerCase();
   const filteredClubs = safeClubs.filter((c: any) => c.name?.toLowerCase().includes(searchStr) || c.slug?.toLowerCase().includes(searchStr)).sort((a: any, b: any) => { if (a.name.toLowerCase().startsWith(searchStr)) return -1; return 1; });
@@ -222,6 +255,64 @@ function ScannerContent() {
     setIsCameraOpen(false);
   };
 
+  // 🧠 FONCTION IA EN SOUS-MARIN (Asynchrone)
+  const processBackgroundScan = async (id: string, file: File) => {
+    try {
+      const body = new FormData(); 
+      body.append("image", file);
+      const res = await fetch("/api/scan", { method: "POST", body }); 
+      const data = await res.json();
+      
+      if (!data.error) {
+        const cleanValue = (val: any) => {
+          if (!val) return '';
+          const str = String(val).trim();
+          const lower = str.toLowerCase();
+          if (['n/a', 'na', 'none', 'inconnu', 'brand', 'null', 'undefined', '-', 'unknown'].includes(lower)) return '';
+          return str;
+        };
+
+        const cleanPlayerName = cleanValue(data.playerName);
+        let fname = ''; let lname = '';
+        if (cleanPlayerName) {
+          const parts = cleanPlayerName.split(' ');
+          fname = parts[0]?.toUpperCase() || '';
+          lname = parts.slice(1).join(' ')?.toUpperCase() || '';
+        }
+
+        let aiSport = cleanValue(data.sport).toUpperCase();
+        if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
+
+        const aiData = {
+          sport: aiSport,
+          firstname: fname,
+          lastname: lname,
+          club: cleanValue(data.club),
+          brand: cleanValue(data.brand),
+          series: cleanValue(data.series),
+          year: cleanValue(data.year),
+          is_auto: !!data.is_auto,
+          is_patch: !!data.is_patch,
+          is_rookie: !!data.is_rookie,
+          is_numbered: !!data.is_numbered,
+          num_low: cleanValue(data.num_low),
+          num_high: cleanValue(data.num_high),
+          is_graded: !!data.is_graded,
+          grading_company: cleanValue(data.grading_company),
+          grading_grade: cleanValue(data.grading_grade),
+        };
+
+        // On met à jour l'élément dans le tableau global sans bloquer l'UI
+        setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
+      } else {
+        setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c));
+      }
+    } catch (err) {
+      console.error(err);
+      setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c));
+    }
+  };
+
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
     
@@ -266,16 +357,20 @@ function ScannerContent() {
 
     canvas.toBlob((blob) => {
       if (!blob) return;
-      const file = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
-      stopCamera();
+      const croppedFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
       
-      // 🚨 On passe bien la face active pour ne pas écraser le Recto si on est sur Verso !
       if (scanMode === 'lot' && activeSide === 'front') {
-        setBulkFiles([file]); 
-        setCurrentBulkIndex(0); 
-        processImageScan(file, 'front', true);
+        // 🚀 MODE RAFALE (MITRAILLAGE)
+        const newId = Date.now().toString() + Math.random().toString();
+        const newCard: PendingCard = { id: newId, file: croppedFile, previewUrl: URL.createObjectURL(croppedFile), status: 'analyzing', aiResult: null };
+        
+        setPendingCards(prev => [...prev, newCard]);
+        processBackgroundScan(newId, croppedFile);
+        // ON NE FERME PAS LA CAMÉRA ICI ! 
       } else {
-        processImageScan(file, activeSide, activeSide === 'front'); // On ne reset le form QUE si c'est le Recto
+        // Mode Unitaire ou prise du Verso
+        stopCamera();
+        processImageScan(croppedFile, activeSide, activeSide === 'front'); 
       }
     }, 'image/jpeg', 1.0);
   };
@@ -285,10 +380,23 @@ function ScannerContent() {
     if (!files.length) return;
 
     if (files.length > 1 && activeSide === 'front') {
-      if (files.length > 10) { alert("Max 10 cartes"); return; }
-      setBulkFiles(files); 
-      setCurrentBulkIndex(0); 
-      await processImageScan(files[0], 'front', true);
+      if (files.length > 30) { alert("Max 30 cartes"); return; }
+      
+      // Import Multiple depuis la galerie -> Transforme en File d'attente IA
+      const newPending: PendingCard[] = files.map((f, i) => ({
+        id: Date.now().toString() + i,
+        file: f,
+        previewUrl: URL.createObjectURL(f),
+        status: 'analyzing',
+        aiResult: null
+      }));
+      setPendingCards(newPending);
+      setIsVerifyingBulk(true);
+      setCurrentVerifyIndex(0);
+
+      // Lance l'analyse de toutes les images importées en sous-marin
+      newPending.forEach(c => processBackgroundScan(c.id, c.file));
+      
     } else {
       setCropPreview(URL.createObjectURL(files[0]));
       setCropZoom(1);
@@ -335,24 +443,23 @@ function ScannerContent() {
         setCropPreview(null);
         setIsApplyingEdit(false);
         
-        if (scanMode === 'lot' && activeSide === 'front') {
-           setBulkFiles([croppedFile]);
-           setCurrentBulkIndex(0);
-           processImageScan(croppedFile, 'front', true);
+        if (activeSide === 'back') {
+          setSelectedFileBack(croppedFile);
+          setPreviewUrlBack(URL.createObjectURL(croppedFile));
+          processImageScan(croppedFile, 'back', false); // Analyse Complémentaire
         } else {
-           processImageScan(croppedFile, activeSide, activeSide === 'front'); // On ne reset le form QUE si c'est le Recto
+          processImageScan(croppedFile, 'front', true); 
         }
       }, 'image/jpeg', 0.9);
     };
   };
 
-  // 🧠 LA FONCTION MAGIQUE DE SCAN (Gère le "ET" pour le Verso)
+  // Traitement Manuel Classique ou Scan Verso
   const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     const currentUrl = formData.website_url;
 
-    // Assigner la bonne image sans écraser l'autre
     if (side === 'front') {
       setSelectedFile(file); 
       setPreviewUrl(URL.createObjectURL(file)); 
@@ -360,7 +467,6 @@ function ScannerContent() {
     } else {
       setSelectedFileBack(file);
       setPreviewUrlBack(URL.createObjectURL(file));
-      // On ne reset SURTOUT PAS le form pour le Verso !
     }
     
     setAnalyzing(true);
@@ -382,7 +488,6 @@ function ScannerContent() {
 
         const cleanPlayerName = cleanValue(data.playerName);
         let fname = ''; let lname = '';
-        
         if (cleanPlayerName) {
           const parts = cleanPlayerName.split(' ');
           fname = parts[0]?.toUpperCase() || '';
@@ -394,7 +499,6 @@ function ScannerContent() {
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
           
           if (side === 'front') {
-            // SI RECTO : L'IA écrase tout avec ses nouvelles données (vu qu'on a reset juste avant)
             return {
               ...prev,
               sport: aiSport || prev.sport,
@@ -415,7 +519,7 @@ function ScannerContent() {
               grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
-            // SI VERSO : C'EST DU "ET" ! On ne remplit que les cases qui sont encore vides dans prev.
+            // VERSO : Logique "ET"
             return {
               ...prev,
               sport: prev.sport || aiSport,
@@ -425,7 +529,7 @@ function ScannerContent() {
               brand: prev.brand || cleanValue(data.brand),
               series: prev.series || cleanValue(data.series),
               year: prev.year || cleanValue(data.year),
-              is_auto: prev.is_auto || !!data.is_auto, // Reste true si déjà coché, sinon prend la valeur du Verso
+              is_auto: prev.is_auto || !!data.is_auto,
               is_patch: prev.is_patch || !!data.is_patch,
               is_rookie: prev.is_rookie || !!data.is_rookie,
               is_numbered: prev.is_numbered || !!data.is_numbered,
@@ -467,9 +571,7 @@ function ScannerContent() {
           setFormData(prev => ({ ...prev, price: data.price }));
         }
 
-        setBulkFiles([file]);
-        setCurrentBulkIndex(0);
-        await processImageScan(file, 'front', false); 
+        processImageScan(file, 'front', false); 
       } else {
         alert("Impossible de trouver une image sur ce lien.");
         setAnalyzing(false);
@@ -621,11 +723,15 @@ function ScannerContent() {
       if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
       else await supabase.from('cards').insert([cardDataToSave]);
 
-      if (scanMode === 'lot' && currentBulkIndex < bulkFiles.length - 1) {
-        setLoading(false);
-        const nextIndex = currentBulkIndex + 1;
-        setCurrentBulkIndex(nextIndex);
-        await processImageScan(bulkFiles[nextIndex], 'front', true); // Le mode bulk reste uniquement pour le recto !
+      // SI ON EST EN VÉRIFICATION DE MASSE
+      if (isVerifyingBulk) {
+        if (currentVerifyIndex < pendingCards.length - 1) {
+          setLoading(false);
+          setCurrentVerifyIndex(prev => prev + 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          router.push(isWishlistMode ? '/wishlist' : '/collection');
+        }
       } else {
         router.push(isWishlistMode ? '/wishlist' : '/collection');
       }
@@ -653,51 +759,27 @@ function ScannerContent() {
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
       {/* ==========================================
-          MODAL DE RECADRAGE (AVEC LE FAMEUX LAYER BLEU SOMBRE !)
+          MODAL DE RECADRAGE
       ========================================== */}
-      {cropPreview && !analyzing && !activePreviewUrl && (
+      {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          
           <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase drop-shadow-md z-50">
             Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}
           </h2>
-
-          <img 
-            src={cropPreview} 
-            className="absolute inset-0 w-full h-full object-contain origin-center z-0" 
-            style={{ transform: `scale(${cropZoom})` }} 
-            alt="To Crop" 
-          />
-
+          <img src={cropPreview} className="absolute inset-0 w-full h-full object-contain origin-center z-0" style={{ transform: `scale(${cropZoom})` }} alt="To Crop" />
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div>
           </div>
-
           <div className="absolute bottom-10 left-0 w-full px-8 z-20 flex flex-col items-center pointer-events-auto">
             <div className="w-full max-w-[300px] mb-8 bg-[#040221]/80 p-4 rounded-2xl backdrop-blur-md border border-white/10">
               <label className="text-xs font-bold text-[#AFFF25] uppercase mb-3 flex justify-between tracking-widest">
                 <span>Zoom</span> <span>{cropZoom.toFixed(1)}x</span>
               </label>
-              <input 
-                type="range" min="1" max="3" step="0.1" 
-                value={cropZoom} 
-                onChange={e => setCropZoom(parseFloat(e.target.value))} 
-                className="w-full accent-[#AFFF25]" 
-              />
+              <input type="range" min="1" max="3" step="0.1" value={cropZoom} onChange={e => setCropZoom(parseFloat(e.target.value))} className="w-full accent-[#AFFF25]" />
             </div>
-
             <div className="flex gap-4 w-full max-w-[300px]">
-              <button 
-                onClick={() => setCropPreview(null)} 
-                className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
-              >
-                Annuler
-              </button>
-              <button 
-                onClick={confirmCrop} 
-                disabled={isApplyingEdit}
-                className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2"
-              >
+              <button onClick={() => setCropPreview(null)} className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
+              <button onClick={confirmCrop} disabled={isApplyingEdit} className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2">
                 {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
               </button>
             </div>
@@ -706,10 +788,18 @@ function ScannerContent() {
       )}
 
       {/* ==========================================
-          OVERLAY CAMERA CUSTOM
+          OVERLAY CAMERA CUSTOM (MODE RAFALE INCLUS)
       ========================================== */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
+          
+          {/* Badge Compteur Mode Rafale */}
+          {scanMode === 'lot' && pendingCards.length > 0 && (
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 shadow-[0_0_20px_rgba(175,255,37,0.4)] animate-in fade-in slide-in-from-top-4">
+              {pendingCards.length} en attente...
+            </div>
+          )}
+
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0" />
           
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
@@ -720,12 +810,23 @@ function ScannerContent() {
 
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
 
-          <div className="absolute top-0 left-0 w-full p-6 z-20">
+          <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between">
              <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button>
           </div>
 
-          <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex justify-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
+          {/* Boutons du bas (Capture + Stop Rafale) */}
+          <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex flex-col items-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
              <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"></button>
+             
+             {/* Bouton pour stopper la rafale et passer à la vérification */}
+             {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (
+               <button 
+                 onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }}
+                 className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs shadow-lg active:scale-95 transition-all flex items-center gap-2"
+               >
+                 Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} />
+               </button>
+             )}
           </div>
         </div>
       )}
@@ -733,9 +834,9 @@ function ScannerContent() {
       {/* 🔘 HEADER FIXE */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
-        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto drop-shadow-lg">{pageTitle}</h1>
+        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto drop-shadow-lg">{isVerifyingBulk ? `CARTE ${currentVerifyIndex + 1}/${pendingCards.length}` : pageTitle}</h1>
         <div className="w-auto min-w-[40px] flex justify-end pointer-events-auto">
-          {editId && (
+          {editId && !isVerifyingBulk && (
             <button onClick={deleteCard} className={`h-10 px-3 rounded-full flex items-center justify-center transition-all duration-300 ${confirmDelete ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-white/10 backdrop-blur-md text-red-500 border border-white/20'}`}>
               <Trash2 size={18} />{confirmDelete && <span className="text-xs font-black ml-2 uppercase">Sûr ?</span>}
             </button>
@@ -789,14 +890,26 @@ function ScannerContent() {
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
-        {/* SWITCH RECTO / VERSO (Correction du bug visuel) */}
-        {!isWishlistMode && (
-          <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mx-auto mb-8 shadow-inner">
-            <div
-              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out shadow-sm ${
-                activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'
-              }`}
-            />
+        {/* SWITCH RECTO / VERSO ou UNITAIRE / LOT */}
+        {!isWishlistMode && !isVerifyingBulk && (
+          <div className="flex flex-col items-center gap-4 mb-8">
+            <div className="flex justify-center gap-8">
+              <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
+              <button onClick={() => setScanMode('lot')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot (Rafale)</button>
+            </div>
+            
+            <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] shadow-inner">
+              <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out shadow-sm ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
+              <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
+              <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
+            </div>
+          </div>
+        )}
+
+        {/* SWITCH RECTO / VERSO SIMPLIFIÉ PENDANT LA VÉRIFICATION */}
+        {isVerifyingBulk && (
+          <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mb-8 shadow-inner">
+            <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out shadow-sm ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
             <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
             <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
           </div>
@@ -809,18 +922,18 @@ function ScannerContent() {
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
-              {/* Overlay d'analyse */}
-              {analyzing && !showEditor && (
+              {/* Overlay d'analyse de l'IA (Aussi actif si la carte bulk est toujours en pending !) */}
+              {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && activeSide === 'front' && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
                    <span className="text-[#AFFF25] text-[10px] lg:text-xs font-bold tracking-widest animate-pulse mt-2 text-center px-4">
-                     {scanMode === 'lot' && bulkFiles.length > 0 ? `ANALYSE ${currentBulkIndex + 1} / ${bulkFiles.length}...` : 'ANALYSE IA EN COURS...'}
+                     {isVerifyingBulk ? 'L\'IA TERMINE SON ANALYSE...' : 'ANALYSE IA EN COURS...'}
                    </span>
                 </div>
               )}
               
-              {/* Bouton pour supprimer l'image et en reprendre une */}
-              {!analyzing && (
+              {/* Bouton pour supprimer l'image et en reprendre une (Bloqué si IA en cours) */}
+              {!analyzing && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
                 <button onClick={() => activeSide === 'front' ? setPreviewUrl(null) : setPreviewUrlBack(null)} className="absolute top-4 right-4 w-8 h-8 bg-black/50 border border-white/20 text-white rounded-full flex items-center justify-center z-50">
                   <X size={14} />
                 </button>
@@ -842,25 +955,29 @@ function ScannerContent() {
                 </span>
               </button>
 
-              <div className="flex items-center gap-2 w-full">
-                <div className="h-[1px] flex-1 bg-white/10"></div>
-                <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span>
-                <div className="h-[1px] flex-1 bg-white/10"></div>
-              </div>
+              {/* On cache la galerie si on est en pleine vérification d'un lot pour ne pas casser le flow */}
+              {!isVerifyingBulk && (
+                <>
+                  <div className="flex items-center gap-2 w-full">
+                    <div className="h-[1px] flex-1 bg-white/10"></div>
+                    <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span>
+                    <div className="h-[1px] flex-1 bg-white/10"></div>
+                  </div>
 
-              {/* BOUTON : Importer depuis la galerie */}
-              <button 
-                onClick={() => galleryInputRef.current?.click()} 
-                className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"
-              >
-                <ImageIcon size={18} />
-                <span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span>
-              </button>
+                  <button 
+                    onClick={() => galleryInputRef.current?.click()} 
+                    className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"
+                  >
+                    <ImageIcon size={18} />
+                    <span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span>
+                  </button>
+                </>
+              )}
             </div>
           )}
           
           {/* Boutons Rotation et Édition */}
-          {activePreviewUrl && (
+          {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
               <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105">
                 <RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} />
@@ -873,7 +990,7 @@ function ScannerContent() {
         </div>
 
         {/* Option d'importation par URL */}
-        {isWishlistMode && (
+        {isWishlistMode && !isVerifyingBulk && (
           <div className="relative w-full max-w-[300px] lg:max-w-[400px] mx-auto flex items-center gap-2 z-10">
             <div className="relative flex-1">
               <input 
@@ -1057,11 +1174,15 @@ function ScannerContent() {
           </div>
 
           {/* Bouton de sauvegarde */}
-          <button disabled={loading || analyzing || !isFormStarted} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${isFormStarted ? 'bg-[#AFFF25] text-[#040221] shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
+          <button 
+            disabled={loading || analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') || (!isFormStarted && !isVerifyingBulk)} 
+            onClick={saveCard} 
+            className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(isFormStarted || isVerifyingBulk) ? 'bg-[#AFFF25] text-[#040221] shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
+          >
             {loading ? <Loader2 className="animate-spin" /> : 
               editId ? 'Mettre à jour' : 
-              (scanMode === 'lot' && currentBulkIndex < bulkFiles.length - 1) ? `Valider & Suivant (${currentBulkIndex + 1}/${bulkFiles.length})` : 
-              (scanMode === 'lot' ? `Terminer (${currentBulkIndex + 1}/${bulkFiles.length})` : 'Enregistrer')
+              isVerifyingBulk ? (currentVerifyIndex < pendingCards.length - 1 ? `Valider & Suivant (${currentVerifyIndex + 1}/${pendingCards.length})` : `Terminer (${currentVerifyIndex + 1}/${pendingCards.length})`) :
+              'Enregistrer'
             }
           </button>
         </div>
@@ -1069,7 +1190,7 @@ function ScannerContent() {
       
       {/* INPUTS NATIFS MASQUÉS */}
       <input type="file" ref={cameraInputRef} onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
-      <input type="file" ref={galleryInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={activeSide === 'front' && scanMode === 'lot'} />
+      <input type="file" ref={galleryInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={activeSide === 'front'} />
     </div>
   );
 }
