@@ -36,15 +36,11 @@ export default function CardDetailsPage() {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isHorizontal, setIsHorizontal] = useState(false);
 
-  // ÉTATS POUR LES PRIX
   const [priceHistory, setPriceHistory] = useState<any[]>([]);
   const [averagePrice, setAveragePrice] = useState<number | null>(null);
   const [isUpdatingPrice, setIsUpdatingPrice] = useState(false);
 
-  // ÉTAT POUR LE RECTO/VERSO (FLIP)
   const [isFlipped, setIsFlipped] = useState(false);
-  
-  // GESTION DU SWIPE
   const [touchStart, setTouchStart] = useState<{x: number, y: number, time: number} | null>(null);
 
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', transition: 'transform 0.3s ease-out' });
@@ -89,7 +85,6 @@ export default function CardDetailsPage() {
     setIsUpdatingPrice(true);
     
     let formattedYear = card.year;
-    // Les sports comme le Tennis, Baseball et F1 fonctionnent en année civile
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
       const yearNum = parseInt(card.year, 10); 
       const prevYear = yearNum - 1; 
@@ -121,9 +116,6 @@ export default function CardDetailsPage() {
     }
   };
 
-  // ==========================================
-  // GYROSCOPE, SOURIS & GESTION DU SWIPE
-  // ==========================================
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
@@ -199,9 +191,7 @@ export default function CardDetailsPage() {
       const deltaTime = Date.now() - touchStart.time;
 
       if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) && deltaTime < 300) {
-        if (card?.image_url_back) {
-          setIsFlipped(!isFlipped);
-        }
+        if (card?.image_url_back) setIsFlipped(!isFlipped);
       }
       setTouchStart(null);
     }
@@ -228,7 +218,6 @@ export default function CardDetailsPage() {
     if (!card) return;
     let formattedYear = card.year;
     
-    // 🚨 CONDITION TENNIS / BASEBALL / F1
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
       const yearNum = parseInt(card.year, 10); 
       const prevYear = yearNum - 1; 
@@ -236,7 +225,7 @@ export default function CardDetailsPage() {
       formattedYear = `${prevYear}-${shortYear}`;
     }
     
-    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
+    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.variation, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
     
     const searchQuery = encodeURIComponent(keywords);
     let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
@@ -269,7 +258,7 @@ export default function CardDetailsPage() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* 🌌 BACKGROUND GLOBAL */}
+      {/* BACKGROUND GLOBAL */}
       <div className="fixed inset-0 z-0 bg-[#040221] transition-opacity duration-500">
         {(isFlipped && card.image_url_back ? card.image_url_back : card.image_url) && (
           <>
@@ -279,73 +268,40 @@ export default function CardDetailsPage() {
         )}
       </div>
 
-      {/* 🔘 HEADER */}
+      {/* HEADER */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
-        {/* BOUTON ÉDITER ENVOIE VERS LE SCANNER */}
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* 🖼️ PARTIE GAUCHE (CARTE 3D) */}
+      {/* PARTIE GAUCHE (CARTE 3D) */}
       <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
-        
         <div 
           ref={cardRef} 
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
           className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" 
-          onMouseMove={handleMouseMove} 
-          onMouseLeave={handleLeave} 
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove} 
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={handleLeave}
+          onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} onTouchCancel={handleLeave}
         >
-          {/* 🔄 CONTENEUR DE FLIP 3D */}
-          <div 
-            className="relative"
-            style={{
-              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-              transformStyle: 'preserve-3d',
-              transition: 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)'
-            }}
-          >
-            {/* FACADE (RECTO) */}
+          <div className="relative" style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)', transformStyle: 'preserve-3d', transition: 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)' }}>
             <div style={{ backfaceVisibility: 'hidden' }}>
               {card.image_url ? (
-                <img 
-                  src={card.image_url} 
-                  onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} 
-                  style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-                  className={`w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] ${isHorizontal ? 'lg:max-w-[80%]' : ''} object-contain border border-white/10`} 
-                  alt="Recto" 
-                />
+                <img src={card.image_url} onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} style={{ borderRadius: '12px', pointerEvents: 'none' }} className={`w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] ${isHorizontal ? 'lg:max-w-[80%]' : ''} object-contain border border-white/10`} alt="Recto" />
               ) : (
                 <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center rounded-[12px]">No Image</div>
               )}
             </div>
-
-            {/* DOS (VERSO) */}
             {card.image_url_back && (
               <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }} className="absolute inset-0 w-full h-full flex items-center justify-center">
-                <img 
-                  src={card.image_url_back} 
-                  style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-                  className="w-full h-full object-cover border border-white/10" 
-                  alt="Verso" 
-                />
+                <img src={card.image_url_back} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="w-full h-full object-cover border border-white/10" alt="Verso" />
               </div>
             )}
           </div>
-
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay z-20" style={glareStyle}></div>
-
-          {/* Bouton de Flip Manuel */}
           {card.image_url_back && (
              <button onClick={(e) => { e.stopPropagation(); setIsFlipped(!isFlipped); }} className="absolute bottom-4 right-4 bg-black/50 border border-white/20 backdrop-blur-md p-3 rounded-full text-[#AFFF25] shadow-xl pointer-events-auto z-50 transition-transform hover:scale-110 active:scale-95">
                  <RotateCw size={20} />
              </button>
           )}
-
           {showGyroOverlay && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#040221]/80 backdrop-blur-md rounded-[12px] border border-[#AFFF25]/30 p-6 text-center shadow-xl">
               <Smartphone size={32} className="text-[#AFFF25] mb-3 animate-pulse" />
@@ -396,10 +352,11 @@ export default function CardDetailsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 lg:grid-cols-2 2xl:grid-cols-3 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
+        {/* 🚨 LE TABLEAU À 4 COLONNES (BRAND, COLLECTION, VARIATION, ANNÉE) */}
+        <div className="grid grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
-          {/* 🚨 ICI : CHANGEMENT DE NOM POUR "VARIATION" */}
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Variation</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Collection</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Variation</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.variation || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-sm sm:text-base font-bold text-white">{card.year || "-"}</div></div>
           
           <div>
@@ -416,13 +373,14 @@ export default function CardDetailsPage() {
             </div>
           </div>
 
-          <div>
+          <div className="col-span-2">
             <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div>
             <div className="flex flex-col">
               <span className="text-sm sm:text-base font-bold text-white">
                 {card.purchase_price ? `${card.purchase_price} €` : "-"}
               </span>
               
+              {/* === AFFICHAGE DU DELTA === */}
               {card.purchase_price > 0 && averagePrice !== null && (
                 (() => {
                   const diff = averagePrice - card.purchase_price;

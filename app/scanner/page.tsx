@@ -13,6 +13,9 @@ import MLB_PLAYERS from '@/data/mlb-player.json';
 import TENNIS_PLAYERS from '@/data/tennis-player.json';
 import SET_DATA from '@/data/set.json';
 
+// 🚨 IMPORT DU JSON DES VARIATIONS 🚨
+import TYPE_CARTE from '@/data/type-carte.json';
+
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
   'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
   'BASKETBALL': { image: 'Basket', jsonKey: 'basketball', label: 'Basketball' },
@@ -43,7 +46,7 @@ const PLAYER_DATA: Record<string, any[]> = {
   'TENNIS': TENNIS_PLAYERS?.atp_top_100 || []
 };
 
-// 🚨 NOUVEAU CHAMP "VARIATION" DANS LE FORMULAIRE PAR DÉFAUT
+// 🚨 INCLUSION DE "VARIATION" DANS LE FORMULAIRE
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 type PendingCard = {
@@ -74,6 +77,7 @@ function ScannerContent() {
   const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
   const [currentVerifyIndex, setCurrentVerifyIndex] = useState(0);
   const [isVerifyingBulk, setIsVerifyingBulk] = useState(false);
+
   const [bulkFiles, setBulkFiles] = useState<File[]>([]);
   const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
 
@@ -89,6 +93,7 @@ function ScannerContent() {
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
   
@@ -127,7 +132,7 @@ function ScannerContent() {
             club: data.club_name || '', 
             brand: data.brand || '', 
             series: data.series || '', 
-            variation: data.variation || '', // Récupère la variation
+            variation: data.variation || '', // On charge bien la variation
             year: data.year?.toString() || '', 
             is_auto: data.is_auto || false, 
             is_patch: data.is_patch || false, 
@@ -211,6 +216,11 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
+  // ==========================================
+  // LOGIQUE DE GÉNÉRATION DES DROPDOWNS EN CASCADE
+  // ==========================================
+
+  // 1. COLLECTION / SET (Depuis set.json)
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
@@ -220,6 +230,19 @@ function ScannerContent() {
       const sportsData = selectedBrandObj.sports as any;
       if (sportsData[sportJsonKey]) availableSets = sportsData[sportJsonKey];
     }
+  }
+
+  // 2. VARIATIONS (Depuis type-carte.json)
+  let availableVariations: string[] = [];
+  if (formData.brand && TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE]) {
+    const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
+    if (bData.base) availableVariations.push(...bData.base);
+    if (bData.parallels) {
+      Object.values(bData.parallels).forEach((arr: any) => availableVariations.push(...arr));
+    }
+    if (bData.inserts) availableVariations.push(...bData.inserts);
+    if (bData.hits) availableVariations.push(...bData.hits);
+    if (bData.case_hits) availableVariations.push(...bData.case_hits);
   }
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
@@ -283,7 +306,7 @@ function ScannerContent() {
           club: cleanValue(data.club),
           brand: cleanValue(data.brand),
           series: cleanValue(data.series),
-          variation: cleanValue(data.variation), // IA Extrait la variation si configuré
+          variation: cleanValue(data.variation),
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -434,6 +457,39 @@ function ScannerContent() {
     }
   };
 
+  const handleUrlImport = async () => {
+    if (!formData.website_url) return;
+    setAnalyzing(true);
+    
+    try {
+      const res = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: formData.website_url })
+      });
+      const data = await res.json();
+      
+      if (data.base64) {
+        const imgRes = await fetch(data.base64);
+        const blob = await imgRes.blob();
+        const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
+        
+        if (data.price) {
+          setFormData(prev => ({ ...prev, price: data.price }));
+        }
+
+        processImageScan(file, 'front', false); 
+      } else {
+        alert("Impossible de trouver une image sur ce lien.");
+        setAnalyzing(false);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'importation du lien.");
+      setAnalyzing(false);
+    }
+  };
+
   const rotateImage = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
@@ -524,9 +580,7 @@ function ScannerContent() {
       
       const cardDataToSave = { 
         user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
-        series: formData.series, 
-        variation: formData.variation, // SAUVEGARDE DE LA VARIATION
-        year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
+        series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
       
       if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
@@ -620,19 +674,13 @@ function ScannerContent() {
             <img 
               src={activePreviewUrl} 
               className="w-full h-full object-contain"
-              style={{
-                filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`,
-                transform: `scale(${imgSettings.zoom})`
-              }}
+              style={{ filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`, transform: `scale(${imgSettings.zoom})` }}
               alt="Preview Edit" 
             />
           </div>
 
           <div className="mt-8 space-y-6 pb-6 overflow-y-auto">
-            <button onClick={handleAutoEnhance} className="w-full py-3 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25] text-[#AFFF25] font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform">
-              <Wand2 size={18} /> Amélioration Auto
-            </button>
-
+            <button onClick={handleAutoEnhance} className="w-full py-3 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25] text-[#AFFF25] font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"><Wand2 size={18} /> Amélioration Auto</button>
             <div className="space-y-4">
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div><input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Luminosité</span><span>{imgSettings.brightness}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.brightness} onChange={e => setImgSettings({...imgSettings, brightness: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
@@ -653,7 +701,7 @@ function ScannerContent() {
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
-        {/* SWITCH RECTO / VERSO */}
+        {/* SWITCH RECTO / VERSO ou UNITAIRE / LOT */}
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8">
             <div className="flex justify-center gap-8">
@@ -690,6 +738,12 @@ function ScannerContent() {
                      {isVerifyingBulk ? 'L\'IA TERMINE SON ANALYSE...' : 'ANALYSE IA EN COURS...'}
                    </span>
                 </div>
+              )}
+              
+              {!analyzing && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
+                <button onClick={() => activeSide === 'front' ? setPreviewUrl(null) : setPreviewUrlBack(null)} className="absolute top-4 right-4 w-8 h-8 bg-black/50 border border-white/20 text-white rounded-full flex items-center justify-center z-50">
+                  <X size={14} />
+                </button>
               )}
             </div>
           ) : (
@@ -807,19 +861,16 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 
+                {/* DROPDOWN SÉRIE EN CASCADE */}
                 <div className="relative">
-                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
+                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection / Set</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* 🚨 LE NOUVEAU CHAMP VARIATION ICI 🚨 */}
+                {/* 🚨 NOUVEAU DROPDOWN VARIATION EN CASCADE 🚨 */}
                 <div className="relative">
-                  <input 
-                    value={formData.variation} 
-                    onChange={e => setFormData({...formData, variation: e.target.value})} 
-                    placeholder="Variation (ex: Holo, Silver, Base...)" 
-                    className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
-                  />
+                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Holo, Silver...)</option>{availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}</select>
+                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 
                 <div className="relative">

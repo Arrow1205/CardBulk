@@ -28,6 +28,9 @@ const SPORT_FOLDERS: Record<string, string> = {
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
+// 🚨 IMPORT DU JSON DES VARIATIONS POUR LE FILTRE
+import TYPE_CARTE from '@/data/type-carte.json';
+
 type Message = { role: 'user' | 'assistant', content: string };
 
 const slugify = (text: string) => {
@@ -69,13 +72,15 @@ export default function CollectionPage() {
   
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  // 🚨 LE FILTRE VARIATIONS (qui filtre sur la base de la colonne 'series')
-  const [selectedSeries, setSelectedSeries] = useState<string[]>([]); 
+  
+  // 🚨 FILTRE "VARIATIONS"
+  const [selectedVariations, setSelectedVariations] = useState<string[]>([]); 
+  
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
   
-  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | 'series' | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | 'variations' | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -89,7 +94,6 @@ export default function CollectionPage() {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
-  // IA STATES
   const [hasStartedScouty, setHasStartedScouty] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -310,7 +314,20 @@ export default function CollectionPage() {
     
     const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
-    // LE FILTRE CENTRAL
+    // 🚨 PRÉPARATION DE LA LISTE DES VARIATIONS DEPUIS LE JSON 🚨
+    const allJsonVariations = Array.from(new Set(
+      Object.values(TYPE_CARTE).flatMap((bData: any) => {
+        let vars: string[] = [];
+        if (bData.base) vars.push(...bData.base);
+        if (bData.parallels) Object.values(bData.parallels).forEach((arr: any) => vars.push(...arr));
+        if (bData.inserts) vars.push(...bData.inserts);
+        if (bData.hits) vars.push(...bData.hits);
+        if (bData.case_hits) vars.push(...bData.case_hits);
+        return vars;
+      })
+    )).sort();
+
+    // FILTRE CENTRAL
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
@@ -320,14 +337,14 @@ export default function CollectionPage() {
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
       
-      // Filtre sur Variation
-      const seriesMatch = selectedSeries.length === 0 || selectedSeries.includes(card.series);
+      // ✅ Filtre sur la nouvelle colonne Variation
+      const variationMatch = selectedVariations.length === 0 || selectedVariations.includes(card.variation);
       
       const autoMatch = !showAuto || card.is_auto;
       const patchMatch = !showPatch || card.is_patch;
       const numberedMatch = !showNumbered || card.is_numbered;
       
-      return searchMatch && sportMatch && brandMatch && seriesMatch && autoMatch && patchMatch && numberedMatch;
+      return searchMatch && sportMatch && brandMatch && variationMatch && autoMatch && patchMatch && numberedMatch;
     });
 
     return (
@@ -366,9 +383,8 @@ export default function CollectionPage() {
                 <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
                   <span className="truncate max-w-[80px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
                 </button>
-                {/* 🚨 CHANGEMENT DE TEXTE ICI : "Variations" */}
-                <button onClick={() => setOpenDropdown(openDropdown === 'series' ? null : 'series')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedSeries.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  <span className="truncate max-w-[80px]">{selectedSeries.length > 0 ? `${selectedSeries.length} sél.` : 'Variations'}</span><ChevronDown size={14} className={openDropdown === 'series' ? 'rotate-180' : ''} />
+                <button onClick={() => setOpenDropdown(openDropdown === 'variations' ? null : 'variations')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedVariations.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  <span className="truncate max-w-[80px]">{selectedVariations.length > 0 ? `${selectedVariations.length} sél.` : 'Variations'}</span><ChevronDown size={14} className={openDropdown === 'variations' ? 'rotate-180' : ''} />
                 </button>
               </div>
 
@@ -395,17 +411,16 @@ export default function CollectionPage() {
                 </div>
               )}
 
-              {/* NOUVEAU DROPDOWN POUR LES VARIATIONS */}
-              {openDropdown === 'series' && (
+              {/* DROPDOWN VARIATIONS 100% JSON */}
+              {openDropdown === 'variations' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
                   <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
-                    {Array.from(new Set(cards.map(c => c.series).filter(Boolean))).sort().map((seriesStr: any) => {
-                      const series = String(seriesStr);
-                      const isActive = selectedSeries.includes(series);
-                      const toggleSeries = () => setSelectedSeries(prev => isActive ? prev.filter(s => s !== series) : [...prev, series]);
+                    {allJsonVariations.map((variation: any) => {
+                      const isActive = selectedVariations.includes(variation);
+                      const toggleVariation = () => setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]);
                       return (
-                        <div key={series} onClick={toggleSeries} className="w-full flex items-center justify-between py-2 cursor-pointer group">
-                          <span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{series}</span>
+                        <div key={variation} onClick={toggleVariation} className="w-full flex items-center justify-between py-2 cursor-pointer group">
+                          <span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{variation}</span>
                           <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
                             <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
                           </div>
