@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw, Camera } from 'lucide-react';
+import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -43,10 +43,6 @@ export default function CardDetailsPage() {
 
   // ÉTAT POUR LE RECTO/VERSO (FLIP)
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isUploadingFront, setIsUploadingFront] = useState(false);
-  const [isUploadingBack, setIsUploadingBack] = useState(false);
-  const frontFileInputRef = useRef<HTMLInputElement>(null);
-  const backFileInputRef = useRef<HTMLInputElement>(null);
   
   // GESTION DU SWIPE
   const [touchStart, setTouchStart] = useState<{x: number, y: number, time: number} | null>(null);
@@ -122,70 +118,6 @@ export default function CardDetailsPage() {
       alert("Erreur lors de la recherche du prix.");
     } finally {
       setIsUpdatingPrice(false);
-    }
-  };
-
-  // ==========================================
-  // COMPRESSION ET UPLOAD D'IMAGE (RECTO/VERSO)
-  // ==========================================
-  const compressImage = async (file: File): Promise<File> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1000; 
-        const scaleSize = MAX_WIDTH / img.width;
-        
-        if (scaleSize < 1) {
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scaleSize;
-        } else {
-          canvas.width = img.width;
-          canvas.height = img.height;
-        }
-
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        canvas.toBlob((blob) => {
-          if (blob) resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }));
-          else resolve(file);
-        }, 'image/jpeg', 0.8); 
-      };
-    });
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, side: 'front' | 'back') => {
-    const file = e.target.files?.[0];
-    if (!file || !card) return;
-
-    if (side === 'front') setIsUploadingFront(true);
-    else setIsUploadingBack(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const compressedFile = await compressImage(file);
-      const filePath = `${user.id}/${Date.now()}-${side}.jpg`; 
-      await supabase.storage.from('card-images').upload(filePath, compressedFile);
-      const newImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
-
-      const updateData = side === 'front' ? { image_url: newImageUrl } : { image_url_back: newImageUrl };
-      await supabase.from('cards').update(updateData).eq('id', card.id);
-
-      setCard((prev: any) => ({ ...prev, ...updateData }));
-
-      if (side === 'back' && !isFlipped) setIsFlipped(true);
-
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'upload de l'image.");
-    } finally {
-      if (side === 'front') setIsUploadingFront(false);
-      else setIsUploadingBack(false);
-      if (e.target) e.target.value = '';
     }
   };
 
@@ -350,6 +282,7 @@ export default function CardDetailsPage() {
       {/* 🔘 HEADER */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
+        {/* BOUTON ÉDITER ENVOIE VERS LE SCANNER */}
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
@@ -426,7 +359,7 @@ export default function CardDetailsPage() {
       {/* 📊 PARTIE DROITE (INFOS) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[450px] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-[calc(100vh-88px)] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
             <div className="text-xl text-white uppercase tracking-wider font-light">{card.firstname || "Prénom"}</div>
             <div className="text-5xl lg:text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter break-words">{card.lastname || "Nom"}</div>
@@ -436,16 +369,6 @@ export default function CardDetailsPage() {
               <Star size={28} strokeWidth={card.is_favorite ? 0 : 1.5} className={card.is_favorite ? "fill-[#AFFF25] text-[#AFFF25]" : "text-[#AFFF25]"} />
             </button>
           )}
-        </div>
-
-        {/* 📸 BOUTONS D'ÉDITION D'IMAGE */}
-        <div className="flex gap-3 mb-6">
-           <button onClick={() => frontFileInputRef.current?.click()} className="flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all">
-             {isUploadingFront ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />} Changer Recto
-           </button>
-           <button onClick={() => backFileInputRef.current?.click()} className={`flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all ${card.image_url_back ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
-             {isUploadingBack ? <Loader2 size={14} className="animate-spin" /> : <RotateCw size={14} />} {card.image_url_back ? 'Changer Verso' : '+ Verso'}
-           </button>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6">
@@ -475,7 +398,8 @@ export default function CardDetailsPage() {
 
         <div className="grid grid-cols-3 lg:grid-cols-2 2xl:grid-cols-3 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Set</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
+          {/* 🚨 ICI : CHANGEMENT DE NOM POUR "VARIATION" */}
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Variation</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-sm sm:text-base font-bold text-white">{card.year || "-"}</div></div>
           
           <div>
@@ -499,7 +423,6 @@ export default function CardDetailsPage() {
                 {card.purchase_price ? `${card.purchase_price} €` : "-"}
               </span>
               
-              {/* === AFFICHAGE DU DELTA === */}
               {card.purchase_price > 0 && averagePrice !== null && (
                 (() => {
                   const diff = averagePrice - card.purchase_price;
@@ -596,11 +519,6 @@ export default function CardDetailsPage() {
           )}
         </div>
       </div>
-
-      {/* Inputs cachés pour déclencher l'upload */}
-      <input type="file" ref={frontFileInputRef} onChange={(e) => handleImageUpload(e, 'front')} className="hidden" accept="image/*" />
-      <input type="file" ref={backFileInputRef} onChange={(e) => handleImageUpload(e, 'back')} className="hidden" accept="image/*" />
-
     </div>
   );
 }

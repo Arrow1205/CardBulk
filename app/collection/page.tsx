@@ -69,7 +69,7 @@ export default function CollectionPage() {
   
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  // 🚨 NOUVEAU FILTRE SÉRIES 🚨
+  // 🚨 LE FILTRE VARIATIONS (qui filtre sur la base de la colonne 'series')
   const [selectedSeries, setSelectedSeries] = useState<string[]>([]); 
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
@@ -320,7 +320,7 @@ export default function CollectionPage() {
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
       
-      // La vérification de la Série
+      // Filtre sur Variation
       const seriesMatch = selectedSeries.length === 0 || selectedSeries.includes(card.series);
       
       const autoMatch = !showAuto || card.is_auto;
@@ -351,7 +351,7 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* 2. FILTRES SPÉCIFICITÉS + MARQUES + SÉRIES */}
+        {/* 2. FILTRES SPÉCIFICITÉS + MARQUES + VARIATIONS */}
         <div className={`relative z-50 mb-6 px-6 lg:px-[80px] ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
           
@@ -366,8 +366,9 @@ export default function CollectionPage() {
                 <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
                   <span className="truncate max-w-[80px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
                 </button>
+                {/* 🚨 CHANGEMENT DE TEXTE ICI : "Variations" */}
                 <button onClick={() => setOpenDropdown(openDropdown === 'series' ? null : 'series')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedSeries.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  <span className="truncate max-w-[80px]">{selectedSeries.length > 0 ? `${selectedSeries.length} sél.` : 'Séries'}</span><ChevronDown size={14} className={openDropdown === 'series' ? 'rotate-180' : ''} />
+                  <span className="truncate max-w-[80px]">{selectedSeries.length > 0 ? `${selectedSeries.length} sél.` : 'Variations'}</span><ChevronDown size={14} className={openDropdown === 'series' ? 'rotate-180' : ''} />
                 </button>
               </div>
 
@@ -394,7 +395,7 @@ export default function CollectionPage() {
                 </div>
               )}
 
-              {/* NOUVEAU DROPDOWN POUR LES SÉRIES (Généré depuis les cartes réelles) */}
+              {/* NOUVEAU DROPDOWN POUR LES VARIATIONS */}
               {openDropdown === 'series' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
                   <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">

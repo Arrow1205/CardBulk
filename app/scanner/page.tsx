@@ -195,7 +195,7 @@ function ScannerContent() {
     }
   }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
 
-  // FILTRE INTELLIGENT POUR LES CLUBS (Supprime les "N/A" et gère les Alias/Suffixes)
+  // FILTRE INTELLIGENT POUR LES CLUBS
   const normalizeClubName = (str: string) => {
     if (!str) return '';
     return str.toLowerCase()
@@ -227,7 +227,7 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
-  // 🚨 LE DROPDOWN EN CASCADE (SÉRIES DÉPENDANTES DU FABRICANT) 🚨
+  // LE DROPDOWN EN CASCADE (VARIATIONS DÉPENDANTES DU FABRICANT)
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
@@ -327,7 +327,6 @@ function ScannerContent() {
           grading_grade: cleanValue(data.grading_grade),
         };
 
-        // On met à jour l'élément dans le tableau global sans bloquer l'UI
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
       } else {
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c));
@@ -383,18 +382,15 @@ function ScannerContent() {
     canvas.toBlob((blob) => {
       if (!blob) return;
       const croppedFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      stopCamera();
       
       if (scanMode === 'lot' && activeSide === 'front') {
-        // 🚀 MODE RAFALE (MITRAILLAGE)
         const newId = Date.now().toString() + Math.random().toString();
         const newCard: PendingCard = { id: newId, file: croppedFile, previewUrl: URL.createObjectURL(croppedFile), status: 'analyzing', aiResult: null };
         
         setPendingCards(prev => [...prev, newCard]);
         processBackgroundScan(newId, croppedFile);
-        // ON NE FERME PAS LA CAMÉRA ICI ! 
       } else {
-        // Mode Unitaire ou prise du Verso
-        stopCamera();
         processImageScan(croppedFile, activeSide, activeSide === 'front'); 
       }
     }, 'image/jpeg', 1.0);
@@ -407,7 +403,6 @@ function ScannerContent() {
     if (files.length > 1 && activeSide === 'front') {
       if (files.length > 30) { alert("Max 30 cartes"); return; }
       
-      // Import Multiple depuis la galerie -> Transforme en File d'attente IA
       const newPending: PendingCard[] = files.map((f, i) => ({
         id: Date.now().toString() + i,
         file: f,
@@ -419,7 +414,6 @@ function ScannerContent() {
       setIsVerifyingBulk(true);
       setCurrentVerifyIndex(0);
 
-      // Lance l'analyse de toutes les images importées en sous-marin
       newPending.forEach(c => processBackgroundScan(c.id, c.file));
       
     } else {
@@ -471,9 +465,15 @@ function ScannerContent() {
         if (activeSide === 'back') {
           setSelectedFileBack(croppedFile);
           setPreviewUrlBack(URL.createObjectURL(croppedFile));
-          processImageScan(croppedFile, 'back', false); // Analyse Complémentaire (ET)
+          processImageScan(croppedFile, 'back', false); 
         } else {
-          processImageScan(croppedFile, 'front', true); 
+          if (scanMode === 'lot' && activeSide === 'front') {
+             setBulkFiles([croppedFile]);
+             setCurrentBulkIndex(0);
+             processImageScan(croppedFile, 'front', true);
+          } else {
+             processImageScan(croppedFile, 'front', true); 
+          }
         }
       }, 'image/jpeg', 0.9);
     };
@@ -772,19 +772,30 @@ function ScannerContent() {
     router.push(isWishlistMode ? '/wishlist' : '/collection');
   };
 
+  // NOUVELLES FONCTIONS POUR CHANGER RAPIDEMENT L'IMAGE
+  const handleChangeImage = (side: 'front' | 'back') => {
+    setActiveSide(side);
+    if (side === 'front') {
+        setPreviewUrl(null);
+        setSelectedFile(null);
+    } else {
+        setPreviewUrlBack(null);
+        setSelectedFileBack(null);
+    }
+  };
+
   const hideBrokenImage = (e: any) => e.currentTarget.style.display = 'none';
 
   if (isFetchingEdit) return <div className="min-h-screen bg-[#040221] flex flex-col items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
   const pageTitle = isWishlistMode ? 'WISHLIST' : (editId ? 'MODIFIER' : 'AJOUTER');
-
   const activePreviewUrl = activeSide === 'front' ? previewUrl : previewUrlBack;
 
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
       {/* ==========================================
-          MODAL DE RECADRAGE (AVEC LE FAMEUX LAYER BLEU SOMBRE !)
+          MODAL DE RECADRAGE
       ========================================== */}
       {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
@@ -793,7 +804,6 @@ function ScannerContent() {
             Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}
           </h2>
 
-          {/* L'image en plein écran pour pouvoir la zoomer confortablement */}
           <img 
             src={cropPreview} 
             className="absolute inset-0 w-full h-full object-contain origin-center z-0" 
@@ -801,7 +811,6 @@ function ScannerContent() {
             alt="To Crop" 
           />
 
-          {/* Le masque assombrissant (Layer bleu/noir) par-dessus l'image */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div>
           </div>
@@ -839,12 +848,11 @@ function ScannerContent() {
       )}
 
       {/* ==========================================
-          OVERLAY CAMERA CUSTOM (MODE RAFALE INCLUS)
+          OVERLAY CAMERA CUSTOM
       ========================================== */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
           
-          {/* Badge Compteur Mode Rafale */}
           {scanMode === 'lot' && pendingCards.length > 0 && (
             <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 shadow-[0_0_20px_rgba(175,255,37,0.4)] animate-in fade-in slide-in-from-top-4">
               {pendingCards.length} en attente...
@@ -853,7 +861,6 @@ function ScannerContent() {
 
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0" />
           
-          {/* CALQUE BLEU SOMBRE AVEC CADRE JAUNE DANS LA CAMÉRA */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
@@ -866,11 +873,9 @@ function ScannerContent() {
              <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button>
           </div>
 
-          {/* Boutons du bas (Capture + Stop Rafale) */}
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex flex-col items-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
              <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"></button>
              
-             {/* Bouton pour stopper la rafale et passer à la vérification */}
              {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (
                <button 
                  onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }}
@@ -974,7 +979,7 @@ function ScannerContent() {
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
-              {/* Overlay d'analyse de l'IA (Aussi actif si la carte bulk est toujours en pending !) */}
+              {/* Overlay d'analyse */}
               {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && activeSide === 'front' && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
@@ -982,13 +987,6 @@ function ScannerContent() {
                      {isVerifyingBulk ? 'L\'IA TERMINE SON ANALYSE...' : 'ANALYSE IA EN COURS...'}
                    </span>
                 </div>
-              )}
-              
-              {/* Bouton pour supprimer l'image et en reprendre une (Bloqué si IA en cours) */}
-              {!analyzing && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
-                <button onClick={() => activeSide === 'front' ? setPreviewUrl(null) : setPreviewUrlBack(null)} className="absolute top-4 right-4 w-8 h-8 bg-black/50 border border-white/20 text-white rounded-full flex items-center justify-center z-50">
-                  <X size={14} />
-                </button>
               )}
             </div>
           ) : (
@@ -1028,7 +1026,7 @@ function ScannerContent() {
             </div>
           )}
           
-          {/* Boutons Rotation et Édition */}
+          {/* Boutons Rotation et Édition + Nouveaux boutons de remplacement rapide */}
           {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
               <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105">
@@ -1041,9 +1039,21 @@ function ScannerContent() {
           )}
         </div>
 
+        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES (Unitaire ou Édition) */}
+        {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
+          <div className="flex gap-3 w-full max-w-[240px] lg:max-w-[350px] mx-auto pointer-events-auto">
+             <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all">
+               <RotateCw size={14} /> Changer Recto
+             </button>
+             <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
+               <RotateCw size={14} /> {previewUrlBack ? 'Changer Verso' : '+ Verso'}
+             </button>
+          </div>
+        )}
+
         {/* Option d'importation par URL */}
         {isWishlistMode && !isVerifyingBulk && (
-          <div className="relative w-full max-w-[300px] lg:max-w-[400px] mx-auto flex items-center gap-2 z-10">
+          <div className="relative w-full max-w-[300px] lg:max-w-[400px] mx-auto flex items-center gap-2 z-10 mt-6">
             <div className="relative flex-1">
               <input 
                 value={formData.website_url} 
@@ -1125,7 +1135,7 @@ function ScannerContent() {
                   )}
                 </div>
                 
-                {/* Logos de club dynamiques (AVEC FONCTION DE NORMALISATION) */}
+                {/* Logos de club dynamiques */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
@@ -1164,11 +1174,12 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 
-                {/* LE DROPDOWN SÉRIE EN CASCADE */}
+                {/* LE DROPDOWN SÉRIE EN CASCADE (Renommé "Variation") */}
                 <div className="relative">
-                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
+                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Prizm, Holo...)</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
+                
                 <div className="relative">
                   <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
