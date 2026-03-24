@@ -26,9 +26,9 @@ const SPORT_FOLDERS: Record<string, string> = {
 };
 
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
-const BRANDS = ['Panini', 'Topps', 'Upper Deck', 'Leaf', 'Futera'];
 
-// 🚨 IMPORT DU JSON DES VARIATIONS POUR LE FILTRE
+// 🚨 IMPORT DES DEUX FICHIERS JSON POUR LES FILTRES
+import SET_DATA from '@/data/set.json';
 import TYPE_CARTE from '@/data/type-carte.json';
 
 type Message = { role: 'user' | 'assistant', content: string };
@@ -72,15 +72,14 @@ export default function CollectionPage() {
   
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  
-  // 🚨 FILTRE "VARIATIONS"
+  const [selectedSeries, setSelectedSeries] = useState<string[]>([]); 
   const [selectedVariations, setSelectedVariations] = useState<string[]>([]); 
   
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
   
-  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | 'variations' | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | 'series' | 'variations' | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -314,20 +313,34 @@ export default function CollectionPage() {
     
     const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
-    // 🚨 PRÉPARATION DE LA LISTE DES VARIATIONS DEPUIS LE JSON 🚨
-    const allJsonVariations = Array.from(new Set(
-      Object.values(TYPE_CARTE).flatMap((bData: any) => {
-        let vars: string[] = [];
-        if (bData.base) vars.push(...bData.base);
-        if (bData.parallels) Object.values(bData.parallels).forEach((arr: any) => vars.push(...arr));
-        if (bData.inserts) vars.push(...bData.inserts);
-        if (bData.hits) vars.push(...bData.hits);
-        if (bData.case_hits) vars.push(...bData.case_hits);
-        return vars;
-      })
-    )).sort();
+    // 🚨 PRÉPARATION DES LISTES DE FILTRES DEPUIS LES JSONS
+    const allJsonBrands = SET_DATA.brands?.map((b: any) => b.name) || [];
+    
+    let allJsonSets: string[] = [];
+    SET_DATA.brands?.forEach((b: any) => {
+      if (b.sports) {
+        Object.values(b.sports).forEach((arr: any) => {
+          if (Array.isArray(arr)) allJsonSets.push(...arr);
+        });
+      }
+    });
+    allJsonSets = Array.from(new Set(allJsonSets)).sort();
 
-    // FILTRE CENTRAL
+    let allJsonVariations: string[] = [];
+    Object.values(TYPE_CARTE).forEach((bData: any) => {
+      if (bData.base) allJsonVariations.push(...bData.base);
+      if (bData.parallels) {
+        Object.values(bData.parallels).forEach((arr: any) => {
+          if (Array.isArray(arr)) allJsonVariations.push(...arr);
+        });
+      }
+      if (bData.inserts) allJsonVariations.push(...bData.inserts);
+      if (bData.hits) allJsonVariations.push(...bData.hits);
+      if (bData.case_hits) allJsonVariations.push(...bData.case_hits);
+    });
+    allJsonVariations = Array.from(new Set(allJsonVariations)).sort();
+
+    // 🧠 FILTRE CENTRAL
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
@@ -335,16 +348,17 @@ export default function CollectionPage() {
       
       const searchMatch = !searchQuery || fullName.includes(searchTerm) || reverseFullName.includes(searchTerm) || card.club_name?.toLowerCase().includes(searchTerm);
       const sportMatch = !selectedSport || card.sport === selectedSport;
-      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
       
-      // ✅ Filtre sur la nouvelle colonne Variation
+      // On vérifie Marques, Collections et Variations
+      const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
+      const seriesMatch = selectedSeries.length === 0 || selectedSeries.includes(card.series);
       const variationMatch = selectedVariations.length === 0 || selectedVariations.includes(card.variation);
       
       const autoMatch = !showAuto || card.is_auto;
       const patchMatch = !showPatch || card.is_patch;
       const numberedMatch = !showNumbered || card.is_numbered;
       
-      return searchMatch && sportMatch && brandMatch && variationMatch && autoMatch && patchMatch && numberedMatch;
+      return searchMatch && sportMatch && brandMatch && seriesMatch && variationMatch && autoMatch && patchMatch && numberedMatch;
     });
 
     return (
@@ -368,23 +382,26 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* 2. FILTRES SPÉCIFICITÉS + MARQUES + VARIATIONS */}
+        {/* 2. FILTRES (SPÉCIFICITÉS + MARQUES + COLLECTIONS + VARIATIONS) */}
         <div className={`relative z-50 mb-6 px-6 lg:px-[80px] ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
           
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
-            {/* 50% GAUCHE : Boutons de filtres */}
-            <div className="relative w-full lg:w-1/2">
-              <div className="flex gap-2 lg:gap-3">
-                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  <span className="truncate">Spécificités</span> <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
+            {/* 50% GAUCHE : Scroll horizontal pour les boutons de filtre */}
+            <div className="relative w-full lg:w-[60%]">
+              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
                 </button>
-                <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  <span className="truncate max-w-[80px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
+                <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  {selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'} <ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
                 </button>
-                <button onClick={() => setOpenDropdown(openDropdown === 'variations' ? null : 'variations')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedVariations.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  <span className="truncate max-w-[80px]">{selectedVariations.length > 0 ? `${selectedVariations.length} sél.` : 'Variations'}</span><ChevronDown size={14} className={openDropdown === 'variations' ? 'rotate-180' : ''} />
+                <button onClick={() => setOpenDropdown(openDropdown === 'series' ? null : 'series')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedSeries.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  {selectedSeries.length > 0 ? `${selectedSeries.length} sél.` : 'Collections'} <ChevronDown size={14} className={openDropdown === 'series' ? 'rotate-180' : ''} />
+                </button>
+                <button onClick={() => setOpenDropdown(openDropdown === 'variations' ? null : 'variations')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedVariations.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  {selectedVariations.length > 0 ? `${selectedVariations.length} sél.` : 'Variations'} <ChevronDown size={14} className={openDropdown === 'variations' ? 'rotate-180' : ''} />
                 </button>
               </div>
 
@@ -401,7 +418,7 @@ export default function CollectionPage() {
               {openDropdown === 'brand' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
                   <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
-                    {BRANDS.map(brand => {
+                    {allJsonBrands.map((brand: string) => {
                       const slug = brand.toLowerCase().replace(/\s+/g, '-'); const isActive = selectedBrands.includes(brand);
                       const toggleBrand = () => setSelectedBrands(prev => isActive ? prev.filter(b => b !== brand) : [...prev, brand]);
                       return (<div key={brand} onClick={toggleBrand} className="w-full flex items-center justify-between py-2 cursor-pointer group"><div className="flex items-center gap-4"><img src={`/asset/logo-marque/${slug}.png`} alt={brand} className="h-5 object-contain mix-blend-screen" onError={(e) => e.currentTarget.style.display = 'none'} /><span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'}`}>{brand}</span></div><div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}><div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div></div></div>);
@@ -411,11 +428,30 @@ export default function CollectionPage() {
                 </div>
               )}
 
-              {/* DROPDOWN VARIATIONS 100% JSON */}
+              {openDropdown === 'series' && (
+                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
+                  <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
+                    {allJsonSets.map((seriesStr: string) => {
+                      const isActive = selectedSeries.includes(seriesStr);
+                      const toggleSeries = () => setSelectedSeries(prev => isActive ? prev.filter(s => s !== seriesStr) : [...prev, seriesStr]);
+                      return (
+                        <div key={seriesStr} onClick={toggleSeries} className="w-full flex items-center justify-between py-2 cursor-pointer group">
+                          <span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{seriesStr}</span>
+                          <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
+                            <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
+                </div>
+              )}
+
               {openDropdown === 'variations' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
                   <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
-                    {allJsonVariations.map((variation: any) => {
+                    {allJsonVariations.map((variation: string) => {
                       const isActive = selectedVariations.includes(variation);
                       const toggleVariation = () => setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]);
                       return (
@@ -434,10 +470,10 @@ export default function CollectionPage() {
             </div>
 
             {/* 50% DROITE : Barre de recherche Desktop */}
-            <div className="hidden lg:block w-full lg:w-1/2 relative z-[70]">
+            <div className="hidden lg:block w-full lg:w-[40%] relative z-[70]">
               <input 
                 type="text" 
-                placeholder="Rechercher joueur ou club..." 
+                placeholder="Rechercher..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[#040221] border border-white/20 rounded-full py-2.5 pl-5 pr-12 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#AFFF25] transition-all"

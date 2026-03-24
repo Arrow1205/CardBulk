@@ -11,9 +11,9 @@ import BASEBALL_CLUBS from '@/data/baseball-clubs.json';
 import NBA_PLAYERS from '@/data/nba-player.json';
 import MLB_PLAYERS from '@/data/mlb-player.json';
 import TENNIS_PLAYERS from '@/data/tennis-player.json';
-import SET_DATA from '@/data/set.json';
 
-// 🚨 IMPORT DU JSON DES VARIATIONS 🚨
+// 🚨 IMPORT DES DEUX FICHIERS JSON
+import SET_DATA from '@/data/set.json';
 import TYPE_CARTE from '@/data/type-carte.json';
 
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
@@ -46,7 +46,6 @@ const PLAYER_DATA: Record<string, any[]> = {
   'TENNIS': TENNIS_PLAYERS?.atp_top_100 || []
 };
 
-// 🚨 INCLUSION DE "VARIATION" DANS LE FORMULAIRE
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 type PendingCard = {
@@ -132,7 +131,7 @@ function ScannerContent() {
             club: data.club_name || '', 
             brand: data.brand || '', 
             series: data.series || '', 
-            variation: data.variation || '', // On charge bien la variation
+            variation: data.variation || '', 
             year: data.year?.toString() || '', 
             is_auto: data.is_auto || false, 
             is_patch: data.is_patch || false, 
@@ -238,7 +237,9 @@ function ScannerContent() {
     const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
     if (bData.base) availableVariations.push(...bData.base);
     if (bData.parallels) {
-      Object.values(bData.parallels).forEach((arr: any) => availableVariations.push(...arr));
+      Object.values(bData.parallels).forEach((arr: any) => {
+        if (Array.isArray(arr)) availableVariations.push(...arr);
+      });
     }
     if (bData.inserts) availableVariations.push(...bData.inserts);
     if (bData.hits) availableVariations.push(...bData.hits);
@@ -460,34 +461,15 @@ function ScannerContent() {
   const handleUrlImport = async () => {
     if (!formData.website_url) return;
     setAnalyzing(true);
-    
     try {
-      const res = await fetch('/api/scrape', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: formData.website_url })
-      });
+      const res = await fetch('/api/scrape', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: formData.website_url }) });
       const data = await res.json();
-      
       if (data.base64) {
-        const imgRes = await fetch(data.base64);
-        const blob = await imgRes.blob();
-        const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
-        
-        if (data.price) {
-          setFormData(prev => ({ ...prev, price: data.price }));
-        }
-
+        const imgRes = await fetch(data.base64); const blob = await imgRes.blob(); const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
+        if (data.price) setFormData(prev => ({ ...prev, price: data.price }));
         processImageScan(file, 'front', false); 
-      } else {
-        alert("Impossible de trouver une image sur ce lien.");
-        setAnalyzing(false);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'importation du lien.");
-      setAnalyzing(false);
-    }
+      } else { alert("Impossible de trouver une image sur ce lien."); setAnalyzing(false); }
+    } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
   };
 
   const rotateImage = async () => {
@@ -701,7 +683,6 @@ function ScannerContent() {
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
-        {/* SWITCH RECTO / VERSO ou UNITAIRE / LOT */}
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8">
             <div className="flex justify-center gap-8">
@@ -748,7 +729,6 @@ function ScannerContent() {
             </div>
           ) : (
             <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl gap-4 p-6">
-              
               <button onClick={startCamera} className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group">
                 <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] shadow-[0_0_15px_rgba(175,255,37,0.5)] group-hover:scale-110 transition-transform"><Camera size={24} strokeWidth={2.5} /></div>
                 <span className="text-xs lg:text-sm font-bold text-[#AFFF25] uppercase tracking-widest text-center">Prendre {activeSide === 'front' ? 'le Recto' : 'le Verso'}</span>
@@ -845,7 +825,6 @@ function ScannerContent() {
             )}
           </div>
 
-          {/* Section Carte */}
           <div>
             <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsCarteOpen(!isCarteOpen)}>
               <h2 className="text-2xl font-black italic uppercase">Carte</h2><div className="text-[#AFFF25]">{isCarteOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
@@ -861,15 +840,15 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 
-                {/* DROPDOWN SÉRIE EN CASCADE */}
+                {/* 🚨 DROPDOWN POUR LA COLLECTION (SET) EN CASCADE */}
                 <div className="relative">
                   <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection / Set</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* 🚨 NOUVEAU DROPDOWN VARIATION EN CASCADE 🚨 */}
+                {/* 🚨 NOUVEAU DROPDOWN POUR LA VARIATION EN CASCADE */}
                 <div className="relative">
-                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Holo, Silver...)</option>{availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}</select>
+                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Base, Prizm Silver...)</option>{availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 

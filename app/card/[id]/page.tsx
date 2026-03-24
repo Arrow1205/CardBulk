@@ -92,7 +92,7 @@ export default function CardDetailsPage() {
       formattedYear = `${prevYear}-${shortYear}`;
     }
 
-    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
+    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.variation, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
 
     try {
       const res = await fetch('/api/price-update', {
@@ -276,32 +276,58 @@ export default function CardDetailsPage() {
 
       {/* PARTIE GAUCHE (CARTE 3D) */}
       <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
+        
         <div 
           ref={cardRef} 
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
           className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" 
           onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} onTouchCancel={handleLeave}
         >
-          <div className="relative" style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)', transformStyle: 'preserve-3d', transition: 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)' }}>
+          {/* 🔄 CONTENEUR DE FLIP 3D */}
+          <div 
+            className="relative"
+            style={{
+              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              transformStyle: 'preserve-3d',
+              transition: 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)'
+            }}
+          >
+            {/* FACADE (RECTO) */}
             <div style={{ backfaceVisibility: 'hidden' }}>
               {card.image_url ? (
-                <img src={card.image_url} onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} style={{ borderRadius: '12px', pointerEvents: 'none' }} className={`w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] ${isHorizontal ? 'lg:max-w-[80%]' : ''} object-contain border border-white/10`} alt="Recto" />
+                <img 
+                  src={card.image_url} 
+                  onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} 
+                  style={{ borderRadius: '12px', pointerEvents: 'none' }} 
+                  className={`w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] ${isHorizontal ? 'lg:max-w-[80%]' : ''} object-contain border border-white/10`} 
+                  alt="Recto" 
+                />
               ) : (
                 <div className="w-[250px] h-[350px] bg-white/5 flex items-center justify-center rounded-[12px]">No Image</div>
               )}
             </div>
+
+            {/* DOS (VERSO) */}
             {card.image_url_back && (
               <div style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }} className="absolute inset-0 w-full h-full flex items-center justify-center">
-                <img src={card.image_url_back} style={{ borderRadius: '12px', pointerEvents: 'none' }} className="w-full h-full object-cover border border-white/10" alt="Verso" />
+                <img 
+                  src={card.image_url_back} 
+                  style={{ borderRadius: '12px', pointerEvents: 'none' }} 
+                  className="w-full h-full object-cover border border-white/10" 
+                  alt="Verso" 
+                />
               </div>
             )}
           </div>
+
           <div className="absolute inset-0 pointer-events-none rounded-[12px] mix-blend-overlay z-20" style={glareStyle}></div>
+
           {card.image_url_back && (
              <button onClick={(e) => { e.stopPropagation(); setIsFlipped(!isFlipped); }} className="absolute bottom-4 right-4 bg-black/50 border border-white/20 backdrop-blur-md p-3 rounded-full text-[#AFFF25] shadow-xl pointer-events-auto z-50 transition-transform hover:scale-110 active:scale-95">
                  <RotateCw size={20} />
              </button>
           )}
+
           {showGyroOverlay && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#040221]/80 backdrop-blur-md rounded-[12px] border border-[#AFFF25]/30 p-6 text-center shadow-xl">
               <Smartphone size={32} className="text-[#AFFF25] mb-3 animate-pulse" />
@@ -352,7 +378,7 @@ export default function CardDetailsPage() {
           </div>
         </div>
 
-        {/* 🚨 LE TABLEAU À 4 COLONNES (BRAND, COLLECTION, VARIATION, ANNÉE) */}
+        {/* 🚨 TABLEAU AVEC BRAND, COLLECTION, VARIATION, ANNEE... */}
         <div className="grid grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Collection</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
@@ -380,7 +406,6 @@ export default function CardDetailsPage() {
                 {card.purchase_price ? `${card.purchase_price} €` : "-"}
               </span>
               
-              {/* === AFFICHAGE DU DELTA === */}
               {card.purchase_price > 0 && averagePrice !== null && (
                 (() => {
                   const diff = averagePrice - card.purchase_price;
