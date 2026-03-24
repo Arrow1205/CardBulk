@@ -5,16 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight } from 'lucide-react';
 
-// Importation des données Clubs
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
 import BASEBALL_CLUBS from '@/data/baseball-clubs.json';
-
-// Importation des données Joueurs
 import NBA_PLAYERS from '@/data/nba-player.json';
 import MLB_PLAYERS from '@/data/mlb-player.json';
 import TENNIS_PLAYERS from '@/data/tennis-player.json';
-
 import SET_DATA from '@/data/set.json';
 
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
@@ -47,9 +43,9 @@ const PLAYER_DATA: Record<string, any[]> = {
   'TENNIS': TENNIS_PLAYERS?.atp_top_100 || []
 };
 
-const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
+// 🚨 NOUVEAU CHAMP "VARIATION" DANS LE FORMULAIRE PAR DÉFAUT
+const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
-// TYPE POUR LE MODE RAFALE
 type PendingCard = {
   id: string;
   file: File;
@@ -73,15 +69,11 @@ function ScannerContent() {
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
   const [scanMode, setScanMode] = useState<'unitaire' | 'lot'>('unitaire');
-  
-  // GESTION RECTO / VERSO
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
-  // ÉTATS MODE RAFALE
   const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
   const [currentVerifyIndex, setCurrentVerifyIndex] = useState(0);
   const [isVerifyingBulk, setIsVerifyingBulk] = useState(false);
-
   const [bulkFiles, setBulkFiles] = useState<File[]>([]);
   const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
 
@@ -95,15 +87,11 @@ function ScannerContent() {
   const [isFetchingEdit, setIsFetchingEdit] = useState(!!editId);
   const [confirmDelete, setConfirmDelete] = useState(false);
   
-  // RECTO
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  // VERSO
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
   
-  // ÉTATS POUR LE RECADRAGE POST-CAPTURE
   const [cropPreview, setCropPreview] = useState<string | null>(null);
   const [cropZoom, setCropZoom] = useState(1);
 
@@ -119,7 +107,6 @@ function ScannerContent() {
   const [formData, setFormData] = useState(DEFAULT_FORM);
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
-  // CUSTOM CAMERA STATES & REFS
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -140,6 +127,7 @@ function ScannerContent() {
             club: data.club_name || '', 
             brand: data.brand || '', 
             series: data.series || '', 
+            variation: data.variation || '', // Récupère la variation
             year: data.year?.toString() || '', 
             is_auto: data.is_auto || false, 
             is_patch: data.is_patch || false, 
@@ -162,9 +150,7 @@ function ScannerContent() {
     }
   }, [editId]);
 
-  useEffect(() => {
-    return () => stopCamera();
-  }, []);
+  useEffect(() => { return () => stopCamera(); }, []);
 
   useEffect(() => {
     if (isCameraOpen && videoRef.current && streamRef.current) {
@@ -173,7 +159,6 @@ function ScannerContent() {
     }
   }, [isCameraOpen]);
 
-  // SYNCHRONISATION VÉRIFICATION BULK (Charge la carte en cours + ses données IA)
   useEffect(() => {
     if (isVerifyingBulk && pendingCards.length > 0) {
       const currentCard = pendingCards[currentVerifyIndex];
@@ -195,12 +180,11 @@ function ScannerContent() {
     }
   }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
 
-  // FILTRE INTELLIGENT POUR LES CLUBS
   const normalizeClubName = (str: string) => {
     if (!str) return '';
     return str.toLowerCase()
-      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city)\b/g, '') // Enlève les suffixes courants
-      .replace(/[^\w\s]/g, '') // Enlève la ponctuation
+      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city)\b/g, '') 
+      .replace(/[^\w\s]/g, '') 
       .trim();
   };
 
@@ -227,7 +211,6 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
-  // LE DROPDOWN EN CASCADE (VARIATIONS DÉPENDANTES DU FABRICANT)
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
@@ -243,26 +226,17 @@ function ScannerContent() {
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
-  // CUSTOM CAMERA (4K / HD)
   const startCamera = async () => {
     setIsCameraOpen(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: { ideal: "environment" },
-          width: { ideal: 3840, min: 1920 },
-          height: { ideal: 2160, min: 1080 },
-          frameRate: { ideal: 30 }
-        }
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 3840, min: 1920 }, height: { ideal: 2160, min: 1080 }, frameRate: { ideal: 30 } }
       });
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
-      console.warn("Échec du forçage 4K, passage au Fallback standard", err);
       try {
-        const fallbackStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" } }
-        });
+        const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } });
         streamRef.current = fallbackStream;
         if (videoRef.current) videoRef.current.srcObject = fallbackStream;
       } catch (fallbackErr) {
@@ -273,28 +247,22 @@ function ScannerContent() {
   };
 
   const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
+    if (streamRef.current) { streamRef.current.getTracks().forEach(track => track.stop()); streamRef.current = null; }
     setIsCameraOpen(false);
   };
 
-  // 🧠 FONCTION IA EN SOUS-MARIN (Asynchrone)
   const processBackgroundScan = async (id: string, file: File) => {
     try {
-      const body = new FormData(); 
-      body.append("image", file);
+      const body = new FormData(); body.append("image", file);
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
       if (!data.error) {
         const cleanValue = (val: any) => {
           if (!val) return '';
-          const str = String(val).trim();
-          const lower = str.toLowerCase();
-          if (['n/a', 'na', 'none', 'inconnu', 'brand', 'null', 'undefined', '-', 'unknown'].includes(lower)) return '';
-          return str;
+          const str = String(val).trim().toLowerCase();
+          if (['n/a', 'na', 'none', 'inconnu', 'brand', 'null', 'undefined', '-', 'unknown'].includes(str)) return '';
+          return String(val).trim();
         };
 
         const cleanPlayerName = cleanValue(data.playerName);
@@ -315,6 +283,7 @@ function ScannerContent() {
           club: cleanValue(data.club),
           brand: cleanValue(data.brand),
           series: cleanValue(data.series),
+          variation: cleanValue(data.variation), // IA Extrait la variation si configuré
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -331,66 +300,34 @@ function ScannerContent() {
       } else {
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c));
       }
-    } catch (err) {
-      console.error(err);
-      setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c));
-    }
+    } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
-    
-    setIsFlashing(true);
-    setTimeout(() => setIsFlashing(false), 150);
-
-    const video = videoRef.current;
-    const guide = guideRef.current;
-    
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-    const videoRect = video.getBoundingClientRect();
-    const guideRect = guide.getBoundingClientRect();
-
-    const scale = Math.max(videoRect.width / videoWidth, videoRect.height / videoHeight);
-    const scaledW = videoWidth * scale;
-    const scaledH = videoHeight * scale;
-
-    const offsetX = (videoRect.width - scaledW) / 2;
-    const offsetY = (videoRect.height - scaledH) / 2;
-
-    const cropX = (guideRect.left - videoRect.left - offsetX) / scale;
-    const cropY = (guideRect.top - videoRect.top - offsetY) / scale;
-    const cropW = guideRect.width / scale;
-    const cropH = guideRect.height / scale;
-
-    canvas.width = cropW;
-    canvas.height = cropH;
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-
-    ctx.drawImage(
-      video,
-      cropX, cropY, cropW, cropH,
-      0, 0, cropW, cropH
-    );
+    setIsFlashing(true); setTimeout(() => setIsFlashing(false), 150);
+    const video = videoRef.current; const guide = guideRef.current;
+    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
+    const videoRect = video.getBoundingClientRect(); const guideRect = guide.getBoundingClientRect();
+    const scale = Math.max(videoRect.width / video.videoWidth, videoRect.height / video.videoHeight);
+    const scaledW = video.videoWidth * scale; const scaledH = video.videoHeight * scale;
+    const offsetX = (videoRect.width - scaledW) / 2; const offsetY = (videoRect.height - scaledH) / 2;
+    const cropX = (guideRect.left - videoRect.left - offsetX) / scale; const cropY = (guideRect.top - videoRect.top - offsetY) / scale;
+    const cropW = guideRect.width / scale; const cropH = guideRect.height / scale;
+    canvas.width = cropW; canvas.height = cropH;
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
       if (!blob) return;
       const croppedFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
-      stopCamera();
-      
       if (scanMode === 'lot' && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
         const newCard: PendingCard = { id: newId, file: croppedFile, previewUrl: URL.createObjectURL(croppedFile), status: 'analyzing', aiResult: null };
-        
         setPendingCards(prev => [...prev, newCard]);
         processBackgroundScan(newId, croppedFile);
       } else {
+        stopCamera();
         processImageScan(croppedFile, activeSide, activeSide === 'front'); 
       }
     }, 'image/jpeg', 1.0);
@@ -402,75 +339,37 @@ function ScannerContent() {
 
     if (files.length > 1 && activeSide === 'front') {
       if (files.length > 30) { alert("Max 30 cartes"); return; }
-      
-      const newPending: PendingCard[] = files.map((f, i) => ({
-        id: Date.now().toString() + i,
-        file: f,
-        previewUrl: URL.createObjectURL(f),
-        status: 'analyzing',
-        aiResult: null
-      }));
-      setPendingCards(newPending);
-      setIsVerifyingBulk(true);
-      setCurrentVerifyIndex(0);
-
+      const newPending: PendingCard[] = files.map((f, i) => ({ id: Date.now().toString() + i, file: f, previewUrl: URL.createObjectURL(f), status: 'analyzing', aiResult: null }));
+      setPendingCards(newPending); setIsVerifyingBulk(true); setCurrentVerifyIndex(0);
       newPending.forEach(c => processBackgroundScan(c.id, c.file));
-      
     } else {
-      setCropPreview(URL.createObjectURL(files[0]));
-      setCropZoom(1);
+      setCropPreview(URL.createObjectURL(files[0])); setCropZoom(1);
     }
   };
 
   const confirmCrop = () => {
     if (!cropPreview) return;
     setIsApplyingEdit(true);
-
-    const img = new Image();
-    img.src = cropPreview;
+    const img = new Image(); img.src = cropPreview;
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 750;
-      canvas.height = 1050; 
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      const imgRatio = img.width / img.height;
-      const targetRatio = canvas.width / canvas.height;
-      let sWidth, sHeight;
-
-      if (imgRatio > targetRatio) {
-        sHeight = img.height;
-        sWidth = img.height * targetRatio;
-      } else {
-        sWidth = img.width;
-        sHeight = img.width / targetRatio;
-      }
-
-      sWidth /= cropZoom;
-      sHeight /= cropZoom;
-
-      const sx = (img.width - sWidth) / 2;
-      const sy = (img.height - sHeight) / 2;
-
+      const canvas = document.createElement('canvas'); canvas.width = 750; canvas.height = 1050; 
+      const ctx = canvas.getContext('2d'); if (!ctx) return;
+      const imgRatio = img.width / img.height; const targetRatio = canvas.width / canvas.height;
+      let sWidth = imgRatio > targetRatio ? img.height * targetRatio : img.width;
+      let sHeight = imgRatio > targetRatio ? img.height : img.width / targetRatio;
+      sWidth /= cropZoom; sHeight /= cropZoom;
+      const sx = (img.width - sWidth) / 2; const sy = (img.height - sHeight) / 2;
       ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-
       canvas.toBlob((blob) => {
         if (!blob) return;
         const croppedFile = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        
-        setCropPreview(null);
-        setIsApplyingEdit(false);
-        
+        setCropPreview(null); setIsApplyingEdit(false);
         if (activeSide === 'back') {
-          setSelectedFileBack(croppedFile);
-          setPreviewUrlBack(URL.createObjectURL(croppedFile));
+          setSelectedFileBack(croppedFile); setPreviewUrlBack(URL.createObjectURL(croppedFile));
           processImageScan(croppedFile, 'back', false); 
         } else {
           if (scanMode === 'lot' && activeSide === 'front') {
-             setBulkFiles([croppedFile]);
-             setCurrentBulkIndex(0);
-             processImageScan(croppedFile, 'front', true);
+             setBulkFiles([croppedFile]); setCurrentBulkIndex(0); processImageScan(croppedFile, 'front', true);
           } else {
              processImageScan(croppedFile, 'front', true); 
           }
@@ -479,36 +378,29 @@ function ScannerContent() {
     };
   };
 
-  // Traitement Manuel Classique ou Scan Verso
   const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
     const currentUrl = formData.website_url;
 
     if (side === 'front') {
-      setSelectedFile(file); 
-      setPreviewUrl(URL.createObjectURL(file)); 
+      setSelectedFile(file); setPreviewUrl(URL.createObjectURL(file)); 
       if (resetForm) setFormData({ ...DEFAULT_FORM, website_url: currentUrl });
     } else {
-      setSelectedFileBack(file);
-      setPreviewUrlBack(URL.createObjectURL(file));
+      setSelectedFileBack(file); setPreviewUrlBack(URL.createObjectURL(file));
     }
     
     setAnalyzing(true);
-
     try {
-      const body = new FormData(); 
-      body.append("image", file);
+      const body = new FormData(); body.append("image", file);
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
       if (!data.error) {
         const cleanValue = (val: any) => {
           if (!val) return '';
-          const str = String(val).trim();
-          const lower = str.toLowerCase();
-          if (['n/a', 'na', 'none', 'inconnu', 'brand', 'null', 'undefined', '-', 'unknown'].includes(lower)) return '';
-          return str;
+          const str = String(val).trim().toLowerCase();
+          if (['n/a', 'na', 'none', 'inconnu', 'brand', 'null', 'undefined', '-', 'unknown'].includes(str)) return '';
+          return String(val).trim();
         };
 
         const cleanPlayerName = cleanValue(data.playerName);
@@ -525,44 +417,11 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev,
-              sport: aiSport || prev.sport,
-              firstname: fname || prev.firstname,
-              lastname: lname || prev.lastname,
-              club: cleanValue(data.club) || prev.club,
-              brand: cleanValue(data.brand) || prev.brand,
-              series: cleanValue(data.series) || prev.series,
-              year: cleanValue(data.year) || prev.year,
-              is_auto: !!data.is_auto || prev.is_auto,
-              is_patch: !!data.is_patch || prev.is_patch,
-              is_rookie: !!data.is_rookie || prev.is_rookie,
-              is_numbered: !!data.is_numbered || prev.is_numbered,
-              num_low: cleanValue(data.num_low) || prev.num_low,
-              num_high: cleanValue(data.num_high) || prev.num_high,
-              is_graded: !!data.is_graded || prev.is_graded,
-              grading_company: cleanValue(data.grading_company) || prev.grading_company,
-              grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: cleanValue(data.club) || prev.club, brand: cleanValue(data.brand) || prev.brand, series: cleanValue(data.series) || prev.series, variation: cleanValue(data.variation) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
-            // VERSO : Logique "ET"
             return {
-              ...prev,
-              sport: prev.sport || aiSport,
-              firstname: prev.firstname || fname,
-              lastname: prev.lastname || lname,
-              club: prev.club || cleanValue(data.club),
-              brand: prev.brand || cleanValue(data.brand),
-              series: prev.series || cleanValue(data.series),
-              year: prev.year || cleanValue(data.year),
-              is_auto: prev.is_auto || !!data.is_auto,
-              is_patch: prev.is_patch || !!data.is_patch,
-              is_rookie: prev.is_rookie || !!data.is_rookie,
-              is_numbered: prev.is_numbered || !!data.is_numbered,
-              num_low: prev.num_low || cleanValue(data.num_low),
-              num_high: prev.num_high || cleanValue(data.num_high),
-              is_graded: prev.is_graded || !!data.is_graded,
-              grading_company: prev.grading_company || cleanValue(data.grading_company),
-              grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || cleanValue(data.club), brand: prev.brand || cleanValue(data.brand), series: prev.series || cleanValue(data.series), variation: prev.variation || cleanValue(data.variation), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -575,49 +434,13 @@ function ScannerContent() {
     }
   };
 
-  const handleUrlImport = async () => {
-    if (!formData.website_url) return;
-    setAnalyzing(true);
-    
-    try {
-      const res = await fetch('/api/scrape', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: formData.website_url })
-      });
-      const data = await res.json();
-      
-      if (data.base64) {
-        const imgRes = await fetch(data.base64);
-        const blob = await imgRes.blob();
-        const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
-        
-        if (data.price) {
-          setFormData(prev => ({ ...prev, price: data.price }));
-        }
-
-        processImageScan(file, 'front', false); 
-      } else {
-        alert("Impossible de trouver une image sur ce lien.");
-        setAnalyzing(false);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de l'importation du lien.");
-      setAnalyzing(false);
-    }
-  };
-
   const rotateImage = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
     try {
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
-      if (!currentBlob && currentPreview) {
-        const response = await fetch(currentPreview + "?t=" + new Date().getTime());
-        currentBlob = await response.blob();
-      }
+      if (!currentBlob && currentPreview) { const response = await fetch(currentPreview + "?t=" + new Date().getTime()); currentBlob = await response.blob(); }
       if (!currentBlob) return;
       const img = new Image(); img.crossOrigin = "anonymous"; img.src = URL.createObjectURL(currentBlob);
       await new Promise(resolve => { img.onload = resolve; });
@@ -627,11 +450,8 @@ function ScannerContent() {
       canvas.toBlob((blob) => {
         if (!blob) return;
         const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
-        if (activeSide === 'front') {
-          setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile));
-        } else {
-          setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile));
-        }
+        if (activeSide === 'front') { setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); } 
+        else { setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile)); }
         setIsApplyingEdit(false);
       }, currentBlob.type || 'image/png');
     } catch (e) { setIsApplyingEdit(false); }
@@ -653,11 +473,8 @@ function ScannerContent() {
       canvas.toBlob((blob) => {
         if (!blob) return;
         const newFile = new File([blob], `edited-${Date.now()}.png`, { type: 'image/png' });
-        if (activeSide === 'front') {
-          setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile));
-        } else {
-          setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile));
-        }
+        if (activeSide === 'front') { setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); } 
+        else { setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile)); }
         setShowEditor(false); setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }, 'image/png');
@@ -668,30 +485,15 @@ function ScannerContent() {
 
   const compressImage = async (file: File): Promise<File> => {
     return new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
+      const img = new Image(); img.src = URL.createObjectURL(file);
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1000; 
-        const scaleSize = MAX_WIDTH / img.width;
-        
-        if (scaleSize < 1) {
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scaleSize;
-        } else {
-          canvas.width = img.width;
-          canvas.height = img.height;
-        }
-
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
+        const canvas = document.createElement('canvas'); const MAX_WIDTH = 1000; const scaleSize = MAX_WIDTH / img.width;
+        if (scaleSize < 1) { canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize; } 
+        else { canvas.width = img.width; canvas.height = img.height; }
+        const ctx = canvas.getContext('2d'); ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
         canvas.toBlob((blob) => {
-          if (blob) {
-             resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }));
-          } else {
-             resolve(file);
-          }
+          if (blob) resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' }));
+          else resolve(file);
         }, 'image/jpeg', 0.8); 
       };
     });
@@ -721,67 +523,35 @@ function ScannerContent() {
       }
       
       const cardDataToSave = { 
-        user_id: user.id, 
-        sport: formData.sport, 
-        firstname: formData.firstname, 
-        lastname: formData.lastname, 
-        brand: formData.brand, 
+        user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
         series: formData.series, 
-        year: parseInt(formData.year) || null, 
-        is_rookie: formData.is_rookie, 
-        is_auto: formData.is_auto, 
-        is_patch: formData.is_patch, 
-        is_numbered: formData.is_numbered, 
-        numbering_low: parseInt(formData.num_low) || null, 
-        numbering_max: parseInt(formData.num_high) || null, 
-        purchase_price: parseFloat(formData.price) || 0, 
-        image_url: finalImageUrl, 
-        image_url_back: finalImageUrlBack, 
-        club_name: formData.club, 
-        is_wishlist: isWishlistMode, 
-        website_url: formData.website_url,
-        is_graded: formData.is_graded,
-        grading_company: formData.is_graded ? formData.grading_company : null,
-        grading_grade: formData.is_graded ? formData.grading_grade : null
+        variation: formData.variation, // SAUVEGARDE DE LA VARIATION
+        year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
       
       if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
       else await supabase.from('cards').insert([cardDataToSave]);
 
-      // SI ON EST EN VÉRIFICATION DE MASSE
       if (isVerifyingBulk) {
         if (currentVerifyIndex < pendingCards.length - 1) {
-          setLoading(false);
-          setCurrentVerifyIndex(prev => prev + 1);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          router.push(isWishlistMode ? '/wishlist' : '/collection');
-        }
+          setLoading(false); setCurrentVerifyIndex(prev => prev + 1); window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else { router.push(isWishlistMode ? '/wishlist' : '/collection'); }
       } else {
         router.push(isWishlistMode ? '/wishlist' : '/collection');
       }
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
+    } catch (err) { console.error(err); setLoading(false); }
+  };
+
+  const handleChangeImage = (side: 'front' | 'back') => {
+    setActiveSide(side);
+    if (side === 'front') { setPreviewUrl(null); setSelectedFile(null); } 
+    else { setPreviewUrlBack(null); setSelectedFileBack(null); }
   };
 
   const deleteCard = async () => {
     if (!confirmDelete) { setConfirmDelete(true); setTimeout(() => setConfirmDelete(false), 3000); return; }
     setLoading(true); await supabase.from('cards').delete().eq('id', editId);
     router.push(isWishlistMode ? '/wishlist' : '/collection');
-  };
-
-  // NOUVELLES FONCTIONS POUR CHANGER RAPIDEMENT L'IMAGE
-  const handleChangeImage = (side: 'front' | 'back') => {
-    setActiveSide(side);
-    if (side === 'front') {
-        setPreviewUrl(null);
-        setSelectedFile(null);
-    } else {
-        setPreviewUrlBack(null);
-        setSelectedFileBack(null);
-    }
   };
 
   const hideBrokenImage = (e: any) => e.currentTarget.style.display = 'none';
@@ -794,110 +564,46 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* ==========================================
-          MODAL DE RECADRAGE
-      ========================================== */}
+      {/* MODAL DE RECADRAGE */}
       {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          
-          <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase drop-shadow-md z-50">
-            Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}
-          </h2>
-
-          <img 
-            src={cropPreview} 
-            className="absolute inset-0 w-full h-full object-contain origin-center z-0" 
-            style={{ transform: `scale(${cropZoom})` }} 
-            alt="To Crop" 
-          />
-
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div>
-          </div>
-
+          <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase drop-shadow-md z-50">Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
+          <img src={cropPreview} className="absolute inset-0 w-full h-full object-contain origin-center z-0" style={{ transform: `scale(${cropZoom})` }} alt="To Crop" />
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div></div>
           <div className="absolute bottom-10 left-0 w-full px-8 z-20 flex flex-col items-center pointer-events-auto">
             <div className="w-full max-w-[300px] mb-8 bg-[#040221]/80 p-4 rounded-2xl backdrop-blur-md border border-white/10">
-              <label className="text-xs font-bold text-[#AFFF25] uppercase mb-3 flex justify-between tracking-widest">
-                <span>Zoom</span> <span>{cropZoom.toFixed(1)}x</span>
-              </label>
-              <input 
-                type="range" min="1" max="3" step="0.1" 
-                value={cropZoom} 
-                onChange={e => setCropZoom(parseFloat(e.target.value))} 
-                className="w-full accent-[#AFFF25]" 
-              />
+              <label className="text-xs font-bold text-[#AFFF25] uppercase mb-3 flex justify-between tracking-widest"><span>Zoom</span> <span>{cropZoom.toFixed(1)}x</span></label>
+              <input type="range" min="1" max="3" step="0.1" value={cropZoom} onChange={e => setCropZoom(parseFloat(e.target.value))} className="w-full accent-[#AFFF25]" />
             </div>
-
             <div className="flex gap-4 w-full max-w-[300px]">
-              <button 
-                onClick={() => setCropPreview(null)} 
-                className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
-              >
-                Annuler
-              </button>
-              <button 
-                onClick={confirmCrop} 
-                disabled={isApplyingEdit}
-                className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2"
-              >
-                {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
-              </button>
+              <button onClick={() => setCropPreview(null)} className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
+              <button onClick={confirmCrop} disabled={isApplyingEdit} className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2">{isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ==========================================
-          OVERLAY CAMERA CUSTOM
-      ========================================== */}
+      {/* OVERLAY CAMERA */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          
-          {scanMode === 'lot' && pendingCards.length > 0 && (
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 shadow-[0_0_20px_rgba(175,255,37,0.4)] animate-in fade-in slide-in-from-top-4">
-              {pendingCards.length} en attente...
-            </div>
-          )}
-
+          {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 shadow-[0_0_20px_rgba(175,255,37,0.4)] animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0" />
-          
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
-            </div>
-          </div>
-
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div></div></div>
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
-
-          <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between">
-             <button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button>
-          </div>
-
+          <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-10 flex flex-col items-center z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
              <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"></button>
-             
-             {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (
-               <button 
-                 onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }}
-                 className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs shadow-lg active:scale-95 transition-all flex items-center gap-2"
-               >
-                 Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} />
-               </button>
-             )}
+             {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (<button onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }} className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs shadow-lg active:scale-95 transition-all flex items-center gap-2">Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} /></button>)}
           </div>
         </div>
       )}
 
-      {/* 🔘 HEADER FIXE */}
+      {/* HEADER */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto drop-shadow-lg">{isVerifyingBulk ? `CARTE ${currentVerifyIndex + 1}/${pendingCards.length}` : pageTitle}</h1>
         <div className="w-auto min-w-[40px] flex justify-end pointer-events-auto">
-          {editId && !isVerifyingBulk && (
-            <button onClick={deleteCard} className={`h-10 px-3 rounded-full flex items-center justify-center transition-all duration-300 ${confirmDelete ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-white/10 backdrop-blur-md text-red-500 border border-white/20'}`}>
-              <Trash2 size={18} />{confirmDelete && <span className="text-xs font-black ml-2 uppercase">Sûr ?</span>}
-            </button>
-          )}
+          {editId && !isVerifyingBulk && (<button onClick={deleteCard} className={`h-10 px-3 rounded-full flex items-center justify-center transition-all duration-300 ${confirmDelete ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-white/10 backdrop-blur-md text-red-500 border border-white/20'}`}><Trash2 size={18} />{confirmDelete && <span className="text-xs font-black ml-2 uppercase">Sûr ?</span>}</button>)}
         </div>
       </header>
 
@@ -947,7 +653,7 @@ function ScannerContent() {
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
-        {/* SWITCH RECTO / VERSO ou UNITAIRE / LOT */}
+        {/* SWITCH RECTO / VERSO */}
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8">
             <div className="flex justify-center gap-8">
@@ -963,7 +669,6 @@ function ScannerContent() {
           </div>
         )}
 
-        {/* SWITCH RECTO / VERSO SIMPLIFIÉ PENDANT LA VÉRIFICATION */}
         {isVerifyingBulk && (
           <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mb-8 shadow-inner">
             <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out shadow-sm ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
@@ -974,12 +679,10 @@ function ScannerContent() {
 
         <div className="relative w-full max-w-[240px] lg:max-w-[350px] mx-auto mb-6 lg:mb-10">
           
-          {/* Zone d'affichage d'image ou Boutons de Capture */}
           {activePreviewUrl ? (
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
-              {/* Overlay d'analyse */}
               {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && activeSide === 'front' && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
@@ -992,83 +695,33 @@ function ScannerContent() {
           ) : (
             <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl gap-4 p-6">
               
-              {/* BOUTON : Appareil Photo Custom */}
-              <button 
-                onClick={startCamera} 
-                className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group"
-              >
-                <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] shadow-[0_0_15px_rgba(175,255,37,0.5)] group-hover:scale-110 transition-transform">
-                  <Camera size={24} strokeWidth={2.5} />
-                </div>
-                <span className="text-xs lg:text-sm font-bold text-[#AFFF25] uppercase tracking-widest text-center">
-                  Prendre {activeSide === 'front' ? 'le Recto' : 'le Verso'}
-                </span>
+              <button onClick={startCamera} className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group">
+                <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] shadow-[0_0_15px_rgba(175,255,37,0.5)] group-hover:scale-110 transition-transform"><Camera size={24} strokeWidth={2.5} /></div>
+                <span className="text-xs lg:text-sm font-bold text-[#AFFF25] uppercase tracking-widest text-center">Prendre {activeSide === 'front' ? 'le Recto' : 'le Verso'}</span>
               </button>
 
-              {/* On cache la galerie si on est en pleine vérification d'un lot pour ne pas casser le flow */}
               {!isVerifyingBulk && (
                 <>
-                  <div className="flex items-center gap-2 w-full">
-                    <div className="h-[1px] flex-1 bg-white/10"></div>
-                    <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span>
-                    <div className="h-[1px] flex-1 bg-white/10"></div>
-                  </div>
-
-                  <button 
-                    onClick={() => galleryInputRef.current?.click()} 
-                    className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"
-                  >
-                    <ImageIcon size={18} />
-                    <span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span>
-                  </button>
+                  <div className="flex items-center gap-2 w-full"><div className="h-[1px] flex-1 bg-white/10"></div><span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span><div className="h-[1px] flex-1 bg-white/10"></div></div>
+                  <button onClick={() => galleryInputRef.current?.click()} className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"><ImageIcon size={18} /><span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span></button>
                 </>
               )}
             </div>
           )}
           
-          {/* Boutons Rotation et Édition + Nouveaux boutons de remplacement rapide */}
           {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
-              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105">
-                <RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} />
-              </button>
-              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-4 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105">
-                <SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} />
-              </button>
+              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-4 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
             </>
           )}
         </div>
 
-        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES (Unitaire ou Édition) */}
+        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES */}
         {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
           <div className="flex gap-3 w-full max-w-[240px] lg:max-w-[350px] mx-auto pointer-events-auto">
-             <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all">
-               <RotateCw size={14} /> Changer Recto
-             </button>
-             <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
-               <RotateCw size={14} /> {previewUrlBack ? 'Changer Verso' : '+ Verso'}
-             </button>
-          </div>
-        )}
-
-        {/* Option d'importation par URL */}
-        {isWishlistMode && !isVerifyingBulk && (
-          <div className="relative w-full max-w-[300px] lg:max-w-[400px] mx-auto flex items-center gap-2 z-10 mt-6">
-            <div className="relative flex-1">
-              <input 
-                value={formData.website_url} 
-                onChange={e => setFormData({...formData, website_url: e.target.value})} 
-                placeholder="Coller un lien (Vinted, eBay...)" 
-                className="w-full bg-[#040221]/60 backdrop-blur-md border border-white/20 focus:border-[#AFFF25] py-3 px-4 rounded-full text-xs lg:text-sm outline-none text-white transition-colors" 
-              />
-            </div>
-            <button 
-              onClick={handleUrlImport}
-              disabled={analyzing || !formData.website_url}
-              className="bg-[#AFFF25] text-black px-5 py-3 rounded-full text-[10px] lg:text-xs font-black uppercase tracking-wider disabled:opacity-50 active:scale-95 transition-transform hover:bg-[#9ee615]"
-            >
-              {analyzing ? <Loader2 className="animate-spin" size={16} /> : 'Importer'}
-            </button>
+             <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all"><RotateCw size={14} /> Changer Recto</button>
+             <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}><RotateCw size={14} /> {previewUrlBack ? 'Changer Verso' : '+ Verso'}</button>
           </div>
         )}
       </div>
@@ -1077,7 +730,6 @@ function ScannerContent() {
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="space-y-8">
-          {/* Section Joueur */}
           <div>
             <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
               <h2 className="text-2xl font-black italic uppercase">Joueur</h2><div className="text-[#AFFF25]">{isJoueurOpen ? <Minus size={22} /> : <Plus size={22} />}</div>
@@ -1085,8 +737,6 @@ function ScannerContent() {
             
             {isJoueurOpen && (
               <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
-                
-                {/* Sélecteur de Sport */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Sport</label>
                   <div className="relative flex items-center">
@@ -1101,41 +751,24 @@ function ScannerContent() {
                 
                 <input value={formData.firstname} onChange={e => setFormData({...formData, firstname: e.target.value.toUpperCase()})} placeholder="Prénom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
                 
-                {/* Autocomplétion Joueur */}
                 <div className="relative">
-                  <input 
-                    value={formData.lastname} 
-                    onChange={e => { setFormData({...formData, lastname: e.target.value.toUpperCase()}); setShowPlayerSuggestions(true); }} 
-                    onFocus={() => setShowPlayerSuggestions(true)} 
-                    onBlur={() => setTimeout(() => setShowPlayerSuggestions(false), 200)} 
-                    placeholder="Nom" 
-                    className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
-                  />
+                  <input value={formData.lastname} onChange={e => { setFormData({...formData, lastname: e.target.value.toUpperCase()}); setShowPlayerSuggestions(true); }} onFocus={() => setShowPlayerSuggestions(true)} onBlur={() => setTimeout(() => setShowPlayerSuggestions(false), 200)} placeholder="Nom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
                   {showPlayerSuggestions && formData.lastname && filteredPlayers.length > 0 && (
                     <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-xl">
                       {filteredPlayers.map((p: any, i: number) => (
                         <li key={i} onClick={() => { 
                           const parts = p.name.split(' ');
-                          const fname = parts[0];
-                          const lname = parts.slice(1).join(' ');
-                          setFormData({
-                            ...formData, 
-                            firstname: fname.toUpperCase(), 
-                            lastname: lname.toUpperCase(), 
-                            club: p.team || formData.club 
-                          }); 
+                          setFormData({...formData, firstname: parts[0].toUpperCase(), lastname: parts.slice(1).join(' ').toUpperCase(), club: p.team || formData.club }); 
                           setShowPlayerSuggestions(false); 
                         }} className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex flex-col gap-1 border-b border-white/5 last:border-0">
                           <span className="text-sm font-bold uppercase text-white">{p.name}</span>
                           {p.team && <span className="text-[10px] text-[#AFFF25]">{p.team}</span>}
-                          {p.country && <span className="text-[10px] text-[#AFFF25]">{p.country}</span>}
                         </li>
                       ))}
                     </ul>
                   )}
                 </div>
                 
-                {/* Logos de club dynamiques */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
@@ -1174,10 +807,19 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 
-                {/* LE DROPDOWN SÉRIE EN CASCADE (Renommé "Variation") */}
                 <div className="relative">
-                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Prizm, Holo...)</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
+                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                </div>
+
+                {/* 🚨 LE NOUVEAU CHAMP VARIATION ICI 🚨 */}
+                <div className="relative">
+                  <input 
+                    value={formData.variation} 
+                    onChange={e => setFormData({...formData, variation: e.target.value})} 
+                    placeholder="Variation (ex: Holo, Silver, Base...)" 
+                    className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
+                  />
                 </div>
                 
                 <div className="relative">
@@ -1206,17 +848,11 @@ function ScannerContent() {
                 {formData.is_graded && (
                   <div className="flex items-center gap-4 animate-in fade-in duration-200">
                     <div className="relative w-1/2">
-                      <select value={formData.grading_company} onChange={e => setFormData({...formData, grading_company: e.target.value})} className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25] transition-colors">
-                        <option value="">Société</option>
-                        {['PSA', 'PCA', 'Becket', 'Collect Aura', 'MTG', 'GCC'].map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
+                      <select value={formData.grading_company} onChange={e => setFormData({...formData, grading_company: e.target.value})} className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25] transition-colors"><option value="">Société</option>{['PSA', 'PCA', 'Becket', 'Collect Aura', 'MTG', 'GCC'].map(c => <option key={c} value={c}>{c}</option>)}</select>
                       <ChevronDown className="absolute right-4 top-4 text-[#AFFF25]/50 pointer-events-none" size={16} />
                     </div>
                     <div className="relative w-1/2">
-                      <select value={formData.grading_grade} onChange={e => setFormData({...formData, grading_grade: e.target.value})} className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25] transition-colors">
-                        <option value="">Note</option>
-                        {['10+', '10', '9.5', '9', '8.5', '8', '7.5', '7', '6.5', '6', '5.5', '5', '4.5', '4', '3.5', '3', '2.5', '2', 'officielle'].map(n => <option key={n} value={n}>{n}</option>)}
-                      </select>
+                      <select value={formData.grading_grade} onChange={e => setFormData({...formData, grading_grade: e.target.value})} className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25] transition-colors"><option value="">Note</option>{['10+', '10', '9.5', '9', '8.5', '8', '7.5', '7', '6.5', '6', '5.5', '5', '4.5', '4', '3.5', '3', '2.5', '2', 'officielle'].map(n => <option key={n} value={n}>{n}</option>)}</select>
                       <ChevronDown className="absolute right-4 top-4 text-[#AFFF25]/50 pointer-events-none" size={16} />
                     </div>
                   </div>
@@ -1238,22 +874,12 @@ function ScannerContent() {
             )}
           </div>
 
-          {/* Bouton de sauvegarde */}
-          <button 
-            disabled={loading || analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') || (!isFormStarted && !isVerifyingBulk)} 
-            onClick={saveCard} 
-            className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(isFormStarted || isVerifyingBulk) ? 'bg-[#AFFF25] text-[#040221] shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
-          >
-            {loading ? <Loader2 className="animate-spin" /> : 
-              editId ? 'Mettre à jour' : 
-              isVerifyingBulk ? (currentVerifyIndex < pendingCards.length - 1 ? `Valider & Suivant (${currentVerifyIndex + 1}/${pendingCards.length})` : `Terminer (${currentVerifyIndex + 1}/${pendingCards.length})`) :
-              'Enregistrer'
-            }
+          <button disabled={loading || analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') || (!isFormStarted && !isVerifyingBulk)} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(isFormStarted || isVerifyingBulk) ? 'bg-[#AFFF25] text-[#040221] shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
+            {loading ? <Loader2 className="animate-spin" /> : editId ? 'Mettre à jour' : isVerifyingBulk ? (currentVerifyIndex < pendingCards.length - 1 ? `Valider & Suivant (${currentVerifyIndex + 1}/${pendingCards.length})` : `Terminer (${currentVerifyIndex + 1}/${pendingCards.length})`) : 'Enregistrer'}
           </button>
         </div>
       </div>
       
-      {/* INPUTS NATIFS MASQUÉS */}
       <input type="file" ref={cameraInputRef} onChange={handleFileChange} className="hidden" accept="image/*" capture="environment" />
       <input type="file" ref={galleryInputRef} onChange={handleFileChange} className="hidden" accept="image/*" multiple={activeSide === 'front'} />
     </div>
