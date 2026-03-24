@@ -34,11 +34,11 @@ export default function TabBar() {
         <span className="text-[10px] mt-1 italic font-bold">Wishlist</span>
       </button>
 
-      {/* BOUTON CENTRAL CAMERA */}
+      {/* BOUTON CENTRAL CAMERA (Sans ombre) */}
       <div className="relative -top-6">
         <button 
           onClick={() => router.push('/scanner')} 
-          className="w-[68px] h-[68px] bg-[#AFFF25] rounded-full flex items-center justify-center text-black border-[6px] border-[#040221] transition-transform active:scale-95 shadow-[0_10px_20px_rgba(175,255,37,0.3)]"
+          className="w-[68px] h-[68px] bg-[#AFFF25] rounded-full flex items-center justify-center text-black border-[6px] border-[#040221] transition-transform active:scale-95"
         >
           <Camera size={28} strokeWidth={2.5} />
         </button>

@@ -45,7 +45,6 @@ const PLAYER_DATA: Record<string, any[]> = {
   'TENNIS': TENNIS_PLAYERS?.atp_top_100 || []
 };
 
-// 🚨 RÉCUPÉRATION GLOBALE DES LISTES OFFICIELLES (Pour forcer la bonne Casse)
 const ALL_BRANDS = (SET_DATA.brands || []).map((b: any) => b.name);
 
 let ALL_SETS: string[] = [];
@@ -72,7 +71,6 @@ Object.values(TYPE_CARTE).forEach((bData: any) => {
 });
 ALL_VARIATIONS = Array.from(new Set(ALL_VARIATIONS));
 
-
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 type PendingCard = {
@@ -82,6 +80,9 @@ type PendingCard = {
   status: 'pending' | 'analyzing' | 'done' | 'error';
   aiResult: any;
 };
+
+// Helper Formatage Menu
+const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 
 export default function ScannerPage() { 
   return (
@@ -242,9 +243,6 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
-  // ==========================================
-  // DROPDOWNS EN CASCADE
-  // ==========================================
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
@@ -256,19 +254,8 @@ function ScannerContent() {
     }
   }
 
-  let availableVariations: string[] = [];
-  if (formData.brand && TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE]) {
-    const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
-    if (bData.base) availableVariations.push(...bData.base);
-    if (bData.parallels) {
-      Object.values(bData.parallels).forEach((arr: any) => {
-        if (Array.isArray(arr)) availableVariations.push(...arr);
-      });
-    }
-    if (bData.inserts) availableVariations.push(...bData.inserts);
-    if (bData.hits) availableVariations.push(...bData.hits);
-    if (bData.case_hits) availableVariations.push(...bData.case_hits);
-  }
+  // 🚨 ARBRE DES VARIATIONS POUR LE MENU DÉROULANT DE LA PAGE SCANNER
+  const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
@@ -299,7 +286,6 @@ function ScannerContent() {
     setIsCameraOpen(false);
   };
 
-  // 🚨 FONCTION MAGIQUE DE FORMATAGE DE CASSE 🚨
   const matchExactCase = (rawString: string, validList: string[]) => {
     if (!rawString) return '';
     const rawClean = rawString.toLowerCase().trim();
@@ -337,9 +323,9 @@ function ScannerContent() {
           firstname: fname,
           lastname: lname,
           club: cleanValue(data.club),
-          brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS), // ✅ CORRECTION CASSE
-          series: matchExactCase(cleanValue(data.series), ALL_SETS), // ✅ CORRECTION CASSE
-          variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), // ✅ CORRECTION CASSE
+          brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS),
+          series: matchExactCase(cleanValue(data.series), ALL_SETS),
+          variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS),
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -911,8 +897,27 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
+                {/* 🚨 DROPDOWN EN CASCADE AVEC <optgroup> POUR LES VARIATIONS */}
                 <div className="relative">
-                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Base, Prizm Silver...)</option>{availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}</select>
+                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                    <option value="">Variation (ex: Base, Prizm Silver...)</option>
+                    
+                    {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
+                      if (Array.isArray(currentBrandVariations[catKey])) {
+                        return (
+                          <optgroup key={catKey} label={formatLabel(catKey)}>
+                            {currentBrandVariations[catKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                          </optgroup>
+                        )
+                      } else {
+                        return Object.keys(currentBrandVariations[catKey]).map(subKey => (
+                          <optgroup key={`${catKey}-${subKey}`} label={`${formatLabel(catKey)} - ${formatLabel(subKey)}`}>
+                            {currentBrandVariations[catKey][subKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                          </optgroup>
+                        ))
+                      }
+                    })}
+                  </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 

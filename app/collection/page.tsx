@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send } from 'lucide-react';
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -62,6 +62,9 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
   </div>
 );
 
+// Helper pour formatter "case_hits" en "CASE HITS"
+const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
+
 export default function CollectionPage() {
   const router = useRouter();
   
@@ -91,11 +94,15 @@ export default function CollectionPage() {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
+  // IA STATES
   const [hasStartedScouty, setHasStartedScouty] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
   
+  // 🚨 ÉTAT POUR L'ACCORDÉON DES VARIATIONS (Base ouvert par défaut)
+  const [expandedVars, setExpandedVars] = useState<Record<string, boolean>>({ base: true });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -128,7 +135,6 @@ export default function CollectionPage() {
 
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
       if (!user && !userError) return router.push('/login');
       if (!user) throw new Error("Pas de réseau ou non connecté");
 
@@ -143,7 +149,6 @@ export default function CollectionPage() {
         setFolders(foldersData);
         localStorage.setItem('cardbulk_offline_folders', JSON.stringify(foldersData));
       }
-
     } catch (error) {
       console.log("🌐 Mode hors-ligne activé (ou erreur réseau)");
     } finally {
@@ -261,24 +266,21 @@ export default function CollectionPage() {
       const response = await fetch('/api/scout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          messages: newMessages, 
-          playerName: isGlobal ? "Global" : searchQuery,
-          collectionData: formattedCollection
-        }),
+        body: JSON.stringify({ messages: newMessages, playerName: isGlobal ? "Global" : searchQuery, collectionData: formattedCollection }),
       });
-
       if (!response.ok) throw new Error('Erreur réseau');
-
       const data = await response.json();
       setMessages([...newMessages, { role: 'assistant' as const, content: data.text }]);
-
     } catch (error) {
-      console.error(error);
       setMessages([...newMessages, { role: 'assistant' as const, content: "Erreur réseau. Veuillez réessayer plus tard." }]);
     } finally {
       setAiLoading(false);
     }
+  };
+
+  const toggleVarNode = (node: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedVars(prev => ({ ...prev, [node]: !prev[node] }));
   };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
@@ -299,35 +301,37 @@ export default function CollectionPage() {
         if (!invalidClubs.includes(clubLower)) {
           const slug = slugify(c.club_name);
           if (slug && !activeClubsMap.has(slug)) {
-            activeClubsMap.set(slug, {
-              name: c.club_name,
-              slug: slug,
-              sportFolder: SPORT_FOLDERS[c.sport] || 'foot'
-            });
+            activeClubsMap.set(slug, { name: c.club_name, slug: slug, sportFolder: SPORT_FOLDERS[c.sport] || 'foot' });
           }
         }
       }
     });
-    
     const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
     const allJsonBrands = SET_DATA.brands?.map((b: any) => b.name) || [];
     
-    let allJsonVariations: string[] = [];
-    Object.values(TYPE_CARTE).forEach((bData: any) => {
-      if (bData.base) allJsonVariations.push(...bData.base);
-      if (bData.parallels) {
-        Object.values(bData.parallels).forEach((arr: any) => {
-          if (Array.isArray(arr)) allJsonVariations.push(...arr);
-        });
-      }
-      if (bData.inserts) allJsonVariations.push(...bData.inserts);
-      if (bData.hits) allJsonVariations.push(...bData.hits);
-      if (bData.case_hits) allJsonVariations.push(...bData.case_hits);
+    // 🚨 CONSTRUCTION DE L'ARBRE DES VARIATIONS (Basé sur les marques sélectionnées)
+    let variationsTree: any = {};
+    const brandsToUse = selectedBrands.length > 0 ? selectedBrands : Object.keys(TYPE_CARTE);
+    
+    brandsToUse.forEach(brand => {
+      const brandData = (TYPE_CARTE as any)[brand];
+      if(!brandData) return;
+      Object.keys(brandData).forEach(catKey => { // base, parallels, inserts...
+        if (!variationsTree[catKey]) variationsTree[catKey] = Array.isArray(brandData[catKey]) ? [] : {};
+        
+        if (Array.isArray(brandData[catKey])) {
+          variationsTree[catKey].push(...brandData[catKey]);
+        } else {
+          Object.keys(brandData[catKey]).forEach(subKey => { // standard_colors, refractors...
+            if (!variationsTree[catKey][subKey]) variationsTree[catKey][subKey] = [];
+            variationsTree[catKey][subKey].push(...brandData[catKey][subKey]);
+          });
+        }
+      });
     });
-    allJsonVariations = Array.from(new Set(allJsonVariations)).sort();
 
-    // FILTRE CENTRAL (sans la Collection)
+    // FILTRE CENTRAL
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
@@ -337,7 +341,6 @@ export default function CollectionPage() {
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
       const variationMatch = selectedVariations.length === 0 || selectedVariations.includes(card.variation);
-      
       const autoMatch = !showAuto || card.is_auto;
       const patchMatch = !showPatch || card.is_patch;
       const numberedMatch = !showNumbered || card.is_numbered;
@@ -369,8 +372,6 @@ export default function CollectionPage() {
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
           
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            
-            {/* BOUTONS DE FILTRES : Plus de Collection ici, que 3 boutons ! */}
             <div className="relative w-full lg:w-[60%]">
               <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
                 <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
@@ -406,23 +407,77 @@ export default function CollectionPage() {
                 </div>
               )}
 
+              {/* 🚨 NOUVEAU DROPDOWN VARIATIONS EN ACCORDÉON (Niveaux & Sous-niveaux) */}
               {openDropdown === 'variations' && (
-                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
-                  <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
-                    {allJsonVariations.map((variation: string) => {
-                      const isActive = selectedVariations.includes(variation);
-                      const toggleVariation = () => setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]);
+                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-96 flex flex-col">
+                  <div className="flex-1 overflow-y-auto no-scrollbar space-y-2 mb-4 pr-2">
+                    {Object.keys(variationsTree).map(catKey => {
+                      const isArray = Array.isArray(variationsTree[catKey]);
                       return (
-                        <div key={variation} onClick={toggleVariation} className="w-full flex items-center justify-between py-2 cursor-pointer group">
-                          <span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{variation}</span>
-                          <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
-                            <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                        <div key={catKey} className="w-full">
+                          {/* Titre de la catégorie principale (ex: BASE, PARALLELS) */}
+                          <div className="flex justify-between items-center py-2 border-b border-white/10 cursor-pointer" onClick={(e) => toggleVarNode(catKey, e)}>
+                            <span className="font-black text-[#AFFF25] uppercase text-xs tracking-widest">{formatLabel(catKey)}</span>
+                            {expandedVars[catKey] ? <Minus size={14} className="text-[#AFFF25]"/> : <Plus size={14} className="text-[#AFFF25]"/>}
                           </div>
+                          
+                          {/* Contenu déroulant */}
+                          {expandedVars[catKey] && (
+                            <div className="pl-3 mt-2 space-y-2 border-l-2 border-white/10 ml-1">
+                              {isArray ? (
+                                // Si c'est une liste simple (ex: BASE)
+                                Array.from(new Set(variationsTree[catKey])).sort().map((variation: any) => {
+                                  const isActive = selectedVariations.includes(variation);
+                                  const toggleVariation = (e: any) => { e.stopPropagation(); setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]); };
+                                  return (
+                                    <div key={variation} onClick={toggleVariation} className="flex items-center justify-between py-1.5 cursor-pointer group">
+                                      <span className={`text-sm font-medium transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{variation}</span>
+                                      <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
+                                        <div className={`w-3 h-3 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                                      </div>
+                                    </div>
+                                  )
+                                })
+                              ) : (
+                                // Si ce sont des sous-catégories (ex: PARALLELS -> COLORS)
+                                Object.keys(variationsTree[catKey]).map(subKey => {
+                                  const subNodeKey = `${catKey}-${subKey}`;
+                                  return (
+                                    <div key={subKey} className="w-full mb-2">
+                                      <div className="flex justify-between items-center py-1.5 cursor-pointer" onClick={(e) => toggleVarNode(subNodeKey, e)}>
+                                        <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold">{formatLabel(subKey)}</span>
+                                        {expandedVars[subNodeKey] ? <Minus size={12} className="text-white/40"/> : <Plus size={12} className="text-white/40"/>}
+                                      </div>
+                                      
+                                      {expandedVars[subNodeKey] && (
+                                        <div className="pl-3 mt-1 space-y-1 border-l-2 border-white/5 ml-1">
+                                          {Array.from(new Set(variationsTree[catKey][subKey])).sort().map((variation: any) => {
+                                            const isActive = selectedVariations.includes(variation);
+                                            const toggleVariation = (e: any) => { e.stopPropagation(); setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]); };
+                                            return (
+                                              <div key={variation} onClick={toggleVariation} className="flex items-center justify-between py-1.5 cursor-pointer group">
+                                                <span className={`text-sm font-medium transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{variation}</span>
+                                                <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
+                                                  <div className={`w-3 h-3 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                                                </div>
+                                              </div>
+                                            )
+                                          })}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )
+                                })
+                              )}
+                            </div>
+                          )}
                         </div>
-                      );
+                      )
                     })}
                   </div>
-                  <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
+                  <div className="pt-2 border-t border-white/10">
+                    <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-[#AFFF25] text-[#040221] rounded-xl text-xs font-black uppercase tracking-widest transition-transform active:scale-95 shadow-[0_0_15px_rgba(175,255,37,0.3)]">Appliquer Filtres</button>
+                  </div>
                 </div>
               )}
             </div>
@@ -685,7 +740,6 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* Barre de recherche flottante sur mobile uniquement */}
       {activeTab === 'cartes' && !targetFolderId && (
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
