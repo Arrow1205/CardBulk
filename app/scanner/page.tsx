@@ -12,7 +12,6 @@ import NBA_PLAYERS from '@/data/nba-player.json';
 import MLB_PLAYERS from '@/data/mlb-player.json';
 import TENNIS_PLAYERS from '@/data/tennis-player.json';
 
-// 🚨 IMPORT DES DEUX FICHIERS JSON
 import SET_DATA from '@/data/set.json';
 import TYPE_CARTE from '@/data/type-carte.json';
 
@@ -45,6 +44,34 @@ const PLAYER_DATA: Record<string, any[]> = {
   'BASEBALL': MLB_PLAYERS,
   'TENNIS': TENNIS_PLAYERS?.atp_top_100 || []
 };
+
+// 🚨 RÉCUPÉRATION GLOBALE DES LISTES OFFICIELLES (Pour forcer la bonne Casse)
+const ALL_BRANDS = (SET_DATA.brands || []).map((b: any) => b.name);
+
+let ALL_SETS: string[] = [];
+(SET_DATA.brands || []).forEach((b: any) => {
+  if (b.sports) {
+    Object.values(b.sports).forEach((arr: any) => {
+      if (Array.isArray(arr)) ALL_SETS.push(...arr);
+    });
+  }
+});
+ALL_SETS = Array.from(new Set(ALL_SETS));
+
+let ALL_VARIATIONS: string[] = [];
+Object.values(TYPE_CARTE).forEach((bData: any) => {
+  if (bData.base) ALL_VARIATIONS.push(...bData.base);
+  if (bData.parallels) {
+    Object.values(bData.parallels).forEach((arr: any) => {
+      if (Array.isArray(arr)) ALL_VARIATIONS.push(...arr);
+    });
+  }
+  if (bData.inserts) ALL_VARIATIONS.push(...bData.inserts);
+  if (bData.hits) ALL_VARIATIONS.push(...bData.hits);
+  if (bData.case_hits) ALL_VARIATIONS.push(...bData.case_hits);
+});
+ALL_VARIATIONS = Array.from(new Set(ALL_VARIATIONS));
+
 
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
@@ -216,10 +243,8 @@ function ScannerContent() {
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
   // ==========================================
-  // LOGIQUE DE GÉNÉRATION DES DROPDOWNS EN CASCADE
+  // DROPDOWNS EN CASCADE
   // ==========================================
-
-  // 1. COLLECTION / SET (Depuis set.json)
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
@@ -231,7 +256,6 @@ function ScannerContent() {
     }
   }
 
-  // 2. VARIATIONS (Depuis type-carte.json)
   let availableVariations: string[] = [];
   if (formData.brand && TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE]) {
     const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
@@ -275,6 +299,14 @@ function ScannerContent() {
     setIsCameraOpen(false);
   };
 
+  // 🚨 FONCTION MAGIQUE DE FORMATAGE DE CASSE 🚨
+  const matchExactCase = (rawString: string, validList: string[]) => {
+    if (!rawString) return '';
+    const rawClean = rawString.toLowerCase().trim();
+    const found = validList.find(item => item.toLowerCase().trim() === rawClean);
+    return found || rawString;
+  };
+
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
@@ -305,9 +337,9 @@ function ScannerContent() {
           firstname: fname,
           lastname: lname,
           club: cleanValue(data.club),
-          brand: cleanValue(data.brand),
-          series: cleanValue(data.series),
-          variation: cleanValue(data.variation),
+          brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS), // ✅ CORRECTION CASSE
+          series: matchExactCase(cleanValue(data.series), ALL_SETS), // ✅ CORRECTION CASSE
+          variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), // ✅ CORRECTION CASSE
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -441,11 +473,45 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: cleanValue(data.club) || prev.club, brand: cleanValue(data.brand) || prev.brand, series: cleanValue(data.series) || prev.series, variation: cleanValue(data.variation) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, 
+              sport: aiSport || prev.sport, 
+              firstname: fname || prev.firstname, 
+              lastname: lname || prev.lastname, 
+              club: cleanValue(data.club) || prev.club, 
+              brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, 
+              series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, 
+              variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, 
+              year: cleanValue(data.year) || prev.year, 
+              is_auto: !!data.is_auto || prev.is_auto, 
+              is_patch: !!data.is_patch || prev.is_patch, 
+              is_rookie: !!data.is_rookie || prev.is_rookie, 
+              is_numbered: !!data.is_numbered || prev.is_numbered, 
+              num_low: cleanValue(data.num_low) || prev.num_low, 
+              num_high: cleanValue(data.num_high) || prev.num_high, 
+              is_graded: !!data.is_graded || prev.is_graded, 
+              grading_company: cleanValue(data.grading_company) || prev.grading_company, 
+              grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || cleanValue(data.club), brand: prev.brand || cleanValue(data.brand), series: prev.series || cleanValue(data.series), variation: prev.variation || cleanValue(data.variation), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, 
+              sport: prev.sport || aiSport, 
+              firstname: prev.firstname || fname, 
+              lastname: prev.lastname || lname, 
+              club: prev.club || cleanValue(data.club), 
+              brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), 
+              series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), 
+              variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), 
+              year: prev.year || cleanValue(data.year), 
+              is_auto: prev.is_auto || !!data.is_auto, 
+              is_patch: prev.is_patch || !!data.is_patch, 
+              is_rookie: prev.is_rookie || !!data.is_rookie, 
+              is_numbered: prev.is_numbered || !!data.is_numbered, 
+              num_low: prev.num_low || cleanValue(data.num_low), 
+              num_high: prev.num_high || cleanValue(data.num_high), 
+              is_graded: prev.is_graded || !!data.is_graded, 
+              grading_company: prev.grading_company || cleanValue(data.grading_company), 
+              grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -840,13 +906,11 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
                 
-                {/* 🚨 DROPDOWN POUR LA COLLECTION (SET) EN CASCADE */}
                 <div className="relative">
                   <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection / Set</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* 🚨 NOUVEAU DROPDOWN POUR LA VARIATION EN CASCADE */}
                 <div className="relative">
                   <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Variation (ex: Base, Prizm Silver...)</option>{availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />

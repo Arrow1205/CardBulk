@@ -59,9 +59,6 @@ export default function StatsPage() {
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
-  // ==========================================
-  // FILTRAGE DES CARTES
-  // ==========================================
   const uniqueSports = new Set(cards.map(c => c.sport));
   const availableSports = SPORT_ORDER.filter(sportKey => uniqueSports.has(sportKey));
 
@@ -74,17 +71,12 @@ export default function StatsPage() {
     return sportMatch && brandMatch && autoMatch && patchMatch && numberedMatch;
   });
 
-  // Fonction utilitaire pour calculer selon le mode (Nombre vs Valeur)
   const getVal = (list: any[]) => displayMode === 'count' ? list.length : list.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0);
 
-  // ==========================================
-  // CALCUL DES STATISTIQUES UNIQUES
-  // ==========================================
   const autosGlobal = filteredCards.filter(c => c.is_auto);
   const patchesGlobal = filteredCards.filter(c => c.is_patch);
   const numberedsGlobal = filteredCards.filter(c => c.is_numbered);
 
-  // Spécificités STRICTEMENT UNIQUES (Pour le graphique)
   const statsUniques = [
     { label: 'Auto Seul', list: filteredCards.filter(c => c.is_auto && !c.is_patch && !c.is_numbered), color: '#AFFF25' },
     { label: 'Patch Seul', list: filteredCards.filter(c => !c.is_auto && c.is_patch && !c.is_numbered), color: '#3B82F6' },
@@ -95,22 +87,18 @@ export default function StatsPage() {
     { label: 'Auto+Patch+Num', list: filteredCards.filter(c => c.is_auto && c.is_patch && c.is_numbered), color: '#EF4444' },
   ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0);
 
-  // On calcule la valeur max pour adapter l'échelle
   const maxVal = Math.max(...statsUniques.map(s => s.value), 0);
 
-  // ==========================================
-  // GRAPHIQUE RADAR
-  // ==========================================
   const radarData = {
     labels: statsUniques.map(s => s.label),
     datasets: [
       {
         label: displayMode === 'value' ? 'Valeur' : 'Nombre',
         data: statsUniques.map(s => s.value),
-        backgroundColor: 'rgba(175, 255, 37, 0.2)', // #AFFF25 avec 20% d'opacité
+        backgroundColor: 'rgba(175, 255, 37, 0.2)',
         borderColor: '#AFFF25',
         borderWidth: 2,
-        pointBackgroundColor: statsUniques.map(s => s.color), // Couleurs personnalisées pour chaque point
+        pointBackgroundColor: statsUniques.map(s => s.color),
         pointBorderColor: '#040221',
         pointBorderWidth: 2,
         pointRadius: 4,
@@ -123,24 +111,15 @@ export default function StatsPage() {
     responsive: true,
     maintainAspectRatio: false,
     layout: {
-      padding: 24 // On rajoute de l'espace pour que nos chiffres ne soient pas coupés
+      padding: 16 // Padding réduit pour laisser plus de place au graph
     },
     scales: {
       r: {
-        suggestedMax: isFinite(maxVal) ? maxVal * 1.15 : 10, // +15% de marge en haut pour faire respirer
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-        angleLines: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-        pointLabels: {
-          display: false, 
-        },
-        ticks: {
-          display: false,
-          backdropColor: 'transparent',
-        }
+        suggestedMax: isFinite(maxVal) ? maxVal * 1.15 : 10,
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+        pointLabels: { display: false },
+        ticks: { display: false, backdropColor: 'transparent' }
       }
     },
     plugins: {
@@ -151,10 +130,7 @@ export default function StatsPage() {
           color: '#FFFFFF',
           usePointStyle: true, 
           padding: 15,
-          font: {
-            family: 'sans-serif',
-            size: 11,
-          },
+          font: { family: 'sans-serif', size: 11 },
           generateLabels: (chart: any) => {
              return statsUniques.map((stat, i) => ({
                text: `${stat.label} : ${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value}`,
@@ -178,14 +154,11 @@ export default function StatsPage() {
     }
   };
 
-  // 🚨 LE PLUGIN CUSTOM POUR AFFICHER LES CHIFFRES SUR LES POINTS
   const customDataLabelsPlugin = {
     id: 'customDataLabelsPlugin',
     afterDatasetsDraw(chart: any) {
       const { ctx, data } = chart;
       ctx.save();
-      
-      // Configuration de la police (16px et très grasse)
       ctx.font = '900 16px sans-serif'; 
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
@@ -194,12 +167,10 @@ export default function StatsPage() {
         const value = data.datasets[0].data[index];
         const text = displayMode === 'value' ? `${value.toLocaleString('fr-FR')} €` : value.toString();
         
-        // 1. On dessine un contour sombre épais pour la lisibilité
         ctx.strokeStyle = '#040221';
         ctx.lineWidth = 6;
         ctx.strokeText(text, datapoint.x, datapoint.y - 12);
 
-        // 2. On dessine le texte principal en blanc
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(text, datapoint.x, datapoint.y - 12);
       });
@@ -210,15 +181,12 @@ export default function StatsPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:h-screen lg:overflow-hidden">
       
-      {/* 📊 PARTIE GAUCHE (FILTRES ET KPI) : On réduit l'espace en bas (pb-6 au lieu de pb-12) pour rapprocher le panneau */}
       <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
         
-        {/* HEADER */}
         <div className="pt-8 pb-4 px-6 flex justify-center items-center">
           <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none drop-shadow-lg">Statistiques</h1>
         </div>
 
-        {/* FILTRES (Sports + Spécificités) */}
         <div className="mb-6">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex gap-3 px-6 pb-2 w-max">
@@ -249,7 +217,6 @@ export default function StatsPage() {
               </button>
             </div>
 
-            {/* Menus Dropdown */}
             {openDropdown === 'spec' && (
               <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl">
                 {[
@@ -284,7 +251,6 @@ export default function StatsPage() {
           </div>
         </div>
 
-        {/* KPI GLOBAUX */}
         <div className="px-6 grid grid-cols-2 gap-4 mb-8">
           <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
             <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Nombre de cartes</div>
@@ -298,12 +264,9 @@ export default function StatsPage() {
           </div>
         </div>
 
-        {/* BLOCS SPÉCIFICITÉS & TOGGLE */}
         <div className="px-6 mb-10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-sm font-bold text-white uppercase tracking-widest">Spécificités (Global)</h2>
-            
-            {/* TOGGLE NOMBRE / VALEUR */}
             <div className="flex bg-transparent border border-[#AFFF25] rounded-full p-1 cursor-pointer">
               <button 
                 onClick={() => setDisplayMode('count')}
@@ -345,13 +308,13 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 📈 PARTIE DROITE (GRAPHIQUE) */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
+      {/* 📈 PARTIE DROITE (GRAPHIQUE) - TOTALEMENT AGRANDIE ! */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-2 sm:px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
         
         <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
-          <div className="w-full h-[350px] lg:h-[450px] max-w-[450px] relative z-20 flex justify-center">
+          {/* Le container est beaucoup plus grand (h-[450px] sur mobile, jusqu'à 650px sur PC) */}
+          <div className="w-full h-[450px] sm:h-[500px] lg:h-[650px] max-w-full lg:max-w-[700px] relative z-20 flex justify-center px-2">
             {statsUniques.length > 0 ? (
-              // 🚨 ON AJOUTE NOTRE PLUGIN CUSTOM ICI !
               <Radar data={radarData} options={radarOptions} plugins={[customDataLabelsPlugin]} />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
@@ -360,13 +323,9 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* ==========================================
-          POPIN DE DÉTAILS (MODAL)
-      ========================================== */}
       {activeDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-[#040221] border border-[#AFFF25] rounded-[32px] p-6 shadow-2xl animate-in zoom-in-95 duration-200">
-            
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black italic text-white uppercase tracking-tighter">
                 {activeDetail === 'auto' && 'Détails Autos'}
@@ -377,7 +336,6 @@ export default function StatsPage() {
                 <X size={18} />
               </button>
             </div>
-
             <div className="space-y-4 mb-8">
               {activeDetail === 'auto' && (
                 <>
@@ -418,7 +376,6 @@ export default function StatsPage() {
                 </>
               )}
             </div>
-
             <button onClick={() => setActiveDetail(null)} className="w-full py-4 bg-transparent border border-[#AFFF25] text-[#AFFF25] hover:bg-[#AFFF25] hover:text-[#040221] rounded-xl font-bold uppercase tracking-widest text-xs transition-colors">
               Fermer
             </button>
