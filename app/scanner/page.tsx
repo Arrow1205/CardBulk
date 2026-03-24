@@ -49,7 +49,7 @@ const PLAYER_DATA: Record<string, any[]> = {
 
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
-// 🚨 NOUVEAU TYPE POUR LE MODE RAFALE
+// TYPE POUR LE MODE RAFALE
 type PendingCard = {
   id: string;
   file: File;
@@ -77,10 +77,13 @@ function ScannerContent() {
   // GESTION RECTO / VERSO
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
-  // 🚨 NOUVEAUX ÉTATS MODE RAFALE
+  // ÉTATS MODE RAFALE
   const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
   const [currentVerifyIndex, setCurrentVerifyIndex] = useState(0);
   const [isVerifyingBulk, setIsVerifyingBulk] = useState(false);
+
+  const [bulkFiles, setBulkFiles] = useState<File[]>([]);
+  const [currentBulkIndex, setCurrentBulkIndex] = useState(0);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -170,13 +173,13 @@ function ScannerContent() {
     }
   }, [isCameraOpen]);
 
-  // 🚨 SYNCHRONISATION VÉRIFICATION BULK (Charge la carte en cours + ses données IA)
+  // SYNCHRONISATION VÉRIFICATION BULK (Charge la carte en cours + ses données IA)
   useEffect(() => {
     if (isVerifyingBulk && pendingCards.length > 0) {
       const currentCard = pendingCards[currentVerifyIndex];
       setSelectedFile(currentCard.file);
       setPreviewUrl(currentCard.previewUrl);
-      setSelectedFileBack(null); // Reset du verso pour la nouvelle carte
+      setSelectedFileBack(null);
       setPreviewUrlBack(null);
 
       if (currentCard.status === 'done' && currentCard.aiResult) {
@@ -192,9 +195,30 @@ function ScannerContent() {
     }
   }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
 
+  // FILTRE INTELLIGENT POUR LES CLUBS (Supprime les "N/A" et gère les Alias/Suffixes)
+  const normalizeClubName = (str: string) => {
+    if (!str) return '';
+    return str.toLowerCase()
+      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city)\b/g, '') // Enlève les suffixes courants
+      .replace(/[^\w\s]/g, '') // Enlève la ponctuation
+      .trim();
+  };
+
   const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
-  const searchStr = formData.club.toLowerCase();
-  const filteredClubs = safeClubs.filter((c: any) => c.name?.toLowerCase().includes(searchStr) || c.slug?.toLowerCase().includes(searchStr)).sort((a: any, b: any) => { if (a.name.toLowerCase().startsWith(searchStr)) return -1; return 1; });
+  const searchStrNorm = normalizeClubName(formData.club);
+
+  const filteredClubs = safeClubs.filter((c: any) => {
+    const nameNorm = normalizeClubName(c.name);
+    const slugNorm = normalizeClubName(c.slug);
+    const matchName = nameNorm.includes(searchStrNorm) || searchStrNorm.includes(nameNorm);
+    const matchSlug = slugNorm.includes(searchStrNorm) || searchStrNorm.includes(slugNorm);
+    const matchAlias = c.aliases ? c.aliases.some((alias: string) => normalizeClubName(alias).includes(searchStrNorm) || searchStrNorm.includes(normalizeClubName(alias))) : false;
+    return matchName || matchSlug || matchAlias;
+  }).sort((a: any, b: any) => { 
+    if (a.name.toLowerCase().startsWith(formData.club.toLowerCase())) return -1; 
+    return 1; 
+  });
+
   const selectedClub = filteredClubs[0];
   const clubSlug = selectedClub ? selectedClub.slug : formData.club.toLowerCase().replace(/\s+/g, '-');
   const sportFolder = SPORT_FOLDERS[formData.sport] || 'foot';
@@ -203,6 +227,7 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
+  // 🚨 LE DROPDOWN EN CASCADE (SÉRIES DÉPENDANTES DU FABRICANT) 🚨
   const availableBrands = SET_DATA.brands || [];
   let availableSets: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
@@ -446,7 +471,7 @@ function ScannerContent() {
         if (activeSide === 'back') {
           setSelectedFileBack(croppedFile);
           setPreviewUrlBack(URL.createObjectURL(croppedFile));
-          processImageScan(croppedFile, 'back', false); // Analyse Complémentaire
+          processImageScan(croppedFile, 'back', false); // Analyse Complémentaire (ET)
         } else {
           processImageScan(croppedFile, 'front', true); 
         }
@@ -759,27 +784,53 @@ function ScannerContent() {
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
       {/* ==========================================
-          MODAL DE RECADRAGE
+          MODAL DE RECADRAGE (AVEC LE FAMEUX LAYER BLEU SOMBRE !)
       ========================================== */}
       {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
+          
           <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase drop-shadow-md z-50">
             Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}
           </h2>
-          <img src={cropPreview} className="absolute inset-0 w-full h-full object-contain origin-center z-0" style={{ transform: `scale(${cropZoom})` }} alt="To Crop" />
+
+          {/* L'image en plein écran pour pouvoir la zoomer confortablement */}
+          <img 
+            src={cropPreview} 
+            className="absolute inset-0 w-full h-full object-contain origin-center z-0" 
+            style={{ transform: `scale(${cropZoom})` }} 
+            alt="To Crop" 
+          />
+
+          {/* Le masque assombrissant (Layer bleu/noir) par-dessus l'image */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div>
           </div>
+
           <div className="absolute bottom-10 left-0 w-full px-8 z-20 flex flex-col items-center pointer-events-auto">
             <div className="w-full max-w-[300px] mb-8 bg-[#040221]/80 p-4 rounded-2xl backdrop-blur-md border border-white/10">
               <label className="text-xs font-bold text-[#AFFF25] uppercase mb-3 flex justify-between tracking-widest">
                 <span>Zoom</span> <span>{cropZoom.toFixed(1)}x</span>
               </label>
-              <input type="range" min="1" max="3" step="0.1" value={cropZoom} onChange={e => setCropZoom(parseFloat(e.target.value))} className="w-full accent-[#AFFF25]" />
+              <input 
+                type="range" min="1" max="3" step="0.1" 
+                value={cropZoom} 
+                onChange={e => setCropZoom(parseFloat(e.target.value))} 
+                className="w-full accent-[#AFFF25]" 
+              />
             </div>
+
             <div className="flex gap-4 w-full max-w-[300px]">
-              <button onClick={() => setCropPreview(null)} className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
-              <button onClick={confirmCrop} disabled={isApplyingEdit} className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2">
+              <button 
+                onClick={() => setCropPreview(null)} 
+                className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all"
+              >
+                Annuler
+              </button>
+              <button 
+                onClick={confirmCrop} 
+                disabled={isApplyingEdit}
+                className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2"
+              >
                 {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
               </button>
             </div>
@@ -802,6 +853,7 @@ function ScannerContent() {
 
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0" />
           
+          {/* CALQUE BLEU SOMBRE AVEC CADRE JAUNE DANS LA CAMÉRA */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
@@ -1073,7 +1125,7 @@ function ScannerContent() {
                   )}
                 </div>
                 
-                {/* Logos de club dynamiques */}
+                {/* Logos de club dynamiques (AVEC FONCTION DE NORMALISATION) */}
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
@@ -1111,6 +1163,8 @@ function ScannerContent() {
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
+                
+                {/* LE DROPDOWN SÉRIE EN CASCADE */}
                 <div className="relative">
                   <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />

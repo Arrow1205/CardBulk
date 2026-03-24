@@ -38,7 +38,6 @@ const slugify = (text: string) => {
     .replace(/\-\-+/g, '-');
 };
 
-// La barre de recherche flottante n'apparaît plus sur PC (lg:hidden)
 const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
   <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none lg:hidden">
     <div className="relative w-full max-w-md mx-auto pointer-events-auto">
@@ -70,11 +69,13 @@ export default function CollectionPage() {
   
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  // 🚨 NOUVEAU FILTRE SÉRIES 🚨
+  const [selectedSeries, setSelectedSeries] = useState<string[]>([]); 
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
   
-  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | 'series' | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,7 +115,6 @@ export default function CollectionPage() {
   }, [messages, aiLoading, activeTab]);
 
   const fetchCollection = async () => {
-    // 1️⃣ CHARGEMENT HORS-LIGNE IMMÉDIAT (CACHE)
     if (typeof window !== 'undefined') {
       const savedCards = localStorage.getItem('cardbulk_offline_cards');
       const savedFolders = localStorage.getItem('cardbulk_offline_folders');
@@ -125,7 +125,6 @@ export default function CollectionPage() {
       if (savedCards || savedFolders) setLoading(false);
     }
 
-    // 2️⃣ TENTATIVE DE CONNEXION À SUPABASE (EN ARRIÈRE-PLAN)
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
@@ -289,18 +288,13 @@ export default function CollectionPage() {
     const availableSports = SPORT_ORDER.filter(sportKey => uniqueSports.has(sportKey));
     const hasMultipleSports = availableSports.length > 1;
 
-    // Détection des clubs actifs pour les logos
     const cardsForLogos = selectedSport ? baseCards.filter(c => c.sport === selectedSport) : baseCards;
     const activeClubsMap = new Map();
-    
-    // 🚨 LISTE NOIRE : Les mots considérés comme non-valides pour un club
     const invalidClubs = ['n/a', 'na', 'n-a', 'none', 'inconnu', 'null', 'undefined', '-', 'unknown', ''];
 
     cardsForLogos.forEach(c => {
       if (c.club_name) {
         const clubLower = c.club_name.toString().toLowerCase().trim();
-        
-        // On ne crée le logo que si le nom du club n'est pas dans la liste noire
         if (!invalidClubs.includes(clubLower)) {
           const slug = slugify(c.club_name);
           if (slug && !activeClubsMap.has(slug)) {
@@ -316,17 +310,24 @@ export default function CollectionPage() {
     
     const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
+    // LE FILTRE CENTRAL
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
       const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
+      
       const searchMatch = !searchQuery || fullName.includes(searchTerm) || reverseFullName.includes(searchTerm) || card.club_name?.toLowerCase().includes(searchTerm);
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
+      
+      // La vérification de la Série
+      const seriesMatch = selectedSeries.length === 0 || selectedSeries.includes(card.series);
+      
       const autoMatch = !showAuto || card.is_auto;
       const patchMatch = !showPatch || card.is_patch;
       const numberedMatch = !showNumbered || card.is_numbered;
-      return searchMatch && sportMatch && brandMatch && autoMatch && patchMatch && numberedMatch;
+      
+      return searchMatch && sportMatch && brandMatch && seriesMatch && autoMatch && patchMatch && numberedMatch;
     });
 
     return (
@@ -350,20 +351,27 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* 2. FILTRES SPÉCIFICITÉS + RECHERCHE DESKTOP */}
+        {/* 2. FILTRES SPÉCIFICITÉS + MARQUES + SÉRIES */}
         <div className={`relative z-50 mb-6 px-6 lg:px-[80px] ${!hasMultipleSports && searchQuery.trim().length === 0 ? 'mt-4' : ''}`}>
           {openDropdown && <div className="fixed inset-0 z-[60] bg-black/20" onClick={() => setOpenDropdown(null)}></div>}
           
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
-            {/* 50% GAUCHE : Boutons Spécificités & Marques */}
+            {/* 50% GAUCHE : Boutons de filtres */}
             <div className="relative w-full lg:w-1/2">
-              <div className="flex gap-3">
-                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full border text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} /></button>
-                <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full border text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}><span className="truncate max-w-[100px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} /></button>
+              <div className="flex gap-2 lg:gap-3">
+                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  <span className="truncate">Spécificités</span> <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
+                </button>
+                <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  <span className="truncate max-w-[80px]">{selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'}</span><ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
+                </button>
+                <button onClick={() => setOpenDropdown(openDropdown === 'series' ? null : 'series')} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedSeries.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  <span className="truncate max-w-[80px]">{selectedSeries.length > 0 ? `${selectedSeries.length} sél.` : 'Séries'}</span><ChevronDown size={14} className={openDropdown === 'series' ? 'rotate-180' : ''} />
+                </button>
               </div>
 
-              {/* Contenu des dropdowns confinés dans les 50% de gauche */}
+              {/* Contenus des Dropdowns */}
               {openDropdown === 'spec' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
                   {[ { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) }, { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) }, { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) } ].map((item, idx) => (
@@ -372,6 +380,7 @@ export default function CollectionPage() {
                   <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
                 </div>
               )}
+
               {openDropdown === 'brand' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
                   <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
@@ -384,9 +393,31 @@ export default function CollectionPage() {
                   <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
                 </div>
               )}
+
+              {/* NOUVEAU DROPDOWN POUR LES SÉRIES (Généré depuis les cartes réelles) */}
+              {openDropdown === 'series' && (
+                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-80 flex flex-col">
+                  <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 mb-4">
+                    {Array.from(new Set(cards.map(c => c.series).filter(Boolean))).sort().map((seriesStr: any) => {
+                      const series = String(seriesStr);
+                      const isActive = selectedSeries.includes(series);
+                      const toggleSeries = () => setSelectedSeries(prev => isActive ? prev.filter(s => s !== series) : [...prev, series]);
+                      return (
+                        <div key={series} onClick={toggleSeries} className="w-full flex items-center justify-between py-2 cursor-pointer group">
+                          <span className={`text-sm font-bold transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{series}</span>
+                          <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
+                            <div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
+                </div>
+              )}
             </div>
 
-            {/* 50% DROITE : Barre de recherche uniquement sur Desktop (lg) */}
+            {/* 50% DROITE : Barre de recherche Desktop */}
             <div className="hidden lg:block w-full lg:w-1/2 relative z-[70]">
               <input 
                 type="text" 
@@ -430,7 +461,7 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* 🚨 GRILLE DES CARTES : Full width avec marges lg:px-[80px] 🚨 */}
+        {/* 🚨 GRILLE DES CARTES */}
         <div className="px-6 lg:px-[80px] grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {

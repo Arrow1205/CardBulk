@@ -1,0 +1,186 @@
+{
+  "Topps": {
+    "base": [
+      "Base",
+      "Base Variation",
+      "SP",
+      "SSP",
+      "SSSP"
+    ],
+    "parallels": {
+      "standard_colors": [
+        "Gold",
+        "Orange",
+        "Red",
+        "Blue",
+        "Green",
+        "Purple",
+        "Pink",
+        "Black",
+        "Platinum 1/1"
+      ],
+      "refractors": [
+        "Refractor",
+        "X-Fractor",
+        "Atomic Refractor",
+        "Wave Refractor",
+        "Shimmer Refractor",
+        "Lava Refractor",
+        "Speckle Refractor",
+        "Mojo Refractor"
+      ],
+      "foil_types": [
+        "Rainbow Foil",
+        "Gold Foil",
+        "Vintage Stock",
+        "Independence Day",
+        "Mother's Day Pink",
+        "Father's Day Blue"
+      ]
+    },
+    "inserts": [
+      "Future Stars",
+      "Legends",
+      "All-Star",
+      "Die-Cut",
+      "Rookie Cup"
+    ],
+    "hits": [
+      "Autograph",
+      "Relic",
+      "Patch",
+      "Auto Patch",
+      "Booklet",
+      "Dual Auto",
+      "Triple Auto"
+    ],
+    "case_hits": [
+      "Golden Mirror Variation",
+      "Image Variation SSP",
+      "Sketch Card"
+    ]
+  },
+
+  "Panini": {
+    "base": [
+      "Base",
+      "Base Variation",
+      "No Name Variation",
+      "Photo Variation",
+      "SP",
+      "SSP"
+    ],
+    "parallels": {
+      "prizm_core": [
+        "Silver Prizm",
+        "Gold Prizm",
+        "Black Prizm 1/1"
+      ],
+      "colors": [
+        "Red",
+        "Blue",
+        "Green",
+        "Purple",
+        "Orange",
+        "Pink",
+        "Neon Green",
+        "Hyper"
+      ],
+      "patterns": [
+        "Cracked Ice",
+        "Scope",
+        "Mojo",
+        "Snake Skin",
+        "Tiger Stripe",
+        "Zebra",
+        "Peacock",
+        "Camo",
+        "Choice",
+        "Fast Break",
+        "Shimmer"
+      ]
+    },
+    "inserts": [
+      "Downtown",
+      "Color Blast",
+      "Kaboom",
+      "Fireworks",
+      "Emergent",
+      "Illusions",
+      "Stained Glass"
+    ],
+    "hits": [
+      "Autograph",
+      "Rookie Patch Auto",
+      "Memorabilia",
+      "Patch Auto",
+      "Dual Auto"
+    ],
+    "case_hits": [
+      "Downtown",
+      "Kaboom",
+      "Color Blast",
+      "Stained Glass"
+    ]
+  },
+
+  "Leaf": {
+    "base": [
+      "Base",
+      "Numbered Base"
+    ],
+    "parallels": {
+      "colors": [
+        "Gold",
+        "Blue",
+        "Green",
+        "Purple",
+        "Red",
+        "Black",
+        "1/1"
+      ],
+      "styles": [
+        "Crystal",
+        "Metal",
+        "Mojo"
+      ]
+    },
+    "inserts": [
+      "Prospect Inserts",
+      "Legends Inserts"
+    ],
+    "hits": [
+      "Autograph",
+      "Multi Auto",
+      "Inscription Auto",
+      "Patch Auto"
+    ],
+    "case_hits": []
+  },
+
+  "Futera": {
+    "base": [
+      "Base",
+      "Numbered Base"
+    ],
+    "parallels": {
+      "colors": [
+        "Gold",
+        "Platinum",
+        "Patch Parallel"
+      ]
+    },
+    "inserts": [
+      "Unique Memorabilia",
+      "Career Story Cards",
+      "Themed Inserts"
+    ],
+    "hits": [
+      "Autograph",
+      "Game Used Patch",
+      "Jumbo Patch",
+      "Premium Memorabilia"
+    ],
+    "case_hits": []
+  }
+}

@@ -95,6 +95,9 @@ export default function StatsPage() {
     { label: 'Auto+Patch+Num', list: filteredCards.filter(c => c.is_auto && c.is_patch && c.is_numbered), color: '#EF4444' },
   ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0);
 
+  // On calcule la valeur max pour adapter l'échelle
+  const maxVal = Math.max(...statsUniques.map(s => s.value), 0);
+
   // ==========================================
   // GRAPHIQUE RADAR
   // ==========================================
@@ -119,8 +122,12 @@ export default function StatsPage() {
   const radarOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: 24 // On rajoute de l'espace pour que nos chiffres ne soient pas coupés
+    },
     scales: {
       r: {
+        suggestedMax: isFinite(maxVal) ? maxVal * 1.15 : 10, // +15% de marge en haut pour faire respirer
         grid: {
           color: 'rgba(255, 255, 255, 0.1)',
         },
@@ -148,7 +155,6 @@ export default function StatsPage() {
             family: 'sans-serif',
             size: 11,
           },
-          // On génère manuellement la légende car il n'y a qu'un dataset
           generateLabels: (chart: any) => {
              return statsUniques.map((stat, i) => ({
                text: `${stat.label} : ${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value}`,
@@ -169,6 +175,35 @@ export default function StatsPage() {
           }
         }
       }
+    }
+  };
+
+  // 🚨 LE PLUGIN CUSTOM POUR AFFICHER LES CHIFFRES SUR LES POINTS
+  const customDataLabelsPlugin = {
+    id: 'customDataLabelsPlugin',
+    afterDatasetsDraw(chart: any) {
+      const { ctx, data } = chart;
+      ctx.save();
+      
+      // Configuration de la police (16px et très grasse)
+      ctx.font = '900 16px sans-serif'; 
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+
+      chart.getDatasetMeta(0).data.forEach((datapoint: any, index: number) => {
+        const value = data.datasets[0].data[index];
+        const text = displayMode === 'value' ? `${value.toLocaleString('fr-FR')} €` : value.toString();
+        
+        // 1. On dessine un contour sombre épais pour la lisibilité
+        ctx.strokeStyle = '#040221';
+        ctx.lineWidth = 6;
+        ctx.strokeText(text, datapoint.x, datapoint.y - 12);
+
+        // 2. On dessine le texte principal en blanc
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(text, datapoint.x, datapoint.y - 12);
+      });
+      ctx.restore();
     }
   };
 
@@ -310,17 +345,14 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 📈 PARTIE DROITE (GRAPHIQUE) : 
-          1. -mt-6 lg:mt-0 pour remonter sur les filtres sur mobile. 
-          2. rounded-t-[32px] pour l'effet "Sheet"
-          3. pt-8 pb-32 pour dégager la tab bar en bas
-      */}
+      {/* 📈 PARTIE DROITE (GRAPHIQUE) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
         
         <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
           <div className="w-full h-[350px] lg:h-[450px] max-w-[450px] relative z-20 flex justify-center">
             {statsUniques.length > 0 ? (
-              <Radar data={radarData} options={radarOptions} />
+              // 🚨 ON AJOUTE NOTRE PLUGIN CUSTOM ICI !
+              <Radar data={radarData} options={radarOptions} plugins={[customDataLabelsPlugin]} />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
             )}
