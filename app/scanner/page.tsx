@@ -345,7 +345,7 @@ function ScannerContent() {
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
-      body.append("auto_crop", "true"); // On demande le détourage côté serveur !
+      body.append("auto_crop", "true"); 
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
@@ -401,7 +401,6 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
-  // 🚨 LA NOUVELLE FONCTION DE CAPTURE (On envoie la photo entière à l'API) 🚨
   const captureImageAndCrop = () => {
     if (!videoRef.current) return;
     
@@ -414,7 +413,6 @@ function ScannerContent() {
     
     if (!vW || !vH) return; 
 
-    // On crée un canvas de la taille de la vidéo brute
     const canvas = document.createElement('canvas'); 
     canvas.width = vW; 
     canvas.height = vH;
@@ -424,7 +422,6 @@ function ScannerContent() {
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
-    // On dessine l'image totale SANS AUCUN DÉCOUPAGE
     ctx.drawImage(video, 0, 0, vW, vH);
 
     canvas.toBlob((blob) => {
@@ -599,28 +596,78 @@ function ScannerContent() {
     } catch (e) { setIsApplyingEdit(false); }
   };
 
+  // 🚨 CORRECTION DE L'ÉDITEUR : On télécharge l'image avant d'appliquer les filtres
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
+    
     try {
-      const img = new Image(); img.crossOrigin = "anonymous"; img.src = currentPreview;
-      await new Promise(resolve => { img.onload = resolve; });
-      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
-      canvas.width = img.width; canvas.height = img.height;
+      let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
+      
+      // Si l'image vient de Supabase (http...), on la télécharge d'abord pour éviter le blocage CORS
+      if (!currentBlob && currentPreview.startsWith('http')) {
+        const response = await fetch(currentPreview + "?t=" + new Date().getTime());
+        currentBlob = await response.blob();
+      }
+      if (!currentBlob && !currentPreview.startsWith('http')) {
+         // C'est déjà une URL locale
+         const response = await fetch(currentPreview);
+         currentBlob = await response.blob();
+      }
+      if (!currentBlob) {
+        setIsApplyingEdit(false);
+        return;
+      }
+
+      const img = new Image(); 
+      img.crossOrigin = "anonymous"; 
+      img.src = URL.createObjectURL(currentBlob);
+      
+      await new Promise((resolve, reject) => { 
+        img.onload = resolve; 
+        img.onerror = reject; 
+      });
+      
+      const canvas = document.createElement('canvas'); 
+      const ctx = canvas.getContext('2d'); 
+      if (!ctx) {
+         setIsApplyingEdit(false);
+         return;
+      }
+      
+      canvas.width = img.width; 
+      canvas.height = img.height;
       ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
-      const scale = imgSettings.zoom; const sw = img.width / scale; const sh = img.height / scale;
-      const sx = (img.width - sw) / 2; const sy = (img.height - sh) / 2;
+      
+      const scale = imgSettings.zoom; 
+      const sw = img.width / scale; 
+      const sh = img.height / scale;
+      const sx = (img.width - sw) / 2; 
+      const sy = (img.height - sh) / 2;
+      
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      
       canvas.toBlob((blob) => {
-        if (!blob) return;
+        if (!blob) {
+          setIsApplyingEdit(false);
+          return;
+        }
         const newFile = new File([blob], `edited-${Date.now()}.png`, { type: 'image/png' });
-        if (activeSide === 'front') { setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); } 
-        else { setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile)); }
-        setShowEditor(false); setIsApplyingEdit(false);
+        if (activeSide === 'front') { 
+          setSelectedFile(newFile); 
+          setPreviewUrl(URL.createObjectURL(newFile)); 
+        } else { 
+          setSelectedFileBack(newFile); 
+          setPreviewUrlBack(URL.createObjectURL(newFile)); 
+        }
+        setShowEditor(false); 
+        setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }, 'image/png');
-    } catch (e) { setIsApplyingEdit(false); }
+    } catch (e) { 
+      setIsApplyingEdit(false); 
+    }
   };
 
   const handleAutoEnhance = () => setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
