@@ -905,7 +905,7 @@ function ScannerContent() {
             />
           </div>
 
-          <div className="mt-8 space-y-6 pb-6 overflow-y-auto">
+          <div className="mt-8 space-y-6 pb-32 overflow-y-auto">
             <button onClick={handleAutoEnhance} className="w-full py-3 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25] text-[#AFFF25] font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"><Wand2 size={18} /> Amélioration Auto</button>
             <div className="space-y-4">
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div><input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
