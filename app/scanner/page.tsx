@@ -324,24 +324,6 @@ function ScannerContent() {
     return found || rawString;
   };
 
-  const updatePendingCardWithCroppedImage = async (id: string, base64Image: string) => {
-    try {
-      const response = await fetch(`data:image/jpeg;base64,${base64Image}`);
-      const blob = await response.blob();
-      const croppedFile = new File([blob], `auto-cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
-      const newPreviewUrl = URL.createObjectURL(croppedFile);
-      
-      setPendingCards(prev => prev.map(c => c.id === id ? { ...c, file: croppedFile, previewUrl: newPreviewUrl } : c));
-      
-      if (pendingCards[currentVerifyIndex]?.id === id) {
-        setSelectedFile(croppedFile);
-        setPreviewUrl(newPreviewUrl);
-      }
-    } catch (e) {
-      console.error("Erreur lors de la conversion de l'image détourée", e);
-    }
-  };
-
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
@@ -392,7 +374,17 @@ function ScannerContent() {
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
 
         if (data.cropped_image_base64) {
-          await updatePendingCardWithCroppedImage(id, data.cropped_image_base64);
+          const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+          const blob = await response.blob();
+          const croppedFile = new File([blob], `auto-cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const newPreviewUrl = URL.createObjectURL(croppedFile);
+          
+          setPendingCards(prev => prev.map(c => c.id === id ? { ...c, file: croppedFile, previewUrl: newPreviewUrl } : c));
+          
+          if (pendingCards[currentVerifyIndex]?.id === id) {
+            setSelectedFile(croppedFile);
+            setPreviewUrl(newPreviewUrl);
+          }
         }
 
       } else {
@@ -596,7 +588,7 @@ function ScannerContent() {
     } catch (e) { setIsApplyingEdit(false); }
   };
 
-  // 🚨 CORRECTION DE L'ÉDITEUR : On télécharge l'image avant d'appliquer les filtres
+  // Modification via le Backend pour contourner le CORS
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
@@ -605,13 +597,12 @@ function ScannerContent() {
     try {
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
       
-      // Si l'image vient de Supabase (http...), on la télécharge d'abord pour éviter le blocage CORS
+      // Si l'image vient de Supabase, on la télécharge pour l'envoyer à l'API
       if (!currentBlob && currentPreview.startsWith('http')) {
         const response = await fetch(currentPreview + "?t=" + new Date().getTime());
         currentBlob = await response.blob();
       }
       if (!currentBlob && !currentPreview.startsWith('http')) {
-         // C'est déjà une URL locale
          const response = await fetch(currentPreview);
          currentBlob = await response.blob();
       }
@@ -620,53 +611,37 @@ function ScannerContent() {
         return;
       }
 
-      const img = new Image(); 
-      img.crossOrigin = "anonymous"; 
-      img.src = URL.createObjectURL(currentBlob);
+      const body = new FormData();
+      body.append("image", currentBlob);
+      body.append("brightness", String(imgSettings.brightness));
+      body.append("contrast", String(imgSettings.contrast));
+      body.append("auto_crop", "false"); 
+
+      const res = await fetch("/api/scan", { method: "POST", body }); 
+      const data = await res.json();
       
-      await new Promise((resolve, reject) => { 
-        img.onload = resolve; 
-        img.onerror = reject; 
-      });
-      
-      const canvas = document.createElement('canvas'); 
-      const ctx = canvas.getContext('2d'); 
-      if (!ctx) {
-         setIsApplyingEdit(false);
-         return;
-      }
-      
-      canvas.width = img.width; 
-      canvas.height = img.height;
-      ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
-      
-      const scale = imgSettings.zoom; 
-      const sw = img.width / scale; 
-      const sh = img.height / scale;
-      const sx = (img.width - sw) / 2; 
-      const sy = (img.height - sh) / 2;
-      
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-      
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          setIsApplyingEdit(false);
-          return;
+      if (!data.error && data.cropped_image_base64) {
+        const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+        const blobEdite = await response.blob();
+        
+        const newFile = new File([blobEdite], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        
+        if (activeSide === 'front') {
+          setSelectedFile(newFile);
+          setPreviewUrl(URL.createObjectURL(newFile));
+        } else {
+          setSelectedFileBack(newFile);
+          setPreviewUrlBack(URL.createObjectURL(newFile));
         }
-        const newFile = new File([blob], `edited-${Date.now()}.png`, { type: 'image/png' });
-        if (activeSide === 'front') { 
-          setSelectedFile(newFile); 
-          setPreviewUrl(URL.createObjectURL(newFile)); 
-        } else { 
-          setSelectedFileBack(newFile); 
-          setPreviewUrlBack(URL.createObjectURL(newFile)); 
-        }
+
         setShowEditor(false); 
-        setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
-      }, 'image/png');
+      }
+
     } catch (e) { 
-      setIsApplyingEdit(false); 
+      console.error("Erreur serveur:", e);
+    } finally {
+       setIsApplyingEdit(false);
     }
   };
 
@@ -779,7 +754,7 @@ function ScannerContent() {
           
           {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
