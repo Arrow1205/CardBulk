@@ -565,7 +565,6 @@ function ScannerContent() {
     } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
   };
 
-  // 🚨 ROTATION (Avec contournement CORS par API Proxy)
   const rotateImage = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
@@ -619,7 +618,7 @@ function ScannerContent() {
     }
   };
 
-  // 🚨 ÉDITION CANVAS (Avec contournement CORS par API Proxy)
+  // 🚨 ÉDITEUR ULTIME : Manipulation Pixels (Bypass du Bug Safari CSS Filter) 🚨
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
@@ -629,7 +628,7 @@ function ScannerContent() {
       let localSrc = currentPreview;
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
 
-      // On demande au serveur de récupérer l'image distante pour éviter l'erreur de sécurité
+      // Récupération de l'image (Bypass CORS)
       if (!currentBlob && currentPreview.startsWith('http')) {
           const body = new FormData();
           body.append("action", "proxy");
@@ -646,22 +645,63 @@ function ScannerContent() {
       await new Promise(r => { img.onload = r; });
 
       const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Le rendu sera strictement identique à ce que fait le CSS !
-      ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
-
       const scale = imgSettings.zoom;
+      
+      // Calcul du recadrage (Zoom)
       const sw = img.width / scale;
       const sh = img.height / scale;
       const sx = (img.width - sw) / 2;
       const sy = (img.height - sh) / 2;
 
+      canvas.width = sw;
+      canvas.height = sh;
+      
+      // On utilise willReadFrequently pour accélérer l'analyse sur mobile
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return;
+
+      // On dessine l'image brute SANS filtres CSS
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
+      // 🚨 MANIPULATION MANUELLE DES PIXELS 🚨
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      const b = imgSettings.brightness / 100;
+      const c = imgSettings.contrast / 100;
+      const s = imgSettings.saturation / 100;
+      const intercept = 128 * (1 - c);
+
+      // On boucle sur chaque pixel pour forcer le changement de couleur (Safari ne peut pas esquiver ça !)
+      for (let i = 0; i < data.length; i += 4) {
+          let r = data[i];
+          let g = data[i + 1];
+          let bl = data[i + 2];
+
+          // 1. Luminosité
+          r *= b; g *= b; bl *= b;
+
+          // 2. Contraste
+          r = r * c + intercept;
+          g = g * c + intercept;
+          bl = bl * c + intercept;
+
+          // 3. Saturation (Formule de luminance)
+          const lum = 0.299 * r + 0.587 * g + 0.114 * bl;
+          r = lum + s * (r - lum);
+          g = lum + s * (g - lum);
+          bl = lum + s * (bl - lum);
+
+          // On s'assure de ne pas déborder (0-255)
+          data[i] = Math.max(0, Math.min(255, r));
+          data[i + 1] = Math.max(0, Math.min(255, g));
+          data[i + 2] = Math.max(0, Math.min(255, bl));
+      }
+
+      // On remet les pixels fraîchement coloriés dans le Canvas
+      ctx.putImageData(imageData, 0, 0);
+
+      // Et là, on sauvegarde enfin !
       canvas.toBlob((blob) => {
           if (!blob) return;
           const newFile = new File([blob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
@@ -673,6 +713,12 @@ function ScannerContent() {
           } else { 
             setSelectedFileBack(newFile); 
             setPreviewUrlBack(newUrl); 
+          }
+
+          if (isVerifyingBulk) {
+            setPendingCards(prev => prev.map((card, idx) => idx === currentVerifyIndex ? { 
+              ...card, file: newFile, previewUrl: newUrl 
+            } : card));
           }
           
           setShowEditor(false);
