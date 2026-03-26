@@ -138,14 +138,13 @@ function ScannerContent() {
   const [formData, setFormData] = useState(DEFAULT_FORM);
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
 
-  // ÉTATS DE LA CAMÉRA
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const guideRef = useRef<HTMLDivElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // 🚨 NOUVEAUX ÉTATS POUR LE ZOOM
+  // ÉTATS POUR LE ZOOM
   const [cameraZoom, setCameraZoom] = useState(1);
   const [nativeZoomSupported, setNativeZoomSupported] = useState(false);
 
@@ -258,28 +257,15 @@ function ScannerContent() {
     }
   }
 
-  let availableVariations: string[] = [];
-  if (formData.brand && TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE]) {
-    const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
-    if (bData.base) availableVariations.push(...bData.base);
-    if (bData.parallels) {
-      Object.values(bData.parallels).forEach((arr: any) => {
-        if (Array.isArray(arr)) availableVariations.push(...arr);
-      });
-    }
-    if (bData.inserts) availableVariations.push(...bData.inserts);
-    if (bData.hits) availableVariations.push(...bData.hits);
-    if (bData.case_hits) availableVariations.push(...bData.case_hits);
-  }
+  const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
-  // 🚨 DÉMARRAGE CAMÉRA AVEC TESTS DE ZOOM
   const startCamera = async () => {
     setIsCameraOpen(true);
-    setCameraZoom(1); // Reset zoom
+    setCameraZoom(1); 
     
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -288,9 +274,9 @@ function ScannerContent() {
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
 
-      // Vérification du support natif du Zoom
+      // Correction TypeScript pour le déploiement sur Vercel
       const track = stream.getVideoTracks()[0];
-      const capabilities = track.getCapabilities ? track.getCapabilities() : null;
+      const capabilities = track.getCapabilities ? (track.getCapabilities() as any) : null;
       if (capabilities && capabilities.zoom) {
         setNativeZoomSupported(true);
       } else {
@@ -315,7 +301,6 @@ function ScannerContent() {
     setCameraZoom(1);
   };
 
-  // 🚨 GESTIONNAIRE DE CHANGEMENT DE ZOOM
   const handleZoomChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     setCameraZoom(val);
@@ -323,14 +308,14 @@ function ScannerContent() {
     if (nativeZoomSupported && streamRef.current) {
       try {
         const track = streamRef.current.getVideoTracks()[0];
-        const capabilities = track.getCapabilities();
+        const capabilities = track.getCapabilities() as any;
         const min = capabilities.zoom?.min || 1;
         const max = capabilities.zoom?.max || 3;
         const safeVal = Math.max(min, Math.min(max, val));
-        await track.applyConstraints({ advanced: [{ zoom: safeVal }] });
+        await track.applyConstraints({ advanced: [{ zoom: safeVal }] } as any);
       } catch (err) {
         console.warn("Échec du zoom natif, bascule vers le zoom numérique", err);
-        setNativeZoomSupported(false); // Si ça plante en cours de route, on passe au CSS
+        setNativeZoomSupported(false); 
       }
     }
   };
@@ -508,45 +493,11 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev, 
-              sport: aiSport || prev.sport, 
-              firstname: fname || prev.firstname, 
-              lastname: lname || prev.lastname, 
-              club: cleanValue(data.club) || prev.club, 
-              brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, 
-              series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, 
-              variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, 
-              year: cleanValue(data.year) || prev.year, 
-              is_auto: !!data.is_auto || prev.is_auto, 
-              is_patch: !!data.is_patch || prev.is_patch, 
-              is_rookie: !!data.is_rookie || prev.is_rookie, 
-              is_numbered: !!data.is_numbered || prev.is_numbered, 
-              num_low: cleanValue(data.num_low) || prev.num_low, 
-              num_high: cleanValue(data.num_high) || prev.num_high, 
-              is_graded: !!data.is_graded || prev.is_graded, 
-              grading_company: cleanValue(data.grading_company) || prev.grading_company, 
-              grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: cleanValue(data.club) || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, 
-              sport: prev.sport || aiSport, 
-              firstname: prev.firstname || fname, 
-              lastname: prev.lastname || lname, 
-              club: prev.club || cleanValue(data.club), 
-              brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), 
-              series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), 
-              variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), 
-              year: prev.year || cleanValue(data.year), 
-              is_auto: prev.is_auto || !!data.is_auto, 
-              is_patch: prev.is_patch || !!data.is_patch, 
-              is_rookie: prev.is_rookie || !!data.is_rookie, 
-              is_numbered: prev.is_numbered || !!data.is_numbered, 
-              num_low: prev.num_low || cleanValue(data.num_low), 
-              num_high: prev.num_high || cleanValue(data.num_high), 
-              is_graded: prev.is_graded || !!data.is_graded, 
-              grading_company: prev.grading_company || cleanValue(data.grading_company), 
-              grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || cleanValue(data.club), brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -723,38 +674,21 @@ function ScannerContent() {
       {/* OVERLAY CAMERA */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          
           {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 shadow-[0_0_20px_rgba(175,255,37,0.4)] animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           
-          {/* L'image de la caméra, qui prend le zoom CSS si le natif n'est pas supporté */}
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" 
-            style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }}
-          />
+          <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div></div></div>
-          
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
-          
           <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           
-          {/* 🚨 LE CURSEUR DE ZOOM 🚨 */}
           <div className="absolute bottom-[130px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-auto">
             <div className="bg-black/60 text-[#AFFF25] px-3 py-1 rounded-full text-[10px] font-bold tracking-widest backdrop-blur-md border border-white/10">
               {cameraZoom.toFixed(1)}x
             </div>
             <div className="flex items-center gap-3 bg-black/60 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 w-[220px]">
               <span className="text-white/60 text-[10px] font-bold">1x</span>
-              <input
-                type="range" min="1" max="3" step="0.1"
-                value={cameraZoom}
-                onChange={handleZoomChange}
-                className="flex-1 h-1 bg-white/20 rounded-full appearance-none outline-none accent-[#AFFF25]"
-              />
+              <input type="range" min="1" max="3" step="0.1" value={cameraZoom} onChange={handleZoomChange} className="flex-1 h-1 bg-white/20 rounded-full appearance-none outline-none accent-[#AFFF25]" />
               <span className="text-white/60 text-[10px] font-bold">3x</span>
             </div>
           </div>
@@ -977,9 +911,11 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
+                {/* 🚨 DROPDOWN EN CASCADE AVEC <optgroup> POUR LES VARIATIONS */}
                 <div className="relative">
                   <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
                     <option value="">Variation (ex: Base, Prizm Silver...)</option>
+                    
                     {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
                       if (Array.isArray(currentBrandVariations[catKey])) {
                         return (
