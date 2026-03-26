@@ -345,7 +345,7 @@ function ScannerContent() {
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
-      body.append("auto_crop", "true"); 
+      body.append("auto_crop", "true"); // On demande le détourage côté serveur !
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
@@ -401,7 +401,7 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
-  // 🚨 FONCTION CROP PUREMENT MATHÉMATIQUE (GARANTIE SANS BUG DE NAVIGATEUR) 🚨
+  // 🚨 LA NOUVELLE FONCTION DE CAPTURE (On envoie la photo entière à l'API) 🚨
   const captureImageAndCrop = () => {
     if (!videoRef.current) return;
     
@@ -412,57 +412,33 @@ function ScannerContent() {
     const vW = video.videoWidth;
     const vH = video.videoHeight;
     
-    // Si la vidéo n'est pas encore chargée, on annule
-    if (!vW || !vH) return;
+    if (!vW || !vH) return; 
 
-    // Dimensions de l'écran du téléphone
-    const sW = window.innerWidth;
-    const sH = window.innerHeight;
-
-    // L'échelle utilisée par le CSS "object-cover" pour remplir l'écran
-    const coverScale = Math.max(sW / vW, sH / vH);
-
-    // Taille virtuelle du guide sur l'écran
-    // Le guide fait 75vw, et a une largeur max de 350px, avec un ratio de 2.5/3.5
-    const guideScreenW = Math.min(sW * 0.75, 350);
-    const guideScreenH = guideScreenW * (3.5 / 2.5);
-
-    // Prise en compte du zoom
-    const actualCssZoom = nativeZoomSupported ? 1 : cameraZoom;
-    const totalScale = coverScale * actualCssZoom;
-
-    // Dimensions exactes de la zone à capturer sur la vidéo d'origine (les vrais pixels)
-    const cropW = guideScreenW / totalScale;
-    const cropH = guideScreenH / totalScale;
-
-    // Puisque le guide fluo et la vidéo sont TOUS LES DEUX centrés sur l'écran,
-    // on peut découper directement au plein centre de l'image vidéo source.
-    const cropX = (vW / 2) - (cropW / 2);
-    const cropY = (vH / 2) - (cropH / 2);
-
+    // On crée un canvas de la taille de la vidéo brute
     const canvas = document.createElement('canvas'); 
-    canvas.width = cropW; 
-    canvas.height = cropH;
+    canvas.width = vW; 
+    canvas.height = vH;
     
     const ctx = canvas.getContext('2d'); 
     if (!ctx) return;
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
-    ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+    // On dessine l'image totale SANS AUCUN DÉCOUPAGE
+    ctx.drawImage(video, 0, 0, vW, vH);
 
     canvas.toBlob((blob) => {
       if (!blob) return;
-      const croppedFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      const fullImageFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
       
       if (scanMode === 'lot' && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
-        const newCard: PendingCard = { id: newId, file: croppedFile, previewUrl: URL.createObjectURL(croppedFile), status: 'analyzing', aiResult: null };
+        const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: URL.createObjectURL(fullImageFile), status: 'analyzing', aiResult: null };
         setPendingCards(prev => [...prev, newCard]);
-        processBackgroundScan(newId, croppedFile);
+        processBackgroundScan(newId, fullImageFile);
       } else {
         stopCamera();
-        processImageScan(croppedFile, activeSide, activeSide === 'front'); 
+        processImageScan(fullImageFile, activeSide, activeSide === 'front'); 
       }
     }, 'image/jpeg', 1.0);
   };
@@ -756,7 +732,7 @@ function ScannerContent() {
           
           {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
