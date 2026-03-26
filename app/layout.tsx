@@ -3,6 +3,17 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import TabBar from '@/components/TabBar' 
 
+import type { Viewport } from 'next';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover', // 🚨 LE SECRET EST ICI : Ça force l'app à passer sous la barre d'état !
+  themeColor: '#040221',
+};
+
+
 const inter = Inter({ subsets: ['latin'] })
 
 // 🚀 NOUVEAU : Bloque le zoom sur mobile et définit la couleur du navigateur
