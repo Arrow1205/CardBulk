@@ -404,22 +404,64 @@ function ScannerContent() {
 
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
-    setIsFlashing(true); setTimeout(() => setIsFlashing(false), 150);
-    const video = videoRef.current; const guide = guideRef.current;
-    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
-    const videoRect = video.getBoundingClientRect(); const guideRect = guide.getBoundingClientRect();
-    const scale = Math.max(videoRect.width / video.videoWidth, videoRect.height / video.videoHeight);
-    const scaledW = video.videoWidth * scale; const scaledH = video.videoHeight * scale;
-    const offsetX = (videoRect.width - scaledW) / 2; const offsetY = (videoRect.height - scaledH) / 2;
-    const cropX = (guideRect.left - videoRect.left - offsetX) / scale; const cropY = (guideRect.top - videoRect.top - offsetY) / scale;
-    const cropW = guideRect.width / scale; const cropH = guideRect.height / scale;
-    canvas.width = cropW; canvas.height = cropH;
-    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    
+    setIsFlashing(true); 
+    setTimeout(() => setIsFlashing(false), 150);
+    
+    const video = videoRef.current; 
+    const guide = guideRef.current;
+    
+    const canvas = document.createElement('canvas'); 
+    const ctx = canvas.getContext('2d'); 
+    if (!ctx) return;
+
+    // 1. Dimensions réelles de la caméra (ex: 1920x1080)
+    const vW = video.videoWidth;
+    const vH = video.videoHeight;
+
+    // 2. Dimensions de l'écran du téléphone
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
+
+    // 3. Calcul du ratio "object-cover"
+    const coverScale = Math.max(screenW / vW, screenH / vH);
+    const displayedW = vW * coverScale;
+    const displayedH = vH * coverScale;
+
+    // 4. Coordonnées du guide fluo sur l'écran
+    const guideRect = guide.getBoundingClientRect();
+
+    // 5. Compensation du ZOOM CSS
+    const unzoomedGuideW = guideRect.width / cameraZoom;
+    const unzoomedGuideH = guideRect.height / cameraZoom;
+    
+    const centerX = screenW / 2;
+    const centerY = screenH / 2;
+    
+    const unzoomedLeft = centerX + (guideRect.left - centerX) / cameraZoom;
+    const unzoomedTop = centerY + (guideRect.top - centerY) / cameraZoom;
+
+    // 6. Calcul des parties de la vidéo qui dépassent de l'écran
+    const offsetX = (displayedW - screenW) / 2;
+    const offsetY = (displayedH - screenH) / 2;
+
+    // 7. Projection finale sur la vidéo brute
+    const cropX = (unzoomedLeft + offsetX) / coverScale;
+    const cropY = (unzoomedTop + offsetY) / coverScale;
+    const cropW = unzoomedGuideW / coverScale;
+    const cropH = unzoomedGuideH / coverScale;
+
+    canvas.width = cropW; 
+    canvas.height = cropH;
+    ctx.imageSmoothingEnabled = true; 
+    ctx.imageSmoothingQuality = 'high';
+    
     ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
       if (!blob) return;
       const croppedFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      
       if (scanMode === 'lot' && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
         const newCard: PendingCard = { id: newId, file: croppedFile, previewUrl: URL.createObjectURL(croppedFile), status: 'analyzing', aiResult: null };
@@ -729,7 +771,7 @@ function ScannerContent() {
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
           <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           
-          {/* 🚨 CURSEUR DE ZOOM VERTICAL SUR LE CÔTÉ DROIT 🚨 */}
+          {/* CURSEUR DE ZOOM VERTICAL SUR LE CÔTÉ DROIT */}
           <div className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-auto">
             <div className="bg-black/60 text-[#AFFF25] px-2 py-1.5 rounded-xl text-[10px] font-bold tracking-widest backdrop-blur-md border border-white/10">
               {cameraZoom.toFixed(1)}x
@@ -872,11 +914,15 @@ function ScannerContent() {
           )}
         </div>
 
-        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES */}
+        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES (Toute la largeur, en 1 ligne) */}
         {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
-          <div className="flex gap-3 w-full max-w-[240px] lg:max-w-[350px] mx-auto pointer-events-auto">
-             <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all"><RotateCw size={14} /> Changer Recto</button>
-             <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-2 text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}><RotateCw size={14} /> {previewUrlBack ? 'Changer Verso' : '+ Verso'}</button>
+          <div className="flex gap-2 w-full max-w-full px-4 lg:max-w-[400px] mx-auto pointer-events-auto">
+             <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all whitespace-nowrap">
+               <RotateCw size={14} className="shrink-0" /> Changer Recto
+             </button>
+             <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all whitespace-nowrap ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
+               <RotateCw size={14} className="shrink-0" /> {previewUrlBack ? 'Changer Verso' : '+ Verso'}
+             </button>
           </div>
         )}
       </div>
