@@ -565,30 +565,69 @@ function ScannerContent() {
     } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
   };
 
+  // 🚨 SYNCHRO ROTATION : Téléchargement + Mise à jour des lots
   const rotateImage = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
     try {
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
-      if (!currentBlob && currentPreview) { const response = await fetch(currentPreview + "?t=" + new Date().getTime()); currentBlob = await response.blob(); }
-      if (!currentBlob) return;
-      const img = new Image(); img.crossOrigin = "anonymous"; img.src = URL.createObjectURL(currentBlob);
-      await new Promise(resolve => { img.onload = resolve; });
-      const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); if (!ctx) return;
-      canvas.width = img.height; canvas.height = img.width;
-      ctx.translate(canvas.width / 2, canvas.height / 2); ctx.rotate(90 * Math.PI / 180); ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      
+      // Téléchargement propre (contourne les caches et le CORS Supabase)
+      if (!currentBlob && currentPreview) { 
+        const response = await fetch(currentPreview + "?t=" + new Date().getTime()); 
+        currentBlob = await response.blob(); 
+      }
+      if (!currentBlob) {
+        setIsApplyingEdit(false);
+        return;
+      }
+      
+      const objectUrl = URL.createObjectURL(currentBlob);
+      const img = new Image(); 
+      img.src = objectUrl;
+      
+      await new Promise((resolve, reject) => { 
+        img.onload = resolve; 
+        img.onerror = reject; 
+      });
+      
+      const canvas = document.createElement('canvas'); 
+      const ctx = canvas.getContext('2d'); 
+      if (!ctx) return;
+      
+      canvas.width = img.height; 
+      canvas.height = img.width;
+      ctx.translate(canvas.width / 2, canvas.height / 2); 
+      ctx.rotate(90 * Math.PI / 180); 
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      
       canvas.toBlob((blob) => {
         if (!blob) return;
         const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
-        if (activeSide === 'front') { setSelectedFile(newFile); setPreviewUrl(URL.createObjectURL(newFile)); } 
-        else { setSelectedFileBack(newFile); setPreviewUrlBack(URL.createObjectURL(newFile)); }
+        const newPreviewUrl = URL.createObjectURL(newFile);
+        
+        if (activeSide === 'front') { 
+          setSelectedFile(newFile); 
+          setPreviewUrl(newPreviewUrl); 
+        } else { 
+          setSelectedFileBack(newFile); 
+          setPreviewUrlBack(newPreviewUrl); 
+        }
+        
+        // Mise à jour de la file d'attente "Lot"
+        if (isVerifyingBulk) {
+          setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: newFile, previewUrl: newPreviewUrl } : c));
+        }
+        
         setIsApplyingEdit(false);
       }, currentBlob.type || 'image/png');
-    } catch (e) { setIsApplyingEdit(false); }
+    } catch (e) { 
+      setIsApplyingEdit(false); 
+    }
   };
 
-  // Modification via le Backend pour contourner le CORS
+  // 🚨 CORRECTION ÉDITEUR : Téléchargement du Blob local + Canvas propre 🚨
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
@@ -597,51 +636,85 @@ function ScannerContent() {
     try {
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
       
-      // Si l'image vient de Supabase, on la télécharge pour l'envoyer à l'API
-      if (!currentBlob && currentPreview.startsWith('http')) {
+      // Téléchargement depuis Supabase (ou cache existant) pour contourner le Tainted Canvas
+      if (!currentBlob && currentPreview) {
         const response = await fetch(currentPreview + "?t=" + new Date().getTime());
         currentBlob = await response.blob();
       }
-      if (!currentBlob && !currentPreview.startsWith('http')) {
-         const response = await fetch(currentPreview);
-         currentBlob = await response.blob();
-      }
+      
       if (!currentBlob) {
         setIsApplyingEdit(false);
         return;
       }
 
-      const body = new FormData();
-      body.append("image", currentBlob);
-      body.append("brightness", String(imgSettings.brightness));
-      body.append("contrast", String(imgSettings.contrast));
-      body.append("auto_crop", "false"); 
-
-      const res = await fetch("/api/scan", { method: "POST", body }); 
-      const data = await res.json();
+      // Utilisation d'un objectURL purement local
+      const objectUrl = URL.createObjectURL(currentBlob);
+      const img = new Image(); 
+      img.src = objectUrl;
       
-      if (!data.error && data.cropped_image_base64) {
-        const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
-        const blobEdite = await response.blob();
+      // On s'assure que l'image est bien chargée avant de manipuler le canvas
+      await new Promise((resolve, reject) => { 
+        img.onload = resolve; 
+        img.onerror = reject; 
+      });
+      
+      const canvas = document.createElement('canvas'); 
+      const ctx = canvas.getContext('2d'); 
+      if (!ctx) {
+         setIsApplyingEdit(false);
+         return;
+      }
+      
+      canvas.width = img.width; 
+      canvas.height = img.height;
+      
+      // Application EXACTE de tes réglages d'écran
+      ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
+      
+      const scale = imgSettings.zoom; 
+      const sw = img.width / scale; 
+      const sh = img.height / scale;
+      const sx = (img.width - sw) / 2; 
+      const sy = (img.height - sh) / 2;
+      
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      
+      // Création du nouveau fichier depuis le canvas
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          setIsApplyingEdit(false);
+          return;
+        }
         
-        const newFile = new File([blobEdite], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const newFile = new File([blob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const newPreviewUrl = URL.createObjectURL(newFile);
         
-        if (activeSide === 'front') {
-          setSelectedFile(newFile);
-          setPreviewUrl(URL.createObjectURL(newFile));
-        } else {
-          setSelectedFileBack(newFile);
-          setPreviewUrlBack(URL.createObjectURL(newFile));
+        // Affichage à l'écran principal
+        if (activeSide === 'front') { 
+          setSelectedFile(newFile); 
+          setPreviewUrl(newPreviewUrl); 
+        } else { 
+          setSelectedFileBack(newFile); 
+          setPreviewUrlBack(newPreviewUrl); 
+        }
+
+        // Si on modifie une carte pendant le "Scan en Lot", on s'assure que la liste se met à jour
+        if (isVerifyingBulk) {
+          setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { 
+            ...c, 
+            file: newFile, 
+            previewUrl: newPreviewUrl 
+          } : c));
         }
 
         setShowEditor(false); 
+        setIsApplyingEdit(false);
         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
-      }
+      }, 'image/jpeg', 0.95);
 
     } catch (e) { 
-      console.error("Erreur serveur:", e);
-    } finally {
-       setIsApplyingEdit(false);
+      console.error("Erreur Éditeur:", e);
+      setIsApplyingEdit(false); 
     }
   };
 
