@@ -144,7 +144,6 @@ function ScannerContent() {
   const guideRef = useRef<HTMLDivElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // ÉTATS POUR LE ZOOM
   const [cameraZoom, setCameraZoom] = useState(1);
   const [nativeZoomSupported, setNativeZoomSupported] = useState(false);
 
@@ -257,7 +256,19 @@ function ScannerContent() {
     }
   }
 
-  const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
+  let availableVariations: string[] = [];
+  if (formData.brand && TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE]) {
+    const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
+    if (bData.base) availableVariations.push(...bData.base);
+    if (bData.parallels) {
+      Object.values(bData.parallels).forEach((arr: any) => {
+        if (Array.isArray(arr)) availableVariations.push(...arr);
+      });
+    }
+    if (bData.inserts) availableVariations.push(...bData.inserts);
+    if (bData.hits) availableVariations.push(...bData.hits);
+    if (bData.case_hits) availableVariations.push(...bData.case_hits);
+  }
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
@@ -274,7 +285,6 @@ function ScannerContent() {
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
 
-      // Correction TypeScript pour le déploiement sur Vercel
       const track = stream.getVideoTracks()[0];
       const capabilities = track.getCapabilities ? (track.getCapabilities() as any) : null;
       if (capabilities && capabilities.zoom) {
@@ -327,9 +337,32 @@ function ScannerContent() {
     return found || rawString;
   };
 
+  // 🚨 FONCTION POUR METTRE À JOUR LE FICHIER ET L'APERÇU SI L'API RENVOIE UNE IMAGE CROP 🚨
+  const updatePendingCardWithCroppedImage = async (id: string, base64Image: string) => {
+    try {
+      const response = await fetch(`data:image/jpeg;base64,${base64Image}`);
+      const blob = await response.blob();
+      const croppedFile = new File([blob], `auto-cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      const newPreviewUrl = URL.createObjectURL(croppedFile);
+      
+      setPendingCards(prev => prev.map(c => c.id === id ? { ...c, file: croppedFile, previewUrl: newPreviewUrl } : c));
+      
+      // Si la carte est actuellement affichée, on met à jour l'état principal
+      if (pendingCards[currentVerifyIndex]?.id === id) {
+        setSelectedFile(croppedFile);
+        setPreviewUrl(newPreviewUrl);
+      }
+    } catch (e) {
+      console.error("Erreur lors de la conversion de l'image détourée", e);
+    }
+  };
+
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
+      // Optionnel: dire à l'API qu'on veut le crop server-side
+      body.append("auto_crop", "true"); 
+
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
@@ -373,6 +406,12 @@ function ScannerContent() {
         };
 
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
+
+        // 🚨 SI L'API RENVOIE L'IMAGE DÉTOURÉE EN BASE64, ON MET À JOUR LE VISUEL !
+        if (data.cropped_image_base64) {
+          await updatePendingCardWithCroppedImage(id, data.cropped_image_base64);
+        }
+
       } else {
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c));
       }
@@ -468,10 +507,29 @@ function ScannerContent() {
     setAnalyzing(true);
     try {
       const body = new FormData(); body.append("image", file);
+      body.append("auto_crop", "true"); // Optionnel: activer le recadrage serveur pour l'unitaire aussi
+
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
       if (!data.error) {
+        
+        // Mise à jour de l'image si l'API l'a détourée !
+        if (data.cropped_image_base64) {
+          const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+          const blob = await response.blob();
+          const croppedFile = new File([blob], `auto-cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const newPreviewUrl = URL.createObjectURL(croppedFile);
+          
+          if (side === 'front') {
+            setSelectedFile(croppedFile);
+            setPreviewUrl(newPreviewUrl);
+          } else {
+            setSelectedFileBack(croppedFile);
+            setPreviewUrlBack(newPreviewUrl);
+          }
+        }
+
         const cleanValue = (val: any) => {
           if (!val) return '';
           const str = String(val).trim().toLowerCase();
@@ -911,11 +969,9 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* 🚨 DROPDOWN EN CASCADE AVEC <optgroup> POUR LES VARIATIONS */}
                 <div className="relative">
                   <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
                     <option value="">Variation (ex: Base, Prizm Silver...)</option>
-                    
                     {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
                       if (Array.isArray(currentBrandVariations[catKey])) {
                         return (
