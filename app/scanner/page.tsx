@@ -141,7 +141,6 @@ function ScannerContent() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const guideRef = useRef<HTMLDivElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
   const [cameraZoom, setCameraZoom] = useState(1);
@@ -402,39 +401,42 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
-  // 🚨 FONCTION DE CROP MATHÉMATIQUE INFAILLIBLE 🚨
+  // 🚨 FONCTION CROP PUREMENT MATHÉMATIQUE (GARANTIE SANS BUG DE NAVIGATEUR) 🚨
   const captureImageAndCrop = () => {
-    if (!videoRef.current || !guideRef.current) return;
+    if (!videoRef.current) return;
     
     setIsFlashing(true); 
     setTimeout(() => setIsFlashing(false), 150);
     
     const video = videoRef.current; 
-    const guide = guideRef.current;
-    
     const vW = video.videoWidth;
     const vH = video.videoHeight;
-    if (!vW || !vH) return; // Sécurité si la vidéo n'est pas encore initialisée
-
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-    const guideRect = guide.getBoundingClientRect();
-
-    // Calcul du ratio CSS "object-cover" (comment la vidéo remplit l'écran)
-    const coverScale = Math.max(screenW / vW, screenH / vH);
     
-    // Si la caméra ne supporte pas le zoom natif, on compense l'échelle CSS
-    const actualCssZoom = nativeZoomSupported ? 1 : cameraZoom;
+    // Si la vidéo n'est pas encore chargée, on annule
+    if (!vW || !vH) return;
 
-    // L'échelle TOTALE appliquée aux pixels originaux de la caméra pour s'afficher à l'écran
+    // Dimensions de l'écran du téléphone
+    const sW = window.innerWidth;
+    const sH = window.innerHeight;
+
+    // L'échelle utilisée par le CSS "object-cover" pour remplir l'écran
+    const coverScale = Math.max(sW / vW, sH / vH);
+
+    // Taille virtuelle du guide sur l'écran
+    // Le guide fait 75vw, et a une largeur max de 350px, avec un ratio de 2.5/3.5
+    const guideScreenW = Math.min(sW * 0.75, 350);
+    const guideScreenH = guideScreenW * (3.5 / 2.5);
+
+    // Prise en compte du zoom
+    const actualCssZoom = nativeZoomSupported ? 1 : cameraZoom;
     const totalScale = coverScale * actualCssZoom;
 
-    // Puisque le `<video>` ET le `guide` sont parfaitement centrés à l'écran (object-cover + top-1/2 left-1/2)
-    // On peut calculer la taille du crop directement en divisant la taille du guide par l'échelle totale
-    const cropW = guideRect.width / totalScale;
-    const cropH = guideRect.height / totalScale;
+    // Dimensions exactes de la zone à capturer sur la vidéo d'origine (les vrais pixels)
+    const cropW = guideScreenW / totalScale;
+    const cropH = guideScreenH / totalScale;
 
-    // Le centre du Crop correspond mathématiquement au centre de la vidéo native
+    // Puisque le guide fluo et la vidéo sont TOUS LES DEUX centrés sur l'écran,
+    // on peut découper directement au plein centre de l'image vidéo source.
     const cropX = (vW / 2) - (cropW / 2);
     const cropY = (vH / 2) - (cropH / 2);
 
@@ -447,7 +449,6 @@ function ScannerContent() {
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
-    // Découpage parfait au centre de la source native
     ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
@@ -727,7 +728,7 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* MODAL DE RECADRAGE */}
+      {/* MODAL DE RECADRAGE GALERIE */}
       {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
           <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase drop-shadow-md z-50">Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
@@ -755,7 +756,7 @@ function ScannerContent() {
           
           {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
