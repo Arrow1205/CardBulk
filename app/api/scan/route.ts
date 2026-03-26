@@ -4,13 +4,14 @@ import sharp from "sharp";
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const action = formData.get("action") as string || "scan"; // 'scan', 'edit' ou 'rotate'
+    const action = formData.get("action") as string || "scan"; // 'scan' ou 'proxy'
     const imageUrl = formData.get("imageUrl") as string | null;
     const imageFile = formData.get("image") as File | null;
+    const autoCrop = formData.get("auto_crop") === "true";
 
     let imageBuffer: Buffer;
 
-    // 1. Récupération de l'image (Bypass de la sécurité CORS)
+    // 1. Récupération de l'image 
     if (imageUrl && imageUrl.startsWith('http')) {
         const response = await fetch(imageUrl);
         const arrayBuffer = await response.arrayBuffer();
@@ -22,42 +23,12 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Aucune image fournie" }, { status: 400 });
     }
 
-    // 🎨 MODE ÉDITION (Luminosité, Contraste, Zoom, Saturation) - Ultra rapide, sans IA
-    if (action === "edit") {
-        const brightness = parseFloat(formData.get("brightness") as string) / 100 || 1;
-        const contrast = parseFloat(formData.get("contrast") as string) / 100 || 1;
-        const saturation = parseFloat(formData.get("saturation") as string) / 100 || 1;
-        const zoom = parseFloat(formData.get("zoom") as string) || 1;
-
-        let sharpInstance = sharp(imageBuffer);
-        const metadata = await sharpInstance.metadata();
-
-        // Application du Zoom (on rogne le centre)
-        if (zoom > 1 && metadata.width && metadata.height) {
-            const newWidth = Math.floor(metadata.width / zoom);
-            const newHeight = Math.floor(metadata.height / zoom);
-            const left = Math.floor((metadata.width - newWidth) / 2);
-            const top = Math.floor((metadata.height - newHeight) / 2);
-            sharpInstance = sharpInstance.extract({ left, top, width: newWidth, height: newHeight });
-        }
-
-        // Application des filtres de couleur
-        const editedBuffer = await sharpInstance
-            .modulate({ brightness, saturation })
-            .linear(contrast, -(128 * contrast) + 128) // Formule mathématique pour le contraste
-            .jpeg({ quality: 95 })
-            .toBuffer();
-        
-        return NextResponse.json({ cropped_image_base64: editedBuffer.toString("base64") });
+    // 🔄 MODE PROXY : On renvoie l'image en Base64 au téléphone pour débloquer l'éditeur Canvas (CORS)
+    if (action === "proxy") {
+        return NextResponse.json({ base64: `data:image/jpeg;base64,${imageBuffer.toString("base64")}` });
     }
 
-    // 🔄 MODE ROTATION
-    if (action === "rotate") {
-        const rotatedBuffer = await sharp(imageBuffer).rotate(90).jpeg({ quality: 95 }).toBuffer();
-        return NextResponse.json({ cropped_image_base64: rotatedBuffer.toString("base64") });
-    }
-
-    // 🧠 MODE SCAN (Détection IA + Auto Crop)
+    // 🧠 MODE SCAN : Détection IA + Auto Crop
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return NextResponse.json({ error: "Clé API manquante" }, { status: 400 });
 
@@ -67,12 +38,12 @@ export async function POST(req: Request) {
 
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur. 
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
-    MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table ou le fond).
+    MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts, ou tout autre élément du fond).
     
     Renvoie UNIQUEMENT un JSON strict. 
-    Pour la clé "box_2d", donne les coordonnées exactes pour recadrer la carte sous forme de tableau [ymin, xmin, ymax, xmax] avec des valeurs entre 0.00 et 1.00.
+    Pour la clé "box_2d", donne les coordonnées exactes pour recadrer la carte. C'est un tableau [ymin, xmin, ymax, xmax] de valeurs entre 0.00 et 1.00.
     
-    Exemple attendu :
+    Exemple de format attendu :
     {
       "sport": "FOOTBALL ou BASKETBALL",
       "playerName": "Prénom Nom",
@@ -114,8 +85,7 @@ export async function POST(req: Request) {
     const parsedData = JSON.parse(jsonMatch[0]);
     let finalBase64 = null;
 
-    // Découpage automatique avec Sharp si Gemini a trouvé les bords
-    const autoCrop = formData.get("auto_crop") === "true";
+    // ✂️ DÉCOUPE EXACTE SUR LES COORDONNÉES DE L'IA (Le rectangle rouge !)
     if (autoCrop && parsedData.box_2d && Array.isArray(parsedData.box_2d) && parsedData.box_2d.length === 4) {
       try {
         const [ymin, xmin, ymax, xmax] = parsedData.box_2d;
@@ -135,7 +105,7 @@ export async function POST(req: Request) {
           }
         }
       } catch (cropErr) {
-        console.error("Erreur découpe :", cropErr);
+        console.error("Erreur silencieuse lors de la découpe Sharp :", cropErr);
       }
     }
 

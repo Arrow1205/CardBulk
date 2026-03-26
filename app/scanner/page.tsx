@@ -565,102 +565,122 @@ function ScannerContent() {
     } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
   };
 
-  // 🔄 ROTATION SÉCURISÉE VIA API
+  // 🚨 ROTATION (Avec contournement CORS par API Proxy)
   const rotateImage = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
     
     try {
-      const body = new FormData();
-      body.append("action", "rotate");
-      
+      let localSrc = currentPreview;
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
+
+      if (!currentBlob && currentPreview.startsWith('http')) {
+          const body = new FormData();
+          body.append("action", "proxy");
+          body.append("imageUrl", currentPreview);
+          const res = await fetch("/api/scan", { method: "POST", body });
+          const data = await res.json();
+          if (data.base64) localSrc = data.base64;
+      } else if (currentBlob) {
+          localSrc = URL.createObjectURL(currentBlob);
+      }
+
+      const img = new Image();
+      img.src = localSrc;
+      await new Promise(r => { img.onload = r; });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.height; 
+      canvas.height = img.width;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
       
-      if (currentPreview.startsWith('http')) {
-        body.append("imageUrl", currentPreview);
-      } else {
-        if (!currentBlob) {
-          const res = await fetch(currentPreview);
-          currentBlob = await res.blob();
-        }
-        body.append("image", currentBlob);
-      }
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(90 * Math.PI / 180);
+      ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
-      const res = await fetch("/api/scan", { method: "POST", body });
-      const data = await res.json();
-
-      if (data.cropped_image_base64) {
-        const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
-        const blob = await resBlob.blob();
-        const newFile = new File([blob], `rotated-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        const newUrl = URL.createObjectURL(newFile);
-
-        if (activeSide === 'front') { 
-          setSelectedFile(newFile); 
-          setPreviewUrl(newUrl); 
-        } else { 
-          setSelectedFileBack(newFile); 
-          setPreviewUrlBack(newUrl); 
-        }
-      }
-    } catch (e) {
-      console.error("Erreur rotation:", e);
-    } finally {
+      canvas.toBlob((blob) => {
+          if (!blob) return;
+          const newFile = new File([blob], `rotated-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const newUrl = URL.createObjectURL(newFile);
+          
+          if (activeSide === 'front') { 
+            setSelectedFile(newFile); 
+            setPreviewUrl(newUrl); 
+          } else { 
+            setSelectedFileBack(newFile); 
+            setPreviewUrlBack(newUrl); 
+          }
+          setIsApplyingEdit(false);
+      }, 'image/jpeg', 0.95);
+    } catch(e) {
       setIsApplyingEdit(false);
     }
   };
 
-  // 🎨 ÉDITION SÉCURISÉE VIA API (Contourne le blocage CORS)
+  // 🚨 ÉDITION CANVAS (Avec contournement CORS par API Proxy)
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
     
     try {
-      const body = new FormData();
-      body.append("action", "edit");
-      body.append("brightness", String(imgSettings.brightness));
-      body.append("contrast", String(imgSettings.contrast));
-      body.append("saturation", String(imgSettings.saturation));
-      body.append("zoom", String(imgSettings.zoom));
-      
+      let localSrc = currentPreview;
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
-      
-      // Si l'image est sur Supabase, on envoie l'URL. Sinon, on envoie le fichier local.
-      if (currentPreview.startsWith('http')) {
-         body.append("imageUrl", currentPreview);
-      } else {
-         if (!currentBlob) {
-            const res = await fetch(currentPreview);
-            currentBlob = await res.blob();
-         }
-         body.append("image", currentBlob);
+
+      // On demande au serveur de récupérer l'image distante pour éviter l'erreur de sécurité
+      if (!currentBlob && currentPreview.startsWith('http')) {
+          const body = new FormData();
+          body.append("action", "proxy");
+          body.append("imageUrl", currentPreview);
+          const res = await fetch("/api/scan", { method: "POST", body });
+          const data = await res.json();
+          if (data.base64) localSrc = data.base64;
+      } else if (currentBlob) {
+          localSrc = URL.createObjectURL(currentBlob);
       }
-      
-      const res = await fetch("/api/scan", { method: "POST", body });
-      const data = await res.json();
-      
-      if (data.cropped_image_base64) {
-         const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
-         const newBlob = await resBlob.blob();
-         const newFile = new File([newBlob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
-         const newUrl = URL.createObjectURL(newFile);
-         
-         if (activeSide === 'front') {
-             setSelectedFile(newFile);
-             setPreviewUrl(newUrl);
-         } else {
-             setSelectedFileBack(newFile);
-             setPreviewUrlBack(newUrl);
-         }
-         
-         setShowEditor(false);
-         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
-      }
-    } catch (error) {
-      console.error("Erreur édition:", error);
-    } finally {
+
+      const img = new Image();
+      img.src = localSrc;
+      await new Promise(r => { img.onload = r; });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Le rendu sera strictement identique à ce que fait le CSS !
+      ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
+
+      const scale = imgSettings.zoom;
+      const sw = img.width / scale;
+      const sh = img.height / scale;
+      const sx = (img.width - sw) / 2;
+      const sy = (img.height - sh) / 2;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+          if (!blob) return;
+          const newFile = new File([blob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const newUrl = URL.createObjectURL(newFile);
+          
+          if (activeSide === 'front') { 
+            setSelectedFile(newFile); 
+            setPreviewUrl(newUrl); 
+          } else { 
+            setSelectedFileBack(newFile); 
+            setPreviewUrlBack(newUrl); 
+          }
+          
+          setShowEditor(false);
+          setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
+          setIsApplyingEdit(false);
+      }, 'image/jpeg', 0.95);
+    } catch(e) {
+      console.error(e);
       setIsApplyingEdit(false);
     }
   };
@@ -774,7 +794,7 @@ function ScannerContent() {
           
           {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
