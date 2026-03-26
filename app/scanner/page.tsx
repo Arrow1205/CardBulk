@@ -402,7 +402,7 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
-  // 🚨 FONCTION CAPTURE ET CROP 100% CORRIGÉE 🚨
+  // 🚨 FONCTION DE CROP MATHÉMATIQUE INFAILLIBLE 🚨
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
     
@@ -412,55 +412,42 @@ function ScannerContent() {
     const video = videoRef.current; 
     const guide = guideRef.current;
     
-    const canvas = document.createElement('canvas'); 
-    const ctx = canvas.getContext('2d'); 
-    if (!ctx) return;
-
-    // Dimensions réelles du flux vidéo (ex: 4K ou 1080p)
     const vW = video.videoWidth;
     const vH = video.videoHeight;
+    if (!vW || !vH) return; // Sécurité si la vidéo n'est pas encore initialisée
 
-    // Dimensions d'affichage de la vidéo (CSS)
-    const videoRect = video.getBoundingClientRect();
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
     const guideRect = guide.getBoundingClientRect();
 
-    // Echelle d'ajustement (object-cover)
-    const coverScale = Math.max(videoRect.width / vW, videoRect.height / vH);
+    // Calcul du ratio CSS "object-cover" (comment la vidéo remplit l'écran)
+    const coverScale = Math.max(screenW / vW, screenH / vH);
     
-    // Taille que prendrait la vidéo étalée derrière l'écran
-    const scaledW = vW * coverScale; 
-    const scaledH = vH * coverScale;
-
-    // Compensation du Zoom CSS
+    // Si la caméra ne supporte pas le zoom natif, on compense l'échelle CSS
     const actualCssZoom = nativeZoomSupported ? 1 : cameraZoom;
-    
-    // Calcul du centre de la vidéo (point de base du scale CSS)
-    const centerX = videoRect.left + videoRect.width / 2;
-    const centerY = videoRect.top + videoRect.height / 2;
-    
-    // Dé-formation mathématique du guide fluo
-    const unzoomedGuideW = guideRect.width / actualCssZoom;
-    const unzoomedGuideH = guideRect.height / actualCssZoom;
-    const unzoomedLeft = centerX + (guideRect.left - centerX) / actualCssZoom;
-    const unzoomedTop = centerY + (guideRect.top - centerY) / actualCssZoom;
 
-    // 🚨 CORRECTION CRUCIALE : Le dépassement (offset)
-    // C'est ici que ça échouait. Il faut que l'offset soit positif !
-    const offsetX = (scaledW - videoRect.width) / 2;
-    const offsetY = (scaledH - videoRect.height) / 2;
+    // L'échelle TOTALE appliquée aux pixels originaux de la caméra pour s'afficher à l'écran
+    const totalScale = coverScale * actualCssZoom;
 
-    // Projection finale sur les pixels d'origine de la vidéo
-    const cropX = (unzoomedLeft - videoRect.left + offsetX) / coverScale;
-    const cropY = (unzoomedTop - videoRect.top + offsetY) / coverScale;
-    const cropW = unzoomedGuideW / coverScale;
-    const cropH = unzoomedGuideH / coverScale;
+    // Puisque le `<video>` ET le `guide` sont parfaitement centrés à l'écran (object-cover + top-1/2 left-1/2)
+    // On peut calculer la taille du crop directement en divisant la taille du guide par l'échelle totale
+    const cropW = guideRect.width / totalScale;
+    const cropH = guideRect.height / totalScale;
 
+    // Le centre du Crop correspond mathématiquement au centre de la vidéo native
+    const cropX = (vW / 2) - (cropW / 2);
+    const cropY = (vH / 2) - (cropH / 2);
+
+    const canvas = document.createElement('canvas'); 
     canvas.width = cropW; 
     canvas.height = cropH;
+    
+    const ctx = canvas.getContext('2d'); 
+    if (!ctx) return;
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
-    // On dessine l'image parfaitement recadrée !
+    // Découpage parfait au centre de la source native
     ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
@@ -766,7 +753,13 @@ function ScannerContent() {
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div></div></div>
+          {/* CADRE FLUO CENTRAL */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
+            </div>
+          </div>
+          
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
           <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           
@@ -912,7 +905,7 @@ function ScannerContent() {
           )}
         </div>
 
-        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES */}
+        {/* 🚨 BOUTONS D'ÉDITION D'IMAGE EXPLICITES 100% LARGEUR 🚨 */}
         {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
           <div className="flex gap-2 w-full max-w-full px-4 lg:max-w-[400px] mx-auto pointer-events-auto">
              <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all whitespace-nowrap">
