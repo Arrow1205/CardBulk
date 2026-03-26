@@ -256,19 +256,8 @@ function ScannerContent() {
     }
   }
 
-  let availableVariations: string[] = [];
-  if (formData.brand && TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE]) {
-    const bData: any = TYPE_CARTE[formData.brand as keyof typeof TYPE_CARTE];
-    if (bData.base) availableVariations.push(...bData.base);
-    if (bData.parallels) {
-      Object.values(bData.parallels).forEach((arr: any) => {
-        if (Array.isArray(arr)) availableVariations.push(...arr);
-      });
-    }
-    if (bData.inserts) availableVariations.push(...bData.inserts);
-    if (bData.hits) availableVariations.push(...bData.hits);
-    if (bData.case_hits) availableVariations.push(...bData.case_hits);
-  }
+  // 🚨 LA VARIABLE MANQUANTE EST ICI ! 🚨
+  const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
@@ -337,7 +326,6 @@ function ScannerContent() {
     return found || rawString;
   };
 
-  // 🚨 FONCTION POUR METTRE À JOUR LE FICHIER ET L'APERÇU SI L'API RENVOIE UNE IMAGE CROP 🚨
   const updatePendingCardWithCroppedImage = async (id: string, base64Image: string) => {
     try {
       const response = await fetch(`data:image/jpeg;base64,${base64Image}`);
@@ -347,7 +335,6 @@ function ScannerContent() {
       
       setPendingCards(prev => prev.map(c => c.id === id ? { ...c, file: croppedFile, previewUrl: newPreviewUrl } : c));
       
-      // Si la carte est actuellement affichée, on met à jour l'état principal
       if (pendingCards[currentVerifyIndex]?.id === id) {
         setSelectedFile(croppedFile);
         setPreviewUrl(newPreviewUrl);
@@ -360,7 +347,6 @@ function ScannerContent() {
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
-      // Optionnel: dire à l'API qu'on veut le crop server-side
       body.append("auto_crop", "true"); 
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
@@ -407,7 +393,6 @@ function ScannerContent() {
 
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
 
-        // 🚨 SI L'API RENVOIE L'IMAGE DÉTOURÉE EN BASE64, ON MET À JOUR LE VISUEL !
         if (data.cropped_image_base64) {
           await updatePendingCardWithCroppedImage(id, data.cropped_image_base64);
         }
@@ -507,14 +492,13 @@ function ScannerContent() {
     setAnalyzing(true);
     try {
       const body = new FormData(); body.append("image", file);
-      body.append("auto_crop", "true"); // Optionnel: activer le recadrage serveur pour l'unitaire aussi
+      body.append("auto_crop", "true"); 
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
       if (!data.error) {
         
-        // Mise à jour de l'image si l'API l'a détourée !
         if (data.cropped_image_base64) {
           const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
           const blob = await response.blob();
