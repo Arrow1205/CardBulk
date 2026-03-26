@@ -18,7 +18,8 @@
     "react-dom": "^18.2.0",
     "chart.js": "^4.4.2",
     "react-chartjs-2": "^5.2.0",
-    "recharts": "^2.12.2"
+    "recharts": "^2.12.2",
+    "sharp": "^0.33.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
