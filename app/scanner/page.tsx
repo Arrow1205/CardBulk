@@ -402,6 +402,7 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
+  // 🚨 FONCTION CAPTURE ET CROP 100% CORRIGÉE 🚨
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
     
@@ -415,39 +416,42 @@ function ScannerContent() {
     const ctx = canvas.getContext('2d'); 
     if (!ctx) return;
 
-    // 1. Dimensions réelles de la caméra (ex: 1920x1080)
+    // Dimensions réelles du flux vidéo (ex: 4K ou 1080p)
     const vW = video.videoWidth;
     const vH = video.videoHeight;
 
-    // 2. Dimensions de l'écran du téléphone
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-
-    // 3. Calcul du ratio "object-cover"
-    const coverScale = Math.max(screenW / vW, screenH / vH);
-    const displayedW = vW * coverScale;
-    const displayedH = vH * coverScale;
-
-    // 4. Coordonnées du guide fluo sur l'écran
+    // Dimensions d'affichage de la vidéo (CSS)
+    const videoRect = video.getBoundingClientRect();
     const guideRect = guide.getBoundingClientRect();
 
-    // 5. Compensation du ZOOM CSS
-    const unzoomedGuideW = guideRect.width / cameraZoom;
-    const unzoomedGuideH = guideRect.height / cameraZoom;
+    // Echelle d'ajustement (object-cover)
+    const coverScale = Math.max(videoRect.width / vW, videoRect.height / vH);
     
-    const centerX = screenW / 2;
-    const centerY = screenH / 2;
+    // Taille que prendrait la vidéo étalée derrière l'écran
+    const scaledW = vW * coverScale; 
+    const scaledH = vH * coverScale;
+
+    // Compensation du Zoom CSS
+    const actualCssZoom = nativeZoomSupported ? 1 : cameraZoom;
     
-    const unzoomedLeft = centerX + (guideRect.left - centerX) / cameraZoom;
-    const unzoomedTop = centerY + (guideRect.top - centerY) / cameraZoom;
+    // Calcul du centre de la vidéo (point de base du scale CSS)
+    const centerX = videoRect.left + videoRect.width / 2;
+    const centerY = videoRect.top + videoRect.height / 2;
+    
+    // Dé-formation mathématique du guide fluo
+    const unzoomedGuideW = guideRect.width / actualCssZoom;
+    const unzoomedGuideH = guideRect.height / actualCssZoom;
+    const unzoomedLeft = centerX + (guideRect.left - centerX) / actualCssZoom;
+    const unzoomedTop = centerY + (guideRect.top - centerY) / actualCssZoom;
 
-    // 6. Calcul des parties de la vidéo qui dépassent de l'écran
-    const offsetX = (displayedW - screenW) / 2;
-    const offsetY = (displayedH - screenH) / 2;
+    // 🚨 CORRECTION CRUCIALE : Le dépassement (offset)
+    // C'est ici que ça échouait. Il faut que l'offset soit positif !
+    const offsetX = (scaledW - videoRect.width) / 2;
+    const offsetY = (scaledH - videoRect.height) / 2;
 
-    // 7. Projection finale sur la vidéo brute
-    const cropX = (unzoomedLeft + offsetX) / coverScale;
-    const cropY = (unzoomedTop + offsetY) / coverScale;
+    // Projection finale sur les pixels d'origine de la vidéo
+    const cropX = (unzoomedLeft - videoRect.left + offsetX) / coverScale;
+    const cropY = (unzoomedTop - videoRect.top + offsetY) / coverScale;
     const cropW = unzoomedGuideW / coverScale;
     const cropH = unzoomedGuideH / coverScale;
 
@@ -456,6 +460,7 @@ function ScannerContent() {
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
+    // On dessine l'image parfaitement recadrée !
     ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
@@ -761,17 +766,10 @@ function ScannerContent() {
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
-          {/* CADRE FLUO CENTRAL */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
-            </div>
-          </div>
-          
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div></div></div>
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
           <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           
-          {/* CURSEUR DE ZOOM VERTICAL SUR LE CÔTÉ DROIT */}
           <div className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-auto">
             <div className="bg-black/60 text-[#AFFF25] px-2 py-1.5 rounded-xl text-[10px] font-bold tracking-widest backdrop-blur-md border border-white/10">
               {cameraZoom.toFixed(1)}x
@@ -914,7 +912,7 @@ function ScannerContent() {
           )}
         </div>
 
-        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES (Toute la largeur, en 1 ligne) */}
+        {/* 📸 BOUTONS D'ÉDITION D'IMAGE EXPLICITES */}
         {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
           <div className="flex gap-2 w-full max-w-full px-4 lg:max-w-[400px] mx-auto pointer-events-auto">
              <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all whitespace-nowrap">
