@@ -256,7 +256,6 @@ function ScannerContent() {
     }
   }
 
-  // 🚨 LA VARIABLE MANQUANTE EST ICI ! 🚨
   const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
@@ -720,18 +719,32 @@ function ScannerContent() {
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div></div></div>
+          {/* CADRE FLUO CENTRAL */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
+            </div>
+          </div>
+          
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
           <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           
-          <div className="absolute bottom-[130px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-auto">
-            <div className="bg-black/60 text-[#AFFF25] px-3 py-1 rounded-full text-[10px] font-bold tracking-widest backdrop-blur-md border border-white/10">
+          {/* 🚨 CURSEUR DE ZOOM VERTICAL SUR LE CÔTÉ DROIT 🚨 */}
+          <div className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-auto">
+            <div className="bg-black/60 text-[#AFFF25] px-2 py-1.5 rounded-xl text-[10px] font-bold tracking-widest backdrop-blur-md border border-white/10">
               {cameraZoom.toFixed(1)}x
             </div>
-            <div className="flex items-center gap-3 bg-black/60 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 w-[220px]">
-              <span className="text-white/60 text-[10px] font-bold">1x</span>
-              <input type="range" min="1" max="3" step="0.1" value={cameraZoom} onChange={handleZoomChange} className="flex-1 h-1 bg-white/20 rounded-full appearance-none outline-none accent-[#AFFF25]" />
+            <div className="flex flex-col items-center justify-between bg-black/60 backdrop-blur-md px-2 py-4 rounded-full border border-white/10 h-[200px]">
               <span className="text-white/60 text-[10px] font-bold">3x</span>
+              <div className="flex-1 w-full relative flex items-center justify-center">
+                <input 
+                  type="range" min="1" max="3" step="0.1" 
+                  value={cameraZoom} 
+                  onChange={handleZoomChange} 
+                  className="w-[120px] h-1 bg-white/20 rounded-full appearance-none outline-none accent-[#AFFF25] -rotate-90 absolute" 
+                />
+              </div>
+              <span className="text-white/60 text-[10px] font-bold">1x</span>
             </div>
           </div>
 
