@@ -127,7 +127,7 @@ function ScannerContent() {
   const [cropZoom, setCropZoom] = useState(1);
 
   const [showEditor, setShowEditor] = useState(false);
-  const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
+  const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, zoom: 1 });
 
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
   const [showPlayerSuggestions, setShowPlayerSuggestions] = useState(false);
@@ -219,6 +219,28 @@ function ScannerContent() {
       .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city)\b/g, '') 
       .replace(/[^\w\s]/g, '') 
       .trim();
+  };
+
+  const matchClubWithAliases = (rawClub: string, sport: string) => {
+    if (!rawClub || !sport) return rawClub;
+    const clubs = CLUB_DATA[sport];
+    if (!Array.isArray(clubs)) return rawClub;
+
+    const searchNorm = normalizeClubName(rawClub);
+    const rawClean = rawClub.toLowerCase().trim();
+
+    for (const c of clubs) {
+      if (c.name.toLowerCase().trim() === rawClean) return c.name;
+      if (c.aliases && c.aliases.some((a: string) => a.toLowerCase().trim() === rawClean)) return c.name;
+      const nameNorm = normalizeClubName(c.name);
+      if (nameNorm && searchNorm && nameNorm === searchNorm) return c.name;
+      if (c.aliases && c.aliases.some((a: string) => {
+          const aNorm = normalizeClubName(a);
+          return aNorm && searchNorm && aNorm === searchNorm;
+      })) return c.name;
+    }
+    
+    return rawClub;
   };
 
   const safeClubs = Array.isArray(CLUB_DATA[formData.sport]) ? CLUB_DATA[formData.sport] : [];
@@ -355,7 +377,7 @@ function ScannerContent() {
           sport: aiSport,
           firstname: fname,
           lastname: lname,
-          club: cleanValue(data.club),
+          club: matchClubWithAliases(cleanValue(data.club), aiSport),
           brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS),
           series: matchExactCase(cleanValue(data.series), ALL_SETS),
           variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS),
@@ -532,13 +554,15 @@ function ScannerContent() {
           let aiSport = cleanValue(data.sport).toUpperCase();
           if (aiSport === 'FOOTBALL') aiSport = 'SOCCER';
           
+          const matchedClub = matchClubWithAliases(cleanValue(data.club), aiSport);
+          
           if (side === 'front') {
             return {
-              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: cleanValue(data.club) || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || cleanValue(data.club), brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -618,7 +642,6 @@ function ScannerContent() {
     }
   };
 
-  // 🚨 ÉDITEUR ULTIME : Manipulation Pixels (Bypass du Bug Safari CSS Filter) 🚨
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
@@ -628,7 +651,6 @@ function ScannerContent() {
       let localSrc = currentPreview;
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
 
-      // Récupération de l'image (Bypass CORS)
       if (!currentBlob && currentPreview.startsWith('http')) {
           const body = new FormData();
           body.append("action", "proxy");
@@ -647,7 +669,6 @@ function ScannerContent() {
       const canvas = document.createElement('canvas');
       const scale = imgSettings.zoom;
       
-      // Calcul du recadrage (Zoom)
       const sw = img.width / scale;
       const sh = img.height / scale;
       const sx = (img.width - sw) / 2;
@@ -656,52 +677,36 @@ function ScannerContent() {
       canvas.width = sw;
       canvas.height = sh;
       
-      // On utilise willReadFrequently pour accélérer l'analyse sur mobile
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return;
 
-      // On dessine l'image brute SANS filtres CSS
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
 
-      // 🚨 MANIPULATION MANUELLE DES PIXELS 🚨
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
 
       const b = imgSettings.brightness / 100;
       const c = imgSettings.contrast / 100;
-      const s = imgSettings.saturation / 100;
       const intercept = 128 * (1 - c);
 
-      // On boucle sur chaque pixel pour forcer le changement de couleur (Safari ne peut pas esquiver ça !)
       for (let i = 0; i < data.length; i += 4) {
           let r = data[i];
           let g = data[i + 1];
           let bl = data[i + 2];
 
-          // 1. Luminosité
           r *= b; g *= b; bl *= b;
 
-          // 2. Contraste
           r = r * c + intercept;
           g = g * c + intercept;
           bl = bl * c + intercept;
 
-          // 3. Saturation (Formule de luminance)
-          const lum = 0.299 * r + 0.587 * g + 0.114 * bl;
-          r = lum + s * (r - lum);
-          g = lum + s * (g - lum);
-          bl = lum + s * (bl - lum);
-
-          // On s'assure de ne pas déborder (0-255)
           data[i] = Math.max(0, Math.min(255, r));
           data[i + 1] = Math.max(0, Math.min(255, g));
           data[i + 2] = Math.max(0, Math.min(255, bl));
       }
 
-      // On remet les pixels fraîchement coloriés dans le Canvas
       ctx.putImageData(imageData, 0, 0);
 
-      // Et là, on sauvegarde enfin !
       canvas.toBlob((blob) => {
           if (!blob) return;
           const newFile = new File([blob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
@@ -722,7 +727,7 @@ function ScannerContent() {
           }
           
           setShowEditor(false);
-          setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
+          setImgSettings({ brightness: 100, contrast: 100, zoom: 1 });
           setIsApplyingEdit(false);
       }, 'image/jpeg', 0.95);
     } catch(e) {
@@ -731,7 +736,7 @@ function ScannerContent() {
     }
   };
 
-  const handleAutoEnhance = () => setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115, saturation: 120 }));
+  const handleAutoEnhance = () => setImgSettings(prev => ({ ...prev, brightness: 110, contrast: 115 }));
 
   const compressImage = async (file: File): Promise<File> => {
     return new Promise((resolve) => {
@@ -815,7 +820,7 @@ function ScannerContent() {
       {/* MODAL DE RECADRAGE GALERIE */}
       {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase drop-shadow-md z-50">Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
+          <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase z-50">Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
           <img src={cropPreview} className="absolute inset-0 w-full h-full object-contain origin-center z-0" style={{ transform: `scale(${cropZoom})` }} alt="To Crop" />
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div></div>
           <div className="absolute bottom-10 left-0 w-full px-8 z-20 flex flex-col items-center pointer-events-auto">
@@ -825,7 +830,7 @@ function ScannerContent() {
             </div>
             <div className="flex gap-4 w-full max-w-[300px]">
               <button onClick={() => setCropPreview(null)} className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
-              <button onClick={confirmCrop} disabled={isApplyingEdit} className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.4)] flex justify-center items-center gap-2">{isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}</button>
+              <button onClick={confirmCrop} disabled={isApplyingEdit} className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all flex justify-center items-center gap-2">{isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}</button>
             </div>
           </div>
         </div>
@@ -834,7 +839,7 @@ function ScannerContent() {
       {/* OVERLAY CAMERA */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 shadow-[0_0_20px_rgba(175,255,37,0.4)] animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
+          {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
@@ -867,8 +872,8 @@ function ScannerContent() {
           </div>
 
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-20 flex flex-col items-center z-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-auto">
-             <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center shadow-[0_0_30px_rgba(175,255,37,0.6)] active:scale-90 transition-transform"></button>
-             {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (<button onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }} className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs shadow-lg active:scale-95 transition-all flex items-center gap-2">Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} /></button>)}
+             <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center active:scale-90 transition-transform"></button>
+             {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (<button onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }} className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs active:scale-95 transition-all flex items-center gap-2">Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} /></button>)}
           </div>
         </div>
       )}
@@ -876,9 +881,9 @@ function ScannerContent() {
       {/* HEADER */}
       <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
-        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto drop-shadow-lg">{isVerifyingBulk ? `CARTE ${currentVerifyIndex + 1}/${pendingCards.length}` : pageTitle}</h1>
+        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto">{isVerifyingBulk ? `CARTE ${currentVerifyIndex + 1}/${pendingCards.length}` : pageTitle}</h1>
         <div className="w-auto min-w-[40px] flex justify-end pointer-events-auto">
-          {editId && !isVerifyingBulk && (<button onClick={deleteCard} className={`h-10 px-3 rounded-full flex items-center justify-center transition-all duration-300 ${confirmDelete ? 'bg-red-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.5)]' : 'bg-white/10 backdrop-blur-md text-red-500 border border-white/20'}`}><Trash2 size={18} />{confirmDelete && <span className="text-xs font-black ml-2 uppercase">Sûr ?</span>}</button>)}
+          {editId && !isVerifyingBulk && (<button onClick={deleteCard} className={`h-10 px-3 rounded-full flex items-center justify-center transition-all duration-300 ${confirmDelete ? 'bg-red-500 text-white' : 'bg-white/10 backdrop-blur-md text-red-500 border border-white/20'}`}><Trash2 size={18} />{confirmDelete && <span className="text-xs font-black ml-2 uppercase">Sûr ?</span>}</button>)}
         </div>
       </header>
 
@@ -888,14 +893,14 @@ function ScannerContent() {
           <header className="flex justify-between items-center mb-6 pt-4">
             <button onClick={() => setShowEditor(false)} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 active:scale-95"><X size={20} /></button>
             <h2 className="text-xl font-black italic uppercase text-[#AFFF25] tracking-widest">Éditeur {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
-            <button onClick={applyImageEdits} className="w-10 h-10 bg-[#AFFF25] text-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.5)] active:scale-95"><Check size={20} strokeWidth={3} /></button>
+            <button onClick={applyImageEdits} className="w-10 h-10 bg-[#AFFF25] text-black rounded-full flex items-center justify-center active:scale-95"><Check size={20} strokeWidth={3} /></button>
           </header>
 
-          <div className="relative w-full flex-1 max-h-[50vh] rounded-2xl overflow-hidden border border-white/20 bg-black/50 shadow-2xl flex items-center justify-center">
+          <div className="relative w-full flex-1 max-h-[50vh] rounded-2xl overflow-hidden border border-white/20 bg-black/50 flex items-center justify-center">
             <img 
               src={activePreviewUrl} 
               className="w-full h-full object-contain"
-              style={{ filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`, transform: `scale(${imgSettings.zoom})` }}
+              style={{ filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%)`, transform: `scale(${imgSettings.zoom})` }}
               alt="Preview Edit" 
             />
           </div>
@@ -906,7 +911,6 @@ function ScannerContent() {
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div><input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Luminosité</span><span>{imgSettings.brightness}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.brightness} onChange={e => setImgSettings({...imgSettings, brightness: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Contraste</span><span>{imgSettings.contrast}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.contrast} onChange={e => setImgSettings({...imgSettings, contrast: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
-              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Brillance</span><span>{imgSettings.saturation}%</span></div><input type="range" min="0" max="200" step="1" value={imgSettings.saturation} onChange={e => setImgSettings({...imgSettings, saturation: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
             </div>
           </div>
           
@@ -925,12 +929,12 @@ function ScannerContent() {
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8">
             <div className="flex justify-center gap-8">
-              <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
-              <button onClick={() => setScanMode('lot')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] drop-shadow-[0_0_10px_rgba(175,255,37,0.5)] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot (Rafale)</button>
+              <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
+              <button onClick={() => setScanMode('lot')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot (Rafale)</button>
             </div>
             
-            <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] shadow-inner">
-              <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out shadow-sm ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
+            <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px]">
+              <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
               <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
               <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
             </div>
@@ -938,8 +942,8 @@ function ScannerContent() {
         )}
 
         {isVerifyingBulk && (
-          <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mb-8 shadow-inner">
-            <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out shadow-sm ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
+          <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mb-8">
+            <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
             <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
             <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
           </div>
@@ -948,7 +952,7 @@ function ScannerContent() {
         <div className="relative w-full max-w-[240px] lg:max-w-[350px] mx-auto mb-6 lg:mb-10">
           
           {activePreviewUrl ? (
-            <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl">
+            <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
               {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && activeSide === 'front' && (
@@ -967,9 +971,9 @@ function ScannerContent() {
               )}
             </div>
           ) : (
-            <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl shadow-2xl gap-4 p-6">
+            <div className="aspect-[3/4] w-full flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl gap-4 p-6">
               <button onClick={startCamera} className="w-full flex flex-col items-center justify-center gap-3 bg-[#AFFF25]/10 border border-[#AFFF25]/30 hover:bg-[#AFFF25]/20 hover:border-[#AFFF25] transition-all p-6 rounded-2xl active:scale-95 group">
-                <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] shadow-[0_0_15px_rgba(175,255,37,0.5)] group-hover:scale-110 transition-transform"><Camera size={24} strokeWidth={2.5} /></div>
+                <div className="w-12 h-12 rounded-full bg-[#AFFF25] flex items-center justify-center text-[#040221] group-hover:scale-110 transition-transform"><Camera size={24} strokeWidth={2.5} /></div>
                 <span className="text-xs lg:text-sm font-bold text-[#AFFF25] uppercase tracking-widest text-center">Prendre {activeSide === 'front' ? 'le Recto' : 'le Verso'}</span>
               </button>
 
@@ -984,8 +988,8 @@ function ScannerContent() {
           
           {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
-              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
-              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-4 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] shadow-[0_0_20px_rgba(175,255,37,0.4)] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-4 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
             </>
           )}
         </div>
@@ -997,14 +1001,14 @@ function ScannerContent() {
                <RotateCw size={14} className="shrink-0" /> Changer Recto
              </button>
              <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all whitespace-nowrap ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
-               <RotateCw size={14} className="shrink-0" /> {previewUrlBack ? 'Changer Verso' : '+ Verso'}
+               {previewUrlBack ? <><RotateCw size={14} className="shrink-0" /> Changer Verso</> : 'Ajouter verso'}
              </button>
           </div>
         )}
       </div>
 
       {/* 📋 PARTIE DROITE (FORMULAIRE) */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
+      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="space-y-8">
           <div>
@@ -1031,7 +1035,7 @@ function ScannerContent() {
                 <div className="relative">
                   <input value={formData.lastname} onChange={e => { setFormData({...formData, lastname: e.target.value.toUpperCase()}); setShowPlayerSuggestions(true); }} onFocus={() => setShowPlayerSuggestions(true)} onBlur={() => setTimeout(() => setShowPlayerSuggestions(false), 200)} placeholder="Nom" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" />
                   {showPlayerSuggestions && formData.lastname && filteredPlayers.length > 0 && (
-                    <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-xl">
+                    <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto">
                       {filteredPlayers.map((p: any, i: number) => (
                         <li key={i} onClick={() => { 
                           const parts = p.name.split(' ');
@@ -1054,7 +1058,7 @@ function ScannerContent() {
                     <Search className="absolute right-4 text-[#AFFF25] pointer-events-none" size={16} />
                   </div>
                   {showClubSuggestions && formData.club && filteredClubs.length > 0 && (
-                    <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto shadow-xl">
+                    <ul className="absolute z-50 w-full bg-[#080531] border border-[#AFFF25] rounded-2xl mt-2 max-h-48 overflow-y-auto">
                       {filteredClubs.slice(0, 20).map((c: any, i: number) => (
                         <li key={i} onClick={() => { setFormData({...formData, club: c.name}); setShowClubSuggestions(false); }} className="p-3 hover:bg-[#AFFF25]/20 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0">
                           <img src={`/asset/logo-club/${sportFolder}/${c.slug}.svg`} onError={(e) => e.currentTarget.style.display='none'} className="w-6 h-6" />
@@ -1148,9 +1152,9 @@ function ScannerContent() {
                 
                 {formData.is_numbered && (
                   <div className="flex items-center gap-4 justify-center animate-in fade-in duration-200 pt-2">
-                    <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} placeholder="Ex: 5" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none focus:shadow-[0_0_10px_rgba(175,255,37,0.3)] transition-all" />
+                    <input value={formData.num_low} onChange={e => setFormData({...formData, num_low: e.target.value})} placeholder="Ex: 5" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none transition-all" />
                     <span className="text-[#AFFF25] font-black text-2xl px-2">/</span>
-                    <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} placeholder="Ex: 50" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none focus:shadow-[0_0_10px_rgba(175,255,37,0.3)] transition-all" />
+                    <input value={formData.num_high} onChange={e => setFormData({...formData, num_high: e.target.value})} placeholder="Ex: 50" className="w-24 bg-[#040221] border border-[#AFFF25] p-3 rounded-full text-center text-sm outline-none transition-all" />
                   </div>
                 )}
 
@@ -1162,7 +1166,7 @@ function ScannerContent() {
             )}
           </div>
 
-          <button disabled={loading || analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') || (!isFormStarted && !isVerifyingBulk)} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(isFormStarted || isVerifyingBulk) ? 'bg-[#AFFF25] text-[#040221] shadow-[0_10px_40px_rgba(175,255,37,0.3)] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
+          <button disabled={loading || analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') || (!isFormStarted && !isVerifyingBulk)} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(isFormStarted || isVerifyingBulk) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
             {loading ? <Loader2 className="animate-spin" /> : editId ? 'Mettre à jour' : isVerifyingBulk ? (currentVerifyIndex < pendingCards.length - 1 ? `Valider & Suivant (${currentVerifyIndex + 1}/${pendingCards.length})` : `Terminer (${currentVerifyIndex + 1}/${pendingCards.length})`) : 'Enregistrer'}
           </button>
         </div>

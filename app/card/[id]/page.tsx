@@ -485,7 +485,8 @@ export default function CardDetailsPage() {
           )}
         </div>
 
-        <div className="pt-8 flex flex-col gap-4 pb-6 items-center">
+        {/* 🚨 MODIFICATION DE LA MARGE ICI (pb-32 au lieu de pb-6) 🚨 */}
+        <div className="pt-8 flex flex-col gap-4 pb-32 items-center">
           <div className="flex gap-3 w-full max-w-[320px]">
             <button onClick={() => checkEbayPrices(true)} className="flex-1 bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-[0.675rem] hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.3)]">
               Ventes réussies

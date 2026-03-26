@@ -993,11 +993,15 @@
   },
   {
     "id": "fc-barcelona",
-    "name": "FC Barcelona",
+    "name": "FC Barcelone",
     "slug": "fc-barcelona",
     "aliases": [
       "Barça",
-      "Barcelona"
+      "Barcelona",
+      "FC-Barcelone",
+      "FC-Barcelona",
+      "Barcelone"
+
     ]
   },
   {
@@ -1574,7 +1578,8 @@
     "slug": "lille-osc",
     "aliases": [
       "LOSC",
-      "Lille"
+      "Lille",
+      "Lille OSC"
     ]
   },
   {

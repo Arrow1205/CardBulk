@@ -94,19 +94,19 @@ export default function ClubPage() {
   return (
     <div className="min-h-screen text-white font-sans relative bg-[#040221] w-full">
       
-      {/* HEADER FIXE : Ajout de lg:px-[80px] pour aligner le bouton sur Desktop */}
+      {/* HEADER FIXE */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center p-6 lg:px-[80px] pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
           <ChevronLeft size={20} />
         </button>
       </header>
 
-      {/* BACKGROUND BLURRÉ AVEC LE LOGO */}
+      {/* BACKGROUND BLURRÉ AVEC LE LOGO (Corrigé pour la status bar) */}
       <div className="absolute top-0 left-0 w-full h-[450px] overflow-hidden z-0 pointer-events-none">
         <img 
           src={logoUrl} 
           alt="Club Background" 
-          className="w-full h-full object-cover blur-[60px] opacity-40 scale-150 saturate-150"
+          className="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] max-w-none object-cover blur-[60px] opacity-40 saturate-150"
           onError={(e) => e.currentTarget.style.display = 'none'}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040221]/80 to-[#040221]"></div>
@@ -125,7 +125,7 @@ export default function ClubPage() {
           />
         </div>
 
-        {/* CONTAINER DU BAS : Ajout de lg:px-[80px] pour occuper toute la largeur avec les marges sur PC */}
+        {/* CONTAINER DU BAS */}
         <div className="w-full bg-[#040221] rounded-t-[32px] px-4 lg:px-[80px] pt-6 pb-32 min-h-[50vh] shadow-[0_-20px_40px_rgba(0,0,0,0.4)] relative">
           
           <h1 className="text-3xl lg:text-4xl font-black italic uppercase text-center mb-6 lg:mb-8 tracking-tighter">
@@ -185,7 +185,7 @@ export default function ClubPage() {
             </div>
           </div>
 
-          {/* 🚨 GRILLE DE CARTES : Passage en lg:grid-cols-5 sur Desktop 🚨 */}
+          {/* GRILLE DE CARTES */}
           <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3 grid-flow-dense auto-rows-max">
             {filteredCards.length > 0 ? (
               filteredCards.map(card => {
