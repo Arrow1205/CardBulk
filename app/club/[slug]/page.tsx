@@ -101,15 +101,15 @@ export default function ClubPage() {
         </button>
       </header>
 
-      {/* BACKGROUND BLURRÉ AVEC LE LOGO (Corrigé pour la status bar) */}
-      <div className="absolute top-0 left-0 w-full h-[450px] overflow-hidden z-0 pointer-events-none">
+      {/* BACKGROUND BLURRÉ AVEC LE LOGO (Forcé à -top-12 pour aller sous la status bar) */}
+      <div className="absolute -top-12 md:-top-0 left-0 w-full h-[500px] overflow-hidden z-0 pointer-events-none">
         <img 
           src={logoUrl} 
           alt="Club Background" 
           className="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] max-w-none object-cover blur-[60px] opacity-40 saturate-150"
           onError={(e) => e.currentTarget.style.display = 'none'}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040221]/80 to-[#040221]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040221]/0 via-[#040221]/80 to-[#040221]"></div>
       </div>
 
       {/* CONTENU PRINCIPAL */}
