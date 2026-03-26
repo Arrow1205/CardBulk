@@ -374,8 +374,8 @@ function ScannerContent() {
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
 
         if (data.cropped_image_base64) {
-          const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
-          const blob = await response.blob();
+          const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+          const blob = await resBlob.blob();
           const croppedFile = new File([blob], `auto-cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
           const newPreviewUrl = URL.createObjectURL(croppedFile);
           
@@ -499,8 +499,8 @@ function ScannerContent() {
       if (!data.error) {
         
         if (data.cropped_image_base64) {
-          const response = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
-          const blob = await response.blob();
+          const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+          const blob = await resBlob.blob();
           const croppedFile = new File([blob], `auto-cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
           const newPreviewUrl = URL.createObjectURL(croppedFile);
           
@@ -565,156 +565,103 @@ function ScannerContent() {
     } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
   };
 
-  // 🚨 SYNCHRO ROTATION : Téléchargement + Mise à jour des lots
+  // 🔄 ROTATION SÉCURISÉE VIA API
   const rotateImage = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
+    
     try {
+      const body = new FormData();
+      body.append("action", "rotate");
+      
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
       
-      // Téléchargement propre (contourne les caches et le CORS Supabase)
-      if (!currentBlob && currentPreview) { 
-        const response = await fetch(currentPreview + "?t=" + new Date().getTime()); 
-        currentBlob = await response.blob(); 
+      if (currentPreview.startsWith('http')) {
+        body.append("imageUrl", currentPreview);
+      } else {
+        if (!currentBlob) {
+          const res = await fetch(currentPreview);
+          currentBlob = await res.blob();
+        }
+        body.append("image", currentBlob);
       }
-      if (!currentBlob) {
-        setIsApplyingEdit(false);
-        return;
-      }
-      
-      const objectUrl = URL.createObjectURL(currentBlob);
-      const img = new Image(); 
-      img.src = objectUrl;
-      
-      await new Promise((resolve, reject) => { 
-        img.onload = resolve; 
-        img.onerror = reject; 
-      });
-      
-      const canvas = document.createElement('canvas'); 
-      const ctx = canvas.getContext('2d'); 
-      if (!ctx) return;
-      
-      canvas.width = img.height; 
-      canvas.height = img.width;
-      ctx.translate(canvas.width / 2, canvas.height / 2); 
-      ctx.rotate(90 * Math.PI / 180); 
-      ctx.drawImage(img, -img.width / 2, -img.height / 2);
-      
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const newFile = new File([blob], `rotated-${Date.now()}.png`, { type: blob.type });
-        const newPreviewUrl = URL.createObjectURL(newFile);
-        
+
+      const res = await fetch("/api/scan", { method: "POST", body });
+      const data = await res.json();
+
+      if (data.cropped_image_base64) {
+        const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+        const blob = await resBlob.blob();
+        const newFile = new File([blob], `rotated-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const newUrl = URL.createObjectURL(newFile);
+
         if (activeSide === 'front') { 
           setSelectedFile(newFile); 
-          setPreviewUrl(newPreviewUrl); 
+          setPreviewUrl(newUrl); 
         } else { 
           setSelectedFileBack(newFile); 
-          setPreviewUrlBack(newPreviewUrl); 
+          setPreviewUrlBack(newUrl); 
         }
-        
-        // Mise à jour de la file d'attente "Lot"
-        if (isVerifyingBulk) {
-          setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: newFile, previewUrl: newPreviewUrl } : c));
-        }
-        
-        setIsApplyingEdit(false);
-      }, currentBlob.type || 'image/png');
-    } catch (e) { 
-      setIsApplyingEdit(false); 
+      }
+    } catch (e) {
+      console.error("Erreur rotation:", e);
+    } finally {
+      setIsApplyingEdit(false);
     }
   };
 
-  // 🚨 CORRECTION ÉDITEUR : Téléchargement du Blob local + Canvas propre 🚨
+  // 🎨 ÉDITION SÉCURISÉE VIA API (Contourne le blocage CORS)
   const applyImageEdits = async () => {
     const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
     if (!currentPreview) return;
     setIsApplyingEdit(true);
     
     try {
+      const body = new FormData();
+      body.append("action", "edit");
+      body.append("brightness", String(imgSettings.brightness));
+      body.append("contrast", String(imgSettings.contrast));
+      body.append("saturation", String(imgSettings.saturation));
+      body.append("zoom", String(imgSettings.zoom));
+      
       let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
       
-      // Téléchargement depuis Supabase (ou cache existant) pour contourner le Tainted Canvas
-      if (!currentBlob && currentPreview) {
-        const response = await fetch(currentPreview + "?t=" + new Date().getTime());
-        currentBlob = await response.blob();
+      // Si l'image est sur Supabase, on envoie l'URL. Sinon, on envoie le fichier local.
+      if (currentPreview.startsWith('http')) {
+         body.append("imageUrl", currentPreview);
+      } else {
+         if (!currentBlob) {
+            const res = await fetch(currentPreview);
+            currentBlob = await res.blob();
+         }
+         body.append("image", currentBlob);
       }
       
-      if (!currentBlob) {
-        setIsApplyingEdit(false);
-        return;
+      const res = await fetch("/api/scan", { method: "POST", body });
+      const data = await res.json();
+      
+      if (data.cropped_image_base64) {
+         const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
+         const newBlob = await resBlob.blob();
+         const newFile = new File([newBlob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
+         const newUrl = URL.createObjectURL(newFile);
+         
+         if (activeSide === 'front') {
+             setSelectedFile(newFile);
+             setPreviewUrl(newUrl);
+         } else {
+             setSelectedFileBack(newFile);
+             setPreviewUrlBack(newUrl);
+         }
+         
+         setShowEditor(false);
+         setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
       }
-
-      // Utilisation d'un objectURL purement local
-      const objectUrl = URL.createObjectURL(currentBlob);
-      const img = new Image(); 
-      img.src = objectUrl;
-      
-      // On s'assure que l'image est bien chargée avant de manipuler le canvas
-      await new Promise((resolve, reject) => { 
-        img.onload = resolve; 
-        img.onerror = reject; 
-      });
-      
-      const canvas = document.createElement('canvas'); 
-      const ctx = canvas.getContext('2d'); 
-      if (!ctx) {
-         setIsApplyingEdit(false);
-         return;
-      }
-      
-      canvas.width = img.width; 
-      canvas.height = img.height;
-      
-      // Application EXACTE de tes réglages d'écran
-      ctx.filter = `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%) saturate(${imgSettings.saturation}%)`;
-      
-      const scale = imgSettings.zoom; 
-      const sw = img.width / scale; 
-      const sh = img.height / scale;
-      const sx = (img.width - sw) / 2; 
-      const sy = (img.height - sh) / 2;
-      
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
-      
-      // Création du nouveau fichier depuis le canvas
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          setIsApplyingEdit(false);
-          return;
-        }
-        
-        const newFile = new File([blob], `edited-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        const newPreviewUrl = URL.createObjectURL(newFile);
-        
-        // Affichage à l'écran principal
-        if (activeSide === 'front') { 
-          setSelectedFile(newFile); 
-          setPreviewUrl(newPreviewUrl); 
-        } else { 
-          setSelectedFileBack(newFile); 
-          setPreviewUrlBack(newPreviewUrl); 
-        }
-
-        // Si on modifie une carte pendant le "Scan en Lot", on s'assure que la liste se met à jour
-        if (isVerifyingBulk) {
-          setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { 
-            ...c, 
-            file: newFile, 
-            previewUrl: newPreviewUrl 
-          } : c));
-        }
-
-        setShowEditor(false); 
-        setIsApplyingEdit(false);
-        setImgSettings({ brightness: 100, contrast: 100, saturation: 100, zoom: 1 });
-      }, 'image/jpeg', 0.95);
-
-    } catch (e) { 
-      console.error("Erreur Éditeur:", e);
-      setIsApplyingEdit(false); 
+    } catch (error) {
+      console.error("Erreur édition:", error);
+    } finally {
+      setIsApplyingEdit(false);
     }
   };
 
@@ -827,7 +774,7 @@ function ScannerContent() {
           
           {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
