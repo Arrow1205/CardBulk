@@ -97,7 +97,8 @@ function ScannerContent() {
   const editId = searchParams.get('edit'); 
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
-  const [scanMode, setScanMode] = useState<'unitaire' | 'lot'>('unitaire');
+  // 🚨 AJOUT DU MODE AUTO 🚨
+  const [scanMode, setScanMode] = useState<'unitaire' | 'lot' | 'auto'>('unitaire');
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
   const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
@@ -150,6 +151,21 @@ function ScannerContent() {
   const [cameraZoom, setCameraZoom] = useState(1);
   const [nativeZoomSupported, setNativeZoomSupported] = useState(false);
 
+  // --- REFS POUR LE MODE AUTO ---
+  const [autoScanProgress, setAutoScanProgress] = useState(0);
+  const autoCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const prevFrameRef = useRef<Uint8ClampedArray | null>(null);
+  const stableSinceRef = useRef<number | null>(null);
+  const motionLoopRef = useRef<number | null>(null);
+  const lastCaptureTimeRef = useRef<number>(0);
+
+  // Refs pour éviter les closures périmées dans l'event loop
+  const scanModeRef = useRef(scanMode);
+  useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
+  const isFlashingRef = useRef(isFlashing);
+  useEffect(() => { isFlashingRef.current = isFlashing; }, [isFlashing]);
+  const captureRef = useRef(() => {});
+
   useEffect(() => {
     if (editId) {
       setIsFetchingEdit(true);
@@ -195,6 +211,81 @@ function ScannerContent() {
       videoRef.current.play().catch(e => console.error("Erreur lecture vidéo:", e));
     }
   }, [isCameraOpen]);
+
+  // 🚨 DÉTECTION DE MOUVEMENT POUR L'AUTO-CAPTURE 🚨
+  useEffect(() => {
+    if (!isCameraOpen || scanMode !== 'auto') {
+      if (motionLoopRef.current) cancelAnimationFrame(motionLoopRef.current);
+      setAutoScanProgress(0);
+      return;
+    }
+
+    if (!autoCanvasRef.current) {
+      autoCanvasRef.current = document.createElement('canvas');
+      autoCanvasRef.current.width = 64; // Résolution très basse pour pas faire chauffer le téléphone
+      autoCanvasRef.current.height = 64;
+    }
+    const ctx = autoCanvasRef.current.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+
+    const checkMotion = () => {
+      if (!videoRef.current || isFlashingRef.current || isVerifyingBulk || scanModeRef.current !== 'auto') {
+        motionLoopRef.current = requestAnimationFrame(checkMotion);
+        return;
+      }
+
+      // Si on vient de prendre une photo, on fait une pause de 1.5s avant de recommencer
+      if (Date.now() - lastCaptureTimeRef.current < 1500) {
+        stableSinceRef.current = Date.now();
+        setAutoScanProgress(0);
+        motionLoopRef.current = requestAnimationFrame(checkMotion);
+        return;
+      }
+
+      ctx.drawImage(videoRef.current, 0, 0, 64, 64);
+      const currentData = ctx.getImageData(0, 0, 64, 64).data;
+      let diff = 0;
+
+      if (prevFrameRef.current) {
+        // On vérifie 1 pixel sur 4 (RGBA -> 16) pour être encore plus performant
+        for (let i = 0; i < currentData.length; i += 16) {
+          diff += Math.abs(currentData[i] - prevFrameRef.current[i]);     // R
+          diff += Math.abs(currentData[i+1] - prevFrameRef.current[i+1]); // G
+          diff += Math.abs(currentData[i+2] - prevFrameRef.current[i+2]); // B
+        }
+      }
+      prevFrameRef.current = new Uint8ClampedArray(currentData);
+
+      // Seuil de détection de mouvement (Ajustable : plus il est haut, moins c'est sensible au tremblement)
+      const threshold = 30000;
+
+      if (diff > threshold) {
+        stableSinceRef.current = Date.now();
+        setAutoScanProgress(0);
+      } else {
+        if (!stableSinceRef.current) stableSinceRef.current = Date.now();
+        const stableTime = Date.now() - stableSinceRef.current;
+        // On déclenche après 1.5s (1500ms) de stabilité absolue
+        const progress = Math.min(100, (stableTime / 1500) * 100);
+        setAutoScanProgress(progress);
+
+        if (progress >= 100) {
+          captureRef.current(); // Déclenche la photo
+          lastCaptureTimeRef.current = Date.now();
+          stableSinceRef.current = Date.now();
+          setAutoScanProgress(0);
+        }
+      }
+
+      motionLoopRef.current = requestAnimationFrame(checkMotion);
+    };
+
+    motionLoopRef.current = requestAnimationFrame(checkMotion);
+
+    return () => {
+      if (motionLoopRef.current) cancelAnimationFrame(motionLoopRef.current);
+    }
+  }, [isCameraOpen, scanMode, isVerifyingBulk]);
 
   useEffect(() => {
     if (isVerifyingBulk && pendingCards.length > 0) {
@@ -378,6 +469,7 @@ function ScannerContent() {
     if (streamRef.current) { streamRef.current.getTracks().forEach(track => track.stop()); streamRef.current = null; }
     setIsCameraOpen(false);
     setCameraZoom(1);
+    setAutoScanProgress(0);
   };
 
   const handleZoomChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -536,7 +628,8 @@ function ScannerContent() {
       if (!blob) return;
       const fullImageFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
       
-      if (scanMode === 'lot' && activeSide === 'front') {
+      // Mode LOT ou AUTO agissent de la même façon (ajout en arrière-plan)
+      if ((scanModeRef.current === 'lot' || scanModeRef.current === 'auto') && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
         const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: URL.createObjectURL(fullImageFile), status: 'analyzing', aiResult: null };
         setPendingCards(prev => [...prev, newCard]);
@@ -547,6 +640,9 @@ function ScannerContent() {
       }
     }, 'image/jpeg', 1.0);
   };
+
+  // Assignation de la REF pour éviter les dépendances circulaires
+  useEffect(() => { captureRef.current = captureImageAndCrop; });
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -567,7 +663,7 @@ function ScannerContent() {
               setPreviewUrlBack(newUrl);
               processImageScan(file, 'back', false);
            } else {
-              if (scanMode === 'lot') {
+              if (scanMode === 'lot' || scanMode === 'auto') {
                   setBulkFiles([file]); setCurrentBulkIndex(0);
               }
               processImageScan(file, 'front', true);
@@ -951,13 +1047,11 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* 🚨 MODALE DE RECADRAGE MANUEL RÉPARÉE (55vh au lieu de 70vh) 🚨 */}
       {freeCropImage && !analyzing && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-[#040221] flex flex-col items-center justify-between pt-[calc(1.5rem+env(safe-area-inset-top))] pb-32 overflow-hidden">
           
           <h2 className="text-xl font-black italic text-[#AFFF25] tracking-widest uppercase mb-4">Recadrer</h2>
           
-          {/* ZONE DE CROPPING */}
           <div className="relative w-full h-[55vh] max-w-lg flex items-center justify-center" ref={cropContainerRef}>
               <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-full pointer-events-none" alt="To Crop" />
               
@@ -976,7 +1070,6 @@ function ScannerContent() {
               </div>
           </div>
 
-          {/* BOUTONS EN BAS DANS LE FLUX NORMAL */}
           <div className="w-full flex justify-center gap-4 mt-8 px-8 z-20">
               <button onClick={() => setFreeCropImage(null)} className="w-[140px] py-3.5 bg-white/10 border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
               <button onClick={applyFreeCrop} disabled={isApplyingEdit} className="w-[140px] py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all flex justify-center items-center gap-2">
@@ -988,7 +1081,9 @@ function ScannerContent() {
 
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
+          
+          {/* AFFICHE LE NOMBRE DE CARTES EN LOT OU AUTO */}
+          {(scanMode === 'lot' || scanMode === 'auto') && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
@@ -997,6 +1092,13 @@ function ScannerContent() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
+
+          {/* INDICATEUR DE STABILITÉ AUTO (BÊTA) */}
+          {scanMode === 'auto' && (
+             <div className="absolute top-32 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center pointer-events-none">
+                <div className="text-white text-xs font-bold uppercase tracking-widest bg-black/50 border border-white/20 px-4 py-2 rounded-full mb-3">Ne bougez plus</div>
+             </div>
+          )}
           
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
           <div className="absolute top-0 left-0 w-full px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
@@ -1020,8 +1122,15 @@ function ScannerContent() {
           </div>
 
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-20 flex flex-col items-center z-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-auto">
-             <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center active:scale-90 transition-transform"></button>
-             {scanMode === 'lot' && pendingCards.length > 0 && activeSide === 'front' && (<button onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }} className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs active:scale-95 transition-all flex items-center gap-2">Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} /></button>)}
+             
+             {/* BOUTON CAPTURE AVEC JAUGE DE PROGRESSION AUTO */}
+             <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center active:scale-90 transition-transform relative overflow-hidden">
+                {scanMode === 'auto' && (
+                   <div className="absolute inset-0 bg-[#AFFF25] transition-all duration-75 origin-bottom" style={{ transform: `scaleY(${autoScanProgress / 100})` }}></div>
+                )}
+             </button>
+
+             {(scanMode === 'lot' || scanMode === 'auto') && pendingCards.length > 0 && activeSide === 'front' && (<button onClick={() => { stopCamera(); setIsVerifyingBulk(true); setCurrentVerifyIndex(0); }} className="mt-6 bg-[#AFFF25] text-[#040221] px-6 py-3 rounded-full font-black uppercase tracking-widest text-xs active:scale-95 transition-all flex items-center gap-2">Terminer et Vérifier <ArrowRight size={16} strokeWidth={3} /></button>)}
           </div>
         </div>
       )}
@@ -1073,10 +1182,13 @@ function ScannerContent() {
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[120px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!isWishlistMode && !isVerifyingBulk && (
-          <div className="flex flex-col items-center gap-4 mb-8">
-            <div className="flex justify-center gap-8">
-              <button onClick={() => setScanMode('unitaire')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
-              <button onClick={() => setScanMode('lot')} className={`text-sm font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot (Rafale)</button>
+          <div className="flex flex-col items-center gap-4 mb-8 w-full">
+            
+            {/* 🚨 NOUVELLE SÉLECTION DES 3 MODES DE SCAN 🚨 */}
+            <div className="flex justify-center gap-4 sm:gap-8 w-full max-w-md">
+              <button onClick={() => setScanMode('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
+              <button onClick={() => setScanMode('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
+              <button onClick={() => setScanMode('auto')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'auto' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Auto <span className="bg-[#AFFF25]/20 text-[#AFFF25] px-1.5 py-0.5 rounded text-[8px]">Bêta</span></button>
             </div>
             
             <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px]">
@@ -1095,7 +1207,6 @@ function ScannerContent() {
           </div>
         )}
 
-        {/* 🚨 LARGEUR MAX RÉDUITE POUR PROTÉGER LES BOUTONS (220px) 🚨 */}
         <div className="relative w-full max-w-[220px] lg:max-w-[320px] mx-auto mb-6 lg:mb-10">
           
           {activePreviewUrl ? (
@@ -1156,7 +1267,6 @@ function ScannerContent() {
 
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
-        {/* 🚨 NOUVEAU : LE CHAMP LIEN TOUT EN HAUT SI WISHLIST 🚨 */}
         {isWishlistMode && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-8">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-3 uppercase">Importer depuis un lien (Optionnel)</label>
