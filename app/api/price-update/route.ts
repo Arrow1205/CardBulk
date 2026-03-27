@@ -10,7 +10,6 @@ export async function POST(req: Request) {
     }
 
     const apiKey = process.env.GOOGLE_API_KEY;
-    // 🚨 LA CORRECTION EST ICI : on utilise GOOGLE_CX pour correspondre à ton Vercel 🚨
     const cx = process.env.GOOGLE_CX;
 
     if (!apiKey || !cx) {
@@ -36,7 +35,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Aucun résultat pertinent trouvé' });
     }
 
-    // 3. Extraction des prix avec notre Regex magique
+    // 3. Extraction des prix avec notre Regex
     let prices: number[] = [];
     
     // Cette regex cherche : EUR XX.XX ou XX,XX € ou $XX.XX etc.
@@ -45,9 +44,10 @@ export async function POST(req: Request) {
     data.items.forEach((item: any) => {
       // On fouille dans le Titre ET dans le Snippet (la description courte de Google)
       const textToScan = `${item.title} ${item.snippet}`.toUpperCase();
-      const matches = [...textToScan.matchAll(priceRegex)];
-
-      matches.forEach(match => {
+      
+      // 🚨 CORRECTION TypeScript : La boucle classique "while" remplace matchAll()
+      let match;
+      while ((match = priceRegex.exec(textToScan)) !== null) {
         const priceStr = match[1]; // Le groupe capturé (le chiffre)
         if (priceStr) {
            const priceNum = parseFloat(priceStr.replace(',', '.'));
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
              prices.push(priceNum);
            }
         }
-      });
+      }
     });
 
     if (prices.length === 0) {
