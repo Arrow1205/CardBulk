@@ -36,11 +36,12 @@ export default function SettingsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return router.push('/login');
 
+      // 🚨 CORRECTION : On utilise maybeSingle() au lieu de single()
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle(); 
 
       if (error) throw error;
 
@@ -67,11 +68,13 @@ export default function SettingsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Non autorisé");
 
-      const { error } = await supabase.from('profiles').update({
+      // 🚨 CORRECTION : On utilise upsert() (Update ou Insert) pour forcer la création si manquant
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id, // Obligatoire pour un upsert
         pseudo,
         age: parseInt(age) || null,
         sports: selectedSports
-      }).eq('id', user.id);
+      });
 
       if (error) throw error;
       
@@ -88,7 +91,7 @@ export default function SettingsPage() {
         }
       }
 
-      setTimeout(() => router.push('/'), 1500); // Redirection vers la home après 1.5s
+      setTimeout(() => router.push('/'), 1500);
     } catch (error: any) {
       setErrorMsg(error.message || 'Erreur lors de la sauvegarde du profil.');
     } finally {
