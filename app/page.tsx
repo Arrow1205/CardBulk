@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, User, ChevronDown, LogOut, UserPlus, ScanLine } from 'lucide-react';
+import { Loader2, User, ChevronDown, LogOut, UserPlus, ScanLine, Settings } from 'lucide-react';
 
 // Type pour gérer notre multi-compte
 type StoredAccount = {
@@ -211,7 +212,13 @@ export default function HomePage() {
                 </div>
               )}
             </div>
-
+            {/* Paramètres */}
+            <div className="border-t border-white/10 p-2">
+              <button onClick={() => router.push('/settings')} className="w-full flex items-center gap-3 p-3 text-sm text-white/80 font-medium hover:bg-white/5 rounded-xl transition-colors text-left">
+                <Settings size={18} />
+                Paramètres
+              </button>
+            </div>
             {/* Ajouter un compte */}
             <div className="border-t border-white/10 p-2">
               <button 
