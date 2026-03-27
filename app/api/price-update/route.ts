@@ -1,66 +1,90 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {
     const { cardId, keywords } = await req.json();
-    const apiKey = process.env.SERPAPI_KEY;
 
-    if (!apiKey) {
-      return NextResponse.json({ error: "Clé SerpApi manquante dans Vercel." }, { status: 500 });
+    if (!cardId || !keywords) {
+      return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    // Requête SerpApi ciblée sur les ventes réussies eBay
-    const url = `https://serpapi.com/search.json?engine=google&q=${encodeURIComponent(keywords + " ebay sold price")}&api_key=${apiKey}`;
+    const apiKey = process.env.GOOGLE_API_KEY;
+    // 🚨 LA CORRECTION EST ICI : on utilise GOOGLE_CX pour correspondre à ton Vercel 🚨
+    const cx = process.env.GOOGLE_CX;
 
+    if (!apiKey || !cx) {
+      console.error("Clés Google manquantes dans la configuration");
+      return NextResponse.json({ success: false, error: 'Configuration API manquante' }, { status: 500 });
+    }
+
+    // 1. On force la recherche sur les sites pertinents (eBay)
+    const query = encodeURIComponent(`${keywords} site:ebay.fr OR site:ebay.com OR site:ebay.co.uk`);
+    
+    // 2. Appel à l'API Google Custom Search
+    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
     const response = await fetch(url);
     const data = await response.json();
 
+    // Gestion de l'erreur si la clé Google est bloquée / invalide
     if (data.error) {
-      return NextResponse.json({ error: data.error }, { status: 500 });
+      console.error("Erreur API Google :", data.error.message);
+      return NextResponse.json({ success: false, error: data.error.message }, { status: 500 });
     }
 
-    if (!data.organic_results) {
-      return NextResponse.json({ message: "Aucun résultat trouvé sur Google." });
+    if (!data.items || data.items.length === 0) {
+      return NextResponse.json({ success: false, error: 'Aucun résultat pertinent trouvé' });
     }
 
-    const priceRegex = /(?:EUR|USD|GBP|\$|€|£)\s*(\d+(?:[.,]\d+)?)/gi;
+    // 3. Extraction des prix avec notre Regex magique
     let prices: number[] = [];
+    
+    // Cette regex cherche : EUR XX.XX ou XX,XX € ou $XX.XX etc.
+    const priceRegex = /(?:EUR|€|\$|£|GBP)?\s*(\d{1,5}[.,]\d{2})\s*(?:EUR|€|\$|£|GBP)?/gi;
 
-    data.organic_results.forEach((result: any) => {
-      const text = (result.title + " " + result.snippet).replace(/\s/g, ' ');
-      let match;
-      while ((match = priceRegex.exec(text)) !== null) {
-        const p = parseFloat(match[1].replace(',', '.'));
-        // On filtre les prix aberrants (ex: < 1€ ou > 50 000€)
-        if (p > 1 && p < 50000) prices.push(p);
-      }
+    data.items.forEach((item: any) => {
+      // On fouille dans le Titre ET dans le Snippet (la description courte de Google)
+      const textToScan = `${item.title} ${item.snippet}`.toUpperCase();
+      const matches = [...textToScan.matchAll(priceRegex)];
+
+      matches.forEach(match => {
+        const priceStr = match[1]; // Le groupe capturé (le chiffre)
+        if (priceStr) {
+           const priceNum = parseFloat(priceStr.replace(',', '.'));
+           // On ignore les valeurs absurdes (ex: prix < 0.50€ ou > 100 000€)
+           if (priceNum > 0.5 && priceNum < 100000) { 
+             prices.push(priceNum);
+           }
+        }
+      });
     });
 
-    if (prices.length > 0) {
-      // Calcul de la moyenne
-      const avg = +(prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2);
-
-      // Sauvegarde dans Supabase
-      const { error: dbError } = await supabase.from('card_prices').insert([{
-        card_id: cardId,
-        price: avg,
-        source: 'eBay via SerpApi'
-      }]);
-
-      if (dbError) {
-        console.error("❌ ERREUR SUPABASE :", dbError);
-        return NextResponse.json({ error: "Erreur Base de données" }, { status: 500 });
-      }
-
-      return NextResponse.json({ success: true, averagePrice: avg });
+    if (prices.length === 0) {
+      return NextResponse.json({ success: false, error: 'Impossible de lire un prix clair dans les résultats' });
     }
 
-    return NextResponse.json({ error: "Aucun prix extrait des résultats." });
+    // 4. Calcul de la moyenne propre
+    // On dé-duplique les prix identiques (souvent la même annonce qui ressort 2 fois)
+    const uniquePrices = Array.from(new Set(prices));
+    
+    const sum = uniquePrices.reduce((a, b) => a + b, 0);
+    let average = sum / uniquePrices.length;
+
+    // Arrondi à 2 décimales
+    average = Math.round(average * 100) / 100;
+
+    // 5. Sauvegarde directe dans Supabase
+    const { error: dbError } = await supabase.from('card_prices').insert([{
+      card_id: cardId,
+      price: average
+    }]);
+
+    if (dbError) throw dbError;
+
+    return NextResponse.json({ success: true, averagePrice: average });
 
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('Erreur Update Prix:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
