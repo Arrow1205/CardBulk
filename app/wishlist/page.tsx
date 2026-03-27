@@ -57,15 +57,15 @@ export default function WishlistPage() {
   const sportImage = selectedSport ? SPORT_CONFIG[selectedSport]?.image : null;
 
   return (
-    // 🚀 L'arrière-plan bg-[#040221] est bien ici pour éviter la transparence avec la navbar
-    <div className="min-h-screen bg-[#040221] text-white p-2 pb-36 overflow-y-auto overflow-x-hidden font-sans relative z-10">
+    <div className="min-h-screen bg-[#040221] text-white pb-32 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
+      {/* 🚨 HEADER ADAPTÉ POUR LA SAFE AREA 🚨 */}
+      {/* On le met en flux normal (pas "fixed") pour qu'il pousse les filtres naturellement vers le bas */}
+      <header className="w-full px-6 pb-6 pt-[calc(2.5rem+env(safe-area-inset-top))]">
+        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none drop-shadow-lg text-white">WISHLIST</h1>
+      </header>
 
       <div className="px-4">
-       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none">
-          <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none drop-shadow-lg">WISHLIST</h1>
-        </header>
-
         <div className="flex gap-2 mb-8">
           <div className="relative flex-1">
             {sportImage && <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 top-2.5 w-4 h-4 object-contain z-10" alt="Sport" />}
@@ -92,7 +92,7 @@ export default function WishlistPage() {
       {loading ? (
         <div className="flex justify-center items-center h-64"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>
       ) : (
-        <div className="grid grid-cols-3 gap-2 grid-flow-dense px-2">
+        <div className="grid grid-cols-3 gap-2 grid-flow-dense px-4">
           <div onClick={() => router.push('/scanner?wishlist=true')} className="col-span-1 aspect-[3/4] rounded-xl border-2 border-[#AFFF25] flex items-center justify-center cursor-pointer active:scale-95 transition-all bg-[#AFFF25]/5 hover:bg-[#AFFF25]/20 shadow-[0_0_20px_rgba(175,255,37,0.15)]">
             <div className="w-12 h-12 rounded-full border-2 border-[#AFFF25] flex items-center justify-center"><Plus size={28} className="text-[#AFFF25]" /></div>
           </div>

@@ -268,14 +268,14 @@ export default function CardDetailsPage() {
         )}
       </div>
 
-      {/* HEADER */}
+      {/* 🚨 HEADER ADAPTÉ POUR LA SAFE AREA 🚨 */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* PARTIE GAUCHE (CARTE 3D) */}
-      <div className={`fixed ${isHorizontal ? 'top-[150px]' : 'top-[16px]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
+      {/* PARTIE GAUCHE (CARTE 3D) : Descendue proportionnellement à la Safe Area */}
+      <div className={`fixed ${isHorizontal ? 'top-[calc(150px+env(safe-area-inset-top))]' : 'top-[calc(80px+env(safe-area-inset-top))]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         
         <div 
           ref={cardRef} 
@@ -338,8 +338,8 @@ export default function CardDetailsPage() {
         </div>
       </div>
 
-      {/* 📊 PARTIE DROITE (INFOS) */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[450px] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-[calc(100vh-88px)] lg:min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
+      {/* 📊 PARTIE DROITE (INFOS) : Marge du haut (mt) décalée par la Safe Area */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(450px+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">

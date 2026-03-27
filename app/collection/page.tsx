@@ -548,7 +548,8 @@ export default function CollectionPage() {
   if (activeFolderId && currentFolder) {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
-        <div className="pt-8 pb-4 px-6 lg:px-[80px] flex items-center justify-between gap-4">
+        {/* 🚨 HEADER DOSSIER : Padding modifié pour la Safe Area 🚨 */}
+        <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-4 px-6 lg:px-[80px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 overflow-hidden">
             <button onClick={() => setActiveFolderId(null)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0"><ChevronLeft size={20} /></button>
             <div className="overflow-hidden"><div className="text-xs text-[#AFFF25] font-bold uppercase tracking-widest">{currentFolder.type}</div><h1 className="text-3xl font-black italic uppercase tracking-tighter leading-none truncate">{currentFolder.name}</h1></div>
@@ -569,7 +570,8 @@ export default function CollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden w-full">
-      <div className="pt-8 pb-4 shrink-0 z-10 relative bg-[#040221] w-full">
+      {/* 🚨 HEADER COLLECTION : Padding modifié pour la Safe Area 🚨 */}
+      <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-4 shrink-0 z-10 relative bg-[#040221] w-full">
         <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Collection"}</h1>
         {!targetFolderId && (
           <div className="flex justify-center px-6 gap-6 mb-4">

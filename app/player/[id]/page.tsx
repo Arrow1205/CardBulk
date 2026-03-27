@@ -19,7 +19,8 @@ export default function PlayerPage() {
   }, [id]);
 
   return (
-    <div className="p-6 pt-12">
+    // 🚨 AJOUT DE LA SAFE AREA EN HAUT ET DE LA MARGE TAB BAR EN BAS 🚨
+    <div className="px-6 pb-32 pt-[calc(3rem+env(safe-area-inset-top))] min-h-screen">
       <div className="mb-10">
         <p className="text-[#DFFF00] font-bold uppercase text-xs mb-1">{player?.clubs?.name}</p>
         <h1 className="text-5xl font-black italic uppercase leading-none">{player?.name}</h1>

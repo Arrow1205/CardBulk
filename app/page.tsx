@@ -71,10 +71,10 @@ export default function HomePage() {
   if (loading) return <div className="min-h-screen bg-[#040221] flex justify-center items-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white pb-36 font-sans overflow-x-hidden relative z-10">
+    <div className="min-h-screen bg-[#040221] text-white pb-32 font-sans overflow-x-hidden relative z-10">
       
-      {/* HEADER MIS À JOUR AVEC LE LOGO EN 3.4rem */}
-      <header className="pt-6 pb-2 text-center flex justify-center items-center">
+      {/* 🚨 HEADER MIS À JOUR AVEC LA SAFE AREA 🚨 */}
+      <header className="pt-[calc(1.5rem+env(safe-area-inset-top))] pb-2 text-center flex justify-center items-center">
         <img 
           src="/Logo-scan-hobby.svg" 
           alt="Scan Hobby Logo" 

@@ -740,9 +740,19 @@ function ScannerContent() {
     setIsApplyingEdit(true);
     
     try {
-      let currentBlob = activeSide === 'front' ? selectedFile : selectedFileBack;
-      const localSrc = await getLocalImageUrl(currentPreview, currentBlob);
-      if (!localSrc) return;
+      let localSrc = currentPreview;
+      let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
+
+      if (!currentBlob && currentPreview.startsWith('http')) {
+          const body = new FormData();
+          body.append("action", "proxy");
+          body.append("imageUrl", currentPreview);
+          const res = await fetch("/api/scan", { method: "POST", body });
+          const data = await res.json();
+          if (data.base64) localSrc = data.base64;
+      } else if (currentBlob) {
+          localSrc = URL.createObjectURL(currentBlob);
+      }
 
       const img = new Image();
       img.src = localSrc;
@@ -783,9 +793,19 @@ function ScannerContent() {
     setIsApplyingEdit(true);
     
     try {
-      let currentBlob = activeSide === 'front' ? selectedFile : selectedFileBack;
-      const localSrc = await getLocalImageUrl(currentPreview, currentBlob);
-      if (!localSrc) return;
+      let localSrc = currentPreview;
+      let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
+
+      if (!currentBlob && currentPreview.startsWith('http')) {
+          const body = new FormData();
+          body.append("action", "proxy");
+          body.append("imageUrl", currentPreview);
+          const res = await fetch("/api/scan", { method: "POST", body });
+          const data = await res.json();
+          if (data.base64) localSrc = data.base64;
+      } else if (currentBlob) {
+          localSrc = URL.createObjectURL(currentBlob);
+      }
 
       const img = new Image();
       img.src = localSrc;
@@ -969,7 +989,7 @@ function ScannerContent() {
               </div>
           </div>
 
-          <div className="absolute bottom-0 left-0 w-full px-8 pb-12 z-20 flex justify-center gap-4 bg-gradient-to-t from-[#040221] pt-10">
+          <div className="absolute bottom-0 left-0 w-full px-8 pb-32 z-20 flex justify-center gap-4 bg-gradient-to-t from-[#040221] pt-20">
               <button onClick={() => setFreeCropImage(null)} className="w-[140px] py-3.5 bg-white/10 border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
               <button onClick={applyFreeCrop} disabled={isApplyingEdit} className="w-[140px] py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all flex justify-center items-center gap-2">
                  {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
@@ -1130,12 +1150,12 @@ function ScannerContent() {
           
           {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
-              {/* BOUTON CROP MANUEL */}
-              <button onClick={(e) => { e.preventDefault(); openManualCrop(); }} className="absolute -left-20 bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><Crop size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              {/* BOUTON CROP MANUEL PLACÉ AU-DESSUS DES FILTRES */}
+              <button onClick={(e) => { e.preventDefault(); openManualCrop(); }} className="absolute -left-4 bottom-20 lg:-left-6 lg:bottom-24 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><Crop size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
               {/* BOUTON EDIT */}
-              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-6 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
               {/* BOUTON ROTATE */}
-              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-6 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
             </>
           )}
         </div>

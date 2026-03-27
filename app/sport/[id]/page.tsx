@@ -19,7 +19,8 @@ export default function EditCardPage() {
   };
 
   return (
-    <div className="p-6 pt-12">
+    // 🚨 AJOUT DE LA SAFE AREA EN HAUT ET DE LA MARGE TAB BAR EN BAS 🚨
+    <div className="px-6 pb-32 pt-[calc(3rem+env(safe-area-inset-top))] min-h-screen">
       <h1 className="text-3xl font-black italic uppercase mb-10">Modifier les infos</h1>
       <div className="space-y-6">
         <div>
@@ -31,7 +32,7 @@ export default function EditCardPage() {
           />
         </div>
         {/* Répéter pour les autres champs */}
-        <button onClick={saveCard} className="w-full bg-[#DFFF00] text-black py-4 rounded-xl font-bold uppercase italic mt-10">
+        <button onClick={saveCard} className="w-full bg-[#DFFF00] text-black py-4 rounded-xl font-bold uppercase italic mt-10 shadow-[0_0_15px_rgba(223,255,0,0.3)] active:scale-95 transition-transform">
           Enregistrer dans la collection
         </button>
       </div>

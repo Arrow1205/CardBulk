@@ -183,7 +183,8 @@ export default function StatsPage() {
       
       <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
         
-        <div className="pt-8 pb-4 px-6 flex justify-center items-center">
+        {/* 🚨 AJOUT DE LA SAFE AREA ICI 🚨 */}
+        <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-4 px-6 flex justify-center items-center">
           <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none drop-shadow-lg">Statistiques</h1>
         </div>
 
@@ -308,11 +309,10 @@ export default function StatsPage() {
         </div>
       </div>
 
-      {/* 📈 PARTIE DROITE (GRAPHIQUE) - TOTALEMENT AGRANDIE ! */}
+      {/* 📈 PARTIE DROITE (GRAPHIQUE) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-2 sm:px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
         
         <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
-          {/* Le container est beaucoup plus grand (h-[450px] sur mobile, jusqu'à 650px sur PC) */}
           <div className="w-full h-[450px] sm:h-[500px] lg:h-[650px] max-w-full lg:max-w-[700px] relative z-20 flex justify-center px-2">
             {statsUniques.length > 0 ? (
               <Radar data={radarData} options={radarOptions} plugins={[customDataLabelsPlugin]} />
