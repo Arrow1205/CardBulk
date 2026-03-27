@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, X, LayoutGrid, ChevronDown, Euro, Hash, Trophy } from 'lucide-react';
-import { Radar, Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, Tooltip, Legend, ArcElement } from 'chart.js';
 
-// Initialisation de Chart.js pour le Radar et le Donut
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement);
+// Initialisation de Chart.js pour le Donut
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -74,109 +74,46 @@ export default function StatsPage() {
   const getVal = (list: any[]) => displayMode === 'count' ? list.length : list.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0);
 
   // ----------------------------------------------------------------------
-  // 1. DATA: SPÉCIFICITÉS (Radar)
+  // 1. DATA: SPÉCIFICITÉS & SOUS-CATÉGORIES
   // ----------------------------------------------------------------------
   const autosGlobal = filteredCards.filter(c => c.is_auto);
   const patchesGlobal = filteredCards.filter(c => c.is_patch);
   const numberedsGlobal = filteredCards.filter(c => c.is_numbered);
 
-  const statsUniques = [
-    { label: 'Auto Seul', list: filteredCards.filter(c => c.is_auto && !c.is_patch && !c.is_numbered), color: '#AFFF25' },
-    { label: 'Patch Seul', list: filteredCards.filter(c => !c.is_auto && c.is_patch && !c.is_numbered), color: 'rgba(175, 255, 37, 0.7)' },
-    { label: 'Numérotée Seule', list: filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered), color: '#FFFFFF' },
-    { label: 'Auto + Patch', list: filteredCards.filter(c => c.is_auto && c.is_patch && !c.is_numbered), color: 'rgba(255, 255, 255, 0.7)' },
-    { label: 'Auto + Num', list: filteredCards.filter(c => c.is_auto && !c.is_patch && c.is_numbered), color: 'rgba(175, 255, 37, 0.4)' },
-    { label: 'Patch + Num', list: filteredCards.filter(c => !c.is_auto && c.is_patch && c.is_numbered), color: 'rgba(255, 255, 255, 0.4)' },
-    { label: 'Auto+Patch+Num', list: filteredCards.filter(c => c.is_auto && c.is_patch && c.is_numbered), color: '#AFFF25' },
-  ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0);
+  const autosSeuls = filteredCards.filter(c => c.is_auto && !c.is_patch);
+  const autosPatchs = filteredCards.filter(c => c.is_auto && c.is_patch);
+  
+  const patchsSeuls = filteredCards.filter(c => !c.is_auto && c.is_patch);
+  
+  const numsSeules = filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered);
+  const numsHits = filteredCards.filter(c => (c.is_auto || c.is_patch) && c.is_numbered);
 
-  const maxVal = Math.max(...statsUniques.map(s => s.value), 0);
+  // Fonction pour afficher le détail par sport dans la popin
+  const renderSportBreakdown = (subset: any[]) => {
+    if (subset.length === 0) return null;
+    
+    const breakdown = availableSports.map(sport => {
+      const sportCards = subset.filter(c => c.sport === sport);
+      return {
+        label: SPORT_CONFIG[sport]?.label || sport,
+        value: getVal(sportCards)
+      };
+    }).filter(s => s.value > 0).sort((a, b) => b.value - a.value);
 
-  const radarData = {
-    labels: statsUniques.map(s => s.label),
-    datasets: [
-      {
-        label: displayMode === 'value' ? 'Valeur' : 'Nombre',
-        data: statsUniques.map(s => s.value),
-        backgroundColor: 'rgba(175, 255, 37, 0.2)',
-        borderColor: '#AFFF25',
-        borderWidth: 2,
-        pointBackgroundColor: statsUniques.map(s => s.color),
-        pointBorderColor: '#040221',
-        pointBorderWidth: 2,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-      },
-    ],
-  };
+    if (breakdown.length === 0) return null;
 
-  const radarOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: { padding: 16 },
-    scales: {
-      r: {
-        suggestedMax: isFinite(maxVal) ? maxVal * 1.15 : 10,
-        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
-        pointLabels: { display: false },
-        ticks: { display: false, backdropColor: 'transparent' }
-      }
-    },
-    plugins: {
-      legend: {
-        display: true, 
-        position: 'bottom' as const,
-        labels: {
-          color: '#FFFFFF',
-          usePointStyle: true, 
-          padding: 15,
-          font: { family: 'sans-serif', size: 11 },
-          generateLabels: (chart: any) => {
-             return statsUniques.map((stat, i) => ({
-               text: `${stat.label} : ${displayMode === 'value' ? stat.value.toLocaleString('fr-FR') + ' €' : stat.value}`,
-               fillStyle: stat.color,
-               strokeStyle: stat.color,
-               fontColor: '#FFFFFF',
-               hidden: false,
-               index: i
-             }));
-          }
-        }
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context: any) {
-            const valueLabel = displayMode === 'value' ? `${context.raw.toLocaleString('fr-FR')} €` : `${context.raw}`;
-            return ` ${valueLabel}`;
-          }
-        }
-      }
-    }
-  };
-
-  const customDataLabelsPlugin = {
-    id: 'customDataLabelsPlugin',
-    afterDatasetsDraw(chart: any) {
-      const { ctx, data } = chart;
-      ctx.save();
-      ctx.font = '900 16px sans-serif'; 
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-
-      chart.getDatasetMeta(0).data.forEach((datapoint: any, index: number) => {
-        const value = data.datasets[0].data[index];
-        const text = displayMode === 'value' ? `${value.toLocaleString('fr-FR')} €` : value.toString();
-        
-        ctx.strokeStyle = '#040221';
-        ctx.lineWidth = 6;
-        ctx.strokeText(text, datapoint.x, datapoint.y - 12);
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(text, datapoint.x, datapoint.y - 12);
-      });
-      ctx.restore();
-    }
+    return (
+      <div className="pl-3 mt-2 space-y-1.5 border-l-2 border-[#AFFF25]/30">
+        {breakdown.map((b, i) => (
+          <div key={i} className="flex justify-between items-center text-xs text-white/70">
+            <span>↳ {b.label}</span>
+            <span className="font-bold text-[#AFFF25]/80">
+              {displayMode === 'value' ? `${b.value.toLocaleString('fr-FR')} €` : b.value}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   // ----------------------------------------------------------------------
@@ -232,10 +169,10 @@ export default function StatsPage() {
 
 
   return (
-    <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:h-screen lg:overflow-hidden">
+    <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:justify-center lg:h-screen lg:overflow-hidden">
       
-      {/* 📜 COLONNE GAUCHE (Scrollable sur Mobile) */}
-      <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
+      {/* 📜 DASHBOARD CENTRAL (Scrollable) */}
+      <div className="w-full lg:max-w-4xl lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
         
         {/* HEADER */}
         <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-8 px-6 flex justify-center items-center">
@@ -368,7 +305,7 @@ export default function StatsPage() {
           </div>
         </div>
 
-        {/* 📊 NOUVEAU : RÉPARTITION PAR SPORT (DONUT) */}
+        {/* 📊 RÉPARTITION PAR SPORT (DONUT) */}
         <div className="px-6 mb-12">
           <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-6">Répartition par Sport</h2>
           {sportStats.length > 0 ? (
@@ -393,7 +330,7 @@ export default function StatsPage() {
           )}
         </div>
 
-        {/* 💎 NOUVEAU : TOP 5 HEAVY HITTERS */}
+        {/* 💎 TOP 5 HEAVY HITTERS */}
         <div className="px-6 mb-10 pb-32 lg:pb-0">
           <div className="flex items-center gap-2 mb-4">
             <Trophy size={18} className="text-[#AFFF25]" />
@@ -434,20 +371,6 @@ export default function StatsPage() {
 
       </div>
 
-      {/* 📈 COLONNE DROITE (RADAR CHART) */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-2 sm:px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
-        
-        <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
-          <div className="w-full h-[450px] sm:h-[500px] lg:h-[650px] max-w-full lg:max-w-[700px] relative z-20 flex justify-center px-2">
-            {statsUniques.length > 0 ? (
-              <Radar data={radarData} options={radarOptions} plugins={[customDataLabelsPlugin]} />
-            ) : (
-              <div className="h-full w-full flex items-center justify-center text-white/50 font-normal italic text-center">Aucune combinaison à afficher pour ces filtres.</div>
-            )}
-          </div>
-        </div>
-      </div>
-
       {/* POP-IN DE DÉTAILS */}
       {activeDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -462,46 +385,66 @@ export default function StatsPage() {
                 <X size={18} />
               </button>
             </div>
-            <div className="space-y-4 mb-8">
+            
+            <div className="space-y-4 mb-8 max-h-[50vh] overflow-y-auto no-scrollbar pr-2">
               {activeDetail === 'auto' && (
                 <>
-                  <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
-                    <span className="text-sm text-white font-medium">Autographes seuls</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && !c.is_patch))} {displayMode === 'value' && '€'}</span>
+                  <div className="border-b border-[#AFFF25]/30 pb-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white font-medium">Autographes seuls</span>
+                      <span className="text-lg font-black text-[#AFFF25]">{getVal(autosSeuls).toLocaleString('fr-FR')} {displayMode === 'value' && '€'}</span>
+                    </div>
+                    {renderSportBreakdown(autosSeuls)}
                   </div>
-                  <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
-                    <span className="text-sm text-white font-medium">Auto + Patchs (RPA)</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && c.is_patch))} {displayMode === 'value' && '€'}</span>
+                  <div className="border-b border-[#AFFF25]/30 pb-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white font-medium">Auto + Patchs (RPA)</span>
+                      <span className="text-lg font-black text-[#AFFF25]">{getVal(autosPatchs).toLocaleString('fr-FR')} {displayMode === 'value' && '€'}</span>
+                    </div>
+                    {renderSportBreakdown(autosPatchs)}
                   </div>
                 </>
               )}
 
               {activeDetail === 'patch' && (
                 <>
-                  <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
-                    <span className="text-sm text-white font-medium">Patchs seuls</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => !c.is_auto && c.is_patch))} {displayMode === 'value' && '€'}</span>
+                  <div className="border-b border-[#AFFF25]/30 pb-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white font-medium">Patchs seuls</span>
+                      <span className="text-lg font-black text-[#AFFF25]">{getVal(patchsSeuls).toLocaleString('fr-FR')} {displayMode === 'value' && '€'}</span>
+                    </div>
+                    {renderSportBreakdown(patchsSeuls)}
                   </div>
-                  <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
-                    <span className="text-sm text-white font-medium">Patchs + Autos (RPA)</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => c.is_auto && c.is_patch))} {displayMode === 'value' && '€'}</span>
+                  <div className="border-b border-[#AFFF25]/30 pb-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white font-medium">Patchs + Autos (RPA)</span>
+                      <span className="text-lg font-black text-[#AFFF25]">{getVal(autosPatchs).toLocaleString('fr-FR')} {displayMode === 'value' && '€'}</span>
+                    </div>
+                    {renderSportBreakdown(autosPatchs)}
                   </div>
                 </>
               )}
 
               {activeDetail === 'numbered' && (
                 <>
-                  <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
-                    <span className="text-sm text-white font-medium">Numérotées seules</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered))} {displayMode === 'value' && '€'}</span>
+                  <div className="border-b border-[#AFFF25]/30 pb-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white font-medium">Numérotées seules</span>
+                      <span className="text-lg font-black text-[#AFFF25]">{getVal(numsSeules).toLocaleString('fr-FR')} {displayMode === 'value' && '€'}</span>
+                    </div>
+                    {renderSportBreakdown(numsSeules)}
                   </div>
-                  <div className="flex justify-between items-center border-b border-[#AFFF25]/30 pb-3">
-                    <span className="text-sm text-white font-medium">Numérotées + Hit (Auto/Patch)</span>
-                    <span className="text-lg font-black text-[#AFFF25]">{getVal(filteredCards.filter(c => (c.is_auto || c.is_patch) && c.is_numbered))} {displayMode === 'value' && '€'}</span>
+                  <div className="border-b border-[#AFFF25]/30 pb-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white font-medium">Numérotées + Hit (Auto/Patch)</span>
+                      <span className="text-lg font-black text-[#AFFF25]">{getVal(numsHits).toLocaleString('fr-FR')} {displayMode === 'value' && '€'}</span>
+                    </div>
+                    {renderSportBreakdown(numsHits)}
                   </div>
                 </>
               )}
             </div>
+            
             <button onClick={() => setActiveDetail(null)} className="w-full py-4 bg-transparent border border-[#AFFF25] text-[#AFFF25] hover:bg-[#AFFF25] hover:text-[#040221] rounded-xl font-bold uppercase tracking-widest text-xs transition-colors">
               Fermer
             </button>
