@@ -10,10 +10,11 @@ export async function POST(req: Request) {
 
     let html = '';
     const isEbay = url.toLowerCase().includes('ebay');
+    const isCardhobby = url.toLowerCase().includes('cardhobby');
     
     try {
-      // Pour eBay on simule un navigateur Chrome classique, pour Vinted on simule Googlebot
-      const userAgent = isEbay 
+      // Pour eBay et Cardhobby on simule un navigateur Chrome classique, pour Vinted on simule Googlebot
+      const userAgent = (isEbay || isCardhobby)
         ? 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         : 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
 
@@ -100,9 +101,8 @@ export async function POST(req: Request) {
       if (metaPrice) extractedPrice = metaPrice[1];
     }
 
-    // 🚀 C: SUPER-EXTRACTEUR SPÉCIFIQUE EBAY
+    // C: SUPER-EXTRACTEUR SPÉCIFIQUE EBAY
     if (!extractedPrice && isEbay) {
-      
       // Niveau 1 : Le code JSON interne d'eBay (très fiable sur mobile)
       let ebayJsonPrice = html.match(/"price"\s*:\s*["']?(\d+([.,]\d{1,2})?)["']?/i) 
                        || html.match(/"convertedPrice"\s*:\s*["']?(\d+([.,]\d{1,2})?)["']?/i);
@@ -121,9 +121,8 @@ export async function POST(req: Request) {
       if (!extractedPrice) {
         let ebayDiv = html.match(/class=["'][^"']*(?:x-price-primary|prc-display)[^"']*["'][^>]*>([\s\S]*?)<\/(?:div|span)>/i);
         if (ebayDiv) {
-          // On détruit tout le code HTML (<span...>) pour ne garder que le texte pur ("EUR 15.00")
           let cleanText = ebayDiv[1].replace(/<[^>]+>/g, ' ').trim();
-          const regexPrice = /([0-9]+[.,][0-9]{2})/; // Cherche exactement XX.XX ou XX,XX
+          const regexPrice = /([0-9]+[.,][0-9]{2})/; 
           const found = cleanText.match(regexPrice);
           if (found) extractedPrice = found[1];
         }
@@ -136,6 +135,12 @@ export async function POST(req: Request) {
       if (vintedPrice) extractedPrice = vintedPrice[1];
     }
 
+    // E: Spécifique Cardhobby (si le prix est dans le HTML de base)
+    if (!extractedPrice && isCardhobby) {
+       let hobbyPrice = html.match(/"price"\s*:\s*([\d.]+)/i) || html.match(/¥\s*([\d.]+)/i);
+       if (hobbyPrice) extractedPrice = hobbyPrice[1];
+    }
+
     // --------------------------------------------------------
     // 3️⃣ NETTOYAGE ABSOLU DU PRIX
     // --------------------------------------------------------
@@ -143,7 +148,6 @@ export async function POST(req: Request) {
       extractedPrice = extractedPrice.replace(',', '.'); // Format standard Next.js
       extractedPrice = extractedPrice.replace(/[^\d.]/g, ''); // Détruit les lettres (EUR, $)
       
-      // Sécurité si un prix a plusieurs points à cause du texte environnant
       const parts = extractedPrice.split('.');
       if (parts.length > 2) {
          extractedPrice = parts.slice(0, -1).join('') + '.' + parts[parts.length-1];

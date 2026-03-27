@@ -124,7 +124,6 @@ function ScannerContent() {
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
 
-  // ✂️ ETAT DU CROP LIBRE (FREE CROP)
   const [freeCropImage, setFreeCropImage] = useState<string | null>(null);
   const [cropRect, setCropRect] = useState({ top: 10, left: 10, right: 90, bottom: 90 });
   const [draggingCorner, setDraggingCorner] = useState<string | null>(null);
@@ -218,12 +217,9 @@ function ScannerContent() {
     }
   }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
 
-  // GESTION DU DRAG POUR LE CROP MANUEL
   useEffect(() => {
     const handleMove = (e: TouchEvent | MouseEvent) => {
         if (!draggingCorner || !cropContainerRef.current) return;
-        
-        // Empêcher le scroll de la page pendant qu'on crope
         if (e.cancelable) e.preventDefault();
         
         const rect = cropContainerRef.current.getBoundingClientRect();
@@ -238,7 +234,7 @@ function ScannerContent() {
 
         setCropRect(prev => {
             let r = { ...prev };
-            const MIN_SIZE = 10; // Pourcentage minimum du cadre
+            const MIN_SIZE = 10; 
             if (draggingCorner.includes('l')) r.left = Math.min(xPct, r.right - MIN_SIZE);
             if (draggingCorner.includes('r')) r.right = Math.max(xPct, r.left + MIN_SIZE);
             if (draggingCorner.includes('t')) r.top = Math.min(yPct, r.bottom - MIN_SIZE);
@@ -262,7 +258,6 @@ function ScannerContent() {
     }
   }, [draggingCorner]);
 
-  // HELPER POUR CONTOURNER LE CORS
   const getLocalImageUrl = async (url: string | null, file: File | null) => {
       if (!url) return null;
       if (!file && url.startsWith('http')) {
@@ -480,7 +475,6 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
-  // 📸 VRAI AUTO-CROP A LA PRISE DE PHOTO (Calcul exact via object-cover et guideRef)
   const captureImageAndCrop = () => {
     if (!videoRef.current || !guideRef.current) return;
     
@@ -498,7 +492,6 @@ function ScannerContent() {
     const vH = video.videoHeight;
     if (!vW || !vH) return; 
 
-    // Calcul mathématique précis pour retrouver la position de l'image projetée sur l'écran
     const vRatio = vW / vH;
     const cRatio = containerW / containerH;
 
@@ -537,7 +530,6 @@ function ScannerContent() {
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
-    // Découpage chirurgical au moment de dessiner sur le canvas
     ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
@@ -566,7 +558,6 @@ function ScannerContent() {
       setPendingCards(newPending); setIsVerifyingBulk(true); setCurrentVerifyIndex(0);
       newPending.forEach(c => processBackgroundScan(c.id, c.file));
     } else {
-      // ✂️ On ouvre le mode Free Crop au lieu de l'ancien modal
       const url = URL.createObjectURL(files[0]);
       setFreeCropImage(url);
       setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
@@ -585,7 +576,6 @@ function ScannerContent() {
     }
   };
 
-  // ✂️ APPLICATION DU FREE CROP (MANUEL)
   const applyFreeCrop = async () => {
     if (!freeCropImage) return;
     setIsApplyingEdit(true);
@@ -598,7 +588,6 @@ function ScannerContent() {
     const ctx = canvas.getContext('2d'); 
     if (!ctx) return;
     
-    // Calcul des pixels exacts en fonction des pourcentages des curseurs manuels
     const cX = (cropRect.left / 100) * img.width;
     const cY = (cropRect.top / 100) * img.height;
     const cW = ((cropRect.right - cropRect.left) / 100) * img.width;
@@ -962,7 +951,6 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* ✂️ MODAL DE RECADRAGE LIBRE (FREE CROP) ✂️ */}
       {freeCropImage && !analyzing && !isVerifyingBulk && (
         <div className="fixed inset-0 z-[200] bg-[#040221] flex flex-col items-center justify-center overflow-hidden">
           <h2 className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] text-xl font-black italic text-[#AFFF25] tracking-widest uppercase z-50">Recadrer</h2>
@@ -970,17 +958,13 @@ function ScannerContent() {
           <div className="relative w-full h-[70vh] max-w-lg mt-12 flex items-center justify-center" ref={cropContainerRef}>
               <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-full pointer-events-none" alt="To Crop" />
               
-              {/* Overlay / Zone de Crop */}
               <div className="absolute inset-0 z-10 touch-none">
-                 {/* Masques assombris (les seules ombres techniques conservées) */}
                  <div className="absolute top-0 left-0 right-0 bg-black/70" style={{ height: `${cropRect.top}%` }} />
                  <div className="absolute bottom-0 left-0 right-0 bg-black/70" style={{ height: `${100 - cropRect.bottom}%` }} />
                  <div className="absolute top-0 bottom-0 left-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${cropRect.left}%` }} />
                  <div className="absolute top-0 bottom-0 right-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${100 - cropRect.right}%` }} />
 
-                 {/* Cadre de sélection */}
                  <div className="absolute border-2 border-[#AFFF25]" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, left: `${cropRect.left}%`, right: `${100 - cropRect.right}%` }}>
-                     {/* Poignées de redimensionnement */}
                      <div onTouchStart={() => setDraggingCorner('tl')} onMouseDown={() => setDraggingCorner('tl')} className="absolute -top-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
                      <div onTouchStart={() => setDraggingCorner('tr')} onMouseDown={() => setDraggingCorner('tr')} className="absolute -top-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
                      <div onTouchStart={() => setDraggingCorner('bl')} onMouseDown={() => setDraggingCorner('bl')} className="absolute -bottom-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
@@ -998,14 +982,12 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* OVERLAY CAMERA */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
           {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
-          {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
@@ -1040,7 +1022,6 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* HEADER */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none bg-gradient-to-b from-[#040221] to-transparent">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto">{isVerifyingBulk ? `CARTE ${currentVerifyIndex + 1}/${pendingCards.length}` : pageTitle}</h1>
@@ -1049,7 +1030,6 @@ function ScannerContent() {
         </div>
       </header>
 
-      {/* 🖌️ EDITEUR PHOTO MODAL */}
       {showEditor && activePreviewUrl && (
         <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
           <header className="flex justify-between items-center mb-6 pt-[calc(1.5rem+env(safe-area-inset-top))]">
@@ -1085,7 +1065,6 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[120px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!isWishlistMode && !isVerifyingBulk && (
@@ -1150,17 +1129,13 @@ function ScannerContent() {
           
           {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
-              {/* BOUTON CROP MANUEL PLACÉ AU-DESSUS DES FILTRES */}
               <button onClick={(e) => { e.preventDefault(); openManualCrop(); }} className="absolute -left-4 bottom-20 lg:-left-6 lg:bottom-24 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><Crop size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
-              {/* BOUTON EDIT */}
               <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-6 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
-              {/* BOUTON ROTATE */}
               <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-6 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
             </>
           )}
         </div>
 
-        {/* 🚨 BOUTONS D'ÉDITION D'IMAGE EXPLICITES 100% LARGEUR 🚨 */}
         {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
           <div className="flex gap-2 w-full max-w-full px-4 lg:max-w-[400px] mx-auto pointer-events-auto">
              <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all whitespace-nowrap">
@@ -1173,7 +1148,6 @@ function ScannerContent() {
         )}
       </div>
 
-      {/* 📋 PARTIE DROITE (FORMULAIRE) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="space-y-8">
@@ -1328,6 +1302,28 @@ function ScannerContent() {
                   <input value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="Prix estimé / Prix d'achat" className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 pr-10 outline-none focus:border-[#AFFF25]/50 transition-colors" />
                   <span className="absolute right-5 top-5 text-[#AFFF25] font-bold">€</span>
                 </div>
+
+               {/* 🚨 CHAMP LIEN WEB (RÉSERVÉ À LA WISHLIST) 🚨 */}
+{isWishlistMode && (
+  <div className="relative w-full pt-4">
+    <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Lien d'achat (Optionnel)</label>
+    <div className="flex gap-2">
+      <input 
+        value={formData.website_url} 
+        onChange={e => setFormData({...formData, website_url: e.target.value})} 
+        placeholder="Lien eBay, Vinted..." 
+        className="flex-1 bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
+      />
+      <button 
+        onClick={handleUrlImport} 
+        disabled={!formData.website_url || analyzing} 
+        className="bg-[#AFFF25] text-[#040221] px-4 rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-transform disabled:opacity-50 shrink-0"
+      >
+        Scraper
+      </button>
+    </div>
+  </div>
+)}
               </div>
             )}
           </div>
