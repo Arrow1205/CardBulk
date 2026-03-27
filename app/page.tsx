@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, User, ChevronDown, LogOut, UserPlus, ScanLine } from 'lucide-react';
 import { Loader2, User, ChevronDown, LogOut, UserPlus, ScanLine, Settings } from 'lucide-react';
 
 // Type pour gérer notre multi-compte
