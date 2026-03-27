@@ -951,11 +951,14 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
+      {/* 🚨 MODALE DE RECADRAGE MANUEL RÉPARÉE (55vh au lieu de 70vh) 🚨 */}
       {freeCropImage && !analyzing && !isVerifyingBulk && (
-        <div className="fixed inset-0 z-[200] bg-[#040221] flex flex-col items-center justify-center overflow-hidden">
-          <h2 className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] text-xl font-black italic text-[#AFFF25] tracking-widest uppercase z-50">Recadrer</h2>
+        <div className="fixed inset-0 z-[200] bg-[#040221] flex flex-col items-center justify-between pt-[calc(1.5rem+env(safe-area-inset-top))] pb-32 overflow-hidden">
           
-          <div className="relative w-full h-[70vh] max-w-lg mt-12 flex items-center justify-center" ref={cropContainerRef}>
+          <h2 className="text-xl font-black italic text-[#AFFF25] tracking-widest uppercase mb-4">Recadrer</h2>
+          
+          {/* ZONE DE CROPPING */}
+          <div className="relative w-full h-[55vh] max-w-lg flex items-center justify-center" ref={cropContainerRef}>
               <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-full pointer-events-none" alt="To Crop" />
               
               <div className="absolute inset-0 z-10 touch-none">
@@ -973,7 +976,8 @@ function ScannerContent() {
               </div>
           </div>
 
-          <div className="absolute bottom-0 left-0 w-full px-8 pb-32 z-20 flex justify-center gap-4 bg-gradient-to-t from-[#040221] pt-20">
+          {/* BOUTONS EN BAS DANS LE FLUX NORMAL */}
+          <div className="w-full flex justify-center gap-4 mt-8 px-8 z-20">
               <button onClick={() => setFreeCropImage(null)} className="w-[140px] py-3.5 bg-white/10 border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
               <button onClick={applyFreeCrop} disabled={isApplyingEdit} className="w-[140px] py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all flex justify-center items-center gap-2">
                  {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
@@ -1065,6 +1069,7 @@ function ScannerContent() {
         </div>
       )}
 
+      {/* COLONNE GAUCHE (PREVIEW) */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[120px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!isWishlistMode && !isVerifyingBulk && (
@@ -1090,7 +1095,8 @@ function ScannerContent() {
           </div>
         )}
 
-        <div className="relative w-full max-w-[240px] lg:max-w-[350px] mx-auto mb-6 lg:mb-10">
+        {/* 🚨 LARGEUR MAX RÉDUITE POUR PROTÉGER LES BOUTONS (220px) 🚨 */}
+        <div className="relative w-full max-w-[220px] lg:max-w-[320px] mx-auto mb-6 lg:mb-10">
           
           {activePreviewUrl ? (
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl">
@@ -1149,27 +1155,29 @@ function ScannerContent() {
       </div>
 
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
-        {/* 🚨 CHAMP LIEN WEB (RÉSERVÉ À LA WISHLIST) 🚨 */}
-{isWishlistMode && (
-  <div className="relative w-full pt-4">
-    <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Lien d'achat (Optionnel)</label>
-    <div className="flex gap-2">
-      <input 
-        value={formData.website_url} 
-        onChange={e => setFormData({...formData, website_url: e.target.value})} 
-        placeholder="Lien eBay, Vinted..." 
-        className="flex-1 bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
-      />
-      <button 
-        onClick={handleUrlImport} 
-        disabled={!formData.website_url || analyzing} 
-        className="bg-[#AFFF25] text-[#040221] px-4 rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-transform disabled:opacity-50 shrink-0"
-      >
-        Importer
-      </button>
-    </div>
-  </div>
-)}
+        
+        {/* 🚨 NOUVEAU : LE CHAMP LIEN TOUT EN HAUT SI WISHLIST 🚨 */}
+        {isWishlistMode && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-8">
+            <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-3 uppercase">Importer depuis un lien (Optionnel)</label>
+            <div className="flex gap-2">
+              <input 
+                value={formData.website_url} 
+                onChange={e => setFormData({...formData, website_url: e.target.value})} 
+                placeholder="Lien eBay, Vinted, Cardhobby..." 
+                className="flex-1 bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
+              />
+              <button 
+                onClick={handleUrlImport} 
+                disabled={!formData.website_url || analyzing} 
+                className="bg-[#AFFF25] text-[#040221] px-5 rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-transform disabled:opacity-50 shrink-0"
+              >
+                Importer
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-8">
           <div>
             <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
@@ -1323,7 +1331,6 @@ function ScannerContent() {
                   <span className="absolute right-5 top-5 text-[#AFFF25] font-bold">€</span>
                 </div>
 
-               
               </div>
             )}
           </div>

@@ -82,7 +82,7 @@ export default function CardDetailsPage() {
 
   const handleManualPriceUpdate = async () => {
     if (!card) return;
-    setIsUpdatingPrice(true);
+    isUpdatingPrice(true);
     
     let formattedYear = card.year;
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
@@ -112,7 +112,7 @@ export default function CardDetailsPage() {
       console.error("Erreur de MAJ des prix", e);
       alert("Erreur lors de la recherche du prix.");
     } finally {
-      setIsUpdatingPrice(false);
+      isUpdatingPrice(false);
     }
   };
 
@@ -338,8 +338,8 @@ export default function CardDetailsPage() {
         </div>
       </div>
 
-      {/* 🚨 PARTIE DROITE (INFOS) : Marge du haut (mt-30rem) et ombre adoucie (-10px au lieu de -20px) 🚨 */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(30rem+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-10px_40px_rgba(0,0,0,0.8)] lg:shadow-[-10px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
+      {/* 🚨 PARTIE DROITE (INFOS) : Marge du haut augmentée pour visibilité totale de la carte 3D (30rem -> 32.5rem) 🚨 */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(32.5rem+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-10px_40px_rgba(0,0,0,0.8)] lg:shadow-[-10px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
