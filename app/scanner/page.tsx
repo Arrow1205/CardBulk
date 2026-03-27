@@ -1149,7 +1149,27 @@ function ScannerContent() {
       </div>
 
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
-        
+        {/* 🚨 CHAMP LIEN WEB (RÉSERVÉ À LA WISHLIST) 🚨 */}
+{isWishlistMode && (
+  <div className="relative w-full pt-4">
+    <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Lien d'achat (Optionnel)</label>
+    <div className="flex gap-2">
+      <input 
+        value={formData.website_url} 
+        onChange={e => setFormData({...formData, website_url: e.target.value})} 
+        placeholder="Lien eBay, Vinted..." 
+        className="flex-1 bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
+      />
+      <button 
+        onClick={handleUrlImport} 
+        disabled={!formData.website_url || analyzing} 
+        className="bg-[#AFFF25] text-[#040221] px-4 rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-transform disabled:opacity-50 shrink-0"
+      >
+        Importer
+      </button>
+    </div>
+  </div>
+)}
         <div className="space-y-8">
           <div>
             <div className="flex justify-between items-center cursor-pointer mb-4" onClick={() => setIsJoueurOpen(!isJoueurOpen)}>
@@ -1303,27 +1323,7 @@ function ScannerContent() {
                   <span className="absolute right-5 top-5 text-[#AFFF25] font-bold">€</span>
                 </div>
 
-               {/* 🚨 CHAMP LIEN WEB (RÉSERVÉ À LA WISHLIST) 🚨 */}
-{isWishlistMode && (
-  <div className="relative w-full pt-4">
-    <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-2">Lien d'achat (Optionnel)</label>
-    <div className="flex gap-2">
-      <input 
-        value={formData.website_url} 
-        onChange={e => setFormData({...formData, website_url: e.target.value})} 
-        placeholder="Lien eBay, Vinted..." 
-        className="flex-1 bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25]/50 transition-colors" 
-      />
-      <button 
-        onClick={handleUrlImport} 
-        disabled={!formData.website_url || analyzing} 
-        className="bg-[#AFFF25] text-[#040221] px-4 rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-transform disabled:opacity-50 shrink-0"
-      >
-        Scraper
-      </button>
-    </div>
-  </div>
-)}
+               
               </div>
             )}
           </div>
