@@ -82,7 +82,7 @@ export default function CardDetailsPage() {
 
   const handleManualPriceUpdate = async () => {
     if (!card) return;
-    setIsUpdatingPrice(true); // <-- CORRECTION ICI
+    setIsUpdatingPrice(true); 
     
     let formattedYear = card.year;
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
@@ -106,13 +106,14 @@ export default function CardDetailsPage() {
         alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
         fetchPriceHistory(); 
       } else {
-        alert("Aucun nouveau prix exploitable trouvé sur eBay pour le moment.");
+        // 🚨 C'est ici qu'on affiche la VRAIE erreur renvoyée par Google !
+        alert(`Erreur Google : ${data.error || "Erreur inconnue"}`);
       }
     } catch (e) {
       console.error("Erreur de MAJ des prix", e);
       alert("Erreur lors de la recherche du prix.");
     } finally {
-      setIsUpdatingPrice(false); // <-- CORRECTION ICI
+      setIsUpdatingPrice(false); 
     }
   };
 
