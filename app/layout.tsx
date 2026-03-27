@@ -10,8 +10,8 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false, // Bloque le zoom intempestif sur mobile
-  viewportFit: 'cover', // Ça force l'app à passer sous la barre d'état
+  userScalable: false,
+  viewportFit: 'cover',
   themeColor: '#040221',
 };
 
@@ -33,16 +33,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    {/* 🚨 SOLUTION ICI : Ajout de suppressHydrationWarning sur html et body 🚨 */}
     <html lang="fr" suppressHydrationWarning>
       <body className={`${inter.className} bg-[#040221] text-white overflow-x-hidden min-h-screen relative`} suppressHydrationWarning>
         
-        {/* LE CONTENU DE TES PAGES */}
         <div className="relative z-10">
           {children}
         </div>
         
-        {/* LA TAB BAR */}
         <TabBar />
         
       </body>
