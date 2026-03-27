@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, Mail, Lock, User, UserPlus, LogIn, ChevronRight } from 'lucide-react';
+import { Loader2, Mail, Lock, UserPlus, LogIn, ChevronRight } from 'lucide-react';
 
 const SPORT_CONFIG = [
   { id: 'SOCCER', label: 'Football' },
@@ -18,23 +18,29 @@ const SPORT_CONFIG = [
 export default function LoginPage() {
   const router = useRouter();
   
-  // États de l'interface
   const [loading, setLoading] = useState(false);
   const [initialCheck, setInitialCheck] = useState(true);
   const [isSignUp, setIsSignUp] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Données du formulaire
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [pseudo, setPseudo] = useState('');
   const [age, setAge] = useState('');
   const [selectedSports, setSelectedSports] = useState<string[]>([]);
 
-  // Vérification de la session au chargement
   useEffect(() => {
     checkSession();
+
+    // 🚨 LE CORRECTIF EST ICI : Écouteur en temps réel pour capter le retour de Google 🚨
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        await checkProfileCompletion(session.user.id);
+      }
+    });
+
+    return () => { subscription.unsubscribe(); };
   }, []);
 
   const checkSession = async () => {
@@ -47,16 +53,17 @@ export default function LoginPage() {
   };
 
   const checkProfileCompletion = async (userId: string) => {
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
-    
-    if (profile && !profile.pseudo) {
-      // Le compte existe mais le profil n'est pas rempli (ex: Inscription Google)
+    try {
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      
+      if (profile?.pseudo) {
+        router.push('/');
+      } else {
+        setStep(2);
+        setInitialCheck(false);
+      }
+    } catch (err) {
       setStep(2);
-      setInitialCheck(false);
-    } else if (profile && profile.pseudo) {
-      // Tout est bon, on va sur l'accueil
-      router.push('/');
-    } else {
       setInitialCheck(false);
     }
   };
@@ -70,15 +77,11 @@ export default function LoginPage() {
       if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        if (data.user) {
-          setStep(2); // On passe à l'étape 2 (Le trigger SQL a déjà créé la ligne profil)
-        }
+        if (data.user) setStep(2);
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        if (data.user) {
-          await checkProfileCompletion(data.user.id);
-        }
+        if (data.user) await checkProfileCompletion(data.user.id);
       }
     } catch (error: any) {
       setErrorMsg(error.message || 'Une erreur est survenue.');
@@ -91,7 +94,7 @@ export default function LoginPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/login` } // Redirige ici après Google pour vérifier l'étape 2
+      options: { redirectTo: `${window.location.origin}/login` }
     });
     if (error) {
       setErrorMsg(error.message);
@@ -115,8 +118,7 @@ export default function LoginPage() {
       }).eq('id', user.id);
 
       if (error) throw error;
-      
-      router.push('/'); // Profil terminé, on go sur la Home !
+      router.push('/');
     } catch (error: any) {
       setErrorMsg(error.message || 'Erreur lors de la sauvegarde du profil.');
       setLoading(false);
@@ -124,9 +126,7 @@ export default function LoginPage() {
   };
 
   const toggleSport = (sportId: string) => {
-    setSelectedSports(prev => 
-      prev.includes(sportId) ? prev.filter(id => id !== sportId) : [...prev, sportId]
-    );
+    setSelectedSports(prev => prev.includes(sportId) ? prev.filter(id => id !== sportId) : [...prev, sportId]);
   };
 
   if (initialCheck) return <div className="min-h-screen bg-[#040221] flex justify-center items-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
@@ -134,12 +134,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white flex flex-col items-center justify-center px-6 relative overflow-hidden font-sans">
       
-      {/* Background décoratif */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#AFFF25]/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="w-full max-w-sm relative z-10">
-        
-        {/* LOGO */}
         <div className="flex justify-center mb-10">
           <img src="/Logo-scan-hobby.svg" alt="Scan Hobby" className="h-16 object-contain" />
         </div>
@@ -150,34 +147,20 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* ================= ÉTAPE 1 : LOGIN / SIGNUP ================= */}
         {step === 1 && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <h1 className="text-2xl font-black italic uppercase tracking-tighter mb-2 text-center">
-              {isSignUp ? 'Créer un compte' : 'Se connecter'}
-            </h1>
-            <p className="text-white/50 text-xs text-center mb-8 font-medium">
-              {isSignUp ? 'Rejoignez la communauté Scan Hobby' : 'Bon retour parmi nous !'}
-            </p>
+            <h1 className="text-2xl font-black italic uppercase tracking-tighter mb-2 text-center">{isSignUp ? 'Créer un compte' : 'Se connecter'}</h1>
+            <p className="text-white/50 text-xs text-center mb-8 font-medium">{isSignUp ? 'Rejoignez la communauté Scan Hobby' : 'Bon retour parmi nous !'}</p>
 
             <form onSubmit={handleAuth} className="space-y-4">
               <div className="relative">
                 <Mail className="absolute left-4 top-3.5 text-white/40" size={18} />
-                <input 
-                  type="email" required placeholder="Adresse Email"
-                  value={email} onChange={e => setEmail(e.target.value)}
-                  className="w-full bg-[#080531] border border-white/10 p-3.5 pl-12 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" 
-                />
+                <input type="email" required placeholder="Adresse Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-[#080531] border border-white/10 p-3.5 pl-12 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" />
               </div>
               <div className="relative">
                 <Lock className="absolute left-4 top-3.5 text-white/40" size={18} />
-                <input 
-                  type="password" required placeholder="Mot de passe" minLength={6}
-                  value={password} onChange={e => setPassword(e.target.value)}
-                  className="w-full bg-[#080531] border border-white/10 p-3.5 pl-12 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" 
-                />
+                <input type="password" required placeholder="Mot de passe" minLength={6} value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-[#080531] border border-white/10 p-3.5 pl-12 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" />
               </div>
-
               <button disabled={loading} type="submit" className="w-full bg-[#AFFF25] text-[#040221] py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-[#9ee615] active:scale-95 transition-all mt-4">
                 {loading ? <Loader2 size={16} className="animate-spin" /> : (isSignUp ? <><UserPlus size={16} /> S'inscrire</> : <><LogIn size={16} /> Connexion</>)}
               </button>
@@ -202,33 +185,20 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* ================= ÉTAPE 2 : ONBOARDING (DATA) ================= */}
         {step === 2 && (
           <div className="animate-in fade-in slide-in-from-right-8 duration-300">
-            <h1 className="text-2xl font-black italic uppercase tracking-tighter mb-2 text-center text-[#AFFF25]">
-              Dernière étape !
-            </h1>
-            <p className="text-white/60 text-xs text-center mb-8 font-medium">
-              Faisons un peu connaissance pour personnaliser ton expérience.
-            </p>
+            <h1 className="text-2xl font-black italic uppercase tracking-tighter mb-2 text-center text-[#AFFF25]">Dernière étape !</h1>
+            <p className="text-white/60 text-xs text-center mb-8 font-medium">Faisons un peu connaissance pour personnaliser ton expérience.</p>
 
             <form onSubmit={saveProfile} className="space-y-6">
               <div className="space-y-4">
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Ton Pseudo</label>
-                  <input 
-                    type="text" required placeholder="Ex: PaniniMaster99"
-                    value={pseudo} onChange={e => setPseudo(e.target.value)}
-                    className="w-full bg-[#080531] border border-white/10 p-3.5 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" 
-                  />
+                  <input type="text" required placeholder="Ex: PaniniMaster99" value={pseudo} onChange={e => setPseudo(e.target.value)} className="w-full bg-[#080531] border border-white/10 p-3.5 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" />
                 </div>
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Ton Âge (Optionnel)</label>
-                  <input 
-                    type="number" placeholder="Ex: 28" min="1" max="99"
-                    value={age} onChange={e => setAge(e.target.value)}
-                    className="w-full bg-[#080531] border border-white/10 p-3.5 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" 
-                  />
+                  <input type="number" placeholder="Ex: 28" min="1" max="99" value={age} onChange={e => setAge(e.target.value)} className="w-full bg-[#080531] border border-white/10 p-3.5 rounded-xl text-sm outline-none focus:border-[#AFFF25]/50 transition-colors" />
                 </div>
               </div>
 
@@ -238,13 +208,7 @@ export default function LoginPage() {
                   {SPORT_CONFIG.map(sport => {
                     const isSelected = selectedSports.includes(sport.id);
                     return (
-                      <button
-                        key={sport.id} type="button"
-                        onClick={() => toggleSport(sport.id)}
-                        className={`px-4 py-2 rounded-full border text-xs font-bold transition-all duration-200 ${
-                          isSelected ? 'bg-[#AFFF25] border-[#AFFF25] text-[#040221]' : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
-                        }`}
-                      >
+                      <button key={sport.id} type="button" onClick={() => toggleSport(sport.id)} className={`px-4 py-2 rounded-full border text-xs font-bold transition-all duration-200 ${isSelected ? 'bg-[#AFFF25] border-[#AFFF25] text-[#040221]' : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'}`}>
                         {sport.label}
                       </button>
                     )
@@ -258,7 +222,6 @@ export default function LoginPage() {
             </form>
           </div>
         )}
-
       </div>
     </div>
   );

@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus } from 'lucide-react';
+// 🚨 AJOUT DE L'ICÔNE ScanLine ICI 🚨
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus, ScanLine } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -100,7 +101,7 @@ export default function CollectionPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
   
-  // 🚨 ÉTAT POUR L'ACCORDÉON DES VARIATIONS (Base ouvert par défaut)
+  // ÉTAT POUR L'ACCORDÉON DES VARIATIONS (Base ouvert par défaut)
   const [expandedVars, setExpandedVars] = useState<Record<string, boolean>>({ base: true });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -310,20 +311,20 @@ export default function CollectionPage() {
 
     const allJsonBrands = SET_DATA.brands?.map((b: any) => b.name) || [];
     
-    // 🚨 CONSTRUCTION DE L'ARBRE DES VARIATIONS (Basé sur les marques sélectionnées)
+    // CONSTRUCTION DE L'ARBRE DES VARIATIONS (Basé sur les marques sélectionnées)
     let variationsTree: any = {};
     const brandsToUse = selectedBrands.length > 0 ? selectedBrands : Object.keys(TYPE_CARTE);
     
     brandsToUse.forEach(brand => {
       const brandData = (TYPE_CARTE as any)[brand];
       if(!brandData) return;
-      Object.keys(brandData).forEach(catKey => { // base, parallels, inserts...
+      Object.keys(brandData).forEach(catKey => {
         if (!variationsTree[catKey]) variationsTree[catKey] = Array.isArray(brandData[catKey]) ? [] : {};
         
         if (Array.isArray(brandData[catKey])) {
           variationsTree[catKey].push(...brandData[catKey]);
         } else {
-          Object.keys(brandData[catKey]).forEach(subKey => { // standard_colors, refractors...
+          Object.keys(brandData[catKey]).forEach(subKey => {
             if (!variationsTree[catKey][subKey]) variationsTree[catKey][subKey] = [];
             variationsTree[catKey][subKey].push(...brandData[catKey][subKey]);
           });
@@ -407,7 +408,6 @@ export default function CollectionPage() {
                 </div>
               )}
 
-              {/* 🚨 NOUVEAU DROPDOWN VARIATIONS EN ACCORDÉON (Niveaux & Sous-niveaux) */}
               {openDropdown === 'variations' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-96 flex flex-col">
                   <div className="flex-1 overflow-y-auto no-scrollbar space-y-2 mb-4 pr-2">
@@ -415,17 +415,14 @@ export default function CollectionPage() {
                       const isArray = Array.isArray(variationsTree[catKey]);
                       return (
                         <div key={catKey} className="w-full">
-                          {/* Titre de la catégorie principale (ex: BASE, PARALLELS) */}
                           <div className="flex justify-between items-center py-2 border-b border-white/10 cursor-pointer" onClick={(e) => toggleVarNode(catKey, e)}>
                             <span className="font-black text-[#AFFF25] uppercase text-xs tracking-widest">{formatLabel(catKey)}</span>
                             {expandedVars[catKey] ? <Minus size={14} className="text-[#AFFF25]"/> : <Plus size={14} className="text-[#AFFF25]"/>}
                           </div>
                           
-                          {/* Contenu déroulant */}
                           {expandedVars[catKey] && (
                             <div className="pl-3 mt-2 space-y-2 border-l-2 border-white/10 ml-1">
                               {isArray ? (
-                                // Si c'est une liste simple (ex: BASE)
                                 Array.from(new Set(variationsTree[catKey])).sort().map((variation: any) => {
                                   const isActive = selectedVariations.includes(variation);
                                   const toggleVariation = (e: any) => { e.stopPropagation(); setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]); };
@@ -439,7 +436,6 @@ export default function CollectionPage() {
                                   )
                                 })
                               ) : (
-                                // Si ce sont des sous-catégories (ex: PARALLELS -> COLORS)
                                 Object.keys(variationsTree[catKey]).map(subKey => {
                                   const subNodeKey = `${catKey}-${subKey}`;
                                   return (
@@ -525,6 +521,7 @@ export default function CollectionPage() {
         )}
 
         <div className="px-6 lg:px-[80px] grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
+          {/* 🚨 GESTION DE L'AFFICHAGE "AUCUNE CARTE" SÉPARÉ DU RÉSULTAT DE FILTRES 🚨 */}
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
@@ -538,7 +535,19 @@ export default function CollectionPage() {
               );
             })
           ) : (
-            <div className="col-span-3 lg:col-span-5 text-center py-10 text-white/40 italic">Aucune carte ne correspond.</div>
+            cards.length === 0 ? (
+              <div className="col-span-3 lg:col-span-5 flex flex-col items-center justify-center py-20 px-4 gap-6">
+                <div className="text-white/40 italic font-bold text-center">Aucune carte dans ta collection</div>
+                <button 
+                  onClick={() => router.push('/scanner')} 
+                  className="bg-[#AFFF25] text-[#040221] px-6 py-4 rounded-full font-black uppercase tracking-widest text-xs active:scale-95 transition-all shadow-[0_0_20px_rgba(175,255,37,0.3)] flex items-center gap-2"
+                >
+                  <ScanLine size={18} strokeWidth={2.5} /> Scanner ma première carte
+                </button>
+              </div>
+            ) : (
+              <div className="col-span-3 lg:col-span-5 text-center py-10 text-white/40 italic">Aucune carte ne correspond aux critères.</div>
+            )
           )}
         </div>
       </div>
@@ -548,7 +557,6 @@ export default function CollectionPage() {
   if (activeFolderId && currentFolder) {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
-        {/* 🚨 HEADER DOSSIER : Padding modifié pour la Safe Area 🚨 */}
         <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-4 px-6 lg:px-[80px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 overflow-hidden">
             <button onClick={() => setActiveFolderId(null)} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0"><ChevronLeft size={20} /></button>
@@ -570,7 +578,6 @@ export default function CollectionPage() {
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans relative overflow-hidden w-full">
-      {/* 🚨 HEADER COLLECTION : Padding modifié pour la Safe Area 🚨 */}
       <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-4 shrink-0 z-10 relative bg-[#040221] w-full">
         <h1 className="text-3xl font-black italic text-white uppercase px-6 mb-6 tracking-tighter text-center">{targetFolderId ? "Sélection" : "Collection"}</h1>
         {!targetFolderId && (
