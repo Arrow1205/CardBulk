@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, ChevronDown, Plus, ExternalLink } from 'lucide-react';
+import { Loader2, Plus, ExternalLink, LayoutGrid } from 'lucide-react';
 
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'SOCCER': { image: 'Soccer', label: 'Football' },
@@ -14,6 +14,8 @@ const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'NFL': { image: 'NFL', label: 'Football Am.' },
   'F1': { image: 'F1', label: 'Formule 1' }
 };
+
+const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
 // Fonction pour extraire le nom du site à partir de l'URL
 const getSiteName = (url: string) => {
@@ -35,8 +37,7 @@ export default function WishlistPage() {
   const router = useRouter();
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSport, setSelectedSport] = useState('');
-  const [selectedSpec, setSelectedSpec] = useState('');
+  const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
   useEffect(() => { fetchCards(); }, []);
 
@@ -49,16 +50,15 @@ export default function WishlistPage() {
   };
 
   const filteredCards = cards.filter(card => {
-    const matchesSport = selectedSport === '' || card.sport === selectedSport;
-    let matchesSpec = true;
-    if (selectedSpec === 'auto') matchesSpec = card.is_auto;
-    if (selectedSpec === 'patch') matchesSpec = card.is_patch;
-    if (selectedSpec === 'rookie') matchesSpec = card.is_rookie;
-    if (selectedSpec === 'numbered') matchesSpec = card.is_numbered;
-    return matchesSport && matchesSpec;
+    return !selectedSport || card.sport === selectedSport;
   });
 
-  const sportImage = selectedSport ? SPORT_CONFIG[selectedSport]?.image : null;
+  // Récupère uniquement les sports présents dans la wishlist
+  const uniqueSports = new Set(cards.map(c => c.sport));
+  const availableSports = SPORT_ORDER.filter(sportKey => uniqueSports.has(sportKey));
+
+  // Calcul de l'estimation totale de la wishlist (mise à jour selon le filtre actif)
+  const totalEstimation = filteredCards.reduce((acc, card) => acc + (Number(card.purchase_price) || 0), 0);
 
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-32 overflow-y-auto overflow-x-hidden font-sans relative z-10">
@@ -67,26 +67,22 @@ export default function WishlistPage() {
         <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none text-white">WISHLIST</h1>
       </header>
 
-      <div className="px-4">
-        <div className="flex gap-2 mb-8">
-          <div className="relative flex-1">
-            {sportImage && <img src={`/asset/sports/${sportImage}.png`} className="absolute left-4 top-2.5 w-4 h-4 object-contain z-10" alt="Sport" />}
-            <select value={selectedSport} onChange={(e) => setSelectedSport(e.target.value)} className={`w-full bg-[#040221]/60 backdrop-blur-xl border border-white/20 rounded-full py-2.5 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg ${sportImage ? 'pl-10' : 'pl-4'}`}>
-              <option value="">TOUS SPORTS</option>
-              {Object.keys(SPORT_CONFIG).map(key => <option key={key} value={key}>{SPORT_CONFIG[key].label}</option>)}
-            </select>
-            <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
-          </div>
-
-          <div className="relative flex-1">
-            <select value={selectedSpec} onChange={(e) => setSelectedSpec(e.target.value)} className="w-full bg-[#040221]/60 backdrop-blur-xl border border-white/20 rounded-full py-2.5 pl-4 pr-10 text-xs font-bold uppercase outline-none appearance-none text-white shadow-lg">
-              <option value="">FILTRES</option>
-              <option value="auto">AUTO</option>
-              <option value="patch">PATCH</option>
-              <option value="rookie">ROOKIE</option>
-              <option value="numbered">NUMÉROTÉE</option>
-            </select>
-            <ChevronDown className="absolute right-3 top-2.5 text-white/50 pointer-events-none" size={16} />
+      {/* 🚨 NOUVEAU : FILTRES EN GELLULES (SCROLL HORIZONTAL) 🚨 */}
+      <div className="mb-6">
+        <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex gap-3 px-4 pb-2 w-max">
+            <button onClick={() => setSelectedSport(null)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${!selectedSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+              <LayoutGrid size={16} /> <span className="text-sm font-bold">Tout</span>
+            </button>
+            {availableSports.map(sportKey => {
+              const isSelected = selectedSport === sportKey;
+              return (
+                <button key={sportKey} onClick={() => setSelectedSport(sportKey)} className={`px-5 py-2 rounded-full border flex items-center gap-2 transition-all ${isSelected ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  <img src={`/asset/sports/${isSelected ? 'neg-' : ''}${SPORT_CONFIG[sportKey].image}.png`} className="h-4 object-contain" alt={SPORT_CONFIG[sportKey].label} />
+                  <span className="text-sm font-bold whitespace-nowrap">{SPORT_CONFIG[sportKey].label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -99,6 +95,12 @@ export default function WishlistPage() {
           <div onClick={() => router.push('/scanner?wishlist=true')} className="w-full py-4 rounded-2xl border-2 border-dashed border-[#AFFF25]/50 flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all bg-[#AFFF25]/5 hover:bg-[#AFFF25]/10 mb-2">
             <Plus size={20} className="text-[#AFFF25]" />
             <span className="text-sm font-bold text-[#AFFF25] uppercase tracking-widest">Ajouter une carte</span>
+          </div>
+
+          {/* 🚨 NOUVEAU : BLOC ESTIMATION DU TOTAL 🚨 */}
+          <div className="flex justify-between items-center bg-white/5 border border-white/10 rounded-2xl p-4 mb-2">
+            <span className="text-sm font-bold text-white uppercase tracking-widest">Estimation</span>
+            <span className="text-lg font-black text-[#AFFF25]">{totalEstimation.toLocaleString('fr-FR')} €</span>
           </div>
 
           {filteredCards.length === 0 && (

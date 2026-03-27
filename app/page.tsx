@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2 } from 'lucide-react';
+import { Loader2, User, ChevronDown, LogOut, UserPlus } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
@@ -16,6 +16,10 @@ export default function HomePage() {
 
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
+  // 🚨 NOUVEAUX ÉTATS POUR LE MENU UTILISATEUR 🚨
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>('');
+
   useEffect(() => {
     fetchHomeData();
   }, []);
@@ -26,6 +30,9 @@ export default function HomePage() {
       router.push('/login');
       return;
     }
+    
+    // On sauvegarde l'email pour le menu
+    setUserEmail(user.email || '');
 
     const { data } = await supabase
       .from('cards')
@@ -35,6 +42,11 @@ export default function HomePage() {
 
     if (data) setCards(data.filter(c => !c.is_wishlist));
     setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
   };
 
   const handleImageLoad = (img: HTMLImageElement, id: string) => {
@@ -73,13 +85,66 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-32 font-sans overflow-x-hidden relative z-10">
       
-      {/* 🚨 HEADER MIS À JOUR : PLUS D'OMBRE SUR LE LOGO 🚨 */}
-      <header className="pt-[calc(1.5rem+env(safe-area-inset-top))] pb-2 text-center flex justify-center items-center">
+      {/* 🚨 MODALE DU MENU UTILISATEUR 🚨 */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setIsMenuOpen(false)}>
+          <div className="absolute top-[calc(4.5rem+env(safe-area-inset-top))] right-6 w-[280px] bg-[#0A072E] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-top-4 duration-200" onClick={e => e.stopPropagation()}>
+            
+            {/* Pseudo & Email */}
+            <div className="p-4 cursor-pointer hover:bg-white/5 transition-colors">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-lg text-white">Pseudo</span>
+                <ChevronDown size={16} className="text-white/50" />
+              </div>
+              <div className="text-xs text-white/50 mt-1 truncate">{userEmail}</div>
+            </div>
+
+            {/* Ajouter un compte */}
+            <div className="border-t border-white/10 p-2">
+              <button 
+                onClick={() => router.push('/login')} 
+                className="w-full flex items-center gap-3 p-3 text-sm text-white/80 font-medium hover:bg-white/5 rounded-xl transition-colors text-left"
+              >
+                <UserPlus size={18} />
+                Ajouter un autre compte
+              </button>
+            </div>
+
+            {/* Se déconnecter */}
+            <div className="border-t border-white/10 p-2">
+              <button 
+                onClick={handleLogout} 
+                className="w-full flex items-center gap-3 p-3 text-sm text-red-500 font-medium hover:bg-red-500/10 rounded-xl transition-colors text-left"
+              >
+                <LogOut size={18} />
+                Se déconnecter
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 🚨 HEADER MIS À JOUR AVEC LE BOUTON PROFIL 🚨 */}
+      <header className="pt-[calc(1.5rem+env(safe-area-inset-top))] pb-2 px-6 flex items-center relative">
+        {/* Spacer gauche pour centrer le logo */}
+        <div className="flex-1"></div>
+        
+        {/* Logo au centre */}
         <img 
           src="/Logo-scan-hobby.svg" 
           alt="Scan Hobby Logo" 
           className="h-[3.4rem] object-contain active:scale-95 transition-transform" 
         />
+
+        {/* Bouton Profil à droite */}
+        <div className="flex-1 flex justify-end">
+          <button 
+            onClick={() => setIsMenuOpen(true)} 
+            className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-all hover:bg-white/10 text-white"
+          >
+            <User size={18} />
+          </button>
+        </div>
       </header>
 
       {/* PADDING DE 2% */}
