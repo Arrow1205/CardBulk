@@ -109,6 +109,7 @@ function ScannerContent() {
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const guideRef = useRef<HTMLDivElement>(null);
   
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -122,9 +123,13 @@ function ScannerContent() {
 
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
-  
-  const [cropPreview, setCropPreview] = useState<string | null>(null);
-  const [cropZoom, setCropZoom] = useState(1);
+
+  // ✂️ ETAT DU CROP LIBRE (FREE CROP)
+  const [freeCropImage, setFreeCropImage] = useState<string | null>(null);
+  const [cropRect, setCropRect] = useState({ top: 10, left: 10, right: 90, bottom: 90 });
+  const [draggingCorner, setDraggingCorner] = useState<string | null>(null);
+  const cropContainerRef = useRef<HTMLDivElement>(null);
+  const freeCropCallbackRef = useRef<((file: File, url: string) => void) | null>(null);
 
   const [showEditor, setShowEditor] = useState(false);
   const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, zoom: 1 });
@@ -212,6 +217,66 @@ function ScannerContent() {
       }
     }
   }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
+
+  // GESTION DU DRAG POUR LE CROP MANUEL
+  useEffect(() => {
+    const handleMove = (e: TouchEvent | MouseEvent) => {
+        if (!draggingCorner || !cropContainerRef.current) return;
+        
+        // Empêcher le scroll de la page pendant qu'on crope
+        if (e.cancelable) e.preventDefault();
+        
+        const rect = cropContainerRef.current.getBoundingClientRect();
+        const clientX = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        const clientY = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+
+        let xPct = ((clientX - rect.left) / rect.width) * 100;
+        let yPct = ((clientY - rect.top) / rect.height) * 100;
+
+        xPct = Math.max(0, Math.min(100, xPct));
+        yPct = Math.max(0, Math.min(100, yPct));
+
+        setCropRect(prev => {
+            let r = { ...prev };
+            const MIN_SIZE = 10; // Pourcentage minimum du cadre
+            if (draggingCorner.includes('l')) r.left = Math.min(xPct, r.right - MIN_SIZE);
+            if (draggingCorner.includes('r')) r.right = Math.max(xPct, r.left + MIN_SIZE);
+            if (draggingCorner.includes('t')) r.top = Math.min(yPct, r.bottom - MIN_SIZE);
+            if (draggingCorner.includes('b')) r.bottom = Math.max(yPct, r.top + MIN_SIZE);
+            return r;
+        });
+    };
+    const handleUp = () => setDraggingCorner(null);
+
+    if (draggingCorner) {
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('touchmove', handleMove, { passive: false });
+        window.addEventListener('mouseup', handleUp);
+        window.addEventListener('touchend', handleUp);
+    }
+    return () => {
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('touchmove', handleMove);
+        window.removeEventListener('mouseup', handleUp);
+        window.removeEventListener('touchend', handleUp);
+    }
+  }, [draggingCorner]);
+
+  // HELPER POUR CONTOURNER LE CORS
+  const getLocalImageUrl = async (url: string | null, file: File | null) => {
+      if (!url) return null;
+      if (!file && url.startsWith('http')) {
+          const body = new FormData();
+          body.append("action", "proxy");
+          body.append("imageUrl", url);
+          const res = await fetch("/api/scan", { method: "POST", body });
+          const data = await res.json();
+          return data.base64 ? data.base64 : url;
+      } else if (file) {
+          return URL.createObjectURL(file);
+      }
+      return url;
+  };
 
   const normalizeClubName = (str: string) => {
     if (!str) return '';
@@ -415,28 +480,65 @@ function ScannerContent() {
     } catch (err) { setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'error' } : c)); }
   };
 
+  // 📸 VRAI AUTO-CROP A LA PRISE DE PHOTO (Calcul exact via object-cover et guideRef)
   const captureImageAndCrop = () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current || !guideRef.current) return;
     
     setIsFlashing(true); 
     setTimeout(() => setIsFlashing(false), 150);
     
     const video = videoRef.current; 
+    const guide = guideRef.current;
+    
+    const containerW = window.innerWidth;
+    const containerH = window.innerHeight;
+    const guideRect = guide.getBoundingClientRect();
+    
     const vW = video.videoWidth;
     const vH = video.videoHeight;
-    
     if (!vW || !vH) return; 
 
+    // Calcul mathématique précis pour retrouver la position de l'image projetée sur l'écran
+    const vRatio = vW / vH;
+    const cRatio = containerW / containerH;
+
+    let renderWidth, renderHeight;
+    if (cRatio > vRatio) {
+      renderWidth = containerW;
+      renderHeight = containerW / vRatio;
+    } else {
+      renderHeight = containerH;
+      renderWidth = containerH * vRatio;
+    }
+
+    const zoom = nativeZoomSupported ? 1 : cameraZoom;
+    renderWidth *= zoom;
+    renderHeight *= zoom;
+
+    const offsetX = (containerW - renderWidth) / 2;
+    const offsetY = (containerH - renderHeight) / 2;
+
+    const guideLeft = guideRect.left - offsetX;
+    const guideTop = guideRect.top - offsetY;
+
+    const scale = vW / renderWidth;
+
+    const cropX = Math.max(0, guideLeft * scale);
+    const cropY = Math.max(0, guideTop * scale);
+    const cropW = Math.min(vW - cropX, guideRect.width * scale);
+    const cropH = Math.min(vH - cropY, guideRect.height * scale);
+
     const canvas = document.createElement('canvas'); 
-    canvas.width = vW; 
-    canvas.height = vH;
+    canvas.width = cropW; 
+    canvas.height = cropH;
     
     const ctx = canvas.getContext('2d'); 
     if (!ctx) return;
     ctx.imageSmoothingEnabled = true; 
     ctx.imageSmoothingQuality = 'high';
     
-    ctx.drawImage(video, 0, 0, vW, vH);
+    // Découpage chirurgical au moment de dessiner sur le canvas
+    ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
     canvas.toBlob((blob) => {
       if (!blob) return;
@@ -464,39 +566,82 @@ function ScannerContent() {
       setPendingCards(newPending); setIsVerifyingBulk(true); setCurrentVerifyIndex(0);
       newPending.forEach(c => processBackgroundScan(c.id, c.file));
     } else {
-      setCropPreview(URL.createObjectURL(files[0])); setCropZoom(1);
+      // ✂️ On ouvre le mode Free Crop au lieu de l'ancien modal
+      const url = URL.createObjectURL(files[0]);
+      setFreeCropImage(url);
+      setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
+      freeCropCallbackRef.current = (file, newUrl) => {
+           if (activeSide === 'back') {
+              setSelectedFileBack(file);
+              setPreviewUrlBack(newUrl);
+              processImageScan(file, 'back', false);
+           } else {
+              if (scanMode === 'lot') {
+                  setBulkFiles([file]); setCurrentBulkIndex(0);
+              }
+              processImageScan(file, 'front', true);
+           }
+      };
     }
   };
 
-  const confirmCrop = () => {
-    if (!cropPreview) return;
+  // ✂️ APPLICATION DU FREE CROP (MANUEL)
+  const applyFreeCrop = async () => {
+    if (!freeCropImage) return;
     setIsApplyingEdit(true);
-    const img = new Image(); img.src = cropPreview;
-    img.onload = () => {
-      const canvas = document.createElement('canvas'); canvas.width = 750; canvas.height = 1050; 
-      const ctx = canvas.getContext('2d'); if (!ctx) return;
-      const imgRatio = img.width / img.height; const targetRatio = canvas.width / canvas.height;
-      let sWidth = imgRatio > targetRatio ? img.height * targetRatio : img.width;
-      let sHeight = imgRatio > targetRatio ? img.height : img.width / targetRatio;
-      sWidth /= cropZoom; sHeight /= cropZoom;
-      const sx = (img.width - sWidth) / 2; const sy = (img.height - sHeight) / 2;
-      ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const croppedFile = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        setCropPreview(null); setIsApplyingEdit(false);
-        if (activeSide === 'back') {
-          setSelectedFileBack(croppedFile); setPreviewUrlBack(URL.createObjectURL(croppedFile));
-          processImageScan(croppedFile, 'back', false); 
-        } else {
-          if (scanMode === 'lot' && activeSide === 'front') {
-             setBulkFiles([croppedFile]); setCurrentBulkIndex(0); processImageScan(croppedFile, 'front', true);
+    
+    const img = new Image(); 
+    img.src = freeCropImage;
+    await new Promise(r => { img.onload = r; });
+
+    const canvas = document.createElement('canvas'); 
+    const ctx = canvas.getContext('2d'); 
+    if (!ctx) return;
+    
+    // Calcul des pixels exacts en fonction des pourcentages des curseurs manuels
+    const cX = (cropRect.left / 100) * img.width;
+    const cY = (cropRect.top / 100) * img.height;
+    const cW = ((cropRect.right - cropRect.left) / 100) * img.width;
+    const cH = ((cropRect.bottom - cropRect.top) / 100) * img.height;
+
+    canvas.width = cW; 
+    canvas.height = cH;
+    ctx.drawImage(img, cX, cY, cW, cH, 0, 0, cW, cH);
+    
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const newFile = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      const newUrl = URL.createObjectURL(newFile);
+      
+      if (freeCropCallbackRef.current) {
+          freeCropCallbackRef.current(newFile, newUrl);
+      }
+      
+      setFreeCropImage(null);
+      setIsApplyingEdit(false);
+    }, 'image/jpeg', 0.95);
+  };
+
+  const openManualCrop = async () => {
+      const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
+      let currentBlob = activeSide === 'front' ? selectedFile : selectedFileBack;
+      const localSrc = await getLocalImageUrl(currentPreview, currentBlob);
+      if (!localSrc) return;
+      
+      setFreeCropImage(localSrc);
+      setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
+      freeCropCallbackRef.current = (file, newUrl) => {
+          if (activeSide === 'front') {
+              setSelectedFile(file);
+              setPreviewUrl(newUrl);
           } else {
-             processImageScan(croppedFile, 'front', true); 
+              setSelectedFileBack(file);
+              setPreviewUrlBack(newUrl);
           }
-        }
-      }, 'image/jpeg', 0.9);
-    };
+          if (isVerifyingBulk) {
+              setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: file, previewUrl: newUrl } : c));
+          }
+      };
   };
 
   const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false) => {
@@ -595,19 +740,9 @@ function ScannerContent() {
     setIsApplyingEdit(true);
     
     try {
-      let localSrc = currentPreview;
-      let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
-
-      if (!currentBlob && currentPreview.startsWith('http')) {
-          const body = new FormData();
-          body.append("action", "proxy");
-          body.append("imageUrl", currentPreview);
-          const res = await fetch("/api/scan", { method: "POST", body });
-          const data = await res.json();
-          if (data.base64) localSrc = data.base64;
-      } else if (currentBlob) {
-          localSrc = URL.createObjectURL(currentBlob);
-      }
+      let currentBlob = activeSide === 'front' ? selectedFile : selectedFileBack;
+      const localSrc = await getLocalImageUrl(currentPreview, currentBlob);
+      if (!localSrc) return;
 
       const img = new Image();
       img.src = localSrc;
@@ -648,19 +783,9 @@ function ScannerContent() {
     setIsApplyingEdit(true);
     
     try {
-      let localSrc = currentPreview;
-      let currentBlob: Blob | File | null = activeSide === 'front' ? selectedFile : selectedFileBack;
-
-      if (!currentBlob && currentPreview.startsWith('http')) {
-          const body = new FormData();
-          body.append("action", "proxy");
-          body.append("imageUrl", currentPreview);
-          const res = await fetch("/api/scan", { method: "POST", body });
-          const data = await res.json();
-          if (data.base64) localSrc = data.base64;
-      } else if (currentBlob) {
-          localSrc = URL.createObjectURL(currentBlob);
-      }
+      let currentBlob = activeSide === 'front' ? selectedFile : selectedFileBack;
+      const localSrc = await getLocalImageUrl(currentPreview, currentBlob);
+      if (!localSrc) return;
 
       const img = new Image();
       img.src = localSrc;
@@ -817,21 +942,38 @@ function ScannerContent() {
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
       
-      {/* MODAL DE RECADRAGE GALERIE */}
-      {cropPreview && !analyzing && !activePreviewUrl && !isVerifyingBulk && (
-        <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          <h2 className="absolute top-10 text-xl font-black italic text-[#AFFF25] tracking-widest uppercase z-50">Ajuster le {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
-          <img src={cropPreview} className="absolute inset-0 w-full h-full object-contain origin-center z-0" style={{ transform: `scale(${cropZoom})` }} alt="To Crop" />
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]"></div></div>
-          <div className="absolute bottom-10 left-0 w-full px-8 z-20 flex flex-col items-center pointer-events-auto">
-            <div className="w-full max-w-[300px] mb-8 bg-[#040221]/80 p-4 rounded-2xl backdrop-blur-md border border-white/10">
-              <label className="text-xs font-bold text-[#AFFF25] uppercase mb-3 flex justify-between tracking-widest"><span>Zoom</span> <span>{cropZoom.toFixed(1)}x</span></label>
-              <input type="range" min="1" max="3" step="0.1" value={cropZoom} onChange={e => setCropZoom(parseFloat(e.target.value))} className="w-full accent-[#AFFF25]" />
-            </div>
-            <div className="flex gap-4 w-full max-w-[300px]">
-              <button onClick={() => setCropPreview(null)} className="flex-1 py-3.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
-              <button onClick={confirmCrop} disabled={isApplyingEdit} className="flex-1 py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all flex justify-center items-center gap-2">{isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}</button>
-            </div>
+      {/* ✂️ MODAL DE RECADRAGE LIBRE (FREE CROP) ✂️ */}
+      {freeCropImage && !analyzing && !isVerifyingBulk && (
+        <div className="fixed inset-0 z-[200] bg-[#040221] flex flex-col items-center justify-center overflow-hidden">
+          <h2 className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] text-xl font-black italic text-[#AFFF25] tracking-widest uppercase z-50">Recadrer</h2>
+          
+          <div className="relative w-full h-[70vh] max-w-lg mt-12 flex items-center justify-center" ref={cropContainerRef}>
+              <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-full pointer-events-none" alt="To Crop" />
+              
+              {/* Overlay / Zone de Crop */}
+              <div className="absolute inset-0 z-10 touch-none">
+                 {/* Masques assombris (les seules ombres techniques conservées) */}
+                 <div className="absolute top-0 left-0 right-0 bg-black/70" style={{ height: `${cropRect.top}%` }} />
+                 <div className="absolute bottom-0 left-0 right-0 bg-black/70" style={{ height: `${100 - cropRect.bottom}%` }} />
+                 <div className="absolute top-0 bottom-0 left-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${cropRect.left}%` }} />
+                 <div className="absolute top-0 bottom-0 right-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${100 - cropRect.right}%` }} />
+
+                 {/* Cadre de sélection */}
+                 <div className="absolute border-2 border-[#AFFF25]" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, left: `${cropRect.left}%`, right: `${100 - cropRect.right}%` }}>
+                     {/* Poignées de redimensionnement */}
+                     <div onTouchStart={() => setDraggingCorner('tl')} onMouseDown={() => setDraggingCorner('tl')} className="absolute -top-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                     <div onTouchStart={() => setDraggingCorner('tr')} onMouseDown={() => setDraggingCorner('tr')} className="absolute -top-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                     <div onTouchStart={() => setDraggingCorner('bl')} onMouseDown={() => setDraggingCorner('bl')} className="absolute -bottom-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                     <div onTouchStart={() => setDraggingCorner('br')} onMouseDown={() => setDraggingCorner('br')} className="absolute -bottom-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                 </div>
+              </div>
+          </div>
+
+          <div className="absolute bottom-0 left-0 w-full px-8 pb-12 z-20 flex justify-center gap-4 bg-gradient-to-t from-[#040221] pt-10">
+              <button onClick={() => setFreeCropImage(null)} className="w-[140px] py-3.5 bg-white/10 border border-white/20 text-white rounded-full font-bold uppercase text-[10px] tracking-widest active:scale-95 transition-all">Annuler</button>
+              <button onClick={applyFreeCrop} disabled={isApplyingEdit} className="w-[140px] py-3.5 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all flex justify-center items-center gap-2">
+                 {isApplyingEdit ? <Loader2 size={16} className="animate-spin" /> : <><Crop size={16} /> Valider</>}
+              </button>
           </div>
         </div>
       )}
@@ -839,25 +981,25 @@ function ScannerContent() {
       {/* OVERLAY CAMERA */}
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
-          {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-6 left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
+          {scanMode === 'lot' && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
           {/* CADRE FLUO CENTRAL */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
+            <div ref={guideRef} className="w-[75%] max-w-[350px] aspect-[2.5/3.5] border-[3px] border-dashed border-[#AFFF25] rounded-xl relative shadow-[0_0_0_9999px_rgba(4,2,33,0.85)]">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#AFFF25]/50 font-light text-4xl leading-none">+</div>
             </div>
           </div>
           
           {isFlashing && <div className="absolute inset-0 bg-white z-[300] opacity-100 transition-opacity duration-150"></div>}
-          <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
+          <div className="absolute top-0 left-0 w-full px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] z-20 flex justify-between"><button onClick={stopCamera} className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-95 pointer-events-auto"><X size={20}/></button></div>
           
           <div className="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-auto">
-            <div className="bg-black/60 text-[#AFFF25] px-2 py-1.5 rounded-xl text-[10px] font-bold tracking-widest backdrop-blur-md border border-white/10">
+            <div className="bg-black/60 text-[#AFFF25] px-2 py-1.5 rounded-xl text-[10px] font-bold tracking-widest border border-white/10">
               {cameraZoom.toFixed(1)}x
             </div>
-            <div className="flex flex-col items-center justify-between bg-black/60 backdrop-blur-md px-2 py-4 rounded-full border border-white/10 h-[200px]">
+            <div className="flex flex-col items-center justify-between bg-black/60 px-2 py-4 rounded-full border border-white/10 h-[200px]">
               <span className="text-white/60 text-[10px] font-bold">3x</span>
               <div className="flex-1 w-full relative flex items-center justify-center">
                 <input 
@@ -879,7 +1021,7 @@ function ScannerContent() {
       )}
 
       {/* HEADER */}
-      <header className="fixed top-0 left-0 w-full h-[88px] z-50 flex items-center justify-between px-6 pointer-events-none">
+      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none bg-gradient-to-b from-[#040221] to-transparent">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter pointer-events-auto">{isVerifyingBulk ? `CARTE ${currentVerifyIndex + 1}/${pendingCards.length}` : pageTitle}</h1>
         <div className="w-auto min-w-[40px] flex justify-end pointer-events-auto">
@@ -890,7 +1032,7 @@ function ScannerContent() {
       {/* 🖌️ EDITEUR PHOTO MODAL */}
       {showEditor && activePreviewUrl && (
         <div className="fixed inset-0 z-[100] bg-[#040221] p-6 flex flex-col animate-in fade-in zoom-in duration-300">
-          <header className="flex justify-between items-center mb-6 pt-4">
+          <header className="flex justify-between items-center mb-6 pt-[calc(1.5rem+env(safe-area-inset-top))]">
             <button onClick={() => setShowEditor(false)} className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 active:scale-95"><X size={20} /></button>
             <h2 className="text-xl font-black italic uppercase text-[#AFFF25] tracking-widest">Éditeur {activeSide === 'front' ? 'Recto' : 'Verso'}</h2>
             <button onClick={applyImageEdits} className="w-10 h-10 bg-[#AFFF25] text-black rounded-full flex items-center justify-center active:scale-95"><Check size={20} strokeWidth={3} /></button>
@@ -924,7 +1066,7 @@ function ScannerContent() {
       )}
 
       {/* 🖼️ PARTIE GAUCHE (UPLOAD / IMAGE) */}
-      <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[100px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
+      <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[120px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8">
@@ -988,8 +1130,12 @@ function ScannerContent() {
           
           {activePreviewUrl && !(isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') && (
             <>
-              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-4 lg:-right-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
-              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-4 lg:-left-6 lg:bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              {/* BOUTON CROP MANUEL */}
+              <button onClick={(e) => { e.preventDefault(); openManualCrop(); }} className="absolute -left-20 bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><Crop size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              {/* BOUTON EDIT */}
+              <button onClick={(e) => { e.preventDefault(); setShowEditor(true); }} className="absolute -left-4 bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><SlidersHorizontal size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
+              {/* BOUTON ROTATE */}
+              <button onClick={(e) => { e.preventDefault(); rotateImage(); }} className="absolute -right-4 bottom-6 w-12 h-12 lg:w-14 lg:h-14 bg-[#0A072E] border-[3px] border-[#AFFF25] rounded-full flex items-center justify-center text-[#AFFF25] z-50 active:scale-90 transition-transform hover:scale-105"><RotateCw size={20} className="lg:w-6 lg:h-6" strokeWidth={2.5} /></button>
             </>
           )}
         </div>
@@ -998,10 +1144,10 @@ function ScannerContent() {
         {(activePreviewUrl || previewUrlBack) && !analyzing && !isVerifyingBulk && (
           <div className="flex gap-2 w-full max-w-full px-4 lg:max-w-[400px] mx-auto pointer-events-auto">
              <button onClick={() => handleChangeImage('front')} className="flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-white/70 bg-white/5 border border-white/10 py-3 rounded-full hover:bg-white/10 active:scale-95 transition-all whitespace-nowrap">
-               <RotateCw size={14} className="shrink-0" /> Changer Recto
+               Changer Recto
              </button>
              <button onClick={() => handleChangeImage('back')} className={`flex-1 flex justify-center items-center gap-1.5 text-[9px] sm:text-[10px] uppercase tracking-widest font-bold py-3 rounded-full active:scale-95 transition-all whitespace-nowrap ${previewUrlBack ? 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10' : 'bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] hover:bg-[#AFFF25]/20'}`}>
-               {previewUrlBack ? <><RotateCw size={14} className="shrink-0" /> Changer Verso</> : 'Ajouter verso'}
+               {previewUrlBack ? 'Changer Verso' : 'Ajouter verso'}
              </button>
           </div>
         )}

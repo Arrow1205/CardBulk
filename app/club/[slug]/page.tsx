@@ -95,7 +95,7 @@ export default function ClubPage() {
     <div className="min-h-screen text-white font-sans relative bg-[#040221] w-full">
       
       {/* HEADER FIXE */}
-      <header className="fixed top-0 left-0 w-full z-50 flex items-center p-6 lg:px-[80px] pointer-events-none">
+     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
           <ChevronLeft size={20} />
         </button>

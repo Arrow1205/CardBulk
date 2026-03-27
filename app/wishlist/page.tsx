@@ -62,7 +62,7 @@ export default function WishlistPage() {
       
 
       <div className="px-4">
-        <header className="pt-8 pb-8 text-center">
+       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none">
           <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none drop-shadow-lg">WISHLIST</h1>
         </header>
 
