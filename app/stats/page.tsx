@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, X, LayoutGrid, ChevronDown, Euro, Hash } from 'lucide-react';
-import { Radar } from 'react-chartjs-2';
-import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
+import { Loader2, X, LayoutGrid, ChevronDown, Euro, Hash, Trophy } from 'lucide-react';
+import { Radar, Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement } from 'chart.js';
 
-// Initialisation de Chart.js pour le Radar
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+// Initialisation de Chart.js pour le Radar et le Donut
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement);
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
 
@@ -73,18 +73,21 @@ export default function StatsPage() {
 
   const getVal = (list: any[]) => displayMode === 'count' ? list.length : list.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0);
 
+  // ----------------------------------------------------------------------
+  // 1. DATA: SPÉCIFICITÉS (Radar)
+  // ----------------------------------------------------------------------
   const autosGlobal = filteredCards.filter(c => c.is_auto);
   const patchesGlobal = filteredCards.filter(c => c.is_patch);
   const numberedsGlobal = filteredCards.filter(c => c.is_numbered);
 
   const statsUniques = [
     { label: 'Auto Seul', list: filteredCards.filter(c => c.is_auto && !c.is_patch && !c.is_numbered), color: '#AFFF25' },
-    { label: 'Patch Seul', list: filteredCards.filter(c => !c.is_auto && c.is_patch && !c.is_numbered), color: '#3B82F6' },
+    { label: 'Patch Seul', list: filteredCards.filter(c => !c.is_auto && c.is_patch && !c.is_numbered), color: 'rgba(175, 255, 37, 0.7)' },
     { label: 'Numérotée Seule', list: filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered), color: '#FFFFFF' },
-    { label: 'Auto + Patch', list: filteredCards.filter(c => c.is_auto && c.is_patch && !c.is_numbered), color: '#F59E0B' },
-    { label: 'Auto + Num', list: filteredCards.filter(c => c.is_auto && !c.is_patch && c.is_numbered), color: '#8B5CF6' },
-    { label: 'Patch + Num', list: filteredCards.filter(c => !c.is_auto && c.is_patch && c.is_numbered), color: '#EC4899' },
-    { label: 'Auto+Patch+Num', list: filteredCards.filter(c => c.is_auto && c.is_patch && c.is_numbered), color: '#EF4444' },
+    { label: 'Auto + Patch', list: filteredCards.filter(c => c.is_auto && c.is_patch && !c.is_numbered), color: 'rgba(255, 255, 255, 0.7)' },
+    { label: 'Auto + Num', list: filteredCards.filter(c => c.is_auto && !c.is_patch && c.is_numbered), color: 'rgba(175, 255, 37, 0.4)' },
+    { label: 'Patch + Num', list: filteredCards.filter(c => !c.is_auto && c.is_patch && c.is_numbered), color: 'rgba(255, 255, 255, 0.4)' },
+    { label: 'Auto+Patch+Num', list: filteredCards.filter(c => c.is_auto && c.is_patch && c.is_numbered), color: '#AFFF25' },
   ].map(item => ({ ...item, value: getVal(item.list) })).filter(item => item.value > 0);
 
   const maxVal = Math.max(...statsUniques.map(s => s.value), 0);
@@ -110,9 +113,7 @@ export default function StatsPage() {
   const radarOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    layout: {
-      padding: 16 // Padding réduit pour laisser plus de place au graph
-    },
+    layout: { padding: 16 },
     scales: {
       r: {
         suggestedMax: isFinite(maxVal) ? maxVal * 1.15 : 10,
@@ -178,16 +179,70 @@ export default function StatsPage() {
     }
   };
 
+  // ----------------------------------------------------------------------
+  // 2. DATA: RÉPARTITION PAR SPORT (Donut)
+  // ----------------------------------------------------------------------
+  const sportStats = availableSports.map(sport => {
+    const sportCards = filteredCards.filter(c => c.sport === sport);
+    return {
+      label: SPORT_CONFIG[sport]?.label || sport,
+      value: getVal(sportCards)
+    }
+  }).filter(s => s.value > 0).sort((a, b) => b.value - a.value);
+
+  const doughnutColors = [
+    '#AFFF25',
+    'rgba(175, 255, 37, 0.7)',
+    'rgba(175, 255, 37, 0.4)',
+    'rgba(255, 255, 255, 0.8)',
+    'rgba(255, 255, 255, 0.5)',
+    'rgba(255, 255, 255, 0.2)',
+    'rgba(255, 255, 255, 0.05)'
+  ];
+
+  const doughnutData = {
+    labels: sportStats.map(s => s.label),
+    datasets: [{
+      data: sportStats.map(s => s.value),
+      backgroundColor: doughnutColors.slice(0, sportStats.length),
+      borderColor: '#040221',
+      borderWidth: 2,
+    }]
+  };
+
+  const doughnutOptions = {
+    cutout: '75%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => ` ${context.raw.toLocaleString('fr-FR')}${displayMode === 'value' ? ' €' : ''}`
+        }
+      }
+    }
+  };
+
+  // ----------------------------------------------------------------------
+  // 3. DATA: TOP 5 HEAVY HITTERS
+  // ----------------------------------------------------------------------
+  const top5Cards = [...filteredCards]
+    .filter(c => Number(c.purchase_price) > 0)
+    .sort((a, b) => (Number(b.purchase_price) || 0) - (Number(a.purchase_price) || 0))
+    .slice(0, 5);
+
+
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:h-screen lg:overflow-hidden">
       
+      {/* 📜 COLONNE GAUCHE (Scrollable sur Mobile) */}
       <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
         
-        {/* 🚨 AJOUT DE L'ESPACE ET SAFE AREA ICI 🚨 */}
+        {/* HEADER */}
         <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-8 px-6 flex justify-center items-center">
           <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none">Statistiques</h1>
         </div>
 
+        {/* FILTRES HAUT */}
         <div className="mb-6">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex gap-3 px-6 pb-2 w-max">
@@ -218,6 +273,7 @@ export default function StatsPage() {
               </button>
             </div>
 
+            {/* DROPDOWNS... */}
             {openDropdown === 'spec' && (
               <div className="absolute top-full left-6 right-6 mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-2xl">
                 {[
@@ -252,6 +308,7 @@ export default function StatsPage() {
           </div>
         </div>
 
+        {/* KPIS (Nombre / Valeur) */}
         <div className="px-6 grid grid-cols-2 gap-4 mb-8">
           <div className="bg-transparent border border-[#AFFF25] rounded-2xl p-5 flex flex-col justify-center text-center">
             <div className="text-xs text-white uppercase tracking-widest font-bold mb-1">Nombre de cartes</div>
@@ -265,9 +322,12 @@ export default function StatsPage() {
           </div>
         </div>
 
+        {/* SPÉCIFICITÉS (Boutons pour pop-in) */}
         <div className="px-6 mb-10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-sm font-bold text-white uppercase tracking-widest">Spécificités (Global)</h2>
+            
+            {/* BOUTONS TOGGLE (Nombre/Valeur) */}
             <div className="flex bg-transparent border border-[#AFFF25] rounded-full p-1 cursor-pointer">
               <button 
                 onClick={() => setDisplayMode('count')}
@@ -307,9 +367,74 @@ export default function StatsPage() {
             </button>
           </div>
         </div>
+
+        {/* 📊 NOUVEAU : RÉPARTITION PAR SPORT (DONUT) */}
+        <div className="px-6 mb-12">
+          <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-6">Répartition par Sport</h2>
+          {sportStats.length > 0 ? (
+            <div className="flex items-center gap-6">
+              <div className="w-[140px] h-[140px] relative shrink-0">
+                <Doughnut data={doughnutData} options={doughnutOptions} />
+              </div>
+              <div className="flex-1 flex flex-col justify-center gap-3">
+                {sportStats.slice(0, 4).map((stat, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: doughnutColors[i] }}></div>
+                      <span className="text-xs font-bold text-white/80">{stat.label}</span>
+                    </div>
+                    <span className="text-sm font-black text-white">{displayMode === 'value' ? `${stat.value.toLocaleString('fr-FR')} €` : stat.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+             <div className="text-white/40 italic text-sm text-center py-4 border border-white/10 rounded-2xl">Aucune donnée pour ce filtre</div>
+          )}
+        </div>
+
+        {/* 💎 NOUVEAU : TOP 5 HEAVY HITTERS */}
+        <div className="px-6 mb-10 pb-32 lg:pb-0">
+          <div className="flex items-center gap-2 mb-4">
+            <Trophy size={18} className="text-[#AFFF25]" />
+            <h2 className="text-sm font-bold text-white uppercase tracking-widest">Top 5 Heavy Hitters</h2>
+          </div>
+          
+          <div className="space-y-3">
+            {top5Cards.length > 0 ? (
+              top5Cards.map((card, index) => (
+                <div 
+                  key={card.id} 
+                  onClick={() => router.push(`/card/${card.id}`)} 
+                  className="flex items-center gap-4 p-3 border border-white/10 bg-white/5 rounded-2xl cursor-pointer active:scale-95 transition-transform"
+                >
+                  <div className="text-[#AFFF25] font-black text-xl w-6 text-center">{index + 1}</div>
+                  
+                  <div className="w-12 h-12 bg-[#080531] rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-white/5">
+                    {card.image_url ? (
+                      <img src={card.image_url} className="w-full h-full object-cover" alt="Card" />
+                    ) : (
+                      <span className="text-[8px] text-white/30 font-bold">N/A</span>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 overflow-hidden">
+                    <div className="text-white font-black italic uppercase truncate leading-none mb-1">{card.firstname} {card.lastname}</div>
+                    <div className="text-[9px] text-white/50 uppercase tracking-widest truncate">{card.brand} {card.year ? `- ${card.year}` : ''}</div>
+                  </div>
+                  
+                  <div className="text-[#AFFF25] font-black">{card.purchase_price} €</div>
+                </div>
+              ))
+            ) : (
+              <div className="text-white/40 italic text-sm text-center py-8 border border-white/10 rounded-2xl">Aucun prix renseigné dans la collection.</div>
+            )}
+          </div>
+        </div>
+
       </div>
 
-      {/* 📈 PARTIE DROITE (GRAPHIQUE) */}
+      {/* 📈 COLONNE DROITE (RADAR CHART) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:h-screen bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl lg:border-l border-white/5 shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col justify-center pt-8 pb-32 lg:py-0 px-2 sm:px-6 transition-all duration-300 -mt-6 lg:mt-0 rounded-t-[32px] lg:rounded-none">
         
         <div className="bg-transparent rounded-[32px] py-6 relative flex flex-col items-center w-full h-full justify-center">
@@ -323,6 +448,7 @@ export default function StatsPage() {
         </div>
       </div>
 
+      {/* POP-IN DE DÉTAILS */}
       {activeDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-[#040221] border border-[#AFFF25] rounded-[32px] p-6 shadow-2xl animate-in zoom-in-95 duration-200">

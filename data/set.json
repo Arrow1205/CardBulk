@@ -4,69 +4,64 @@
       "name": "Topps",
       "sports": {
         "football_soccer": [
+          "Bowman Chrome",
+          "Bundesliga",
           "Chrome",
           "Chrome Sapphire",
-          "Finest",
           "Deco",
-          "Merlin",
-          "Pristine",
-          "Match Attax",
-          "Bowman Chrome",
-          "Museum Collection",
-          "Inception",
-          "Tier One",
           "Dynasty",
+          "Fan Set",
+          "Finest",
+          "Inception",
+          "Living Set",
+          "Match Attax",
           "Merlin",
-          "Premiere League",
-          "Premiere League Chrome",
-          "Stadium Club",
-          "UEFA Club Competitions",
-          "Bundesliga",
           "MLS",
-          "Living set",
+          "Museum Collection",
           "Now",
+          "Premier League",
+          "Premier League Chrome",
+          "Pristine",
+          "Royalty",
+          "Stadium Club",
           "Summer Signing",
           "Super Star",
           "Team Set",
-          "Fan Set",
-          "Total Football"
+          "Tier One",
+          "Total Football",
+          "UEFA Club Competitions"
         ],
-       
         "tennis": [
           "Chrome",
           "Chrome Sapphire",
-          "Royalty",
           "Graphite",
-          "Now"
+          "Now",
+          "Royalty"
         ],
-
-       
         "basketball": [
           "Chrome",
           "Finest",
-          "Living set",
-          "Now",
-          "Midnight"
+          "Living Set",
+          "Midnight",
+          "Now"
         ],
-
-    
         "basketball_nba": [
-          "Series 1",
-          "Series 2",
-          "Update",
-          "Chrome",
-          "Chrome Sapphire",
-          "Finest",
+          "Allen & Ginter",
           "Bowman",
           "Bowman Chrome",
           "Bowman Draft",
-          "Heritage",
-          "Stadium Club",
-          "Allen & Ginter",
-          "Tribute",
+          "Chrome",
+          "Chrome Sapphire",
           "Dynasty",
-          "Living set",
-          "Now"
+          "Finest",
+          "Heritage",
+          "Living Set",
+          "Now",
+          "Series 1",
+          "Series 2",
+          "Stadium Club",
+          "Tribute",
+          "Update"
         ],
         "american_football": [
           "Chrome (legacy)",
@@ -79,75 +74,98 @@
       "name": "Panini",
       "sports": {
         "football_soccer": [
-          "Prizm",
-          "Select",
+          "Adrenalyn",
+          "Chronicles",
           "Donruss",
           "Donruss Optic",
+          "Flawless",
           "Immaculate",
+          "Mosaic",
           "National Treasures",
           "Obsidian",
-          "Serie A",
-          "Adrenalyn",
-          "Score",
-          "Chronicles",
+          "Prizm",
           "Revolution",
-          "Flawless",
-          "Spectra",
-          "Mosaic"
+          "Score",
+          "Select",
+          "Serie A",
+          "Spectra"
         ],
         "basketball_nba": [
-          "Prizm",
-          "Select",
+          "Court Kings",
           "Donruss",
           "Donruss Optic",
-          "Immaculate",
-          "National Treasures",
           "Flawless",
-          "Obsidian",
-          "Spectra",
+          "Hoops",
+          "Immaculate",
           "Mosaic",
+          "National Treasures",
+          "Obsidian",
+          "Prizm",
           "Revolution",
-          "Court Kings",
-          "Hoops"
+          "Select",
+          "Spectra"
         ],
         "american_football_nfl": [
-          "Prizm",
-          "Select",
+          "Contenders",
           "Donruss",
-          "National Treasures",
-          "Immaculate",
           "Flawless",
+          "Immaculate",
           "Mosaic",
-          "Contenders"
+          "National Treasures",
+          "Prizm",
+          "Select"
         ],
         "baseball": [
           "Donruss Baseball",
-          "Prizm Baseball",
-          "National Treasures Baseball"
+          "National Treasures Baseball",
+          "Prizm Baseball"
         ]
       }
     },
     {
       "name": "Upper Deck",
       "sports": {
-        "hockey_nhl": [
+        "hockey": [
+          "Allure",
+          "Artifacts",
+          "Black Diamond",
+          "Extended Series",
+          "Ice",
+          "O-Pee-Chee",
+          "O-Pee-Chee Platinum",
           "Series 1",
           "Series 2",
-          "Extended",
           "SP Authentic",
+          "SP Game Used",
+          "SPx",
           "The Cup",
-          "Trilogy",
-          "Ice",
-          "Black Diamond"
+          "Trilogy"
         ],
-        "basketball_legacy": [
-          "Upper Deck",
+        "basketball": [
+          "Exquisite Collection",
+          "Fleer Retro",
+          "Skybox Metal Universe",
           "SP Authentic",
-          "Exquisite Collection"
+          "SP Game Used",
+          "UD Black",
+          "Ultimate Collection"
         ],
-        "american_football_legacy": [
-          "Upper Deck",
-          "SP Authentic"
+        "baseball": [
+          "SP",
+          "SP Authentic",
+          "SPx",
+          "Sweet Spot",
+          "UD Black",
+          "Ultimate Collection",
+          "Upper Deck"
+        ],
+        "soccer": [
+          "Goodwin Champions",
+          "MLS Upper Deck",
+          "World Cup Upper Deck"
+        ],
+        "multi_sport": [
+          "Goodwin Champions"
         ]
       }
     },
@@ -156,48 +174,74 @@
       "sports": {
         "tennis": [
           "Metal",
-          "Trinity",
           "Pro Set",
-          "Valiant",
-          "Ultimate Draft"
+          "Trinity",
+          "Ultimate Draft",
+          "Valiant"
         ]
-             }
+      }
     },
-
     {
       "name": "Futera",
       "sports": {
         "football_soccer": [
-          "Unique",
           "Fans Selection",
           "Live",
-          "Vintage",
-          "Fans Selection"
+          "Unique",
+          "Vintage"
         ]
-             }
+      }
+    },
+    {
+      "name": "Ace Authentic",
+      "sports": {
+        "tennis": [
+          "All Star",
+          "Grand Slam",
+          "Rookie Stars",
+          "Series 1",
+          "Series 10",
+          "Series 11",
+          "Series 12",
+          "Series 13",
+          "Series 14",
+          "Series 15",
+          "Series 16",
+          "Series 17",
+          "Series 18",
+          "Series 19",
+          "Series 2",
+          "Series 20",
+          "Series 3",
+          "Series 4",
+          "Series 5",
+          "Series 6",
+          "Series 7",
+          "Series 8",
+          "Series 9"
+        ]
+      }
     },
     {
       "name": "DAKA",
       "sports": {
         "football_soccer": [
-          "Croatia",
-          "Croatia",
-          "Serbia",
-          "Belgium",
-          "Nederland",
-          "Juventus",
-          "Fc Barcelone",
-          "Real Madrid",
-          "Ajax Amsterdam",
           "AC Milan",
-          "Manchester City",
-          "Liverpool",
+          "Ajax Amsterdam",
+          "Atletico Madrid",
           "Bayer Leverkusen",
-          "Espanyol",
-          "Eintracht Franckfort",
-          "Atelico Madrid",
           "Belgium",
-          "National Team Editions"
+          "Croatia",
+          "Eintracht Frankfurt",
+          "Espanyol",
+          "FC Barcelona",
+          "Juventus",
+          "Liverpool",
+          "Manchester City",
+          "National Team Editions",
+          "Nederland",
+          "Real Madrid",
+          "Serbia"
         ]
       }
     }
