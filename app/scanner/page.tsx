@@ -97,7 +97,6 @@ function ScannerContent() {
   const editId = searchParams.get('edit'); 
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
-  // 🚨 AJOUT DU MODE AUTO 🚨
   const [scanMode, setScanMode] = useState<'unitaire' | 'lot' | 'auto'>('unitaire');
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
@@ -159,7 +158,6 @@ function ScannerContent() {
   const motionLoopRef = useRef<number | null>(null);
   const lastCaptureTimeRef = useRef<number>(0);
 
-  // Refs pour éviter les closures périmées dans l'event loop
   const scanModeRef = useRef(scanMode);
   useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
   const isFlashingRef = useRef(isFlashing);
@@ -212,7 +210,6 @@ function ScannerContent() {
     }
   }, [isCameraOpen]);
 
-  // 🚨 DÉTECTION DE MOUVEMENT POUR L'AUTO-CAPTURE 🚨
   useEffect(() => {
     if (!isCameraOpen || scanMode !== 'auto') {
       if (motionLoopRef.current) cancelAnimationFrame(motionLoopRef.current);
@@ -222,7 +219,7 @@ function ScannerContent() {
 
     if (!autoCanvasRef.current) {
       autoCanvasRef.current = document.createElement('canvas');
-      autoCanvasRef.current.width = 64; // Résolution très basse pour pas faire chauffer le téléphone
+      autoCanvasRef.current.width = 64; 
       autoCanvasRef.current.height = 64;
     }
     const ctx = autoCanvasRef.current.getContext('2d', { willReadFrequently: true });
@@ -234,7 +231,6 @@ function ScannerContent() {
         return;
       }
 
-      // Si on vient de prendre une photo, on fait une pause de 1.5s avant de recommencer
       if (Date.now() - lastCaptureTimeRef.current < 1500) {
         stableSinceRef.current = Date.now();
         setAutoScanProgress(0);
@@ -247,16 +243,14 @@ function ScannerContent() {
       let diff = 0;
 
       if (prevFrameRef.current) {
-        // On vérifie 1 pixel sur 4 (RGBA -> 16) pour être encore plus performant
         for (let i = 0; i < currentData.length; i += 16) {
-          diff += Math.abs(currentData[i] - prevFrameRef.current[i]);     // R
-          diff += Math.abs(currentData[i+1] - prevFrameRef.current[i+1]); // G
-          diff += Math.abs(currentData[i+2] - prevFrameRef.current[i+2]); // B
+          diff += Math.abs(currentData[i] - prevFrameRef.current[i]);     
+          diff += Math.abs(currentData[i+1] - prevFrameRef.current[i+1]); 
+          diff += Math.abs(currentData[i+2] - prevFrameRef.current[i+2]); 
         }
       }
       prevFrameRef.current = new Uint8ClampedArray(currentData);
 
-      // Seuil de détection de mouvement (Ajustable : plus il est haut, moins c'est sensible au tremblement)
       const threshold = 30000;
 
       if (diff > threshold) {
@@ -265,12 +259,11 @@ function ScannerContent() {
       } else {
         if (!stableSinceRef.current) stableSinceRef.current = Date.now();
         const stableTime = Date.now() - stableSinceRef.current;
-        // On déclenche après 1.5s (1500ms) de stabilité absolue
         const progress = Math.min(100, (stableTime / 1500) * 100);
         setAutoScanProgress(progress);
 
         if (progress >= 100) {
-          captureRef.current(); // Déclenche la photo
+          captureRef.current(); 
           lastCaptureTimeRef.current = Date.now();
           stableSinceRef.current = Date.now();
           setAutoScanProgress(0);
@@ -628,7 +621,6 @@ function ScannerContent() {
       if (!blob) return;
       const fullImageFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
       
-      // Mode LOT ou AUTO agissent de la même façon (ajout en arrière-plan)
       if ((scanModeRef.current === 'lot' || scanModeRef.current === 'auto') && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
         const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: URL.createObjectURL(fullImageFile), status: 'analyzing', aiResult: null };
@@ -641,7 +633,6 @@ function ScannerContent() {
     }, 'image/jpeg', 1.0);
   };
 
-  // Assignation de la REF pour éviter les dépendances circulaires
   useEffect(() => { captureRef.current = captureImageAndCrop; });
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1025,6 +1016,32 @@ function ScannerContent() {
     } catch (err) { console.error(err); setLoading(false); }
   };
 
+  // 🚨 NOUVEAU : FONCTION POUR REFUSER (SUPPRIMER) UNE CARTE EN MODE LOT 🚨
+  const discardCurrentBulkCard = () => {
+    if (pendingCards.length <= 1) {
+      // C'était la dernière carte, on sort complètement du mode Lot
+      setPendingCards([]);
+      setIsVerifyingBulk(false);
+      setScanMode('unitaire');
+      setFormData(DEFAULT_FORM);
+      setPreviewUrl(null);
+      setSelectedFile(null);
+      setPreviewUrlBack(null);
+      setSelectedFileBack(null);
+    } else {
+      // On retire la carte actuelle de la file d'attente
+      const newPending = [...pendingCards];
+      newPending.splice(currentVerifyIndex, 1);
+      setPendingCards(newPending);
+      
+      // Si on vient de supprimer la toute dernière de la liste, on recule l'index
+      if (currentVerifyIndex >= newPending.length) {
+        setCurrentVerifyIndex(newPending.length - 1);
+      }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleChangeImage = (side: 'front' | 'back') => {
     setActiveSide(side);
     if (side === 'front') { setPreviewUrl(null); setSelectedFile(null); } 
@@ -1082,7 +1099,6 @@ function ScannerContent() {
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
           
-          {/* AFFICHE LE NOMBRE DE CARTES EN LOT OU AUTO */}
           {(scanMode === 'lot' || scanMode === 'auto') && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
@@ -1093,7 +1109,6 @@ function ScannerContent() {
             </div>
           </div>
 
-          {/* INDICATEUR DE STABILITÉ AUTO (BÊTA) */}
           {scanMode === 'auto' && (
              <div className="absolute top-32 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center pointer-events-none">
                 <div className="text-white text-xs font-bold uppercase tracking-widest bg-black/50 border border-white/20 px-4 py-2 rounded-full mb-3">Ne bougez plus</div>
@@ -1122,8 +1137,6 @@ function ScannerContent() {
           </div>
 
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-20 flex flex-col items-center z-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-auto">
-             
-             {/* BOUTON CAPTURE AVEC JAUGE DE PROGRESSION AUTO */}
              <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center active:scale-90 transition-transform relative overflow-hidden">
                 {scanMode === 'auto' && (
                    <div className="absolute inset-0 bg-[#AFFF25] transition-all duration-75 origin-bottom" style={{ transform: `scaleY(${autoScanProgress / 100})` }}></div>
@@ -1178,13 +1191,11 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* COLONNE GAUCHE (PREVIEW) */}
-      <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[120px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
+      {/* 🚨 MODIF : pt-[140px] pour donner un bel espace sous le titre AJOUTER 🚨 */}
+      <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[140px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!isWishlistMode && !isVerifyingBulk && (
-          <div className="flex flex-col items-center gap-4 mb-8 w-full">
-            
-            {/* 🚨 NOUVELLE SÉLECTION DES 3 MODES DE SCAN 🚨 */}
+          <div className="flex flex-col items-center gap-4 mb-8 w-full mt-4 lg:mt-0">
             <div className="flex justify-center gap-4 sm:gap-8 w-full max-w-md">
               <button onClick={() => setScanMode('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
               <button onClick={() => setScanMode('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
@@ -1200,7 +1211,7 @@ function ScannerContent() {
         )}
 
         {isVerifyingBulk && (
-          <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mb-8">
+          <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px] mb-8 mt-4 lg:mt-0">
             <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
             <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
             <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
@@ -1238,7 +1249,13 @@ function ScannerContent() {
               {!isVerifyingBulk && (
                 <>
                   <div className="flex items-center gap-2 w-full"><div className="h-[1px] flex-1 bg-white/10"></div><span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span><div className="h-[1px] flex-1 bg-white/10"></div></div>
-                  <button onClick={() => galleryInputRef.current?.click()} className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70"><ImageIcon size={18} /><span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span></button>
+                  {/* 🚨 MODIF : Bouton de galerie avec les éléments regroupés au centre 🚨 */}
+                  <button onClick={() => galleryInputRef.current?.click()} className="w-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70">
+                    <div className="flex items-center justify-center gap-3">
+                      <ImageIcon size={18} />
+                      <span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span>
+                    </div>
+                  </button>
                 </>
               )}
             </div>
@@ -1445,9 +1462,34 @@ function ScannerContent() {
             )}
           </div>
 
-          <button disabled={loading || analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing') || (!isFormStarted && !isVerifyingBulk)} onClick={saveCard} className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(isFormStarted || isVerifyingBulk) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}>
-            {loading ? <Loader2 className="animate-spin" /> : editId ? 'Mettre à jour' : isVerifyingBulk ? (currentVerifyIndex < pendingCards.length - 1 ? `Valider & Suivant (${currentVerifyIndex + 1}/${pendingCards.length})` : `Terminer (${currentVerifyIndex + 1}/${pendingCards.length})`) : 'Enregistrer'}
-          </button>
+          {/* 🚨 NOUVEAU : GESTION DES BOUTONS AVEC L'OPTION DE REFUS EN MODE LOT 🚨 */}
+          {isVerifyingBulk ? (
+            <div className="flex gap-3 mt-6 mb-6">
+              <button 
+                onClick={(e) => { e.preventDefault(); discardCurrentBulkCard(); }} 
+                disabled={loading} 
+                className="w-14 h-14 shrink-0 bg-red-500/10 border border-red-500/50 text-red-500 rounded-full flex items-center justify-center hover:bg-red-500/20 active:scale-95 transition-all"
+              >
+                <Trash2 size={24} strokeWidth={2} />
+              </button>
+              <button 
+                disabled={loading || analyzing || (pendingCards[currentVerifyIndex]?.status === 'analyzing')} 
+                onClick={saveCard} 
+                className="flex-1 font-black italic py-4 rounded-full uppercase flex justify-center items-center gap-2 transition-all duration-300 bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? <Loader2 className="animate-spin" /> : currentVerifyIndex < pendingCards.length - 1 ? `Valider & Suivant (${currentVerifyIndex + 1}/${pendingCards.length})` : `Terminer (${currentVerifyIndex + 1}/${pendingCards.length})`}
+              </button>
+            </div>
+          ) : (
+            <button 
+              disabled={loading || analyzing || !isFormStarted} 
+              onClick={saveCard} 
+              className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${isFormStarted ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
+            >
+              {loading ? <Loader2 className="animate-spin" /> : editId ? 'Mettre à jour' : 'Enregistrer'}
+            </button>
+          )}
+
         </div>
       </div>
       
