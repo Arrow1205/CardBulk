@@ -9,13 +9,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CX;
+    // 🚨 ON FORCE LES CLÉS EN DUR ICI (N'oublie pas les guillemets autour !)
+    const apiKey = "AIzaSyAwgoHk2me9fZwkXjCVg73bWqo5G4O0-Sw"; 
+    const cx = "b76d5fd2fdc12441a";
 
-    if (!apiKey || !cx) {
-      console.error("Clés Google manquantes dans la configuration");
-      return NextResponse.json({ success: false, error: 'Configuration API manquante' }, { status: 500 });
-    }
+    // ... la suite du code reste exactement pareille ...
 
     // 1. On force la recherche sur les sites pertinents (eBay)
     const query = encodeURIComponent(`${keywords} site:ebay.fr OR site:ebay.com OR site:ebay.co.uk`);
