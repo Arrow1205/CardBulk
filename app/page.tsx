@@ -5,6 +5,15 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Loader2, User, ChevronDown, LogOut, UserPlus, ScanLine } from 'lucide-react';
 
+// Type pour gérer notre multi-compte
+type StoredAccount = {
+  id: string;
+  email: string;
+  pseudo: string;
+  access_token: string;
+  refresh_token: string;
+};
+
 export default function HomePage() {
   const router = useRouter();
   const [cards, setCards] = useState<any[]>([]);
@@ -16,26 +25,54 @@ export default function HomePage() {
 
   const [horizontalCards, setHorizontalCards] = useState<Set<string>>(new Set());
 
+  // 🚨 ÉTATS POUR LE MENU PROFIL ET LE MULTI-COMPTE 🚨
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAccountListOpen, setIsAccountListOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string>('');
-  const [userPseudo, setUserPseudo] = useState<string>(''); // Vide par défaut pendant le chargement
+  const [userPseudo, setUserPseudo] = useState<string>('');
+  const [accounts, setAccounts] = useState<StoredAccount[]>([]);
 
   useEffect(() => {
     fetchHomeData();
   }, []);
 
   const fetchHomeData = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
       router.push('/login');
       return;
     }
     
+    const user = session.user;
     setUserEmail(user.email || '');
 
     // Récupération du pseudo
     const { data: profile } = await supabase.from('profiles').select('pseudo').eq('id', user.id).single();
-    if (profile && profile.pseudo) setUserPseudo(profile.pseudo);
+    const currentPseudo = profile?.pseudo || 'Pseudo';
+    setUserPseudo(currentPseudo);
+
+    // ---- GESTION DU MULTI-COMPTE ----
+    const stored = localStorage.getItem('cardbulk_accounts');
+    let parsedAccs: StoredAccount[] = stored ? JSON.parse(stored) : [];
+    
+    const currentAcc: StoredAccount = {
+      id: user.id,
+      email: user.email || '',
+      pseudo: currentPseudo,
+      access_token: session.access_token,
+      refresh_token: session.refresh_token
+    };
+
+    const accIndex = parsedAccs.findIndex(a => a.id === user.id);
+    if (accIndex > -1) {
+      parsedAccs[accIndex] = currentAcc;
+    } else {
+      parsedAccs.push(currentAcc);
+    }
+
+    localStorage.setItem('cardbulk_accounts', JSON.stringify(parsedAccs));
+    setAccounts(parsedAccs);
+    // ---------------------------------
 
     const { data } = await supabase
       .from('cards')
@@ -47,8 +84,55 @@ export default function HomePage() {
     setLoading(false);
   };
 
+  // 🚨 AJOUTER UN COMPTE 🚨
+  const handleAddAccount = async () => {
+    // Déconnexion avec scope "local" : retire la session du navigateur
+    // SANS invalider les tokens côté serveur, ce qui permet de les réutiliser !
+    await (supabase.auth.signOut as any)({ scope: 'local' });
+    router.push('/login');
+  };
+
+  // 🚨 CHANGER DE COMPTE 🚨
+  const switchAccount = async (acc: StoredAccount) => {
+    setIsMenuOpen(false);
+    setLoading(true);
+    
+    const { error } = await supabase.auth.setSession({
+      access_token: acc.access_token,
+      refresh_token: acc.refresh_token
+    });
+
+    if (error) {
+      alert("La session de ce compte a expiré. Veuillez vous reconnecter.");
+      const newAccs = accounts.filter(a => a.id !== acc.id);
+      localStorage.setItem('cardbulk_accounts', JSON.stringify(newAccs));
+      setAccounts(newAccs);
+      setLoading(false);
+    } else {
+      window.location.reload(); // Recharge la page avec le nouveau compte
+    }
+  };
+
+  // 🚨 SE DÉCONNECTER (Compte actuel) 🚨
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    await supabase.auth.signOut(); // Déconnexion totale pour ce compte
+
+    if (user) {
+      const newAccs = accounts.filter(a => a.id !== user.id);
+      localStorage.setItem('cardbulk_accounts', JSON.stringify(newAccs));
+      
+      // S'il reste d'autres comptes, on bascule automatiquement sur le premier dispo
+      if (newAccs.length > 0) {
+        await supabase.auth.setSession({
+          access_token: newAccs[0].access_token,
+          refresh_token: newAccs[0].refresh_token
+        });
+        window.location.reload();
+        return;
+      }
+    }
     router.push('/login');
   };
 
@@ -85,30 +169,66 @@ export default function HomePage() {
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex justify-center items-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
+  const otherAccounts = accounts.filter(a => a.email !== userEmail);
+
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-32 font-sans overflow-x-hidden relative z-10">
       
+      {/* 🚨 MODALE DU MENU UTILISATEUR 🚨 */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setIsMenuOpen(false)}>
           <div className="absolute top-[calc(4.5rem+env(safe-area-inset-top))] right-6 w-[280px] bg-[#0A072E] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-top-4 duration-200" onClick={e => e.stopPropagation()}>
             
-            <div className="p-4 cursor-pointer hover:bg-white/5 transition-colors">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-lg text-white">{userPseudo || 'Profil'}</span>
-                <ChevronDown size={16} className="text-white/50" />
+            {/* Profil Actif & Switcher */}
+            <div className="p-4 transition-colors">
+              <div 
+                className={`flex items-center justify-between ${otherAccounts.length > 0 ? 'cursor-pointer group' : ''}`}
+                onClick={() => otherAccounts.length > 0 && setIsAccountListOpen(!isAccountListOpen)}
+              >
+                <span className="font-bold text-lg text-[#AFFF25]">{userPseudo || 'Profil'}</span>
+                {otherAccounts.length > 0 && (
+                  <ChevronDown size={16} className={`text-white/50 transition-transform ${isAccountListOpen ? 'rotate-180' : ''}`} />
+                )}
               </div>
               <div className="text-xs text-white/50 mt-1 truncate">{userEmail}</div>
+
+              {/* Liste des autres comptes */}
+              {isAccountListOpen && otherAccounts.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-white/10 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-2 px-1">Changer de compte</div>
+                  {otherAccounts.map(acc => (
+                    <div 
+                      key={acc.id} 
+                      onClick={() => switchAccount(acc)} 
+                      className="flex items-center justify-between p-2 rounded-xl hover:bg-white/5 cursor-pointer active:scale-95 transition-all"
+                    >
+                      <div className="overflow-hidden pr-2">
+                        <div className="text-sm font-bold text-white truncate">{acc.pseudo}</div>
+                        <div className="text-[10px] text-white/50 truncate">{acc.email}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
+            {/* Ajouter un compte */}
             <div className="border-t border-white/10 p-2">
-              <button onClick={() => router.push('/login')} className="w-full flex items-center gap-3 p-3 text-sm text-white/80 font-medium hover:bg-white/5 rounded-xl transition-colors text-left">
+              <button 
+                onClick={handleAddAccount} 
+                className="w-full flex items-center gap-3 p-3 text-sm text-white/80 font-medium hover:bg-white/5 rounded-xl transition-colors text-left"
+              >
                 <UserPlus size={18} />
                 Ajouter un autre compte
               </button>
             </div>
 
+            {/* Se déconnecter */}
             <div className="border-t border-white/10 p-2">
-              <button onClick={handleLogout} className="w-full flex items-center gap-3 p-3 text-sm text-red-500 font-medium hover:bg-red-500/10 rounded-xl transition-colors text-left">
+              <button 
+                onClick={handleLogout} 
+                className="w-full flex items-center gap-3 p-3 text-sm text-red-500 font-medium hover:bg-red-500/10 rounded-xl transition-colors text-left"
+              >
                 <LogOut size={18} />
                 Se déconnecter
               </button>
@@ -117,6 +237,7 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* HEADER */}
       <header className="pt-[calc(1.5rem+env(safe-area-inset-top))] pb-2 px-6 flex items-center relative">
         <div className="flex-1"></div>
         <img src="/Logo-scan-hobby.svg" alt="Scan Hobby Logo" className="h-[3.4rem] object-contain active:scale-95 transition-transform" />
@@ -131,7 +252,7 @@ export default function HomePage() {
         <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden" style={{ perspective: '1200px' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           {carouselCards.length === 0 ? (
             
-            /* 🚨 NOUVEL ÉCRAN DE BIENVENUE PERSONNALISÉ 🚨 */
+            /* ÉCRAN DE BIENVENUE */
             <div className="flex flex-col items-center justify-center gap-6 px-6 text-center z-20 animate-in fade-in zoom-in duration-500">
               <h1 className="text-5xl lg:text-7xl font-black italic uppercase tracking-tighter text-[#AFFF25] leading-none">
                 HELLO !<br />
