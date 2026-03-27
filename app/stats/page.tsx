@@ -183,9 +183,9 @@ export default function StatsPage() {
       
       <div className="w-full lg:w-2/3 lg:h-screen lg:overflow-y-auto pb-6 lg:pb-20 no-scrollbar">
         
-        {/* 🚨 AJOUT DE LA SAFE AREA ICI 🚨 */}
-        <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-4 px-6 flex justify-center items-center">
-          <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none drop-shadow-lg">Statistiques</h1>
+        {/* 🚨 AJOUT DE L'ESPACE ET SAFE AREA ICI 🚨 */}
+        <div className="pt-[calc(2rem+env(safe-area-inset-top))] pb-8 px-6 flex justify-center items-center">
+          <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white leading-none">Statistiques</h1>
         </div>
 
         <div className="mb-6">

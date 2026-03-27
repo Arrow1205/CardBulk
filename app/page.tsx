@@ -73,12 +73,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-32 font-sans overflow-x-hidden relative z-10">
       
-      {/* 🚨 HEADER MIS À JOUR AVEC LA SAFE AREA 🚨 */}
+      {/* 🚨 HEADER MIS À JOUR : PLUS D'OMBRE SUR LE LOGO 🚨 */}
       <header className="pt-[calc(1.5rem+env(safe-area-inset-top))] pb-2 text-center flex justify-center items-center">
         <img 
           src="/Logo-scan-hobby.svg" 
           alt="Scan Hobby Logo" 
-          className="h-[3.4rem] object-contain drop-shadow-[0_0_15px_rgba(175,255,37,0.4)] active:scale-95 transition-transform" 
+          className="h-[3.4rem] object-contain active:scale-95 transition-transform" 
         />
       </header>
 

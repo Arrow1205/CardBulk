@@ -59,10 +59,9 @@ export default function WishlistPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white pb-32 overflow-y-auto overflow-x-hidden font-sans relative z-10">
       
-      {/* 🚨 HEADER ADAPTÉ POUR LA SAFE AREA 🚨 */}
-      {/* On le met en flux normal (pas "fixed") pour qu'il pousse les filtres naturellement vers le bas */}
-      <header className="w-full px-6 pb-6 pt-[calc(2.5rem+env(safe-area-inset-top))]">
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none drop-shadow-lg text-white">WISHLIST</h1>
+      {/* 🚨 HEADER ADAPTÉ : Centré et sans ombre (drop-shadow retiré) 🚨 */}
+      <header className="w-full px-6 pb-6 pt-[calc(2.5rem+env(safe-area-inset-top))] text-center">
+        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none text-white">WISHLIST</h1>
       </header>
 
       <div className="px-4">

@@ -268,13 +268,13 @@ export default function CardDetailsPage() {
         )}
       </div>
 
-      {/* 🚨 HEADER ADAPTÉ POUR LA SAFE AREA 🚨 */}
+      {/* HEADER ADAPTÉ POUR LA SAFE AREA */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
         <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
       </header>
 
-      {/* PARTIE GAUCHE (CARTE 3D) : Descendue proportionnellement à la Safe Area */}
+      {/* PARTIE GAUCHE (CARTE 3D) */}
       <div className={`fixed ${isHorizontal ? 'top-[calc(150px+env(safe-area-inset-top))]' : 'top-[calc(80px+env(safe-area-inset-top))]'} lg:top-0 left-0 w-full lg:w-2/3 flex flex-col items-center justify-center lg:h-screen z-10 perspective-[1000px] pointer-events-none px-6 transition-all duration-300`}>
         
         <div 
@@ -283,7 +283,7 @@ export default function CardDetailsPage() {
           className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" 
           onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} onTouchCancel={handleLeave}
         >
-          {/* 🔄 CONTENEUR DE FLIP 3D */}
+          {/* CONTENEUR DE FLIP 3D */}
           <div 
             className="relative"
             style={{
@@ -338,8 +338,8 @@ export default function CardDetailsPage() {
         </div>
       </div>
 
-      {/* 📊 PARTIE DROITE (INFOS) : Marge du haut (mt) décalée par la Safe Area */}
-      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(450px+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-20px_40px_rgba(0,0,0,0.8)] lg:shadow-[-20px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
+      {/* 🚨 PARTIE DROITE (INFOS) : Marge du haut (mt-30rem) et ombre adoucie (-10px au lieu de -20px) 🚨 */}
+      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(30rem+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-10px_40px_rgba(0,0,0,0.8)] lg:shadow-[-10px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
           <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
@@ -378,7 +378,7 @@ export default function CardDetailsPage() {
           </div>
         </div>
 
-        {/* 🚨 TABLEAU AVEC BRAND, COLLECTION, VARIATION, ANNEE... */}
+        {/* TABLEAU AVEC BRAND, COLLECTION, VARIATION, ANNEE... */}
         <div className="grid grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Collection</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
@@ -485,7 +485,6 @@ export default function CardDetailsPage() {
           )}
         </div>
 
-        {/* 🚨 MODIFICATION DE LA MARGE ICI (pb-32 au lieu de pb-6) 🚨 */}
         <div className="pt-8 flex flex-col gap-4 pb-32 items-center">
           <div className="flex gap-3 w-full max-w-[320px]">
             <button onClick={() => checkEbayPrices(true)} className="flex-1 bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-[0.675rem] hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.3)]">
