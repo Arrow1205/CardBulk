@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     // 🚨 TEST EN DUR : Remplace bien les valeurs entre guillemets par tes vraies clés
-    const apiKey = "AIzaSyAwgoHk2me9fZwkXjCVg73bWqo5G4O0-Sw"; 
+    const apiKey = "AIzaSyD4UIwDhQOxCZNNSl9-sHO4UL9LUvRr4Hs"; 
     const cx = "b76d5fd2fdc12441a"; 
 
     // On encode les mots-clés pour l'URL
