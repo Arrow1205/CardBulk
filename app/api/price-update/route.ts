@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     const response = await fetch(url);
     const data = await response.json();
 
-    // 🚨 DEBUG : Si Google renvoie une erreur, on l'affiche précisément
+    // 🚨 DEBUG : Si Google renvoie une erreur (comme le fameux 403), on l'affiche
     if (data.error) {
       console.error("DÉTAIL ERREUR GOOGLE :", data.error);
       return NextResponse.json({ 
@@ -42,6 +42,7 @@ export async function POST(req: Request) {
     let prices: number[] = [];
     
     data.items.forEach((item: any) => {
+      // Regex pour capturer les prix dans les résultats Google
       const priceRegex = /(?:EUR|€|\$|£|GBP)?\s*(\d{1,5}[.,]\d{2})\s*(?:EUR|€|\$|£|GBP)?/gi;
       const textToScan = `${item.title} ${item.snippet}`.toUpperCase();
       
