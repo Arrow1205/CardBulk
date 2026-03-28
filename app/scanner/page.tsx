@@ -77,6 +77,8 @@ type PendingCard = {
   id: string;
   file: File;
   previewUrl: string;
+  originalFile: File;        // 🚨 NOUVEAU : Sauvegarde du fichier d'origine
+  originalPreviewUrl: string; // 🚨 NOUVEAU : Sauvegarde de l'URL d'origine
   status: 'pending' | 'analyzing' | 'done' | 'error';
   aiResult: any;
 };
@@ -120,9 +122,13 @@ function ScannerContent() {
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [originalFile, setOriginalFile] = useState<File | null>(null); // 🚨 MEMOIRE ORIGINALE
+  const [originalPreviewUrl, setOriginalPreviewUrl] = useState<string | null>(null); // 🚨 MEMOIRE ORIGINALE
 
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
+  const [originalFileBack, setOriginalFileBack] = useState<File | null>(null); // 🚨 MEMOIRE ORIGINALE VERSO
+  const [originalPreviewUrlBack, setOriginalPreviewUrlBack] = useState<string | null>(null); // 🚨 MEMOIRE ORIGINALE VERSO
 
   const [freeCropImage, setFreeCropImage] = useState<string | null>(null);
   const [cropRect, setCropRect] = useState({ top: 10, left: 10, right: 90, bottom: 90 });
@@ -285,6 +291,11 @@ function ScannerContent() {
       const currentCard = pendingCards[currentVerifyIndex];
       setSelectedFile(currentCard.file);
       setPreviewUrl(currentCard.previewUrl);
+      
+      // 🚨 On restaure aussi les images originales pour le mode lot
+      setOriginalFile(currentCard.originalFile);
+      setOriginalPreviewUrl(currentCard.originalPreviewUrl);
+
       setSelectedFileBack(null);
       setPreviewUrlBack(null);
 
@@ -620,14 +631,24 @@ function ScannerContent() {
     canvas.toBlob((blob) => {
       if (!blob) return;
       const fullImageFile = new File([blob], `scanned-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      const fullUrl = URL.createObjectURL(fullImageFile);
       
       if ((scanModeRef.current === 'lot' || scanModeRef.current === 'auto') && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
-        const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: URL.createObjectURL(fullImageFile), status: 'analyzing', aiResult: null };
+        // 🚨 Sauvegarde originale intégrée
+        const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: fullUrl, originalFile: fullImageFile, originalPreviewUrl: fullUrl, status: 'analyzing', aiResult: null };
         setPendingCards(prev => [...prev, newCard]);
         processBackgroundScan(newId, fullImageFile);
       } else {
         stopCamera();
+        // 🚨 Sauvegarde originale pour la photo unitaire
+        if (activeSide === 'front') {
+            setOriginalFile(fullImageFile);
+            setOriginalPreviewUrl(fullUrl);
+        } else {
+            setOriginalFileBack(fullImageFile);
+            setOriginalPreviewUrlBack(fullUrl);
+        }
         processImageScan(fullImageFile, activeSide, activeSide === 'front'); 
       }
     }, 'image/jpeg', 1.0);
@@ -641,25 +662,28 @@ function ScannerContent() {
 
     if (files.length > 1 && activeSide === 'front') {
       if (files.length > 30) { alert("Max 30 cartes"); return; }
-      const newPending: PendingCard[] = files.map((f, i) => ({ id: Date.now().toString() + i, file: f, previewUrl: URL.createObjectURL(f), status: 'analyzing', aiResult: null }));
+      const newPending: PendingCard[] = files.map((f, i) => {
+        const url = URL.createObjectURL(f);
+        return { id: Date.now().toString() + i, file: f, previewUrl: url, originalFile: f, originalPreviewUrl: url, status: 'analyzing', aiResult: null };
+      });
       setPendingCards(newPending); setIsVerifyingBulk(true); setCurrentVerifyIndex(0);
       newPending.forEach(c => processBackgroundScan(c.id, c.file));
     } else {
-      const url = URL.createObjectURL(files[0]);
-      setFreeCropImage(url);
-      setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
-      freeCropCallbackRef.current = (file, newUrl) => {
-           if (activeSide === 'back') {
-              setSelectedFileBack(file);
-              setPreviewUrlBack(newUrl);
-              processImageScan(file, 'back', false);
-           } else {
-              if (scanMode === 'lot' || scanMode === 'auto') {
-                  setBulkFiles([file]); setCurrentBulkIndex(0);
-              }
-              processImageScan(file, 'front', true);
-           }
-      };
+      const file = files[0];
+      const url = URL.createObjectURL(file);
+      
+      if (activeSide === 'back') {
+          setOriginalFileBack(file);
+          setOriginalPreviewUrlBack(url);
+          processImageScan(file, 'back', false);
+      } else {
+          setOriginalFile(file);
+          setOriginalPreviewUrl(url);
+          if (scanMode === 'lot' || scanMode === 'auto') {
+              setBulkFiles([file]); setCurrentBulkIndex(0);
+          }
+          processImageScan(file, 'front', true);
+      }
     }
   };
 
@@ -698,15 +722,20 @@ function ScannerContent() {
     }, 'image/jpeg', 0.95);
   };
 
+  // 🚨 LA MAGIE DU NON-DESTRUCTIF SE PASSE ICI 🚨
   const openManualCrop = async () => {
-      const currentPreview = activeSide === 'front' ? previewUrl : previewUrlBack;
-      let currentBlob = activeSide === 'front' ? selectedFile : selectedFileBack;
-      const localSrc = await getLocalImageUrl(currentPreview, currentBlob);
+      // On regarde en priorité si on a une version originale sauvegardée, sinon on prend la preview classique (cas d'une ancienne carte éditée)
+      const currentOriginalPreview = activeSide === 'front' ? (originalPreviewUrl || previewUrl) : (originalPreviewUrlBack || previewUrlBack);
+      let currentOriginalBlob = activeSide === 'front' ? (originalFile || selectedFile) : (originalFileBack || selectedFileBack);
+      
+      const localSrc = await getLocalImageUrl(currentOriginalPreview, currentOriginalBlob);
       if (!localSrc) return;
       
-      setFreeCropImage(localSrc);
+      setFreeCropImage(localSrc); // Ouvre l'outil sur l'image entière
       setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
+      
       freeCropCallbackRef.current = (file, newUrl) => {
+          // L'image recadrée écrase l'image active (mais pas la mémoire originale !)
           if (activeSide === 'front') {
               setSelectedFile(file);
               setPreviewUrl(newUrl);
@@ -805,6 +834,11 @@ function ScannerContent() {
       if (data.base64) {
         const imgRes = await fetch(data.base64); const blob = await imgRes.blob(); const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
         if (data.price) setFormData(prev => ({ ...prev, price: data.price }));
+        
+        // 🚨 Sauvegarde originale pour l'import de lien
+        setOriginalFile(file);
+        setOriginalPreviewUrl(URL.createObjectURL(file));
+        
         processImageScan(file, 'front', false); 
       } else { alert("Impossible de trouver une image sur ce lien."); setAnalyzing(false); }
     } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
@@ -1016,25 +1050,25 @@ function ScannerContent() {
     } catch (err) { console.error(err); setLoading(false); }
   };
 
-  // 🚨 NOUVEAU : FONCTION POUR REFUSER (SUPPRIMER) UNE CARTE EN MODE LOT 🚨
   const discardCurrentBulkCard = () => {
     if (pendingCards.length <= 1) {
-      // C'était la dernière carte, on sort complètement du mode Lot
       setPendingCards([]);
       setIsVerifyingBulk(false);
       setScanMode('unitaire');
       setFormData(DEFAULT_FORM);
       setPreviewUrl(null);
       setSelectedFile(null);
+      setOriginalFile(null);
+      setOriginalPreviewUrl(null);
       setPreviewUrlBack(null);
       setSelectedFileBack(null);
+      setOriginalFileBack(null);
+      setOriginalPreviewUrlBack(null);
     } else {
-      // On retire la carte actuelle de la file d'attente
       const newPending = [...pendingCards];
       newPending.splice(currentVerifyIndex, 1);
       setPendingCards(newPending);
       
-      // Si on vient de supprimer la toute dernière de la liste, on recule l'index
       if (currentVerifyIndex >= newPending.length) {
         setCurrentVerifyIndex(newPending.length - 1);
       }
@@ -1044,8 +1078,18 @@ function ScannerContent() {
 
   const handleChangeImage = (side: 'front' | 'back') => {
     setActiveSide(side);
-    if (side === 'front') { setPreviewUrl(null); setSelectedFile(null); } 
-    else { setPreviewUrlBack(null); setSelectedFileBack(null); }
+    if (side === 'front') { 
+        setPreviewUrl(null); 
+        setSelectedFile(null); 
+        setOriginalFile(null);
+        setOriginalPreviewUrl(null);
+    } 
+    else { 
+        setPreviewUrlBack(null); 
+        setSelectedFileBack(null); 
+        setOriginalFileBack(null);
+        setOriginalPreviewUrlBack(null);
+    }
   };
 
   const deleteCard = async () => {
@@ -1191,7 +1235,6 @@ function ScannerContent() {
         </div>
       )}
 
-      {/* 🚨 MODIF : pt-[140px] pour donner un bel espace sous le titre AJOUTER 🚨 */}
       <div className={`relative lg:fixed lg:top-0 lg:left-0 w-full lg:w-2/3 flex flex-col items-center lg:justify-center pt-[140px] lg:pt-0 pb-8 lg:pb-0 lg:h-screen z-10 px-6 transition-all duration-300`}>
         
         {!isWishlistMode && !isVerifyingBulk && (
@@ -1249,12 +1292,12 @@ function ScannerContent() {
               {!isVerifyingBulk && (
                 <>
                   <div className="flex items-center gap-2 w-full"><div className="h-[1px] flex-1 bg-white/10"></div><span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">OU</span><div className="h-[1px] flex-1 bg-white/10"></div></div>
-                  {/* 🚨 MODIF : Bouton de galerie avec les éléments regroupés au centre 🚨 */}
-                  <button onClick={() => galleryInputRef.current?.click()} className="w-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all py-4 rounded-xl active:scale-95 text-white/70">
-                    <div className="flex items-center justify-center gap-3">
-                      <ImageIcon size={18} />
-                      <span className="text-xs font-bold uppercase tracking-widest">Ouvrir la Galerie</span>
+                  
+                  <button onClick={() => galleryInputRef.current?.click()} className="w-full flex flex-col items-center justify-center gap-3 bg-white/5 border border-white/10 hover:bg-white/10 transition-all p-6 rounded-2xl active:scale-95 group text-white/70">
+                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <ImageIcon size={24} strokeWidth={2.5} />
                     </div>
+                    <span className="text-xs lg:text-sm font-bold uppercase tracking-widest text-center">Ouvrir la Galerie</span>
                   </button>
                 </>
               )}
@@ -1462,7 +1505,6 @@ function ScannerContent() {
             )}
           </div>
 
-          {/* 🚨 NOUVEAU : GESTION DES BOUTONS AVEC L'OPTION DE REFUS EN MODE LOT 🚨 */}
           {isVerifyingBulk ? (
             <div className="flex gap-3 mt-6 mb-6">
               <button 

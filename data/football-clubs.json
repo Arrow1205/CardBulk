@@ -2095,14 +2095,7 @@
     "name": "Paraguay",
     "slug": "paraguay"
   },
-  {
-    "id": "paris-fc",
-    "name": "Paris Fc",
-    "slug": "paris-fc",
-    "aliases": [
-      "PFC"
-    ]
-  },
+ 
   {
     "id": "paris-saint-germain",
     "name": "Paris Saint Germain",
@@ -2110,6 +2103,14 @@
     "aliases": [
       "PSG",
       "Paris SG"
+    ]
+  },
+   {
+    "id": "paris-fc",
+    "name": "Paris Fc",
+    "slug": "paris-fc",
+    "aliases": [
+      "PFC"
     ]
   },
   {

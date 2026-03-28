@@ -106,7 +106,6 @@ export default function CardDetailsPage() {
         alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
         fetchPriceHistory(); 
       } else {
-        // 🚨 C'est ici qu'on affiche la VRAIE erreur renvoyée par Google !
         alert(`Erreur Google : ${data.error || "Erreur inconnue"}`);
       }
     } catch (e) {
@@ -281,12 +280,12 @@ export default function CardDetailsPage() {
         <div 
           ref={cardRef} 
           style={{ ...tiltStyle, transformStyle: 'preserve-3d', borderRadius: '12px' }} 
-          className="relative flex items-center justify-center max-w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto" 
+          className={`relative flex items-center justify-center max-w-full w-fit shadow-[0_20px_60px_rgba(0,0,0,0.6)] cursor-crosshair pointer-events-auto ${isHorizontal ? 'lg:max-w-[80%]' : ''}`} 
           onMouseMove={handleMouseMove} onMouseLeave={handleLeave} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} onTouchCancel={handleLeave}
         >
           {/* CONTENEUR DE FLIP 3D */}
           <div 
-            className="relative"
+            className="relative flex items-center justify-center w-fit"
             style={{
               transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
               transformStyle: 'preserve-3d',
@@ -294,13 +293,13 @@ export default function CardDetailsPage() {
             }}
           >
             {/* FACADE (RECTO) */}
-            <div style={{ backfaceVisibility: 'hidden' }}>
+            <div style={{ backfaceVisibility: 'hidden' }} className="flex">
               {card.image_url ? (
                 <img 
                   src={card.image_url} 
                   onLoad={(e) => { if (e.currentTarget.naturalWidth > e.currentTarget.naturalHeight) setIsHorizontal(true); }} 
                   style={{ borderRadius: '12px', pointerEvents: 'none' }} 
-                  className={`w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] ${isHorizontal ? 'lg:max-w-[80%]' : ''} object-contain border border-white/10`} 
+                  className="w-auto h-auto max-w-full max-h-[420px] lg:max-h-[75vh] object-contain border border-white/10" 
                   alt="Recto" 
                 />
               ) : (

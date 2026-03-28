@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-// 🚨 AJOUT DE L'ICÔNE ScanLine ICI 🚨
 import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus, ScanLine } from 'lucide-react';
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
@@ -63,7 +62,6 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
   </div>
 );
 
-// Helper pour formatter "case_hits" en "CASE HITS"
 const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 
 export default function CollectionPage() {
@@ -95,27 +93,63 @@ export default function CollectionPage() {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
-  // IA STATES
   const [hasStartedScouty, setHasStartedScouty] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
   
-  // ÉTAT POUR L'ACCORDÉON DES VARIATIONS (Base ouvert par défaut)
   const [expandedVars, setExpandedVars] = useState<Record<string, boolean>>({ base: true });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // 🚨 1. RESTAURATION DES FILTRES AU CHARGEMENT DE LA PAGE
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const searchParam = params.get('search');
       const sportParam = params.get('sport');
+      
+      const savedFilters = sessionStorage.getItem('cardbulk_collection_filters');
+      if (savedFilters) {
+        try {
+          const parsed = JSON.parse(savedFilters);
+          if (parsed.activeTab) setActiveTab(parsed.activeTab);
+          if (parsed.selectedBrands) setSelectedBrands(parsed.selectedBrands);
+          if (parsed.selectedVariations) setSelectedVariations(parsed.selectedVariations);
+          if (parsed.showAuto !== undefined) setShowAuto(parsed.showAuto);
+          if (parsed.showPatch !== undefined) setShowPatch(parsed.showPatch);
+          if (parsed.showNumbered !== undefined) setShowNumbered(parsed.showNumbered);
+          
+          if (!searchParam && parsed.searchQuery !== undefined) setSearchQuery(parsed.searchQuery);
+          if (!sportParam && parsed.selectedSport !== undefined) setSelectedSport(parsed.selectedSport);
+        } catch (e) {
+          console.error("Erreur lecture filtres", e);
+        }
+      }
+
       if (searchParam) setSearchQuery(searchParam);
       if (sportParam) setSelectedSport(sportParam);
     }
     fetchCollection();
   }, []);
+
+  // 🚨 2. SAUVEGARDE DES FILTRES À CHAQUE MODIFICATION
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const filters = {
+        activeTab,
+        searchQuery,
+        selectedSport,
+        selectedBrands,
+        selectedVariations,
+        showAuto,
+        showPatch,
+        showNumbered
+      };
+      sessionStorage.setItem('cardbulk_collection_filters', JSON.stringify(filters));
+    }
+  }, [activeTab, searchQuery, selectedSport, selectedBrands, selectedVariations, showAuto, showPatch, showNumbered]);
+
 
   useEffect(() => {
     if (activeTab === 'scouty') {
@@ -311,7 +345,6 @@ export default function CollectionPage() {
 
     const allJsonBrands = SET_DATA.brands?.map((b: any) => b.name) || [];
     
-    // CONSTRUCTION DE L'ARBRE DES VARIATIONS (Basé sur les marques sélectionnées)
     let variationsTree: any = {};
     const brandsToUse = selectedBrands.length > 0 ? selectedBrands : Object.keys(TYPE_CARTE);
     
@@ -332,7 +365,6 @@ export default function CollectionPage() {
       });
     });
 
-    // FILTRE CENTRAL
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
       const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
@@ -521,7 +553,6 @@ export default function CollectionPage() {
         )}
 
         <div className="px-6 lg:px-[80px] grid grid-cols-3 lg:grid-cols-5 gap-3 pb-[180px] grid-flow-dense auto-rows-max">
-          {/* 🚨 GESTION DE L'AFFICHAGE "AUCUNE CARTE" SÉPARÉ DU RÉSULTAT DE FILTRES 🚨 */}
           {filteredCards.length > 0 ? (
             filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
