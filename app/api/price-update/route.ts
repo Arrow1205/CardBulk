@@ -9,16 +9,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    // 🚨 TEST EN DUR : Remplace bien les valeurs entre guillemets par tes vraies clés
-    const apiKey = "AIzaSyD4UIwDhQOxCZNNSl9-sHO4UL9LUvRr4Hs"; 
-    const cx = "b76d5fd2fdc12441a"; 
+    // 🔒 RECUPERATION SECURISEE DES CLES DEPUIS VERCEL
+    const apiKey = process.env.GOOGLE_API_KEY;
+    const cx = process.env.GOOGLE_CX;
 
-    // On encode les mots-clés pour l'URL
+    if (!apiKey || !cx) {
+      console.error("Clés Google manquantes dans Vercel");
+      return NextResponse.json({ success: false, error: 'Configuration API manquante sur le serveur' }, { status: 500 });
+    }
+
     const query = encodeURIComponent(keywords);
     const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
     
-    console.log("Appel Google API avec la requête :", keywords);
-
     const response = await fetch(url);
     const data = await response.json();
 
@@ -27,7 +29,7 @@ export async function POST(req: Request) {
       console.error("DÉTAIL ERREUR GOOGLE :", data.error);
       return NextResponse.json({ 
         success: false, 
-        error: `Google dit : ${data.error.message} (Code: ${data.error.code})` 
+        error: `Erreur Google : ${data.error.message} (Code: ${data.error.code})` 
       }, { status: 500 });
     }
 
@@ -61,7 +63,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Prix détectés mais illisibles' });
     }
 
-    // Calcul de la moyenne
+    // Calcul de la moyenne propre
     const sum = prices.reduce((a, b) => a + b, 0);
     const average = Math.round((sum / prices.length) * 100) / 100;
 
