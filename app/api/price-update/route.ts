@@ -9,65 +9,51 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    // 🔒 RECUPERATION SECURISEE DES CLES DEPUIS VERCEL
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CX;
-
-    if (!apiKey || !cx) {
-      console.error("Clés Google manquantes dans Vercel");
-      return NextResponse.json({ success: false, error: 'Configuration API manquante sur le serveur' }, { status: 500 });
-    }
-
-    const query = encodeURIComponent(keywords);
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
+    // 1. On prépare la recherche
+    const searchQuery = encodeURIComponent(keywords.trim());
     
-    const response = await fetch(url);
-    const data = await response.json();
-
-    // 🚨 DEBUG : Si Google renvoie une erreur, on l'affiche précisément
-    if (data.error) {
-      console.error("DÉTAIL ERREUR GOOGLE :", data.error);
-      return NextResponse.json({ 
-        success: false, 
-        error: `Erreur Google : ${data.error.message} (Code: ${data.error.code})` 
-      }, { status: 500 });
-    }
-
-    // Vérification de la présence de résultats
-    if (!data.items || data.items.length === 0) {
-      return NextResponse.json({ success: false, error: 'Aucun résultat trouvé sur eBay via Google' });
-    }
-
-    // Extraction des prix
-    let prices: number[] = [];
+    // 2. On interroge eBay directement (ventes réussies uniquement)
+    const url = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}&LH_Sold=1&LH_Complete=1&_ipg=25`;
     
-    data.items.forEach((item: any) => {
-      // Déclaration de la Regex à l'intérieur pour réinitialiser le curseur à chaque itération
-      const priceRegex = /(?:EUR|€|\$|£|GBP)?\s*(\d{1,5}[.,]\d{2})\s*(?:EUR|€|\$|£|GBP)?/gi;
-      const textToScan = `${item.title} ${item.snippet}`.toUpperCase();
-      
-      let match;
-      while ((match = priceRegex.exec(textToScan)) !== null) {
-        const priceStr = match[1];
-        if (priceStr) {
-           const priceNum = parseFloat(priceStr.replace(',', '.'));
-           // Filtre pour éviter les prix aberrants
-           if (priceNum > 0.5 && priceNum < 100000) { 
-             prices.push(priceNum);
-           }
-        }
-      }
+    // On se fait passer pour un navigateur classique
+    const response = await fetch(url, {
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
+      },
+      cache: 'no-store' // On force la récupération des derniers prix
     });
 
-    if (prices.length === 0) {
-      return NextResponse.json({ success: false, error: 'Prix détectés mais illisibles' });
+    const html = await response.text();
+
+    // 3. Regex pour trouver les prix en vert (ventes terminées sur eBay)
+    const priceRegex = /<span class="POSITIVE"[^>]*>[^0-9]*([\d\s.,]+)/gi;
+    
+    let prices: number[] = [];
+    let match;
+
+    while ((match = priceRegex.exec(html)) !== null) {
+      if (match[1]) {
+        // Nettoyage : on enlève les espaces et on remplace la virgule par un point
+        let priceValue = match[1].replace(/\s/g, '').replace(',', '.').trim();
+        const priceNum = parseFloat(priceValue);
+        
+        // On évite les prix absurdes ou à 0
+        if (!isNaN(priceNum) && priceNum > 0.5 && priceNum < 100000) {
+          prices.push(priceNum);
+        }
+      }
     }
 
-    // Calcul de la moyenne propre
+    if (prices.length === 0) {
+      return NextResponse.json({ success: false, error: 'Aucun prix trouvé sur eBay pour cette carte.' });
+    }
+
+    // 4. Calcul de la moyenne
     const sum = prices.reduce((a, b) => a + b, 0);
     const average = Math.round((sum / prices.length) * 100) / 100;
 
-    // Sauvegarde dans Supabase
+    // 5. Sauvegarde dans Supabase
     const { error: dbError } = await supabase.from('card_prices').insert([{
       card_id: cardId,
       price: average
@@ -78,7 +64,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, averagePrice: average });
 
   } catch (error: any) {
-    console.error('Erreur API Route:', error);
+    console.error('Erreur Route Scraping:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
