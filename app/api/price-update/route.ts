@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     const searchResponse = await fetch(searchUrl, {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
-        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_FR' // Recherche sur eBay France (tu peux mettre EBAY_US si besoin)
+        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_FR' // Recherche sur eBay France
       }
     });
 
@@ -60,14 +60,21 @@ export async function POST(req: Request) {
     }
 
     // --------------------------------------------------------
-    // 3️⃣ CALCUL DU PRIX MOYEN
+    // 3️⃣ CALCUL DU PRIX MOYEN "INTELLIGENT"
     // --------------------------------------------------------
     let prices: number[] = [];
     
     searchData.itemSummaries.forEach((item: any) => {
-      if (item.price && item.price.value) {
+      // Sécurité 1 : On filtre les mots clés toxiques dans le titre (lots, gradées)
+      const title = (item.title || "").toUpperCase();
+      const isGradedOrLot = title.includes('PSA') || 
+                            title.includes('PCA') || 
+                            title.includes('LOT') || 
+                            title.includes('BGS') ||
+                            title.includes('CGC');
+      
+      if (item.price && item.price.value && !isGradedOrLot) {
          const priceNum = parseFloat(item.price.value);
-         // On ignore les prix à 0 ou les aberrations
          if (priceNum > 0.5 && priceNum < 100000) { 
            prices.push(priceNum);
          }
@@ -75,10 +82,20 @@ export async function POST(req: Request) {
     });
 
     if (prices.length === 0) {
-      return NextResponse.json({ success: false, error: 'Annonces trouvées, mais prix illisibles' });
+      return NextResponse.json({ success: false, error: 'Annonces trouvées, mais toutes exclues (lots ou gradées)' });
     }
 
-    // Calcul de la moyenne
+    // Sécurité 2 : On trie les prix du plus petit au plus grand
+    prices.sort((a, b) => a - b);
+
+    // Sécurité 3 : Anti-Pigeon / Anti-Bradage
+    // Si on a au moins 4 prix, on supprime les extrêmes
+    if (prices.length >= 4) {
+      prices.pop();   // Supprime le prix le plus délirant (le plus haut)
+      prices.shift(); // Supprime le prix le plus bradé (le plus bas)
+    }
+
+    // Calcul de la moyenne sur les prix "propres" restants
     const sum = prices.reduce((a, b) => a + b, 0);
     const average = Math.round((sum / prices.length) * 100) / 100;
 
