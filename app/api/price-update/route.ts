@@ -9,70 +9,82 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    // 🔒 RECUPERATION SECURISEE DES CLES DEPUIS VERCEL
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CX;
+    // 🔒 RECUPERATION DES CLES EBAY DEPUIS VERCEL
+    const appId = process.env.EBAY_APP_ID;
+    const certId = process.env.EBAY_CERT_ID;
 
-    if (!apiKey || !cx) {
-      console.error("Clés Google manquantes dans Vercel");
-      return NextResponse.json({ success: false, error: 'Configuration API manquante sur le serveur' }, { status: 500 });
+    if (!appId || !certId) {
+      console.error("Clés eBay manquantes dans Vercel");
+      return NextResponse.json({ success: false, error: 'Configuration eBay manquante' }, { status: 500 });
     }
 
-    const query = encodeURIComponent(keywords);
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
+    // --------------------------------------------------------
+    // 1️⃣ GÉNÉRATION DU TOKEN D'ACCÈS EBAY
+    // --------------------------------------------------------
+    const credentials = Buffer.from(`${appId}:${certId}`).toString('base64');
     
-    // 🚨 LE MOUCHARD : Permet de vérifier dans Vercel (onglet Logs) quelle clé est réellement injectée
-    console.log("🔑 CLÉ API UTILISÉE :", apiKey.substring(0, 15) + "...");
-    console.log("🔍 CX UTILISÉ :", cx);
+    const tokenResponse = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${credentials}`
+      },
+      body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope'
+    });
 
-    // 🚨 LA CORRECTION DU CACHE : On force Next.js à ignorer son cache agressif !
-    const response = await fetch(url, { cache: 'no-store' });
-    const data = await response.json();
-
-    // 🚨 DEBUG : Si Google renvoie une erreur (comme le fameux 403), on l'affiche
-    if (data.error) {
-      console.error("DÉTAIL ERREUR GOOGLE :", data.error);
-      return NextResponse.json({ 
-        success: false, 
-        error: `Erreur Google API : ${data.error.message} (Code: ${data.error.code})` 
-      }, { status: 500 });
+    const tokenData = await tokenResponse.json();
+    
+    if (!tokenData.access_token) {
+      console.error("Erreur Token eBay :", tokenData);
+      throw new Error("Impossible de s'authentifier auprès d'eBay");
     }
 
-    // Vérification de la présence de résultats
-    if (!data.items || data.items.length === 0) {
-      return NextResponse.json({ success: false, error: 'Aucun résultat trouvé sur eBay via Google' });
+    // --------------------------------------------------------
+    // 2️⃣ RECHERCHE DES CARTES SUR EBAY
+    // --------------------------------------------------------
+    const query = encodeURIComponent(keywords);
+    // limit=10 pour faire une moyenne sur les 10 résultats les plus pertinents
+    const searchUrl = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=10`;
+
+    const searchResponse = await fetch(searchUrl, {
+      headers: {
+        'Authorization': `Bearer ${tokenData.access_token}`,
+        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_FR' // Recherche sur eBay France (tu peux mettre EBAY_US si besoin)
+      }
+    });
+
+    const searchData = await searchResponse.json();
+
+    if (!searchData.itemSummaries || searchData.itemSummaries.length === 0) {
+      return NextResponse.json({ success: false, error: 'Aucun résultat trouvé sur eBay pour cette carte' });
     }
 
-    // Extraction des prix
+    // --------------------------------------------------------
+    // 3️⃣ CALCUL DU PRIX MOYEN
+    // --------------------------------------------------------
     let prices: number[] = [];
     
-    data.items.forEach((item: any) => {
-      // Regex pour capturer les prix dans les résultats Google
-      const priceRegex = /(?:EUR|€|\$|£|GBP)?\s*(\d{1,5}[.,]\d{2})\s*(?:EUR|€|\$|£|GBP)?/gi;
-      const textToScan = `${item.title} ${item.snippet}`.toUpperCase();
-      
-      let match;
-      while ((match = priceRegex.exec(textToScan)) !== null) {
-        const priceStr = match[1];
-        if (priceStr) {
-           const priceNum = parseFloat(priceStr.replace(',', '.'));
-           // Filtre pour éviter les prix aberrants
-           if (priceNum > 0.5 && priceNum < 100000) { 
-             prices.push(priceNum);
-           }
-        }
+    searchData.itemSummaries.forEach((item: any) => {
+      if (item.price && item.price.value) {
+         const priceNum = parseFloat(item.price.value);
+         // On ignore les prix à 0 ou les aberrations
+         if (priceNum > 0.5 && priceNum < 100000) { 
+           prices.push(priceNum);
+         }
       }
     });
 
     if (prices.length === 0) {
-      return NextResponse.json({ success: false, error: 'Prix détectés mais illisibles dans les résultats' });
+      return NextResponse.json({ success: false, error: 'Annonces trouvées, mais prix illisibles' });
     }
 
-    // Calcul de la moyenne propre
+    // Calcul de la moyenne
     const sum = prices.reduce((a, b) => a + b, 0);
     const average = Math.round((sum / prices.length) * 100) / 100;
 
-    // Sauvegarde dans Supabase
+    // --------------------------------------------------------
+    // 4️⃣ SAUVEGARDE DANS SUPABASE
+    // --------------------------------------------------------
     const { error: dbError } = await supabase.from('card_prices').insert([{
       card_id: cardId,
       price: average
@@ -83,7 +95,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, averagePrice: average });
 
   } catch (error: any) {
-    console.error('Erreur API Route:', error);
+    console.error('Erreur globale eBay API:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
