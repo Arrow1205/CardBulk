@@ -21,7 +21,12 @@ export async function POST(req: Request) {
     const query = encodeURIComponent(keywords);
     const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
     
-    const response = await fetch(url);
+    // 🚨 LE MOUCHARD : Permet de vérifier dans Vercel (onglet Logs) quelle clé est réellement injectée
+    console.log("🔑 CLÉ API UTILISÉE :", apiKey.substring(0, 15) + "...");
+    console.log("🔍 CX UTILISÉ :", cx);
+
+    // 🚨 LA CORRECTION DU CACHE : On force Next.js à ignorer son cache agressif !
+    const response = await fetch(url, { cache: 'no-store' });
     const data = await response.json();
 
     // 🚨 DEBUG : Si Google renvoie une erreur (comme le fameux 403), on l'affiche
