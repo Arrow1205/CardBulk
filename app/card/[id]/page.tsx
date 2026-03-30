@@ -108,9 +108,12 @@ export default function CardDetailsPage() {
     const nom = cleanData(currentCard.lastname);
     const variation = cleanData(currentCard.variation);
     
+    // 🌟 NOUVEAUTÉ : Ajout intelligent de Auto et Patch
+    const autoKeyword = currentCard.is_auto ? 'Auto' : '';
+    const patchKeyword = currentCard.is_patch ? 'Patch' : '';
     const numerotation = currentCard.is_numbered && currentCard.numbering_max ? cleanData(currentCard.numbering_max) : '';
 
-    const keywordsArray = [annee, brand, series, prenom, nom, variation, numerotation];
+    const keywordsArray = [annee, brand, series, prenom, nom, variation, autoKeyword, patchKeyword, numerotation];
     return keywordsArray.filter(Boolean).join(' ');
   };
 
@@ -489,7 +492,6 @@ export default function CardDetailsPage() {
                 {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
               </button>
               
-              {/* 🌟 NOUVEAUTÉ : Le texte est formaté "Last update...", un peu plus petit sur mobile (text-[8px]) et forcé sur une ligne (whitespace-nowrap) */}
               <span className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-widest text-right whitespace-nowrap">
                 {priceHistory.length > 0 && card.updated_at 
                   ? `Last update ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} à ${new Date(card.updated_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}`
@@ -516,6 +518,20 @@ export default function CardDetailsPage() {
                   
                   <Tooltip content={<CustomTooltip />} />
                   <Area type="monotone" dataKey="prix" stroke="#AFFF25" strokeWidth={3} fillOpacity={1} fill="url(#colorPrix)" />
+
+                  {/* 🌟 NOUVEAUTÉ : Ligne repère de 0 € tout en bas */}
+                  <ReferenceLine
+                    y={0}
+                    stroke="rgba(255, 255, 255, 0.1)" // Trait très discret
+                    label={{
+                      value: '0 €',
+                      position: 'insideBottomLeft',
+                      fill: 'rgba(255, 255, 255, 0.4)', // Texte discret
+                      fontSize: 10,
+                      fontWeight: 'bold',
+                      dy: -5 // On remonte très légèrement le texte pour pas qu'il soit coupé
+                    }}
+                  />
 
                   {card?.purchase_price > 0 && (
                     <ReferenceLine
