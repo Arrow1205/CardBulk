@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight, ExternalLink } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
@@ -99,7 +99,7 @@ function ScannerContent() {
   const editId = searchParams.get('edit'); 
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
-  const [scanMode, setScanMode] = useState<'unitaire' | 'lot' | 'auto'>('unitaire');
+  const [scanMode, setScanMode] = useState<'unitaire' | 'lot' | 'auto' | 'quick'>('unitaire');
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
   const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
@@ -168,6 +168,18 @@ function ScannerContent() {
   const isFlashingRef = useRef(isFlashing);
   useEffect(() => { isFlashingRef.current = isFlashing; }, [isFlashing]);
   const captureRef = useRef(() => {});
+
+  // 🌟 GESTION DU CHANGEMENT DE TAB
+  const handleTabSwitch = (mode: 'unitaire' | 'lot' | 'auto' | 'quick') => {
+    setScanMode(mode);
+    if (mode === 'quick') {
+      setIsJoueurOpen(false);
+      setIsCarteOpen(false);
+    } else {
+      setIsJoueurOpen(true);
+      setIsCarteOpen(true);
+    }
+  };
 
   useEffect(() => {
     if (editId) {
@@ -493,13 +505,6 @@ function ScannerContent() {
     }
   };
 
-  const matchExactCase = (rawString: string, validList: string[]) => {
-    if (!rawString) return '';
-    const rawClean = rawString.toLowerCase().trim();
-    const found = validList.find(item => item.toLowerCase().trim() === rawClean);
-    return found || rawString;
-  };
-
   const processBackgroundScan = async (id: string, file: File) => {
     try {
       const body = new FormData(); body.append("image", file);
@@ -740,11 +745,17 @@ function ScannerContent() {
               setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: file, previewUrl: newUrl } : c));
           }
           
-          // 🌟 SÉCURITÉ : Ne relance l'IA QUE si on est en train de créer une nouvelle carte, pas en Mode Édition !
           if (!editId) {
              processImageScan(file, activeSide, false);
           }
       };
+  };
+
+  const matchExactCase = (rawString: string, validList: string[]) => {
+    if (!rawString) return '';
+    const rawClean = rawString.toLowerCase().trim();
+    const found = validList.find(item => item.toLowerCase().trim() === rawClean);
+    return found || rawString;
   };
 
   const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false) => {
@@ -889,7 +900,6 @@ function ScannerContent() {
           }
           setIsApplyingEdit(false);
           
-          // 🌟 SÉCURITÉ : Pas de rescan en mode modification
           if (!editId) {
              processImageScan(newFile, activeSide, false);
           }
@@ -987,7 +997,6 @@ function ScannerContent() {
           setImgSettings({ brightness: 100, contrast: 100, zoom: 1 });
           setIsApplyingEdit(false);
 
-          // 🌟 SÉCURITÉ : Pas de rescan en mode modification
           if (!editId) {
              processImageScan(newFile, activeSide, false);
           }
@@ -1100,6 +1109,39 @@ function ScannerContent() {
     } catch (err) { console.error(err); setLoading(false); }
   };
 
+  // 🌟 NOUVEAU : LA RECHERCHE EBAY DIRECTE POUR LE "QUICK SCAN"
+  const handleQuickSearch = () => {
+    const formatStr = (val: any) => {
+      if (!val) return '';
+      const str = String(val).toUpperCase().trim();
+      if (str === '-' || str === 'NC' || str === 'N/A' || str === 'EMPTY') return '';
+      return str;
+    };
+
+    let formattedYear = formData.year;
+    if (!['TENNIS', 'BASEBALL', 'F1'].includes(formData.sport) && formData.year && /^\d{4}$/.test(formData.year.toString())) {
+      const yearNum = parseInt(formData.year, 10);
+      const prevYear = yearNum - 1;
+      const shortYear = formData.year.toString().slice(-2);
+      formattedYear = `${prevYear}-${shortYear}`;
+    }
+
+    const keywordsArray = [
+      formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
+      formatStr(formData.firstname), formatStr(formData.lastname), formatStr(formData.variation), 
+      formData.is_auto ? 'Auto' : '', formData.is_patch ? 'Patch' : '', 
+      formData.is_numbered && formData.num_high ? formatStr(formData.num_high) : ''
+    ];
+    
+    const keywords = keywordsArray.filter(Boolean).join(' ');
+    
+    if (keywords) {
+      const searchQuery = encodeURIComponent(keywords);
+      const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}&LH_Sold=1&LH_Complete=1`;
+      window.open(ebayUrl, '_blank');
+    }
+  };
+
   const discardCurrentBulkCard = () => {
     if (pendingCards.length <= 1) {
       setPendingCards([]);
@@ -1164,7 +1206,6 @@ function ScannerContent() {
           <h2 className="text-xl font-black italic text-[#AFFF25] tracking-widest uppercase mb-4">Recadrer</h2>
           
           <div className="relative w-full h-[55vh] max-w-lg flex items-center justify-center">
-              {/* 🌟 LE CORRECTIF CSS : La boîte moule l'image au pixel près ! */}
               <div className="relative max-w-full max-h-full" ref={cropContainerRef} style={{ width: 'fit-content', height: 'fit-content' }}>
                   <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-[55vh] pointer-events-none block" alt="To Crop" />
                   
@@ -1292,10 +1333,12 @@ function ScannerContent() {
         
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8 w-full mt-4 lg:mt-0">
-            <div className="flex justify-center gap-4 sm:gap-8 w-full max-w-md">
-              <button onClick={() => setScanMode('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
-              <button onClick={() => setScanMode('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
-              <button onClick={() => setScanMode('auto')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'auto' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Auto <span className="bg-[#AFFF25]/20 text-[#AFFF25] px-1.5 py-0.5 rounded text-[8px]">Bêta</span></button>
+            {/* 🌟 NOUVEAU MENU DES MODES DE SCAN (Ajout de 'Rapide') */}
+            <div className="flex justify-center gap-4 sm:gap-6 w-full max-w-md">
+              <button onClick={() => handleTabSwitch('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
+              <button onClick={() => handleTabSwitch('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
+              <button onClick={() => handleTabSwitch('auto')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'auto' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Auto <span className="bg-[#AFFF25]/20 text-[#AFFF25] px-1.5 py-0.5 rounded text-[8px]">Bêta</span></button>
+              <button onClick={() => handleTabSwitch('quick')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'quick' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}><Search size={12}/> Rapide</button>
             </div>
             
             <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px]">
@@ -1320,7 +1363,6 @@ function ScannerContent() {
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
-              {/* 🌟 LE CORRECTIF D'AFFICHAGE DU CHARGEMENT : on le voit maintenant aussi sur le Verso ! */}
               {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
@@ -1381,7 +1423,37 @@ function ScannerContent() {
 
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
-        {isWishlistMode && (
+        {/* 🌟 LE CHAMP VARIATION MIS EN AVANT POUR LE QUICK SCAN */}
+        {scanMode === 'quick' && (
+          <div className="bg-white/5 border border-[#AFFF25]/50 shadow-[0_0_20px_rgba(175,255,37,0.1)] rounded-2xl p-4 mb-6 animate-in fade-in slide-in-from-top-4">
+            <label className="text-[10px] text-[#AFFF25] italic font-black tracking-widest block mb-3 uppercase flex items-center gap-2">
+              <Search size={14} /> Étape obligatoire pour eBay
+            </label>
+            <div className="relative">
+              <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-4 rounded-xl text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/80 transition-colors shadow-inner">
+                <option value="">Sélectionner la Variation (ex: Base, Prizm Silver...)</option>
+                {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
+                  if (Array.isArray(currentBrandVariations[catKey])) {
+                    return (
+                      <optgroup key={catKey} label={formatLabel(catKey)}>
+                        {currentBrandVariations[catKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                      </optgroup>
+                    )
+                  } else {
+                    return Object.keys(currentBrandVariations[catKey]).map(subKey => (
+                      <optgroup key={`${catKey}-${subKey}`} label={`${formatLabel(catKey)} - ${formatLabel(subKey)}`}>
+                        {currentBrandVariations[catKey][subKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                      </optgroup>
+                    ))
+                  }
+                })}
+              </select>
+              <ChevronDown className="absolute right-4 top-4 text-[#AFFF25] pointer-events-none" size={18} />
+            </div>
+          </div>
+        )}
+
+        {isWishlistMode && scanMode !== 'quick' && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-8">
             <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-3 uppercase">Importer depuis un lien (Optionnel)</label>
             <div className="flex gap-2">
@@ -1484,27 +1556,30 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                <div className="relative">
-                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
-                    <option value="">Variation (ex: Base, Prizm Silver...)</option>
-                    {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
-                      if (Array.isArray(currentBrandVariations[catKey])) {
-                        return (
-                          <optgroup key={catKey} label={formatLabel(catKey)}>
-                            {currentBrandVariations[catKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
-                          </optgroup>
-                        )
-                      } else {
-                        return Object.keys(currentBrandVariations[catKey]).map(subKey => (
-                          <optgroup key={`${catKey}-${subKey}`} label={`${formatLabel(catKey)} - ${formatLabel(subKey)}`}>
-                            {currentBrandVariations[catKey][subKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
-                          </optgroup>
-                        ))
-                      }
-                    })}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
-                </div>
+                {/* 🌟 ON CACHE CE CHAMP ICI SI ON EST EN MODE QUICK SCAN POUR NE PAS FAIRE DOUBLON */}
+                {scanMode !== 'quick' && (
+                  <div className="relative">
+                    <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                      <option value="">Variation (ex: Base, Prizm Silver...)</option>
+                      {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
+                        if (Array.isArray(currentBrandVariations[catKey])) {
+                          return (
+                            <optgroup key={catKey} label={formatLabel(catKey)}>
+                              {currentBrandVariations[catKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                            </optgroup>
+                          )
+                        } else {
+                          return Object.keys(currentBrandVariations[catKey]).map(subKey => (
+                            <optgroup key={`${catKey}-${subKey}`} label={`${formatLabel(catKey)} - ${formatLabel(subKey)}`}>
+                              {currentBrandVariations[catKey][subKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                            </optgroup>
+                          ))
+                        }
+                      })}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                  </div>
+                )}
                 
                 <div className="relative">
                   <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
@@ -1559,7 +1634,16 @@ function ScannerContent() {
             )}
           </div>
 
-          {isVerifyingBulk ? (
+          {/* 🌟 NOUVEAU BOUTON D'ACTION SELON LE MODE */}
+          {scanMode === 'quick' ? (
+             <button 
+               disabled={analyzing || !formData.variation || !formData.firstname || !formData.lastname} 
+               onClick={handleQuickSearch} 
+               className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(formData.variation && formData.firstname && formData.lastname) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95 shadow-[0_0_20px_rgba(175,255,37,0.4)]' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
+             >
+               <ExternalLink size={20} strokeWidth={2.5} /> Rechercher sur eBay
+             </button>
+          ) : isVerifyingBulk ? (
             <div className="flex gap-3 mt-6 mb-6">
               <button 
                 onClick={(e) => { e.preventDefault(); discardCurrentBulkCard(); }} 
