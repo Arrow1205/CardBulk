@@ -119,6 +119,11 @@ export default function CardDetailsPage() {
     if (!card) return;
     setIsUpdatingPrice(true); 
     
+    // 🌟 L'ASTUCE EST ICI : On met à jour la date tout de suite, côté client !
+    const now = new Date().toISOString();
+    setCard((prev: any) => ({ ...prev, updated_at: now })); // Mise à jour visuelle instantanée !
+    await supabase.from('cards').update({ updated_at: now }).eq('id', card.id); // Sauvegarde forcée dans ta base
+
     const keywords = buildEbaySearchQuery(card);
 
     try {
@@ -146,7 +151,7 @@ export default function CardDetailsPage() {
       console.error("Erreur de MAJ des prix :", e);
       alert("Désolé, aucune vente en cours actuellement.");
     } finally {
-      // 🌟 NOUVEAUTÉ : On force le rafraîchissement de la page quoi qu'il arrive !
+      // On recharge la carte en arrière-plan pour être sûr que tout est synchronisé
       fetchCard(); 
       setIsUpdatingPrice(false); 
     }
@@ -482,10 +487,12 @@ export default function CardDetailsPage() {
               >
                 {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
               </button>
-              <span className="text-[9px] text-white/30 uppercase tracking-widest text-right">
-                {card.updated_at 
-                  ? `MAJ le ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} à ${new Date(card.updated_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}`
-                  : 'Jamais actualisée'}
+              <span className="text-[9px] text-white/30 uppercase tracking-widest text-right max-w-[140px]">
+                {priceHistory.length > 0 && card.updated_at 
+                  ? `Prix MAJ le ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} à ${new Date(card.updated_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}`
+                  : card.updated_at
+                    ? `Scan le ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} (0 résultat)`
+                    : 'Jamais scannée'}
               </span>
             </div>
           </div>
