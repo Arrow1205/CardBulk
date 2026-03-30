@@ -26,7 +26,7 @@ const SPORT_FOLDERS: Record<string, string> = {
   'NHL': 'NHL'
 };
 
-// 🥷 Fonction de nettoyage des données (la même que le robot Cron !)
+// 🥷 Fonction de nettoyage des données
 function cleanData(value: any): string {
   if (value === null || value === undefined || value === '') return '';
   const strVal = String(value).toUpperCase().trim();
@@ -94,7 +94,6 @@ export default function CardDetailsPage() {
   const buildEbaySearchQuery = (currentCard: any) => {
     let formattedYear = currentCard.year;
     
-    // Formatage spécial pour les années de sport (ex: 2023 devient 2022-23)
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(currentCard.sport) && currentCard.year && /^\d{4}$/.test(currentCard.year.toString())) {
       const yearNum = parseInt(currentCard.year, 10); 
       const prevYear = yearNum - 1; 
@@ -108,9 +107,10 @@ export default function CardDetailsPage() {
     const prenom = cleanData(currentCard.firstname);
     const nom = cleanData(currentCard.lastname);
     const variation = cleanData(currentCard.variation);
-    const numerotation = currentCard.is_numbered && currentCard.numbering_max ? `/${cleanData(currentCard.numbering_max)}` : '';
+    
+    // ⚠️ On demande UNIQUEMENT le chiffre, sans le slash pour ne pas casser eBay
+    const numerotation = currentCard.is_numbered && currentCard.numbering_max ? cleanData(currentCard.numbering_max) : '';
 
-    // Ordre de recherche demandé : année - Brand - collection - prenom + nom + variation + numerotation /x
     const keywordsArray = [annee, brand, series, prenom, nom, variation, numerotation];
     return keywordsArray.filter(Boolean).join(' ');
   };
@@ -119,7 +119,6 @@ export default function CardDetailsPage() {
     if (!card) return;
     setIsUpdatingPrice(true); 
     
-    // Utilisation du cerveau centralisé
     const keywords = buildEbaySearchQuery(card);
 
     try {
@@ -128,18 +127,26 @@ export default function CardDetailsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cardId: card.id, keywords })
       });
-      const data = await res.json();
+      
+      const textResponse = await res.text();
+      let data;
+      try {
+        data = JSON.parse(textResponse);
+      } catch (parseError) {
+        throw new Error("Erreur Serveur Vercel");
+      }
       
       if (data.success) {
         alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
         fetchPriceHistory(); 
         fetchCard(); 
       } else {
-        alert(`Erreur API : ${data.error || "Erreur inconnue"}`);
+        // 💬 LE MESSAGE PERSONNALISÉ DEMANDÉ
+        alert("Désolé, aucune vente en cours actuellement.");
       }
-    } catch (e) {
-      console.error("Erreur de MAJ des prix", e);
-      alert("Erreur lors de la recherche du prix.");
+    } catch (e: any) {
+      console.error("Erreur de MAJ des prix :", e);
+      alert("Désolé, aucune vente en cours actuellement.");
     } finally {
       setIsUpdatingPrice(false); 
     }
@@ -148,7 +155,6 @@ export default function CardDetailsPage() {
   const checkEbayPrices = (soldOnly: boolean = true) => {
     if (!card) return;
     
-    // Utilisation du cerveau centralisé pour les liens externes
     const keywords = buildEbaySearchQuery(card);
     const searchQuery = encodeURIComponent(keywords);
     
@@ -157,6 +163,7 @@ export default function CardDetailsPage() {
     window.open(ebayUrl, '_blank');
   };
 
+  // ... (Toute la gestion du gyroscope reste intacte)
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
