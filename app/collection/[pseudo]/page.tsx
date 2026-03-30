@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-// 🌟 Imports épurés (pas besoin de LogOut ou Share)
-import { Loader2, Search, SlidersHorizontal, Star, Award, ShieldCheck, Gem, Layers3, ChevronLeft } from 'lucide-react';
+import { Loader2, Search, SlidersHorizontal, Star, Award, ShieldCheck, Layers3, ChevronLeft } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
@@ -26,7 +25,6 @@ const CLUB_DATA: Record<string, any[]> = {
   'BASEBALL': BASEBALL_CLUBS,
 };
 
-// 🌟 Définition de carte épurée (pas de purchase_price)
 type PublicCard = {
   id: string; sport: string; firstname: string; lastname: string; club_name: string; brand: string; series: string; variation: string; year: number; numbering_max: number | null; image_url: string; image_url_back: string | null; is_rookie: boolean; is_auto: boolean; is_patch: boolean; is_graded: boolean; grading_company: string | null; grading_grade: string | null; club_slug?: string;
 };
@@ -54,7 +52,6 @@ export default function PublicCollectionPage() {
     const fetchPublicData = async () => {
       if (!pseudo) return;
 
-      // 1. Récupérer l'ID du propriétaire via son pseudo (en utilisant le helper RPC créé à l'étape 2)
       const { data: ownerId, error: ownerError } = await supabase.rpc('get_user_id_by_username', { p_username: pseudo });
 
       if (ownerError || !ownerId) {
@@ -63,8 +60,6 @@ export default function PublicCollectionPage() {
         return;
       }
 
-      // 2. Récupérer le profil et les cartes (requêtes parallèles sécurisées)
-      // 🌟 SÉCURITÉ : On liste explicitement les colonnes autorisées, EXCLUANT purchase_price
       const publicColumns = 'id, sport, firstname, lastname, club_name, brand, series, variation, year, numbering_max, image_url, image_url_back, is_rookie, is_auto, is_patch, is_graded, grading_company, grading_grade';
 
       const [profileRes, cardsRes] = await Promise.all([
@@ -73,7 +68,7 @@ export default function PublicCollectionPage() {
           .select(publicColumns)
           .eq('user_id', ownerId)
           .eq('is_wishlist', false)
-          .order('year', { ascending: false }) // Tri par année par défaut pour le public
+          .order('year', { ascending: false })
       ]);
 
       if (profileRes.data) setOwner(profileRes.data);
@@ -91,7 +86,8 @@ export default function PublicCollectionPage() {
     fetchPublicData();
   }, [pseudo]);
 
-  const sportsPresent = ['ALL', ...new Set(cards.map(c => c.sport))];
+  // CORRECTION EFFECTUÉE ICI POUR TYPESCRIPT
+  const sportsPresent = ['ALL', ...Array.from(new Set(cards.map(c => c.sport)))];
 
   const filteredCards = cards.filter(card => {
     const searchMatch = searchTerm === '' || `${card.firstname} ${card.lastname} ${card.club_name} ${card.brand} ${card.series} ${card.year}`.toLowerCase().includes(searchTerm.toLowerCase());
@@ -104,7 +100,6 @@ export default function PublicCollectionPage() {
     return searchMatch && sportMatch && rookieMatch && autoMatch && patchMatch && gradedMatch && numberedMatch;
   });
 
-  // 🌟 Stats épurées (pas de valeur financière)
   const stats = {
     total: cards.length,
     auto: cards.filter(c => c.is_auto).length,
@@ -127,14 +122,12 @@ export default function PublicCollectionPage() {
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans pb-20">
       
-      {/* 🌟 Header épuré (pas d'avatar, affiche le pseudo) */}
       <header className="flex items-center justify-between px-6 pt-12 pb-6 sticky top-0 bg-[#040221]/90 backdrop-blur-sm z-40">
         <div className='flex items-center gap-3'>
-            {/* Petit bouton retour discret si l'utilisateur est loggé et regarde sa propre collec ou celle d'un autre */}
             <button onClick={() => router.back()} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white active:scale-95 transition-all border border-white/10">
                 <ChevronLeft size={20} />
             </button>
-            <div flex-col>
+            <div className="flex-col">
                 <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">Vitrine</h1>
                 <p className='text-xs text-[#AFFF25] font-bold tracking-widest uppercase'>de @{owner?.username || pseudo}</p>
             </div>
@@ -146,7 +139,6 @@ export default function PublicCollectionPage() {
         </div>
       </header>
 
-      {/* ... (Reste de la page identique stylistiquement à ta collec privée) ... */}
       <section className="px-6 mb-8 mt-2 scrollbar-hide overflow-x-auto">
         <div className="flex items-center gap-2.5 pb-2">
           {sportsPresent.map(sport => (
@@ -158,7 +150,6 @@ export default function PublicCollectionPage() {
         </div>
       </section>
 
-      {/* 🌟 Stats épurées (pas de Gem/Valeur) */}
       <section className="px-6 mb-10 grid grid-cols-2 gap-4">
         {[ { label: 'Cartes', value: stats.total.toLocaleString(), icon: Layers3 }, { label: 'Autographes', value: stats.auto, icon: Award }, { label: 'Mémos / Patchs', value: stats.patch, icon: Layers3 }, { label: 'Gradées 10', value: stats.graded10, icon: ShieldCheck, highlight: true } ].map((stat, i) => (
           <div key={i} className={`bg-[#0A072E] p-5 rounded-2xl border ${stat.highlight ? 'border-[#AFFF25]/50 shadow-[0_0_20px_rgba(175,255,37,0.15)]' : 'border-white/5'} flex items-start gap-4`}>
@@ -192,7 +183,6 @@ export default function PublicCollectionPage() {
 
       <section className="px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {filteredCards.length > 0 ? filteredCards.map(card => (
-          // 🌟 Carte identique (pas d'overlay de prix masqué ici de toute façon)
           <div key={card.id} className="bg-[#0A072E] rounded-2xl overflow-hidden border border-white/5 group transform transition-all duration-300 hover:border-[#AFFF25]/30 hover:-translate-y-1 relative aspect-[3/4]">
             <img src={card.image_url} alt={`${card.firstname} ${card.lastname}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 flex flex-col justify-end">
@@ -220,8 +210,6 @@ export default function PublicCollectionPage() {
           </div>
         )}
       </section>
-      
-      {/* 🌟 Pas de bouton "+" flottant ici ! */}
     </div>
   );
 }
