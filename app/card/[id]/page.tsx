@@ -139,15 +139,15 @@ export default function CardDetailsPage() {
       if (data.success) {
         alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
         fetchPriceHistory(); 
-        fetchCard(); 
       } else {
-        // 💬 LE MESSAGE PERSONNALISÉ DEMANDÉ
         alert("Désolé, aucune vente en cours actuellement.");
       }
     } catch (e: any) {
       console.error("Erreur de MAJ des prix :", e);
       alert("Désolé, aucune vente en cours actuellement.");
     } finally {
+      // 🌟 NOUVEAUTÉ : On force le rafraîchissement de la page quoi qu'il arrive !
+      fetchCard(); 
       setIsUpdatingPrice(false); 
     }
   };
@@ -158,12 +158,12 @@ export default function CardDetailsPage() {
     const keywords = buildEbaySearchQuery(card);
     const searchQuery = encodeURIComponent(keywords);
     
+    // On envoie vers ebay.com (le marché américain) pour rester cohérent avec notre API US !
     let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
     if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
     window.open(ebayUrl, '_blank');
   };
 
-  // ... (Toute la gestion du gyroscope reste intacte)
   useEffect(() => {
     if (typeof window !== 'undefined' && window.DeviceOrientationEvent) {
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
