@@ -288,7 +288,7 @@ export default function CardDetailsPage() {
   // 📐 CALCUL DU PLAFOND DU GRAPHIQUE POUR NE JAMAIS COUPER LA LIGNE D'ACHAT
   const maxDataPrice = priceHistory.length > 0 ? Math.max(...priceHistory.map(p => p.prix)) : 0;
   const purchasePriceNum = parseFloat(card?.purchase_price) || 0;
-  const yAxisMax = Math.max(maxDataPrice, purchasePriceNum) * 1.1; // On rajoute 10% d'espace en haut pour que ça respire
+  const yAxisMax = Math.max(maxDataPrice, purchasePriceNum) * 1.1; 
 
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
@@ -480,7 +480,7 @@ export default function CardDetailsPage() {
               </div>
             </div>
             
-            <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col items-end gap-2 shrink-0">
               <button 
                 onClick={handleManualPriceUpdate} 
                 disabled={isUpdatingPrice}
@@ -488,11 +488,13 @@ export default function CardDetailsPage() {
               >
                 {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
               </button>
-              <span className="text-[9px] text-white/30 uppercase tracking-widest text-right max-w-[140px]">
+              
+              {/* 🌟 NOUVEAUTÉ : Le texte est formaté "Last update...", un peu plus petit sur mobile (text-[8px]) et forcé sur une ligne (whitespace-nowrap) */}
+              <span className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-widest text-right whitespace-nowrap">
                 {priceHistory.length > 0 && card.updated_at 
-                  ? `Prix MAJ le ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} à ${new Date(card.updated_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}`
+                  ? `Last update ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} à ${new Date(card.updated_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}`
                   : card.updated_at
-                    ? `Scan le ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} (0 résultat)`
+                    ? `Last update ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} - (0 résultat)`
                     : 'Jamais scannée'}
               </span>
             </div>
@@ -510,13 +512,11 @@ export default function CardDetailsPage() {
                   </defs>
                   <XAxis dataKey="date" hide={true} />
                   
-                  {/* 📏 NOUVEAUTÉ : On fixe le plancher à 0 et on laisse de la marge en haut ! */}
                   <YAxis hide={true} domain={[0, yAxisMax]} />
                   
                   <Tooltip content={<CustomTooltip />} />
                   <Area type="monotone" dataKey="prix" stroke="#AFFF25" strokeWidth={3} fillOpacity={1} fill="url(#colorPrix)" />
 
-                  {/* 🌟 NOUVEAUTÉ : Ligne de prix d'achat */}
                   {card?.purchase_price > 0 && (
                     <ReferenceLine
                       y={parseFloat(card.purchase_price)}
