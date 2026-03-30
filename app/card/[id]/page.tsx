@@ -26,6 +26,16 @@ const SPORT_FOLDERS: Record<string, string> = {
   'NHL': 'NHL'
 };
 
+// 🥷 Fonction de nettoyage des données (la même que le robot Cron !)
+function cleanData(value: any): string {
+  if (value === null || value === undefined || value === '') return '';
+  const strVal = String(value).toUpperCase().trim();
+  if (strVal === '-' || strVal === 'NC' || strVal === 'N/A' || strVal === 'EMPTY' || strVal.includes('PAS DE DONN')) {
+    return '';
+  }
+  return String(value).trim();
+}
+
 export default function CardDetailsPage() {
   const router = useRouter();
   const params = useParams();
@@ -80,19 +90,37 @@ export default function CardDetailsPage() {
     }
   };
 
+  // 🧠 Le cerveau centralisé pour construire la recherche eBay
+  const buildEbaySearchQuery = (currentCard: any) => {
+    let formattedYear = currentCard.year;
+    
+    // Formatage spécial pour les années de sport (ex: 2023 devient 2022-23)
+    if (!['TENNIS', 'BASEBALL', 'F1'].includes(currentCard.sport) && currentCard.year && /^\d{4}$/.test(currentCard.year.toString())) {
+      const yearNum = parseInt(currentCard.year, 10); 
+      const prevYear = yearNum - 1; 
+      const shortYear = currentCard.year.toString().slice(-2);
+      formattedYear = `${prevYear}-${shortYear}`;
+    }
+
+    const annee = cleanData(formattedYear);
+    const brand = cleanData(currentCard.brand);
+    const series = cleanData(currentCard.series);
+    const prenom = cleanData(currentCard.firstname);
+    const nom = cleanData(currentCard.lastname);
+    const variation = cleanData(currentCard.variation);
+    const numerotation = currentCard.is_numbered && currentCard.numbering_max ? `/${cleanData(currentCard.numbering_max)}` : '';
+
+    // Ordre de recherche demandé : année - Brand - collection - prenom + nom + variation + numerotation /x
+    const keywordsArray = [annee, brand, series, prenom, nom, variation, numerotation];
+    return keywordsArray.filter(Boolean).join(' ');
+  };
+
   const handleManualPriceUpdate = async () => {
     if (!card) return;
     setIsUpdatingPrice(true); 
     
-    let formattedYear = card.year;
-    if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
-      const yearNum = parseInt(card.year, 10); 
-      const prevYear = yearNum - 1; 
-      const shortYear = card.year.toString().slice(-2);
-      formattedYear = `${prevYear}-${shortYear}`;
-    }
-
-    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.variation, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
+    // Utilisation du cerveau centralisé
+    const keywords = buildEbaySearchQuery(card);
 
     try {
       const res = await fetch('/api/price-update', {
@@ -105,8 +133,9 @@ export default function CardDetailsPage() {
       if (data.success) {
         alert(`Nouveau prix moyen trouvé : ${data.averagePrice} € !`);
         fetchPriceHistory(); 
+        fetchCard(); 
       } else {
-        alert(`Erreur Google : ${data.error || "Erreur inconnue"}`);
+        alert(`Erreur API : ${data.error || "Erreur inconnue"}`);
       }
     } catch (e) {
       console.error("Erreur de MAJ des prix", e);
@@ -114,6 +143,18 @@ export default function CardDetailsPage() {
     } finally {
       setIsUpdatingPrice(false); 
     }
+  };
+
+  const checkEbayPrices = (soldOnly: boolean = true) => {
+    if (!card) return;
+    
+    // Utilisation du cerveau centralisé pour les liens externes
+    const keywords = buildEbaySearchQuery(card);
+    const searchQuery = encodeURIComponent(keywords);
+    
+    let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
+    if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
+    window.open(ebayUrl, '_blank');
   };
 
   useEffect(() => {
@@ -212,25 +253,6 @@ export default function CardDetailsPage() {
     setCard({ ...card, is_favorite: newFavStatus });
     await supabase.from('cards').update({ is_favorite: newFavStatus }).eq('id', card.id);
     setIsFavoriting(false);
-  };
-
-  const checkEbayPrices = (soldOnly: boolean = true) => {
-    if (!card) return;
-    let formattedYear = card.year;
-    
-    if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
-      const yearNum = parseInt(card.year, 10); 
-      const prevYear = yearNum - 1; 
-      const shortYear = card.year.toString().slice(-2);
-      formattedYear = `${prevYear}-${shortYear}`;
-    }
-    
-    const keywords = [card.firstname, card.lastname, card.club_name, formattedYear, card.brand, card.series, card.variation, card.is_auto ? 'auto' : '', card.is_patch ? 'patch' : '', (card.is_numbered && card.numbering_max) ? `/${card.numbering_max}` : '' ].filter(Boolean).join(' ');
-    
-    const searchQuery = encodeURIComponent(keywords);
-    let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
-    if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
-    window.open(ebayUrl, '_blank');
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#040221]"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
@@ -338,7 +360,7 @@ export default function CardDetailsPage() {
         </div>
       </div>
 
-      {/* PARTIE DROITE (INFOS) : Marge du haut augmentée pour visibilité totale de la carte 3D (32.5rem) */}
+      {/* PARTIE DROITE (INFOS) */}
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(32.5rem+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-10px_40px_rgba(0,0,0,0.8)] lg:shadow-[-10px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
@@ -453,7 +475,11 @@ export default function CardDetailsPage() {
               >
                 {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
               </button>
-              <span className="text-[9px] text-white/30 uppercase tracking-widest max-w-[120px] text-right">Source eBay via SerpApi</span>
+              <span className="text-[9px] text-white/30 uppercase tracking-widest text-right">
+                {card.updated_at 
+                  ? `MAJ le ${new Date(card.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })} à ${new Date(card.updated_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h')}`
+                  : 'Jamais actualisée'}
+              </span>
             </div>
           </div>
 

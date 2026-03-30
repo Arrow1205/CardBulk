@@ -1,89 +1,129 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function POST(req: Request) {
+// 1. Fonction Ninja améliorée (gère les nombres et le mot "EMPTY")
+function cleanData(value: any): string {
+  if (value === null || value === undefined || value === '') return '';
+  
+  const strVal = String(value).toUpperCase().trim();
+  if (strVal === '-' || strVal === 'NC' || strVal === 'N/A' || strVal === 'EMPTY' || strVal.includes('PAS DE DONN')) {
+    return '';
+  }
+  return String(value).trim();
+}
+
+export async function GET(req: Request) {
+  // SÉCURITÉ VERCEL
+  const authHeader = req.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response('Accès non autorisé', { status: 401 });
+  }
+
   try {
-    const { cardId, keywords } = await req.json();
+    // RÉCUPÉRATION DES CARTES (15 par heure)
+    const { data: cardsToUpdate, error: fetchError } = await supabase
+      .from('cards') 
+      .select('*')
+      .order('updated_at', { ascending: true, nullsFirst: true }) 
+      .limit(15);
 
-    if (!cardId || !keywords) {
-      return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
+    if (fetchError) throw fetchError;
+    if (!cardsToUpdate || cardsToUpdate.length === 0) {
+      return NextResponse.json({ success: true, message: 'Aucune carte à mettre à jour.' });
     }
 
-    // 🔒 RECUPERATION SECURISEE DES CLES DEPUIS VERCEL
-    const apiKey = process.env.GOOGLE_API_KEY;
-    const cx = process.env.GOOGLE_CX;
-
-    if (!apiKey || !cx) {
-      console.error("Clés Google manquantes dans Vercel");
-      return NextResponse.json({ success: false, error: 'Configuration API manquante sur le serveur' }, { status: 500 });
-    }
-
-    const query = encodeURIComponent(keywords);
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
+    // AUTHENTIFICATION EBAY
+    const appId = process.env.EBAY_APP_ID;
+    const certId = process.env.EBAY_CERT_ID;
+    const credentials = Buffer.from(`${appId}:${certId}`).toString('base64');
     
-    // 🚨 LE MOUCHARD : Permet de vérifier dans Vercel (onglet Logs) quelle clé est réellement injectée
-    console.log("🔑 CLÉ API UTILISÉE :", apiKey.substring(0, 15) + "...");
-    console.log("🔍 CX UTILISÉ :", cx);
+    const tokenResponse = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${credentials}`
+      },
+      body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope'
+    });
+    const tokenData = await tokenResponse.json();
+    if (!tokenData.access_token) throw new Error("Erreur Token eBay");
 
-    // 🚨 LA CORRECTION DU CACHE : On force Next.js à ignorer son cache agressif !
-    const response = await fetch(url, { cache: 'no-store' });
-    const data = await response.json();
+    // LA BOUCLE DES PRIX
+    let updatedCount = 0;
 
-    // 🚨 DEBUG : Si Google renvoie une erreur (comme le fameux 403), on l'affiche
-    if (data.error) {
-      console.error("DÉTAIL ERREUR GOOGLE :", data.error);
-      return NextResponse.json({ 
-        success: false, 
-        error: `Erreur Google API : ${data.error.message} (Code: ${data.error.code})` 
-      }, { status: 500 });
-    }
-
-    // Vérification de la présence de résultats
-    if (!data.items || data.items.length === 0) {
-      return NextResponse.json({ success: false, error: 'Aucun résultat trouvé sur eBay via Google' });
-    }
-
-    // Extraction des prix
-    let prices: number[] = [];
-    
-    data.items.forEach((item: any) => {
-      // Regex pour capturer les prix dans les résultats Google
-      const priceRegex = /(?:EUR|€|\$|£|GBP)?\s*(\d{1,5}[.,]\d{2})\s*(?:EUR|€|\$|£|GBP)?/gi;
-      const textToScan = `${item.title} ${item.snippet}`.toUpperCase();
+    for (const card of cardsToUpdate) {
+      // 🏗️ CONSTRUCTION SUR-MESURE SELON TA BASE DE DONNÉES
+      const annee = cleanData(card.year);
+      const brand = cleanData(card.brand);
+      const series = cleanData(card.series);
+      const prenom = cleanData(card.firstname);
+      const nom = cleanData(card.lastname);
       
-      let match;
-      while ((match = priceRegex.exec(textToScan)) !== null) {
-        const priceStr = match[1];
-        if (priceStr) {
-           const priceNum = parseFloat(priceStr.replace(',', '.'));
-           // Filtre pour éviter les prix aberrants
-           if (priceNum > 0.5 && priceNum < 100000) { 
-             prices.push(priceNum);
-           }
+      // Gestion de la numérotation (ex: si numbering_max = 99, ça donne "/99")
+      const numerotation = card.is_numbered && card.numbering_max ? `/${cleanData(card.numbering_max)}` : '';
+      
+      // Gestion de la gradation (ex: "PSA 10")
+      let gradation = '';
+      if (card.is_graded && card.grading_company) {
+        gradation = `${cleanData(card.grading_company)} ${cleanData(card.grading_grade)}`.trim();
+      }
+
+      // Ordre de recherche optimisé pour eBay
+      const keywordsArray = [annee, brand, series, prenom, nom, numerotation, gradation];
+      const keywords = keywordsArray.filter(Boolean).join(' ');
+
+      if (!keywords) continue;
+
+      const query = encodeURIComponent(keywords);
+      const searchUrl = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=10`;
+
+      const searchResponse = await fetch(searchUrl, {
+        headers: {
+          'Authorization': `Bearer ${tokenData.access_token}`,
+          'X-EBAY-C-MARKETPLACE-ID': 'EBAY_FR'
+        }
+      });
+
+      const searchData = await searchResponse.json();
+      let average = 0;
+
+      if (searchData.itemSummaries && searchData.itemSummaries.length > 0) {
+        let prices: number[] = [];
+        
+        searchData.itemSummaries.forEach((item: any) => {
+          const title = (item.title || "").toUpperCase();
+          // On exclut les lots et les gradées SAUF si la carte qu'on cherche est elle-même gradée !
+          const isGradedOrLot = !card.is_graded && (title.includes('PSA') || title.includes('PCA') || title.includes('LOT') || title.includes('BGS') || title.includes('CGC'));
+          
+          if (item.price && item.price.value && !isGradedOrLot) {
+             const priceNum = parseFloat(item.price.value);
+             if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+          }
+        });
+
+        if (prices.length > 0) {
+          prices.sort((a, b) => a - b);
+          if (prices.length >= 4) { prices.pop(); prices.shift(); }
+          
+          const sum = prices.reduce((a, b) => a + b, 0);
+          average = Math.round((sum / prices.length) * 100) / 100;
         }
       }
-    });
 
-    if (prices.length === 0) {
-      return NextResponse.json({ success: false, error: 'Prix détectés mais illisibles dans les résultats' });
+      // 💾 ENREGISTREMENT SUPABASE
+      await supabase.from('card_prices').insert([{ card_id: card.id, price: average }]);
+      await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', card.id);
+      
+      updatedCount++;
+
+      // ⏱️ Pause de 1 seconde pour eBay
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    // Calcul de la moyenne propre
-    const sum = prices.reduce((a, b) => a + b, 0);
-    const average = Math.round((sum / prices.length) * 100) / 100;
-
-    // Sauvegarde dans Supabase
-    const { error: dbError } = await supabase.from('card_prices').insert([{
-      card_id: cardId,
-      price: average
-    }]);
-
-    if (dbError) throw dbError;
-
-    return NextResponse.json({ success: true, averagePrice: average });
+    return NextResponse.json({ success: true, message: `${updatedCount} cartes scannées avec succès.` });
 
   } catch (error: any) {
-    console.error('Erreur API Route:', error);
+    console.error('Erreur Cron Job:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
