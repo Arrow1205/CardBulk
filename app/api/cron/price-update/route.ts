@@ -70,6 +70,12 @@ export async function GET(req: Request) {
       const prenom = cleanData(card.firstname);
       const nom = cleanData(card.lastname);
       const variation = cleanData(card.variation);
+
+const autoKeyword = card.is_auto ? 'Auto' : '';
+const patchKeyword = card.is_patch ? 'Patch' : '';
+const numerotation = card.is_numbered && card.numbering_max ? cleanData(card.numbering_max) : '';
+
+const keywordsArray = [annee, brand, series, prenom, nom, variation, autoKeyword, patchKeyword, numerotation];
       const numerotation = card.is_numbered && card.numbering_max ? cleanData(card.numbering_max) : '';
 
       const keywordsArray = [annee, brand, series, prenom, nom, variation, numerotation];
