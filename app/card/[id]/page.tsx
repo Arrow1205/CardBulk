@@ -4,7 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+// 🌟 NOUVEAUTÉ : Import de ReferenceLine
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 
@@ -508,9 +509,32 @@ export default function CardDetailsPage() {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="date" hide={true} />
+                  {/*
+                    CRITICAL STEP: domain handling.
+                    I use the Recharts standard here (no specified domain implies dataMax/dataMin).
+                    Ideally, Recharts will adapt the domain to the reference line if it is outside the data.
+                  */}
                   <YAxis hide={true} domain={['auto', 'auto']} />
                   <Tooltip content={<CustomTooltip />} />
                   <Area type="monotone" dataKey="prix" stroke="#AFFF25" strokeWidth={3} fillOpacity={1} fill="url(#colorPrix)" />
+
+                  {/* 🌟 NOUVEAUTÉ : Ligne de prix d'achat */}
+                  {card?.purchase_price > 0 && (
+                    <ReferenceLine
+                      y={parseFloat(card.purchase_price)}
+                      stroke="#3B82F6" // Bleu électrique vibrant
+                      strokeDasharray="3 3"
+                      strokeWidth={2}
+                      label={{
+                        value: 'Achat',
+                        position: 'insideBottomLeft',
+                        fill: '#60A5FA', // Bleu clair pour visibilité sur fond sombre
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        dy: -10 // nudge up slightly
+                      }}
+                    />
+                  )}
                 </AreaChart>
               </ResponsiveContainer>
             </div>
