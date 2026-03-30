@@ -183,7 +183,7 @@ export default function CollectionPage() {
       if (!user) throw new Error("Pas de réseau ou non connecté");
 
       const [profileRes, cardsRes, foldersRes] = await Promise.all([
-        supabase.from('profiles').select('avatar_url, full_name, pseudo').eq('id', user.id).single(),
+       supabase.from('profiles').select('*').eq('id', user.id).single(),
         supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true })
       ]);

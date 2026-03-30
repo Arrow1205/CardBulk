@@ -63,7 +63,7 @@ export default function PublicCollectionPage() {
       const publicColumns = 'id, sport, firstname, lastname, club_name, brand, series, variation, year, numbering_max, image_url, image_url_back, is_rookie, is_auto, is_patch, is_graded, grading_company, grading_grade';
 
       const [profileRes, cardsRes] = await Promise.all([
-        supabase.from('profiles').select('full_name, pseudo').eq('id', ownerId).single(),
+     supabase.from('profiles').select('*').eq('id', ownerId).single(),
         supabase.from('cards')
           .select(publicColumns)
           .eq('user_id', ownerId)
