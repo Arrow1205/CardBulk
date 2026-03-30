@@ -54,7 +54,6 @@ export default function StatsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push('/login');
 
-    // 🚀 LA MAGIE EST ICI : On fait une jointure avec la table card_prices
     const { data, error } = await supabase
       .from('cards')
       .select(`
@@ -67,21 +66,21 @@ export default function StatsPage() {
       .eq('user_id', user.id);
 
     if (data) {
-      // Pour chaque carte, on trouve le prix le plus récent dans son historique
       const processedCards = data.map(card => {
         let latestPrice = 0;
         if (card.card_prices && card.card_prices.length > 0) {
-          // On trie l'historique du plus récent au plus ancien
           const sortedPrices = card.card_prices.sort((a: any, b: any) => 
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           );
-          // On prend le premier (le plus récent)
           latestPrice = parseFloat(sortedPrices[0].price) || 0;
         }
         
+        const pPrice = parseFloat(card.purchase_price) || 0;
+        
         return {
           ...card,
-          current_price: latestPrice // On injecte le prix actuel dans l'objet carte !
+          // FIX LOGIQUE: Si on n'a pas de prix eBay, on conserve la valeur d'achat pour ne pas fausser le delta
+          current_price: latestPrice > 0 ? latestPrice : pPrice 
         };
       });
       
@@ -116,9 +115,7 @@ export default function StatsPage() {
 
   const autosSeuls = filteredCards.filter(c => c.is_auto && !c.is_patch);
   const autosPatchs = filteredCards.filter(c => c.is_auto && c.is_patch);
-  
   const patchsSeuls = filteredCards.filter(c => !c.is_auto && c.is_patch);
-  
   const numsSeules = filteredCards.filter(c => !c.is_auto && !c.is_patch && c.is_numbered);
   const numsHits = filteredCards.filter(c => (c.is_auto || c.is_patch) && c.is_numbered);
 
@@ -127,10 +124,7 @@ export default function StatsPage() {
     
     const breakdown = availableSports.map(sport => {
       const sportCards = subset.filter(c => c.sport === sport);
-      return {
-        label: SPORT_CONFIG[sport]?.label || sport,
-        value: getVal(sportCards)
-      };
+      return { label: SPORT_CONFIG[sport]?.label || sport, value: getVal(sportCards) };
     }).filter(s => s.value > 0).sort((a, b) => b.value - a.value);
 
     if (breakdown.length === 0) return null;
@@ -154,10 +148,7 @@ export default function StatsPage() {
   // ----------------------------------------------------------------------
   const sportStats = availableSports.map(sport => {
     const sportCards = filteredCards.filter(c => c.sport === sport);
-    return {
-      label: SPORT_CONFIG[sport]?.label || sport,
-      value: getVal(sportCards)
-    }
+    return { label: SPORT_CONFIG[sport]?.label || sport, value: getVal(sportCards) };
   }).filter(s => s.value > 0).sort((a, b) => b.value - a.value);
 
   const doughnutColors = ['#AFFF25', 'rgba(175, 255, 37, 0.7)', 'rgba(175, 255, 37, 0.4)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.05)'];
@@ -186,13 +177,24 @@ export default function StatsPage() {
     .slice(0, 5);
 
   // ----------------------------------------------------------------------
-  // 3. DATA: COMPARATIF ACHAT VS ACTUEL
+  // 3. DATA: COMPARATIF ACHAT VS ACTUEL & TOPS/FLOPS
   // ----------------------------------------------------------------------
   const totalPurchase = filteredCards.reduce((acc, c) => acc + (Number(c.purchase_price) || 0), 0);
   const totalCurrent = filteredCards.reduce((acc, c) => acc + (Number(c.current_price) || 0), 0);
   const totalDelta = totalCurrent - totalPurchase;
   const totalDeltaPercent = totalPurchase > 0 ? (totalDelta / totalPurchase) * 100 : 0;
   const isGlobalPositive = totalDelta >= 0;
+
+  // Calcul des Tops 3 Gains et Top 3 Pertes
+  const cardsWithDelta = filteredCards.map(c => {
+    const p = Number(c.purchase_price) || 0;
+    const current = Number(c.current_price) || p;
+    const diff = current - p;
+    return { ...c, diff };
+  }).filter(c => c.diff !== 0);
+
+  const top3Gains = [...cardsWithDelta].sort((a, b) => b.diff - a.diff).slice(0, 3).filter(c => c.diff > 0);
+  const top3Pertes = [...cardsWithDelta].sort((a, b) => a.diff - b.diff).slice(0, 3).filter(c => c.diff < 0);
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans lg:flex lg:justify-center lg:h-screen lg:overflow-hidden">
@@ -393,8 +395,9 @@ export default function StatsPage() {
                   <div className="text-2xl font-black text-white">{totalPurchase.toLocaleString('fr-FR')} €</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[#AFFF25]/70 uppercase font-bold tracking-widest mb-1">Total Marché (eBay)</div>
+                  <div className="text-[10px] text-[#AFFF25]/70 uppercase font-bold tracking-widest mb-1">Total Marché</div>
                   <div className="text-2xl font-black text-[#AFFF25]">{totalCurrent.toLocaleString('fr-FR')} €</div>
+                  <div className="text-[9px] text-white/40 uppercase tracking-widest mt-1">Source eBay</div>
                 </div>
               </div>
 
@@ -428,23 +431,24 @@ export default function StatsPage() {
                   const isPositive = pDelta >= 0;
 
                   return (
-                    <div key={sport} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                    <div key={sport} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 shrink-0">
                         <div className="w-10 h-10 rounded-full bg-[#040221] border border-white/10 flex items-center justify-center shrink-0">
                            <img src={`/asset/sports/${SPORT_CONFIG[sport].image}.png`} className="h-5 object-contain opacity-80" alt={SPORT_CONFIG[sport].label} />
                         </div>
                         <div>
                           <div className="text-white font-bold text-sm">{SPORT_CONFIG[sport].label}</div>
-                          <div className="text-[10px] text-white/50 uppercase tracking-widest">
-                            Achat: {pPurchase.toLocaleString('fr-FR')}€ • Actuel: {pCurrent.toLocaleString('fr-FR')}€
+                          <div className="text-[10px] text-white/50 uppercase tracking-widest mt-1">
+                            <div>Achat : {pPurchase.toLocaleString('fr-FR')} €</div>
+                            <div>Actuel : {pCurrent.toLocaleString('fr-FR')} €</div>
                           </div>
                         </div>
                       </div>
                       
                       {pDelta === 0 ? (
-                        <div className="text-xs font-black text-white/30 flex items-center gap-1"><Minus size={14} /> 0 €</div>
+                        <div className="text-xs font-black text-white/30 flex items-center gap-1 shrink-0 whitespace-nowrap"><Minus size={14} /> 0 €</div>
                       ) : (
-                        <div className={`text-sm font-black flex items-center gap-1 ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <div className={`text-sm font-black flex items-center gap-1 shrink-0 whitespace-nowrap ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
                           {isPositive ? '+' : ''}{pDelta.toLocaleString('fr-FR')} €
                         </div>
                       )}
@@ -454,6 +458,56 @@ export default function StatsPage() {
               </div>
             </div>
 
+            {/* TOPS 3 & FLOPS 3 SECTION */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+              
+              {/* TOPS */}
+              <div>
+                <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <TrendingUp className="text-emerald-400" size={16}/> Top 3 Gains
+                </h2>
+                <div className="space-y-3">
+                  {top3Gains.length > 0 ? top3Gains.map(card => (
+                    <div key={card.id} onClick={() => router.push(`/card/${card.id}`)} className="bg-white/5 border border-white/10 rounded-2xl p-3 flex items-center gap-3 cursor-pointer active:scale-95 transition-transform">
+                      <div className="w-10 h-10 bg-[#080531] rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-white/5">
+                        {card.image_url ? <img src={card.image_url} className="w-full h-full object-cover" alt="Card" /> : <span className="text-[8px] text-white/30 font-bold">N/A</span>}
+                      </div>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="text-white font-black italic uppercase truncate leading-none mb-1">{card.firstname} {card.lastname}</div>
+                        <div className="text-[9px] text-white/50 uppercase tracking-widest truncate">{card.brand} {card.year ? `- ${card.year}` : ''}</div>
+                      </div>
+                      <div className="text-emerald-400 font-black whitespace-nowrap text-sm shrink-0">
+                        +{card.diff.toLocaleString('fr-FR')} €
+                      </div>
+                    </div>
+                  )) : <div className="text-white/40 italic text-sm py-2 border border-white/5 rounded-xl px-4 bg-white/5">Aucun gain sur la sélection.</div>}
+                </div>
+              </div>
+
+              {/* FLOPS */}
+              <div>
+                <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <TrendingDown className="text-rose-400" size={16}/> Top 3 Pertes
+                </h2>
+                <div className="space-y-3">
+                  {top3Pertes.length > 0 ? top3Pertes.map(card => (
+                    <div key={card.id} onClick={() => router.push(`/card/${card.id}`)} className="bg-white/5 border border-white/10 rounded-2xl p-3 flex items-center gap-3 cursor-pointer active:scale-95 transition-transform">
+                      <div className="w-10 h-10 bg-[#080531] rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-white/5">
+                        {card.image_url ? <img src={card.image_url} className="w-full h-full object-cover" alt="Card" /> : <span className="text-[8px] text-white/30 font-bold">N/A</span>}
+                      </div>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="text-white font-black italic uppercase truncate leading-none mb-1">{card.firstname} {card.lastname}</div>
+                        <div className="text-[9px] text-white/50 uppercase tracking-widest truncate">{card.brand} {card.year ? `- ${card.year}` : ''}</div>
+                      </div>
+                      <div className="text-rose-400 font-black whitespace-nowrap text-sm shrink-0">
+                        {card.diff.toLocaleString('fr-FR')} €
+                      </div>
+                    </div>
+                  )) : <div className="text-white/40 italic text-sm py-2 border border-white/5 rounded-xl px-4 bg-white/5">Aucune perte sur la sélection.</div>}
+                </div>
+              </div>
+
+            </div>
           </div>
         )}
 
