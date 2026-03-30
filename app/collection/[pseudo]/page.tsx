@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { LogOut, Loader2, Search, SlidersHorizontal, Plus, Star, Award, ShieldCheck, Gem, Layers3, X, Copy, Share2 } from 'lucide-react';
-// 🌟 NOUVEAU : Import de la librairie QR Code
-import QRCode from "react-qr-code";
+// 🌟 Imports épurés (pas besoin de LogOut ou Share)
+import { Loader2, Search, SlidersHorizontal, Star, Award, ShieldCheck, Gem, Layers3, ChevronLeft } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
@@ -27,42 +26,57 @@ const CLUB_DATA: Record<string, any[]> = {
   'BASEBALL': BASEBALL_CLUBS,
 };
 
-type Card = {
-  id: string; sport: string; firstname: string; lastname: string; club_name: string; brand: string; series: string; variation: string; year: number; numbering_max: number | null; image_url: string; image_url_back: string | null; purchase_price: number; is_rookie: boolean; is_auto: boolean; is_patch: boolean; is_graded: boolean; grading_company: string | null; grading_grade: string | null; club_slug?: string;
+// 🌟 Définition de carte épurée (pas de purchase_price)
+type PublicCard = {
+  id: string; sport: string; firstname: string; lastname: string; club_name: string; brand: string; series: string; variation: string; year: number; numbering_max: number | null; image_url: string; image_url_back: string | null; is_rookie: boolean; is_auto: boolean; is_patch: boolean; is_graded: boolean; grading_company: string | null; grading_grade: string | null; club_slug?: string;
 };
 
-type Profile = {
-  avatar_url: string | null;
+type OwnerProfile = {
   full_name: string | null;
-  // 🌟 NOUVEAU : On récupère le username pour le lien
   username: string | null;
 };
 
-export default function CollectionPage() {
+export default function PublicCollectionPage() {
+  const params = useParams();
   const router = useRouter();
-  const [cards, setCards] = useState<Card[]>([]);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const pseudo = params.pseudo as string;
+
+  const [cards, setCards] = useState<PublicCard[]>([]);
+  const [owner, setOwner] = useState<OwnerProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeSport, setActiveSport] = useState<string>('ALL');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({ rookie: false, auto: false, patch: false, graded: false, numbered: false });
 
-  // 🌟 NOUVEAU : États pour la modale de partage
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);
-
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push('/login'); return; }
+    const fetchPublicData = async () => {
+      if (!pseudo) return;
+
+      // 1. Récupérer l'ID du propriétaire via son pseudo (en utilisant le helper RPC créé à l'étape 2)
+      const { data: ownerId, error: ownerError } = await supabase.rpc('get_user_id_by_username', { p_username: pseudo });
+
+      if (ownerError || !ownerId) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Récupérer le profil et les cartes (requêtes parallèles sécurisées)
+      // 🌟 SÉCURITÉ : On liste explicitement les colonnes autorisées, EXCLUANT purchase_price
+      const publicColumns = 'id, sport, firstname, lastname, club_name, brand, series, variation, year, numbering_max, image_url, image_url_back, is_rookie, is_auto, is_patch, is_graded, grading_company, grading_grade';
 
       const [profileRes, cardsRes] = await Promise.all([
-        supabase.from('profiles').select('avatar_url, full_name, username').eq('id', user.id).single(),
-        supabase.from('cards').select('*').eq('user_id', user.id).eq('is_wishlist', false).order('created_at', { ascending: false })
+        supabase.from('profiles').select('full_name, username').eq('id', ownerId).single(),
+        supabase.from('cards')
+          .select(publicColumns)
+          .eq('user_id', ownerId)
+          .eq('is_wishlist', false)
+          .order('year', { ascending: false }) // Tri par année par défaut pour le public
       ]);
 
-      if (profileRes.data) setProfile(profileRes.data);
+      if (profileRes.data) setOwner(profileRes.data);
       
       if (cardsRes.data) {
         const enhancedCards = cardsRes.data.map(card => {
@@ -74,22 +88,8 @@ export default function CollectionPage() {
       }
       setLoading(false);
     };
-    fetchData();
-  }, [router]);
-
-  const handleLogout = async () => { await supabase.auth.signOut(); router.push('/login'); };
-
-  // 🌟 NOUVEAU : Fonctions pour le partage
-  const shareUrl = typeof window !== 'undefined' && profile?.username 
-    ? `${window.location.origin}/collection/${profile.username}`
-    : '';
-
-  const copyLink = () => {
-    if (!shareUrl) return;
-    navigator.clipboard.writeText(shareUrl);
-    setLinkCopied(true);
-    setTimeout(() => setLinkCopied(false), 2000);
-  };
+    fetchPublicData();
+  }, [pseudo]);
 
   const sportsPresent = ['ALL', ...new Set(cards.map(c => c.sport))];
 
@@ -104,79 +104,49 @@ export default function CollectionPage() {
     return searchMatch && sportMatch && rookieMatch && autoMatch && patchMatch && gradedMatch && numberedMatch;
   });
 
+  // 🌟 Stats épurées (pas de valeur financière)
   const stats = {
     total: cards.length,
-    value: cards.reduce((sum, c) => sum + (c.purchase_price || 0), 0),
     auto: cards.filter(c => c.is_auto).length,
     patch: cards.filter(c => c.is_patch).length,
-    rookie: cards.filter(c => c.is_rookie).length,
     graded: cards.filter(c => c.is_graded).length,
     graded10: cards.filter(c => c.grading_grade === '10' || c.grading_grade === '10+').length,
   };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
+  if (notFound) return (
+    <div className="min-h-screen bg-[#040221] text-white flex flex-col items-center justify-center p-6 text-center">
+      <Layers3 size={60} className="text-red-500 mb-6" />
+      <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter mb-2">Collection Introuvable</h1>
+      <p className="text-white/60 mb-8">La vitrine associée au pseudo "{pseudo}" n'existe pas ou est privée.</p>
+      <button onClick={() => router.push('/')} className="bg-[#AFFF25] text-[#040221] px-8 py-3 rounded-full font-bold uppercase text-sm active:scale-95 transition-all">Retour à l'accueil</button>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-[#040221] text-white font-sans pb-32">
+    <div className="min-h-screen bg-[#040221] text-white font-sans pb-20">
       
-      {/* 🌟 NOUVEAU : MODALE DE PARTAGE */}
-      {showShareModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300" onClick={() => setShowShareModal(false)}>
-          <div className="bg-[#080531] border border-white/10 rounded-3xl p-8 w-full max-w-md relative shadow-[0_0_60px_rgba(175,255,37,0.1)]" onClick={e => e.stopPropagation()}>
-            <button onClick={() => setShowShareModal(false)} className="absolute top-5 right-5 text-white/50 hover:text-white"><X size={20} /></button>
-            
-            <div className="flex flex-col items-center text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25]/30 flex items-center justify-center text-[#AFFF25] mb-4">
-                <Share2 size={32} />
-              </div>
-              <h2 className="text-2xl font-black italic uppercase tracking-tight text-white">Partager ma Vitrine</h2>
-              <p className="text-sm text-white/60 mt-2">Masque automatiquement vos prix d'achat et infos eBay.</p>
-            </div>
-
-            {profile?.username ? (
-              <div className="space-y-6">
-                {/* QR Code */}
-                <div className="bg-white p-4 rounded-2xl flex justify-center shadow-inner">
-                  <QRCode value={shareUrl} size={180} bgColor="#ffffff" fgColor="#080531" level="H" />
-                </div>
-
-                {/* Lien */}
-                <div className="relative">
-                  <input type="text" readOnly value={shareUrl} className="w-full bg-black/30 border border-white/10 p-4 pr-14 rounded-xl text-xs text-white/80 font-mono tracking-tight" />
-                  <button onClick={copyLink} className="absolute right-2 top-2 bottom-2 px-3 bg-[#AFFF25] text-[#040221] rounded-lg font-bold text-xs uppercase flex items-center gap-1.5 active:scale-95 transition-all">
-                    {linkCopied ? <Check size={14} /> : <Copy size={14} />}
-                    {linkCopied ? 'Copié' : 'Copier'}
-                  </button>
-                </div>
-                
-                <p className="text-[10px] text-white/40 text-center italic">Scanner le QR Code ou copier le lien pour partager via mobile ou réseaux.</p>
-              </div>
-            ) : (
-              <div className="text-center py-6 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm p-4">
-                <strong>Erreur :</strong> Vous devez définir un <u>pseudo unique</u> dans vos paramètres avant de pouvoir partager votre collection.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
+      {/* 🌟 Header épuré (pas d'avatar, affiche le pseudo) */}
       <header className="flex items-center justify-between px-6 pt-12 pb-6 sticky top-0 bg-[#040221]/90 backdrop-blur-sm z-40">
-        <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">Ma Collection</h1>
+        <div className='flex items-center gap-3'>
+            {/* Petit bouton retour discret si l'utilisateur est loggé et regarde sa propre collec ou celle d'un autre */}
+            <button onClick={() => router.back()} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white active:scale-95 transition-all border border-white/10">
+                <ChevronLeft size={20} />
+            </button>
+            <div flex-col>
+                <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">Vitrine</h1>
+                <p className='text-xs text-[#AFFF25] font-bold tracking-widest uppercase'>de @{owner?.username || pseudo}</p>
+            </div>
+        </div>
         <div className="flex items-center gap-3">
-          {/* 🌟 NOUVEAU : BOUTON PARTAGER */}
-          <button onClick={() => setShowShareModal(true)} className="w-10 h-10 bg-[#AFFF25]/10 border border-[#AFFF25]/30 rounded-full flex items-center justify-center text-[#AFFF25] hover:bg-[#AFFF25]/20 active:scale-95 transition-all">
-            <Share2 size={18} />
-          </button>
-          
-          <div className="w-10 h-10 rounded-full border-2 border-[#AFFF25] overflow-hidden bg-[#0A072E] flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.3)]">
-            {profile?.avatar_url ? <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" /> : <Layers3 size={20} className="text-[#AFFF25]" />}
+          <div className="w-12 h-12 rounded-xl bg-[#0A072E] flex items-center justify-center border border-[#AFFF25]/30 shadow-[0_0_15px_rgba(175,255,37,0.2)]">
+            <Layers3 size={24} className="text-[#AFFF25]" />
           </div>
-          <button onClick={handleLogout} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white active:scale-95 transition-all border border-white/10">
-            <LogOut size={18} />
-          </button>
         </div>
       </header>
 
+      {/* ... (Reste de la page identique stylistiquement à ta collec privée) ... */}
       <section className="px-6 mb-8 mt-2 scrollbar-hide overflow-x-auto">
         <div className="flex items-center gap-2.5 pb-2">
           {sportsPresent.map(sport => (
@@ -188,8 +158,9 @@ export default function CollectionPage() {
         </div>
       </section>
 
+      {/* 🌟 Stats épurées (pas de Gem/Valeur) */}
       <section className="px-6 mb-10 grid grid-cols-2 gap-4">
-        {[ { label: 'Cartes', value: stats.total.toLocaleString(), icon: Layers3 }, { label: 'Valeur Achat', value: `${stats.value.toLocaleString()}€`, icon: Gem }, { label: 'Autographes', value: stats.auto, icon: Award }, { label: 'Mémos / Patchs', value: stats.patch, icon: Layers3 }, { label: 'Rookies', value: stats.rookie, icon: Star }, { label: 'Gradées 10', value: stats.graded10, icon: ShieldCheck, highlight: true } ].map((stat, i) => (
+        {[ { label: 'Cartes', value: stats.total.toLocaleString(), icon: Layers3 }, { label: 'Autographes', value: stats.auto, icon: Award }, { label: 'Mémos / Patchs', value: stats.patch, icon: Layers3 }, { label: 'Gradées 10', value: stats.graded10, icon: ShieldCheck, highlight: true } ].map((stat, i) => (
           <div key={i} className={`bg-[#0A072E] p-5 rounded-2xl border ${stat.highlight ? 'border-[#AFFF25]/50 shadow-[0_0_20px_rgba(175,255,37,0.15)]' : 'border-white/5'} flex items-start gap-4`}>
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.highlight ? 'bg-[#AFFF25]/10 text-[#AFFF25]' : 'bg-white/5 text-white/50'}`}><stat.icon size={20} /></div>
             <div><p className="text-[11px] font-bold text-white/50 uppercase tracking-widest mb-1">{stat.label}</p><p className={`text-2xl font-black italic uppercase leading-none ${stat.highlight ? 'text-[#AFFF25]' : 'text-white'}`}>{stat.value}</p></div>
@@ -201,7 +172,7 @@ export default function CollectionPage() {
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-            <input type="text" placeholder="Joueur, club, collection, année..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-[#0A072E] border border-white/10 p-4 pl-12 rounded-full text-sm outline-none focus:border-[#AFFF25]/50 focus:bg-[#080531] transition-all" />
+            <input type="text" placeholder="Chercher dans cette vitrine..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-[#0A072E] border border-white/10 p-4 pl-12 rounded-full text-sm outline-none focus:border-[#AFFF25]/50 focus:bg-[#080531] transition-all" />
           </div>
           <button onClick={() => setShowFilters(!showFilters)} className={`w-12 h-12 rounded-full flex items-center justify-center border transition-all ${showFilters ? 'bg-[#AFFF25] border-[#AFFF25] text-[#040221]' : 'bg-[#0A072E] border-white/10 text-white/70 hover:border-white/30'}`}><SlidersHorizontal size={18} /></button>
         </div>
@@ -221,6 +192,7 @@ export default function CollectionPage() {
 
       <section className="px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {filteredCards.length > 0 ? filteredCards.map(card => (
+          // 🌟 Carte identique (pas d'overlay de prix masqué ici de toute façon)
           <div key={card.id} className="bg-[#0A072E] rounded-2xl overflow-hidden border border-white/5 group transform transition-all duration-300 hover:border-[#AFFF25]/30 hover:-translate-y-1 relative aspect-[3/4]">
             <img src={card.image_url} alt={`${card.firstname} ${card.lastname}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 flex flex-col justify-end">
@@ -244,14 +216,12 @@ export default function CollectionPage() {
         )) : (
           <div className="col-span-2 sm:col-span-3 md:col-span-4 text-center py-20 bg-[#0A072E] rounded-2xl border border-dashed border-white/10">
             <Layers3 size={40} className="text-white/20 mx-auto mb-4" />
-            <p className="text-white/50 font-medium">Aucune carte ne correspond à votre recherche.</p>
+            <p className="text-white/50 font-medium">Cette vitrine est vide pour le moment.</p>
           </div>
         )}
       </section>
-
-      <button onClick={() => router.push('/scanner')} className="fixed bottom-6 right-6 w-16 h-16 bg-[#AFFF25] rounded-full flex items-center justify-center text-[#040221] shadow-[0_10px_30px_rgba(175,255,37,0.4)] active:scale-95 transition-all z-40">
-        <Plus size={30} strokeWidth={3} />
-      </button>
+      
+      {/* 🌟 Pas de bouton "+" flottant ici ! */}
     </div>
   );
 }
