@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     const searchResponse = await fetch(searchUrl, {
       headers: {
         'Authorization': `Bearer ${tokenData.access_token}`,
-        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_FR' // Tu peux changer par EBAY_US si besoin un jour
+        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' // Tu peux changer par EBAY_US si besoin un jour
       }
     });
 
