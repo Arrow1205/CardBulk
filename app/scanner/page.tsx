@@ -77,8 +77,8 @@ type PendingCard = {
   id: string;
   file: File;
   previewUrl: string;
-  originalFile: File;        // 🚨 NOUVEAU : Sauvegarde du fichier d'origine
-  originalPreviewUrl: string; // 🚨 NOUVEAU : Sauvegarde de l'URL d'origine
+  originalFile: File;        
+  originalPreviewUrl: string; 
   status: 'pending' | 'analyzing' | 'done' | 'error';
   aiResult: any;
 };
@@ -122,13 +122,13 @@ function ScannerContent() {
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [originalFile, setOriginalFile] = useState<File | null>(null); // 🚨 MEMOIRE ORIGINALE
-  const [originalPreviewUrl, setOriginalPreviewUrl] = useState<string | null>(null); // 🚨 MEMOIRE ORIGINALE
+  const [originalFile, setOriginalFile] = useState<File | null>(null); 
+  const [originalPreviewUrl, setOriginalPreviewUrl] = useState<string | null>(null); 
 
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
-  const [originalFileBack, setOriginalFileBack] = useState<File | null>(null); // 🚨 MEMOIRE ORIGINALE VERSO
-  const [originalPreviewUrlBack, setOriginalPreviewUrlBack] = useState<string | null>(null); // 🚨 MEMOIRE ORIGINALE VERSO
+  const [originalFileBack, setOriginalFileBack] = useState<File | null>(null); 
+  const [originalPreviewUrlBack, setOriginalPreviewUrlBack] = useState<string | null>(null); 
 
   const [freeCropImage, setFreeCropImage] = useState<string | null>(null);
   const [cropRect, setCropRect] = useState({ top: 10, left: 10, right: 90, bottom: 90 });
@@ -156,7 +156,6 @@ function ScannerContent() {
   const [cameraZoom, setCameraZoom] = useState(1);
   const [nativeZoomSupported, setNativeZoomSupported] = useState(false);
 
-  // --- REFS POUR LE MODE AUTO ---
   const [autoScanProgress, setAutoScanProgress] = useState(0);
   const autoCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const prevFrameRef = useRef<Uint8ClampedArray | null>(null);
@@ -292,7 +291,6 @@ function ScannerContent() {
       setSelectedFile(currentCard.file);
       setPreviewUrl(currentCard.previewUrl);
       
-      // 🚨 On restaure aussi les images originales pour le mode lot
       setOriginalFile(currentCard.originalFile);
       setOriginalPreviewUrl(currentCard.originalPreviewUrl);
 
@@ -635,13 +633,11 @@ function ScannerContent() {
       
       if ((scanModeRef.current === 'lot' || scanModeRef.current === 'auto') && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
-        // 🚨 Sauvegarde originale intégrée
         const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: fullUrl, originalFile: fullImageFile, originalPreviewUrl: fullUrl, status: 'analyzing', aiResult: null };
         setPendingCards(prev => [...prev, newCard]);
         processBackgroundScan(newId, fullImageFile);
       } else {
         stopCamera();
-        // 🚨 Sauvegarde originale pour la photo unitaire
         if (activeSide === 'front') {
             setOriginalFile(fullImageFile);
             setOriginalPreviewUrl(fullUrl);
@@ -722,20 +718,17 @@ function ScannerContent() {
     }, 'image/jpeg', 0.95);
   };
 
-  // 🚨 LA MAGIE DU NON-DESTRUCTIF SE PASSE ICI 🚨
   const openManualCrop = async () => {
-      // On regarde en priorité si on a une version originale sauvegardée, sinon on prend la preview classique (cas d'une ancienne carte éditée)
       const currentOriginalPreview = activeSide === 'front' ? (originalPreviewUrl || previewUrl) : (originalPreviewUrlBack || previewUrlBack);
       let currentOriginalBlob = activeSide === 'front' ? (originalFile || selectedFile) : (originalFileBack || selectedFileBack);
       
       const localSrc = await getLocalImageUrl(currentOriginalPreview, currentOriginalBlob);
       if (!localSrc) return;
       
-      setFreeCropImage(localSrc); // Ouvre l'outil sur l'image entière
+      setFreeCropImage(localSrc); 
       setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
       
       freeCropCallbackRef.current = (file, newUrl) => {
-          // L'image recadrée écrase l'image active (mais pas la mémoire originale !)
           if (activeSide === 'front') {
               setSelectedFile(file);
               setPreviewUrl(newUrl);
@@ -746,6 +739,9 @@ function ScannerContent() {
           if (isVerifyingBulk) {
               setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: file, previewUrl: newUrl } : c));
           }
+          
+          // 🌟 NOUVEAUTÉ MAGIQUE : On demande à l'IA d'analyser la nouvelle image sans effacer le formulaire !
+          processImageScan(file, activeSide, false);
       };
   };
 
@@ -808,11 +804,45 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, 
+              sport: aiSport || prev.sport, 
+              firstname: fname || prev.firstname, 
+              lastname: lname || prev.lastname, 
+              club: matchedClub || prev.club, 
+              brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, 
+              series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, 
+              variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, 
+              year: cleanValue(data.year) || prev.year, 
+              is_auto: !!data.is_auto || prev.is_auto, 
+              is_patch: !!data.is_patch || prev.is_patch, 
+              is_rookie: !!data.is_rookie || prev.is_rookie, 
+              is_numbered: !!data.is_numbered || prev.is_numbered, 
+              num_low: cleanValue(data.num_low) || prev.num_low, 
+              num_high: cleanValue(data.num_high) || prev.num_high, 
+              is_graded: !!data.is_graded || prev.is_graded, 
+              grading_company: cleanValue(data.grading_company) || prev.grading_company, 
+              grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, 
+              sport: prev.sport || aiSport, 
+              firstname: prev.firstname || fname, 
+              lastname: prev.lastname || lname, 
+              club: prev.club || matchedClub, 
+              brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), 
+              series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), 
+              variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), 
+              year: prev.year || cleanValue(data.year), 
+              is_auto: prev.is_auto || !!data.is_auto, 
+              is_patch: prev.is_patch || !!data.is_patch, 
+              is_rookie: prev.is_rookie || !!data.is_rookie, 
+              is_numbered: prev.is_numbered || !!data.is_numbered, 
+              num_low: prev.num_low || cleanValue(data.num_low), 
+              num_high: prev.num_high || cleanValue(data.num_high), 
+              is_graded: prev.is_graded || !!data.is_graded, 
+              grading_company: prev.grading_company || cleanValue(data.grading_company), 
+              grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -835,7 +865,6 @@ function ScannerContent() {
         const imgRes = await fetch(data.base64); const blob = await imgRes.blob(); const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
         if (data.price) setFormData(prev => ({ ...prev, price: data.price }));
         
-        // 🚨 Sauvegarde originale pour l'import de lien
         setOriginalFile(file);
         setOriginalPreviewUrl(URL.createObjectURL(file));
         
@@ -891,6 +920,9 @@ function ScannerContent() {
             setPreviewUrlBack(newUrl); 
           }
           setIsApplyingEdit(false);
+          
+          // 🌟 NOUVEAUTÉ : On relance l'IA après une rotation aussi !
+          processImageScan(newFile, activeSide, false);
       }, 'image/jpeg', 0.95);
     } catch(e) {
       setIsApplyingEdit(false);
@@ -984,6 +1016,9 @@ function ScannerContent() {
           setShowEditor(false);
           setImgSettings({ brightness: 100, contrast: 100, zoom: 1 });
           setIsApplyingEdit(false);
+
+          // 🌟 NOUVEAUTÉ : On relance l'IA après amélioration de l'image
+          processImageScan(newFile, activeSide, false);
       }, 'image/jpeg', 0.95);
     } catch(e) {
       console.error(e);
@@ -1037,8 +1072,51 @@ function ScannerContent() {
         series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
       
-      if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
-      else await supabase.from('cards').insert([cardDataToSave]);
+      let currentCardId = editId;
+
+      if (editId) {
+         await supabase.from('cards').update(cardDataToSave).eq('id', editId);
+      } else {
+         const { data, error } = await supabase.from('cards').insert([cardDataToSave]).select('id');
+         if (data && data.length > 0) {
+             currentCardId = data[0].id;
+         }
+      }
+
+      const hasBasicInfo = formData.firstname && formData.lastname && formData.year && formData.brand && formData.series && formData.variation;
+      const hasNumberingIfRequired = !formData.is_numbered || (formData.is_numbered && formData.num_high);
+
+      if (hasBasicInfo && hasNumberingIfRequired && currentCardId && !isWishlistMode) {
+         const formatStr = (val: any) => {
+            if (!val) return '';
+            const str = String(val).toUpperCase().trim();
+            if (str === '-' || str === 'NC' || str === 'N/A' || str === 'EMPTY') return '';
+            return str;
+         };
+
+         let formattedYear = formData.year;
+         if (!['TENNIS', 'BASEBALL', 'F1'].includes(formData.sport) && formData.year && /^\d{4}$/.test(formData.year.toString())) {
+           const yearNum = parseInt(formData.year, 10);
+           const prevYear = yearNum - 1;
+           const shortYear = formData.year.toString().slice(-2);
+           formattedYear = `${prevYear}-${shortYear}`;
+         }
+
+         const keywordsArray = [
+           formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
+           formatStr(formData.firstname), formatStr(formData.lastname), formatStr(formData.variation), 
+           formData.is_auto ? 'Auto' : '', formData.is_patch ? 'Patch' : '', 
+           formData.is_numbered && formData.num_high ? formatStr(formData.num_high) : ''
+         ];
+         
+         const keywords = keywordsArray.filter(Boolean).join(' ');
+
+         fetch('/api/price-update', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ cardId: currentCardId, keywords })
+         }).catch(() => {});
+      }
 
       if (isVerifyingBulk) {
         if (currentVerifyIndex < pendingCards.length - 1) {
@@ -1113,21 +1191,24 @@ function ScannerContent() {
           
           <h2 className="text-xl font-black italic text-[#AFFF25] tracking-widest uppercase mb-4">Recadrer</h2>
           
-          <div className="relative w-full h-[55vh] max-w-lg flex items-center justify-center" ref={cropContainerRef}>
-              <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-full pointer-events-none" alt="To Crop" />
-              
-              <div className="absolute inset-0 z-10 touch-none">
-                 <div className="absolute top-0 left-0 right-0 bg-black/70" style={{ height: `${cropRect.top}%` }} />
-                 <div className="absolute bottom-0 left-0 right-0 bg-black/70" style={{ height: `${100 - cropRect.bottom}%` }} />
-                 <div className="absolute top-0 bottom-0 left-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${cropRect.left}%` }} />
-                 <div className="absolute top-0 bottom-0 right-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${100 - cropRect.right}%` }} />
+          <div className="relative w-full h-[55vh] max-w-lg flex items-center justify-center">
+              {/* 🌟 CORRECTIF CSS DU RECADRAGE : La boîte se moule à l'image ! */}
+              <div className="relative max-w-full max-h-full" ref={cropContainerRef} style={{ width: 'fit-content', height: 'fit-content' }}>
+                  <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-[55vh] pointer-events-none block" alt="To Crop" />
+                  
+                  <div className="absolute inset-0 z-10 touch-none">
+                     <div className="absolute top-0 left-0 right-0 bg-black/70" style={{ height: `${cropRect.top}%` }} />
+                     <div className="absolute bottom-0 left-0 right-0 bg-black/70" style={{ height: `${100 - cropRect.bottom}%` }} />
+                     <div className="absolute top-0 bottom-0 left-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${cropRect.left}%` }} />
+                     <div className="absolute top-0 bottom-0 right-0 bg-black/70" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, width: `${100 - cropRect.right}%` }} />
 
-                 <div className="absolute border-2 border-[#AFFF25]" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, left: `${cropRect.left}%`, right: `${100 - cropRect.right}%` }}>
-                     <div onTouchStart={() => setDraggingCorner('tl')} onMouseDown={() => setDraggingCorner('tl')} className="absolute -top-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
-                     <div onTouchStart={() => setDraggingCorner('tr')} onMouseDown={() => setDraggingCorner('tr')} className="absolute -top-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
-                     <div onTouchStart={() => setDraggingCorner('bl')} onMouseDown={() => setDraggingCorner('bl')} className="absolute -bottom-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
-                     <div onTouchStart={() => setDraggingCorner('br')} onMouseDown={() => setDraggingCorner('br')} className="absolute -bottom-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
-                 </div>
+                     <div className="absolute border-2 border-[#AFFF25]" style={{ top: `${cropRect.top}%`, bottom: `${100 - cropRect.bottom}%`, left: `${cropRect.left}%`, right: `${100 - cropRect.right}%` }}>
+                         <div onTouchStart={() => setDraggingCorner('tl')} onMouseDown={() => setDraggingCorner('tl')} className="absolute -top-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                         <div onTouchStart={() => setDraggingCorner('tr')} onMouseDown={() => setDraggingCorner('tr')} className="absolute -top-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                         <div onTouchStart={() => setDraggingCorner('bl')} onMouseDown={() => setDraggingCorner('bl')} className="absolute -bottom-4 -left-4 w-8 h-8 flex items-center justify-center cursor-nesw-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                         <div onTouchStart={() => setDraggingCorner('br')} onMouseDown={() => setDraggingCorner('br')} className="absolute -bottom-4 -right-4 w-8 h-8 flex items-center justify-center cursor-nwse-resize"><div className="w-4 h-4 bg-[#AFFF25] rounded-full" /></div>
+                     </div>
+                  </div>
               </div>
           </div>
 
