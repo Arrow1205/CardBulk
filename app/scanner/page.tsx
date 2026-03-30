@@ -77,23 +77,13 @@ type PendingCard = {
   id: string;
   file: File;
   previewUrl: string;
-  originalFile: File;        
-  originalPreviewUrl: string; 
+  originalFile: File;        // 🚨 NOUVEAU : Sauvegarde du fichier d'origine
+  originalPreviewUrl: string; // 🚨 NOUVEAU : Sauvegarde de l'URL d'origine
   status: 'pending' | 'analyzing' | 'done' | 'error';
   aiResult: any;
 };
 
 const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
-
-// 🥷 Fonction de nettoyage commune (pour l'URL de fond)
-function cleanData(value: any): string {
-  if (value === null || value === undefined || value === '') return '';
-  const strVal = String(value).toUpperCase().trim();
-  if (strVal === '-' || strVal === 'NC' || strVal === 'N/A' || strVal === 'EMPTY' || strVal.includes('PAS DE DONN')) {
-    return '';
-  }
-  return String(value).trim();
-}
 
 export default function ScannerPage() { 
   return (
@@ -132,13 +122,13 @@ function ScannerContent() {
   
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [originalFile, setOriginalFile] = useState<File | null>(null); 
-  const [originalPreviewUrl, setOriginalPreviewUrl] = useState<string | null>(null); 
+  const [originalFile, setOriginalFile] = useState<File | null>(null); // 🚨 MEMOIRE ORIGINALE
+  const [originalPreviewUrl, setOriginalPreviewUrl] = useState<string | null>(null); // 🚨 MEMOIRE ORIGINALE
 
   const [previewUrlBack, setPreviewUrlBack] = useState<string | null>(null);
   const [selectedFileBack, setSelectedFileBack] = useState<File | null>(null);
-  const [originalFileBack, setOriginalFileBack] = useState<File | null>(null); 
-  const [originalPreviewUrlBack, setOriginalPreviewUrlBack] = useState<string | null>(null); 
+  const [originalFileBack, setOriginalFileBack] = useState<File | null>(null); // 🚨 MEMOIRE ORIGINALE VERSO
+  const [originalPreviewUrlBack, setOriginalPreviewUrlBack] = useState<string | null>(null); // 🚨 MEMOIRE ORIGINALE VERSO
 
   const [freeCropImage, setFreeCropImage] = useState<string | null>(null);
   const [cropRect, setCropRect] = useState({ top: 10, left: 10, right: 90, bottom: 90 });
@@ -166,6 +156,7 @@ function ScannerContent() {
   const [cameraZoom, setCameraZoom] = useState(1);
   const [nativeZoomSupported, setNativeZoomSupported] = useState(false);
 
+  // --- REFS POUR LE MODE AUTO ---
   const [autoScanProgress, setAutoScanProgress] = useState(0);
   const autoCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const prevFrameRef = useRef<Uint8ClampedArray | null>(null);
@@ -301,6 +292,7 @@ function ScannerContent() {
       setSelectedFile(currentCard.file);
       setPreviewUrl(currentCard.previewUrl);
       
+      // 🚨 On restaure aussi les images originales pour le mode lot
       setOriginalFile(currentCard.originalFile);
       setOriginalPreviewUrl(currentCard.originalPreviewUrl);
 
@@ -643,11 +635,13 @@ function ScannerContent() {
       
       if ((scanModeRef.current === 'lot' || scanModeRef.current === 'auto') && activeSide === 'front') {
         const newId = Date.now().toString() + Math.random().toString();
+        // 🚨 Sauvegarde originale intégrée
         const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: fullUrl, originalFile: fullImageFile, originalPreviewUrl: fullUrl, status: 'analyzing', aiResult: null };
         setPendingCards(prev => [...prev, newCard]);
         processBackgroundScan(newId, fullImageFile);
       } else {
         stopCamera();
+        // 🚨 Sauvegarde originale pour la photo unitaire
         if (activeSide === 'front') {
             setOriginalFile(fullImageFile);
             setOriginalPreviewUrl(fullUrl);
@@ -728,17 +722,20 @@ function ScannerContent() {
     }, 'image/jpeg', 0.95);
   };
 
+  // 🚨 LA MAGIE DU NON-DESTRUCTIF SE PASSE ICI 🚨
   const openManualCrop = async () => {
+      // On regarde en priorité si on a une version originale sauvegardée, sinon on prend la preview classique (cas d'une ancienne carte éditée)
       const currentOriginalPreview = activeSide === 'front' ? (originalPreviewUrl || previewUrl) : (originalPreviewUrlBack || previewUrlBack);
       let currentOriginalBlob = activeSide === 'front' ? (originalFile || selectedFile) : (originalFileBack || selectedFileBack);
       
       const localSrc = await getLocalImageUrl(currentOriginalPreview, currentOriginalBlob);
       if (!localSrc) return;
       
-      setFreeCropImage(localSrc); 
+      setFreeCropImage(localSrc); // Ouvre l'outil sur l'image entière
       setCropRect({ top: 10, left: 10, right: 90, bottom: 90 });
       
       freeCropCallbackRef.current = (file, newUrl) => {
+          // L'image recadrée écrase l'image active (mais pas la mémoire originale !)
           if (activeSide === 'front') {
               setSelectedFile(file);
               setPreviewUrl(newUrl);
@@ -838,6 +835,7 @@ function ScannerContent() {
         const imgRes = await fetch(data.base64); const blob = await imgRes.blob(); const file = new File([blob], `scraped-${Date.now()}.jpg`, { type: blob.type });
         if (data.price) setFormData(prev => ({ ...prev, price: data.price }));
         
+        // 🚨 Sauvegarde originale pour l'import de lien
         setOriginalFile(file);
         setOriginalPreviewUrl(URL.createObjectURL(file));
         
@@ -1011,7 +1009,6 @@ function ScannerContent() {
     });
   };
 
-  // 🌟 SAUVEGARDE ET SCAN EN ARRIÈRE-PLAN 🌟
   const saveCard = async () => {
     setLoading(true);
     try {
@@ -1040,52 +1037,8 @@ function ScannerContent() {
         series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
       
-      let savedCardId = editId;
-
-      if (editId) {
-         await supabase.from('cards').update(cardDataToSave).eq('id', editId);
-      } else {
-         const { data, error } = await supabase.from('cards').insert([cardDataToSave]).select('id').single();
-         if (error) throw error;
-         savedCardId = data.id;
-      }
-
-      // -------------------------------------------------------------
-      // 🚀 LE VIDEUR À L'ENTRÉE : VÉRIFICATION ET LANCEMENT DU SCAN AUTO
-      // -------------------------------------------------------------
-      const hasBasicInfo = formData.firstname && formData.lastname && formData.year && formData.brand && formData.series && formData.variation;
-      const hasNumberingIfRequired = !formData.is_numbered || (formData.is_numbered && formData.num_high);
-
-      if (hasBasicInfo && hasNumberingIfRequired && savedCardId) {
-         let formattedYear = formData.year;
-         if (!['TENNIS', 'BASEBALL', 'F1'].includes(formData.sport) && formData.year && /^\d{4}$/.test(formData.year.toString())) {
-           const yearNum = parseInt(formData.year, 10);
-           const prevYear = yearNum - 1;
-           const shortYear = formData.year.toString().slice(-2);
-           formattedYear = `${prevYear}-${shortYear}`;
-         }
-
-         const annee = cleanData(formattedYear);
-         const brand = cleanData(formData.brand);
-         const series = cleanData(formData.series);
-         const prenom = cleanData(formData.firstname);
-         const nom = cleanData(formData.lastname);
-         const variation = cleanData(formData.variation);
-         const autoKeyword = formData.is_auto ? 'Auto' : '';
-         const patchKeyword = formData.is_patch ? 'Patch' : '';
-         const numerotation = formData.is_numbered && formData.num_high ? cleanData(formData.num_high) : '';
-
-         const keywordsArray = [annee, brand, series, prenom, nom, variation, autoKeyword, patchKeyword, numerotation];
-         const keywords = keywordsArray.filter(Boolean).join(' ');
-
-         // Mode "Fire and Forget" : On n'attend pas la réponse d'eBay !
-         fetch('/api/price-update', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ cardId: savedCardId, keywords })
-         }).catch(e => console.error("Erreur scan auto background:", e));
-      }
-      // -------------------------------------------------------------
+      if (editId) await supabase.from('cards').update(cardDataToSave).eq('id', editId);
+      else await supabase.from('cards').insert([cardDataToSave]);
 
       if (isVerifyingBulk) {
         if (currentVerifyIndex < pendingCards.length - 1) {
