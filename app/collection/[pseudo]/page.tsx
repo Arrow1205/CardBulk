@@ -31,7 +31,7 @@ type PublicCard = {
 
 type OwnerProfile = {
   full_name: string | null;
-  username: string | null;
+  pseudo: string | null;
 };
 
 export default function PublicCollectionPage() {
@@ -52,7 +52,7 @@ export default function PublicCollectionPage() {
     const fetchPublicData = async () => {
       if (!pseudo) return;
 
-      const { data: ownerId, error: ownerError } = await supabase.rpc('get_user_id_by_username', { p_username: pseudo });
+      const { data: ownerId, error: ownerError } = await supabase.rpc('get_user_id_by_pseudo', { p_pseudo: pseudo });
 
       if (ownerError || !ownerId) {
         setNotFound(true);
@@ -63,7 +63,7 @@ export default function PublicCollectionPage() {
       const publicColumns = 'id, sport, firstname, lastname, club_name, brand, series, variation, year, numbering_max, image_url, image_url_back, is_rookie, is_auto, is_patch, is_graded, grading_company, grading_grade';
 
       const [profileRes, cardsRes] = await Promise.all([
-        supabase.from('profiles').select('full_name, username').eq('id', ownerId).single(),
+        supabase.from('profiles').select('full_name, pseudo').eq('id', ownerId).single(),
         supabase.from('cards')
           .select(publicColumns)
           .eq('user_id', ownerId)
@@ -86,7 +86,6 @@ export default function PublicCollectionPage() {
     fetchPublicData();
   }, [pseudo]);
 
-  // CORRECTION EFFECTUÉE ICI POUR TYPESCRIPT
   const sportsPresent = ['ALL', ...Array.from(new Set(cards.map(c => c.sport)))];
 
   const filteredCards = cards.filter(card => {
@@ -129,7 +128,7 @@ export default function PublicCollectionPage() {
             </button>
             <div className="flex-col">
                 <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">Vitrine</h1>
-                <p className='text-xs text-[#AFFF25] font-bold tracking-widest uppercase'>de @{owner?.username || pseudo}</p>
+                <p className='text-xs text-[#AFFF25] font-bold tracking-widest uppercase'>de @{owner?.pseudo || pseudo}</p>
             </div>
         </div>
         <div className="flex items-center gap-3">

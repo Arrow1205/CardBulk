@@ -36,7 +36,7 @@ type Message = { role: 'user' | 'assistant', content: string };
 type Profile = {
   avatar_url: string | null;
   full_name: string | null;
-  username: string | null;
+  pseudo: string | null;
 };
 
 const slugify = (text: string) => {
@@ -113,7 +113,6 @@ export default function CollectionPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 🚨 1. RESTAURATION DES FILTRES AU CHARGEMENT DE LA PAGE
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -144,7 +143,6 @@ export default function CollectionPage() {
     fetchCollection();
   }, []);
 
-  // 🚨 2. SAUVEGARDE DES FILTRES À CHAQUE MODIFICATION
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const filters = {
@@ -185,7 +183,7 @@ export default function CollectionPage() {
       if (!user) throw new Error("Pas de réseau ou non connecté");
 
       const [profileRes, cardsRes, foldersRes] = await Promise.all([
-        supabase.from('profiles').select('avatar_url, full_name, username').eq('id', user.id).single(),
+        supabase.from('profiles').select('avatar_url, full_name, pseudo').eq('id', user.id).single(),
         supabase.from('cards').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
         supabase.from('folders').select('*').eq('user_id', user.id).order('created_at', { ascending: true })
       ]);
@@ -207,8 +205,8 @@ export default function CollectionPage() {
     }
   };
 
-  const shareUrl = typeof window !== 'undefined' && profile?.username 
-    ? `${window.location.origin}/collection/${profile.username}`
+  const shareUrl = typeof window !== 'undefined' && profile?.pseudo 
+    ? `${window.location.origin}/collection/${profile.pseudo}`
     : '';
 
   const copyLink = () => {
@@ -651,7 +649,7 @@ export default function CollectionPage() {
               <p className="text-sm text-white/60 mt-2">Masque automatiquement vos prix d'achat et infos eBay.</p>
             </div>
 
-            {profile?.username ? (
+            {profile?.pseudo ? (
               <div className="space-y-6">
                 <div className="bg-white p-4 rounded-2xl flex justify-center shadow-inner">
                   <QRCode value={shareUrl} size={180} bgColor="#ffffff" fgColor="#080531" level="H" />
