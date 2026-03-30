@@ -9,7 +9,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    // 🔒 RECUPERATION DES CLES EBAY DEPUIS VERCEL
     const appId = process.env.EBAY_APP_ID;
     const certId = process.env.EBAY_CERT_ID;
 
@@ -17,7 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Configuration eBay manquante' }, { status: 500 });
     }
 
-    // 1️⃣ GÉNÉRATION DU TOKEN D'ACCÈS EBAY (Avec le pass "Marketplace Insights")
+    // 1️⃣ RÉCUPÉRATION DU TOKEN (Scope standard ouvert à tous !)
     const credentials = Buffer.from(`${appId}:${certId}`).toString('base64');
     const tokenResponse = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
       method: 'POST',
@@ -25,19 +24,18 @@ export async function POST(req: Request) {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': `Basic ${credentials}`
       },
-      // Le scope change ici pour autoriser la fouille dans les ventes passées !
-      body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope/buy.marketplace.insights'
+      body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope'
     });
 
     const tokenData = await tokenResponse.json();
     if (!tokenData.access_token) {
+      console.error("Erreur Token eBay:", tokenData);
       throw new Error("Impossible de s'authentifier auprès d'eBay");
     }
 
-    // 2️⃣ RECHERCHE DES VENTES RÉUSSIES SUR EBAY
+    // 2️⃣ RECHERCHE DES ANNONCES ACTIVES (Browse API)
     const query = encodeURIComponent(keywords);
-    // On attaque la route item_sales !
-    const searchUrl = `https://api.ebay.com/buy/marketplace_insights/v1/item_sales/search?q=${query}&limit=10`;
+    const searchUrl = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=10`;
 
     const searchResponse = await fetch(searchUrl, {
       headers: {
@@ -48,21 +46,19 @@ export async function POST(req: Request) {
 
     const searchData = await searchResponse.json();
 
-    // La réponse d'eBay s'appelle "itemSales" au lieu de "itemSummaries"
-    if (!searchData.itemSales || searchData.itemSales.length === 0) {
-      return NextResponse.json({ success: false, error: 'Aucune vente réussie trouvée sur eBay récemment pour cette carte.' });
+    if (!searchData.itemSummaries || searchData.itemSummaries.length === 0) {
+      return NextResponse.json({ success: false, error: 'Aucun résultat trouvé sur eBay pour cette carte.' });
     }
 
     // 3️⃣ CALCUL DU PRIX MOYEN "INTELLIGENT"
     let prices: number[] = [];
     
-    searchData.itemSales.forEach((item: any) => {
+    searchData.itemSummaries.forEach((item: any) => {
       const title = (item.title || "").toUpperCase();
       const isGradedOrLot = title.includes('PSA') || title.includes('PCA') || title.includes('LOT') || title.includes('BGS') || title.includes('CGC');
       
-      // On fouille dans lastSoldPrice au lieu de price
-      if (item.lastSoldPrice && item.lastSoldPrice.value && !isGradedOrLot) {
-         const priceNum = parseFloat(item.lastSoldPrice.value);
+      if (item.price && item.price.value && !isGradedOrLot) {
+         const priceNum = parseFloat(item.price.value);
          if (priceNum > 0.5 && priceNum < 100000) { 
            prices.push(priceNum);
          }
@@ -70,9 +66,10 @@ export async function POST(req: Request) {
     });
 
     if (prices.length === 0) {
-      return NextResponse.json({ success: false, error: 'Ventes réussies trouvées, mais exclues car ce sont des lots ou des cartes gradées.' });
+      return NextResponse.json({ success: false, error: 'Annonces trouvées, mais exclues car ce sont des lots ou des cartes gradées.' });
     }
 
+    // Sécurité Anti-Pigeon
     prices.sort((a, b) => a - b);
     if (prices.length >= 4) {
       prices.pop();  
@@ -84,8 +81,6 @@ export async function POST(req: Request) {
 
     // 4️⃣ SAUVEGARDE DANS SUPABASE
     await supabase.from('card_prices').insert([{ card_id: cardId, price: average }]);
-    
-    // On met à jour la date de dernière actualisation de la carte
     await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', cardId);
 
     return NextResponse.json({ success: true, averagePrice: average });
