@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw } from 'lucide-react';
-// 🌟 NOUVEAUTÉ : Import de ReferenceLine
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -109,7 +108,6 @@ export default function CardDetailsPage() {
     const nom = cleanData(currentCard.lastname);
     const variation = cleanData(currentCard.variation);
     
-    // ⚠️ On demande UNIQUEMENT le chiffre, sans le slash pour ne pas casser eBay
     const numerotation = currentCard.is_numbered && currentCard.numbering_max ? cleanData(currentCard.numbering_max) : '';
 
     const keywordsArray = [annee, brand, series, prenom, nom, variation, numerotation];
@@ -120,10 +118,9 @@ export default function CardDetailsPage() {
     if (!card) return;
     setIsUpdatingPrice(true); 
     
-    // 🌟 L'ASTUCE EST ICI : On met à jour la date tout de suite, côté client !
     const now = new Date().toISOString();
-    setCard((prev: any) => ({ ...prev, updated_at: now })); // Mise à jour visuelle instantanée !
-    await supabase.from('cards').update({ updated_at: now }).eq('id', card.id); // Sauvegarde forcée dans ta base
+    setCard((prev: any) => ({ ...prev, updated_at: now })); 
+    await supabase.from('cards').update({ updated_at: now }).eq('id', card.id); 
 
     const keywords = buildEbaySearchQuery(card);
 
@@ -152,7 +149,6 @@ export default function CardDetailsPage() {
       console.error("Erreur de MAJ des prix :", e);
       alert("Désolé, aucune vente en cours actuellement.");
     } finally {
-      // On recharge la carte en arrière-plan pour être sûr que tout est synchronisé
       fetchCard(); 
       setIsUpdatingPrice(false); 
     }
@@ -164,7 +160,6 @@ export default function CardDetailsPage() {
     const keywords = buildEbaySearchQuery(card);
     const searchQuery = encodeURIComponent(keywords);
     
-    // On envoie vers ebay.com (le marché américain) pour rester cohérent avec notre API US !
     let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
     if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
     window.open(ebayUrl, '_blank');
@@ -289,6 +284,11 @@ export default function CardDetailsPage() {
     }
     return null;
   };
+
+  // 📐 CALCUL DU PLAFOND DU GRAPHIQUE POUR NE JAMAIS COUPER LA LIGNE D'ACHAT
+  const maxDataPrice = priceHistory.length > 0 ? Math.max(...priceHistory.map(p => p.prix)) : 0;
+  const purchasePriceNum = parseFloat(card?.purchase_price) || 0;
+  const yAxisMax = Math.max(maxDataPrice, purchasePriceNum) * 1.1; // On rajoute 10% d'espace en haut pour que ça respire
 
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
@@ -509,12 +509,10 @@ export default function CardDetailsPage() {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="date" hide={true} />
-                  {/*
-                    CRITICAL STEP: domain handling.
-                    I use the Recharts standard here (no specified domain implies dataMax/dataMin).
-                    Ideally, Recharts will adapt the domain to the reference line if it is outside the data.
-                  */}
-                  <YAxis hide={true} domain={['auto', 'auto']} />
+                  
+                  {/* 📏 NOUVEAUTÉ : On fixe le plancher à 0 et on laisse de la marge en haut ! */}
+                  <YAxis hide={true} domain={[0, yAxisMax]} />
+                  
                   <Tooltip content={<CustomTooltip />} />
                   <Area type="monotone" dataKey="prix" stroke="#AFFF25" strokeWidth={3} fillOpacity={1} fill="url(#colorPrix)" />
 
@@ -522,16 +520,16 @@ export default function CardDetailsPage() {
                   {card?.purchase_price > 0 && (
                     <ReferenceLine
                       y={parseFloat(card.purchase_price)}
-                      stroke="#3B82F6" // Bleu électrique vibrant
+                      stroke="#3B82F6" 
                       strokeDasharray="3 3"
                       strokeWidth={2}
                       label={{
                         value: 'Achat',
                         position: 'insideBottomLeft',
-                        fill: '#60A5FA', // Bleu clair pour visibilité sur fond sombre
+                        fill: '#60A5FA', 
                         fontSize: 10,
                         fontWeight: 'bold',
-                        dy: -10 // nudge up slightly
+                        dy: -10 
                       }}
                     />
                   )}
