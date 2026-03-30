@@ -328,6 +328,7 @@
     "aliases": [
       "Atlético",
       "Atletico",
+      "Atletico de madrid",
       "Atlético Madrid"
     ]
   },
@@ -1579,6 +1580,7 @@
     "aliases": [
       "LOSC",
       "Lille",
+      "LOSC Lille",
       "Lille OSC"
     ]
   },
@@ -2265,7 +2267,10 @@
     "name": "Real Madrid",
     "slug": "real-madrid",
     "aliases": [
-      "Real"
+      "Real",
+      "real de madrid cf",
+      "real de madrid"
+
     ]
   },
   {

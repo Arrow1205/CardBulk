@@ -740,8 +740,10 @@ function ScannerContent() {
               setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: file, previewUrl: newUrl } : c));
           }
           
-          // 🌟 NOUVEAUTÉ MAGIQUE : On demande à l'IA d'analyser la nouvelle image sans effacer le formulaire !
-          processImageScan(file, activeSide, false);
+          // 🌟 SÉCURITÉ : Ne relance l'IA QUE si on est en train de créer une nouvelle carte, pas en Mode Édition !
+          if (!editId) {
+             processImageScan(file, activeSide, false);
+          }
       };
   };
 
@@ -804,45 +806,11 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev, 
-              sport: aiSport || prev.sport, 
-              firstname: fname || prev.firstname, 
-              lastname: lname || prev.lastname, 
-              club: matchedClub || prev.club, 
-              brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, 
-              series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, 
-              variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, 
-              year: cleanValue(data.year) || prev.year, 
-              is_auto: !!data.is_auto || prev.is_auto, 
-              is_patch: !!data.is_patch || prev.is_patch, 
-              is_rookie: !!data.is_rookie || prev.is_rookie, 
-              is_numbered: !!data.is_numbered || prev.is_numbered, 
-              num_low: cleanValue(data.num_low) || prev.num_low, 
-              num_high: cleanValue(data.num_high) || prev.num_high, 
-              is_graded: !!data.is_graded || prev.is_graded, 
-              grading_company: cleanValue(data.grading_company) || prev.grading_company, 
-              grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, 
-              sport: prev.sport || aiSport, 
-              firstname: prev.firstname || fname, 
-              lastname: prev.lastname || lname, 
-              club: prev.club || matchedClub, 
-              brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), 
-              series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), 
-              variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), 
-              year: prev.year || cleanValue(data.year), 
-              is_auto: prev.is_auto || !!data.is_auto, 
-              is_patch: prev.is_patch || !!data.is_patch, 
-              is_rookie: prev.is_rookie || !!data.is_rookie, 
-              is_numbered: prev.is_numbered || !!data.is_numbered, 
-              num_low: prev.num_low || cleanValue(data.num_low), 
-              num_high: prev.num_high || cleanValue(data.num_high), 
-              is_graded: prev.is_graded || !!data.is_graded, 
-              grading_company: prev.grading_company || cleanValue(data.grading_company), 
-              grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -921,8 +889,10 @@ function ScannerContent() {
           }
           setIsApplyingEdit(false);
           
-          // 🌟 NOUVEAUTÉ : On relance l'IA après une rotation aussi !
-          processImageScan(newFile, activeSide, false);
+          // 🌟 SÉCURITÉ : Pas de rescan en mode modification
+          if (!editId) {
+             processImageScan(newFile, activeSide, false);
+          }
       }, 'image/jpeg', 0.95);
     } catch(e) {
       setIsApplyingEdit(false);
@@ -1017,8 +987,10 @@ function ScannerContent() {
           setImgSettings({ brightness: 100, contrast: 100, zoom: 1 });
           setIsApplyingEdit(false);
 
-          // 🌟 NOUVEAUTÉ : On relance l'IA après amélioration de l'image
-          processImageScan(newFile, activeSide, false);
+          // 🌟 SÉCURITÉ : Pas de rescan en mode modification
+          if (!editId) {
+             processImageScan(newFile, activeSide, false);
+          }
       }, 'image/jpeg', 0.95);
     } catch(e) {
       console.error(e);
@@ -1192,7 +1164,7 @@ function ScannerContent() {
           <h2 className="text-xl font-black italic text-[#AFFF25] tracking-widest uppercase mb-4">Recadrer</h2>
           
           <div className="relative w-full h-[55vh] max-w-lg flex items-center justify-center">
-              {/* 🌟 CORRECTIF CSS DU RECADRAGE : La boîte se moule à l'image ! */}
+              {/* 🌟 LE CORRECTIF CSS : La boîte moule l'image au pixel près ! */}
               <div className="relative max-w-full max-h-full" ref={cropContainerRef} style={{ width: 'fit-content', height: 'fit-content' }}>
                   <img src={freeCropImage} className="w-auto h-auto max-w-full max-h-[55vh] pointer-events-none block" alt="To Crop" />
                   
@@ -1348,7 +1320,8 @@ function ScannerContent() {
             <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl">
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
-              {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && activeSide === 'front' && (
+              {/* 🌟 LE CORRECTIF D'AFFICHAGE DU CHARGEMENT : on le voit maintenant aussi sur le Verso ! */}
+              {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && (
                 <div className="absolute inset-0 bg-[#040221]/90 flex flex-col items-center justify-center backdrop-blur-sm z-40">
                    <Loader2 className="animate-spin text-[#AFFF25] mb-2 lg:mb-4" size={32} />
                    <span className="text-[#AFFF25] text-[10px] lg:text-xs font-bold tracking-widest animate-pulse mt-2 text-center px-4">

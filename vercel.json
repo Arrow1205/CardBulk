@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/price-update",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/update-clubs",
+      "schedule": "30 2 * * *"
     }
   ]
 }
