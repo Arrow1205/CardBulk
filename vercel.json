@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/cron/update-clubs",
-      "schedule": "30 2 * * *"
+      "schedule": "30 7 * * *"
     }
   ]
 }

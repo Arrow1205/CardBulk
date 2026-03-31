@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 
 // 📂 Importation de tes fichiers JSON
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -53,9 +53,15 @@ export async function GET(req: Request) {
     return new Response('Accès non autorisé', { status: 401 });
   }
 
+  // 🦸‍♂️ CRÉATION DU CLIENT SUPABASE "ADMIN" (Bypass RLS)
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // Clé secrète à ajouter dans Vercel !
+  );
+
   try {
-    // 1️⃣ On récupère toutes les cartes qui ont un club renseigné
-    const { data: cards, error } = await supabase
+    // 1️⃣ On récupère toutes les cartes qui ont un club renseigné (via l'Admin)
+    const { data: cards, error } = await supabaseAdmin
       .from('cards')
       .select('id, sport, club_name')
       .not('club_name', 'is', null)
@@ -67,7 +73,6 @@ export async function GET(req: Request) {
     }
 
     // 2️⃣ On cherche les anomalies
-    // On utilise un Map pour ne corriger chaque faute qu'une seule fois
     const updatesToMake = new Map<string, { sport: string, oldName: string, newName: string }>();
 
     for (const card of cards) {
@@ -86,10 +91,10 @@ export async function GET(req: Request) {
       }
     }
 
-    // 3️⃣ On applique les corrections dans la base de données
+    // 3️⃣ On applique les corrections dans la base de données (via l'Admin)
     let correctionsCount = 0;
     for (const update of Array.from(updatesToMake.values())) {
-      await supabase
+      await supabaseAdmin
         .from('cards')
         .update({ club_name: update.newName })
         .eq('club_name', update.oldName)
