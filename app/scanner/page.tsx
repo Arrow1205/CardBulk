@@ -57,17 +57,13 @@ let ALL_SETS: string[] = [];
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
 
-let ALL_VARIATIONS: string[] = [];
-Object.values(TYPE_CARTE).forEach((bData: any) => {
-  if (bData.base) ALL_VARIATIONS.push(...bData.base);
-  if (bData.parallels) {
-    Object.values(bData.parallels).forEach((arr: any) => {
-      if (Array.isArray(arr)) ALL_VARIATIONS.push(...arr);
-    });
-  }
-  if (bData.inserts) ALL_VARIATIONS.push(...bData.inserts);
-  if (bData.hits) ALL_VARIATIONS.push(...bData.hits);
-  if (bData.case_hits) ALL_VARIATIONS.push(...bData.case_hits);
+// 🚀 NOUVELLE LOGIQUE D'EXTRACTION DES VARIATIONSlet ALL_VARIATIONS: string[] = [];
+Object.values(TYPE_CARTE).forEach((brandData: any) => {
+  Object.values(brandData).forEach((category: any) => {
+    if (Array.isArray(category)) {
+      category.forEach((v: any) => ALL_VARIATIONS.push(v.variation_name));
+    }
+  });
 });
 ALL_VARIATIONS = Array.from(new Set(ALL_VARIATIONS));
 
@@ -169,7 +165,6 @@ function ScannerContent() {
   useEffect(() => { isFlashingRef.current = isFlashing; }, [isFlashing]);
   const captureRef = useRef(() => {});
 
-  // 🌟 GESTION DU CHANGEMENT DE TAB
   const handleTabSwitch = (mode: 'unitaire' | 'lot' | 'auto' | 'quick') => {
     setScanMode(mode);
     if (mode === 'quick') {
@@ -378,15 +373,14 @@ function ScannerContent() {
       return url;
   };
 
-  // 🥷 Fonction de nettoyage (version indestructible avec gestion des accents)
   const normalizeClubName = (str: string) => {
     if (!str) return '';
     return str
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, "") // Enlève TOUS les accents
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, "") 
       .toLowerCase()
-      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city|tm)\b/g, '') // Enlève les parasites
-      .replace(/[^\w\s]/g, '') // Enlève les symboles bizarres (™, ©, -)
-      .replace(/\s+/g, ' ') // Évite les doubles espaces
+      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city|tm)\b/g, '') 
+      .replace(/[^\w\s]/g, '') 
+      .replace(/\s+/g, ' ') 
       .trim();
   };
 
@@ -446,7 +440,23 @@ function ScannerContent() {
     }
   }
 
+  // 📂 RÉCUPÉRATION DES VARIATIONS POUR LA MARQUE ACTUELLE
   const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
+
+  // 💡 RÉCUPÉRATION DE LA DESCRIPTION UI (Si une variation est sélectionnée)
+  let selectedVariationDescription = "";
+  if (formData.variation && currentBrandVariations) {
+    Object.values(currentBrandVariations).forEach((category: any) => {
+      if (Array.isArray(category)) {
+        const found = category.find((v: any) => v.variation_name === formData.variation);
+        if (found) selectedVariationDescription = found.ui_description;
+      }
+    });
+    // Fallback: Si l'IA a détecté une couleur custom (ex: "Gold /10") qui n'est pas texto dans le JSON
+    if (!selectedVariationDescription && formData.variation.includes('/')) {
+        selectedVariationDescription = "Variation colorée ou numérotée détectée automatiquement par l'IA.";
+    }
+  }
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
   const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
@@ -543,7 +553,7 @@ function ScannerContent() {
           club: matchClubWithAliases(cleanValue(data.club), aiSport),
           brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS),
           series: matchExactCase(cleanValue(data.series), ALL_SETS),
-          variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS),
+          variation: cleanValue(data.variation), // Garde la variation brute de l'IA (incluant ex: "Red /10")
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -821,11 +831,11 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: matchExactCase(cleanValue(data.variation), ALL_VARIATIONS) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: cleanValue(data.variation) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || matchExactCase(cleanValue(data.variation), ALL_VARIATIONS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || cleanValue(data.variation), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -1052,14 +1062,12 @@ function ScannerContent() {
         finalImageUrlBack = supabase.storage.from('card-images').getPublicUrl(backPath).data.publicUrl;
       }
       
-      // ✨ MAGIE : On passe le nom saisi par l'utilisateur dans la moulinette de fusion
-      // Juste avant de l'envoyer à Supabase !
       const finalClubName = matchClubWithAliases(formData.club, formData.sport);
 
       const cardDataToSave = { 
         user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
         series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 
-        club_name: finalClubName, // <-- On utilise le nom propre ici !
+        club_name: finalClubName, 
         is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
       
@@ -1119,7 +1127,6 @@ function ScannerContent() {
     } catch (err) { console.error(err); setLoading(false); }
   };
 
-  // 🌟 NOUVEAU : LA RECHERCHE EBAY DIRECTE POUR LE "QUICK SCAN"
   const handleQuickSearch = () => {
     const formatStr = (val: any) => {
       if (!val) return '';
@@ -1433,7 +1440,6 @@ function ScannerContent() {
 
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
-        {/* 🌟 LE CHAMP VARIATION MIS EN AVANT POUR LE QUICK SCAN */}
         {scanMode === 'quick' && (
           <div className="bg-white/5 border border-[#AFFF25]/50 shadow-[0_0_20px_rgba(175,255,37,0.1)] rounded-2xl p-4 mb-6 animate-in fade-in slide-in-from-top-4">
             <label className="text-[10px] text-[#AFFF25] italic font-black tracking-widest block mb-3 uppercase flex items-center gap-2">
@@ -1442,21 +1448,16 @@ function ScannerContent() {
             <div className="relative">
               <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-4 rounded-xl text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/80 transition-colors shadow-inner">
                 <option value="">Sélectionner la Variation (ex: Base, Prizm Silver...)</option>
-                {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
-                  if (Array.isArray(currentBrandVariations[catKey])) {
-                    return (
-                      <optgroup key={catKey} label={formatLabel(catKey)}>
-                        {currentBrandVariations[catKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
-                      </optgroup>
-                    )
-                  } else {
-                    return Object.keys(currentBrandVariations[catKey]).map(subKey => (
-                      <optgroup key={`${catKey}-${subKey}`} label={`${formatLabel(catKey)} - ${formatLabel(subKey)}`}>
-                        {currentBrandVariations[catKey][subKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
-                      </optgroup>
-                    ))
-                  }
-                })}
+                {formData.variation && !ALL_VARIATIONS.includes(formData.variation) && (
+                   <option value={formData.variation}>{formData.variation}</option>
+                )}
+                {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => (
+                    <optgroup key={catKey} label={formatLabel(catKey)}>
+                      {(currentBrandVariations as any)[catKey].map((v: any) => (
+                        <option key={v.variation_name} value={v.variation_name}>{v.variation_name}</option>
+                      ))}
+                    </optgroup>
+                ))}
               </select>
               <ChevronDown className="absolute right-4 top-4 text-[#AFFF25] pointer-events-none" size={18} />
             </div>
@@ -1566,28 +1567,38 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* 🌟 ON CACHE CE CHAMP ICI SI ON EST EN MODE QUICK SCAN POUR NE PAS FAIRE DOUBLON */}
+                {/* 🌟 LE CHAMP VARIATION MAGIQUE (Mise à jour) */}
                 {scanMode !== 'quick' && (
-                  <div className="relative">
-                    <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
-                      <option value="">Variation (ex: Base, Prizm Silver...)</option>
-                      {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => {
-                        if (Array.isArray(currentBrandVariations[catKey])) {
-                          return (
+                  <div>
+                    <div className="relative">
+                      <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                        <option value="">Variation (ex: Base, Prizm Silver...)</option>
+                        
+                        {/* Option fallback si l'IA renvoie une couleur qui n'est pas dans la liste */}
+                        {formData.variation && !ALL_VARIATIONS.includes(formData.variation) && (
+                           <option value={formData.variation}>{formData.variation}</option>
+                        )}
+                        
+                        {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => (
                             <optgroup key={catKey} label={formatLabel(catKey)}>
-                              {currentBrandVariations[catKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
+                              {(currentBrandVariations as any)[catKey].map((v: any) => (
+                                <option key={v.variation_name} value={v.variation_name}>{v.variation_name}</option>
+                              ))}
                             </optgroup>
-                          )
-                        } else {
-                          return Object.keys(currentBrandVariations[catKey]).map(subKey => (
-                            <optgroup key={`${catKey}-${subKey}`} label={`${formatLabel(catKey)} - ${formatLabel(subKey)}`}>
-                              {currentBrandVariations[catKey][subKey].map((v: string) => <option key={v} value={v}>{v}</option>)}
-                            </optgroup>
-                          ))
-                        }
-                      })}
-                    </select>
-                    <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                    </div>
+
+                    {/* 💡 L'ENCART UI POUR EXPLIQUER LA CARTE */}
+                    {selectedVariationDescription && (
+                      <div className="bg-[#AFFF25]/10 border border-[#AFFF25]/20 rounded-xl p-3 mt-3 mx-1 flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+                        <span className="text-[#AFFF25] mt-0.5"><Search size={16} /></span>
+                        <p className="text-[10px] text-[#AFFF25]/90 leading-relaxed italic">
+                          {selectedVariationDescription}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
                 

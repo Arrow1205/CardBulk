@@ -1,186 +1,364 @@
 {
   "Topps": {
-    "base": [
-      "Base",
-      "Base Variation",
-      "SP",
-      "SSP",
-      "SSSP"
+    "Base & Inserts": [
+      {
+        "variation_name": "Base",
+        "ui_description": "Carton standard ou Chrome lisse. Aucun reflet métallique arc-en-ciel. Pas de numéro de série.",
+        "ai_detection_clues": [
+          "absence de reflet métallique",
+          "absence de numérotation de série",
+          "symbole dièse # suivi d'un à trois chiffres au dos"
+        ]
+      },
+      {
+        "variation_name": "Inserts",
+        "ui_description": "Design, typographie et fond totalement différents de la série de base. Nom de l'insert très visible.",
+        "ai_detection_clues": [
+          "typographie différente de la base",
+          "nom de l'insert textuel imprimé sur la face avant (ex: Future Stars)",
+          "logo d'insert spécifique"
+        ]
+      },
+      {
+        "variation_name": "Short Print (SP/SSP)",
+        "ui_description": "Photo alternative et atypique (célébration, civil). Code de production au dos différent des cartes classiques.",
+        "ai_detection_clues": [
+          "code de production OCR au dos avec des derniers chiffres anormaux",
+          "photo atypique en tenue de ville ou hors action",
+          "absence de numéro de série malgré la rareté"
+        ]
+      },
+      {
+        "variation_name": "Case Hits",
+        "ui_description": "Cartes extrêmement rares aux designs spectaculaires (dos 100% doré, absence de statistiques, etc.).",
+        "ai_detection_clues": [
+          "dos de la carte entièrement doré (Golden Mirror)",
+          "absence de statistiques au dos (Blank Backs)",
+          "mention 'Home Field Advantage'"
+        ]
+      }
     ],
-    "parallels": {
-      "standard_colors": [
-        "Gold",
-        "Orange",
-        "Red",
-        "Blue",
-        "Green",
-        "Purple",
-        "Pink",
-        "Black",
-        "Platinum 1/1"
-      ],
-      "refractors": [
-        "Refractor",
-        "X-Fractor",
-        "Atomic Refractor",
-        "Wave Refractor",
-        "Shimmer Refractor",
-        "Lava Refractor",
-        "Speckle Refractor",
-        "Mojo Refractor"
-      ],
-      "foil_types": [
-        "Rainbow Foil",
-        "Gold Foil",
-        "Vintage Stock",
-        "Independence Day",
-        "Mother's Day Pink",
-        "Father's Day Blue"
-      ]
-    },
-    "inserts": [
-      "Future Stars",
-      "Legends",
-      "All-Star",
-      "Die-Cut",
-      "Rookie Cup"
-    ],
-    "hits": [
-      "Autograph",
-      "Relic",
-      "Patch",
-      "Auto Patch",
-      "Booklet",
-      "Dual Auto",
-      "Triple Auto"
-    ],
-    "case_hits": [
-      "Golden Mirror Variation",
-      "Image Variation SSP",
-      "Sketch Card"
+    "Refractors & Parallels": [
+      {
+        "variation_name": "Standard Refractor",
+        "ui_description": "Reflet métallique arc-en-ciel sur toute la surface. Mention 'REFRACTOR' souvent présente au dos.",
+        "ai_detection_clues": [
+          "reflet arc-en-ciel métallique global",
+          "mention texte 'REFRACTOR' au dos de la carte"
+        ]
+      },
+      {
+        "variation_name": "Pattern Refractors",
+        "ui_description": "Reflet arc-en-ciel incluant des motifs géométriques (carrés pour Mojo, vagues pour Wave, bulles pour Lava).",
+        "ai_detection_clues": [
+          "motifs géométriques carrés brillants (Mojo)",
+          "lignes ondulées ou vagues (Wave)",
+          "texture visuelle en bulles (Lava)"
+        ]
+      },
+      {
+        "variation_name": "Numbered Color Parallels",
+        "ui_description": "Bordure de couleur franche (Or, Vert, Rouge...). Numérotée de /299 à /5.",
+        "ai_detection_clues": [
+          "bordure de couleur franche + numérotation correspondante",
+          "Purple + numérotation OCR /250 ou /299",
+          "Blue + numérotation OCR /150 ou /199",
+          "Green + numérotation OCR /99",
+          "Gold + numérotation OCR /50",
+          "Orange + numérotation OCR /25",
+          "Red + numérotation OCR /5"
+        ]
+      },
+      {
+        "variation_name": "Superfractor",
+        "ui_description": "Couleur dorée avec motif en spirale ou cercles concentriques. Pièce unique numérotée 1/1.",
+        "ai_detection_clues": [
+          "couleur globale dorée",
+          "motifs en cercles concentriques ou spirales",
+          "numérotation séquentielle '1/1'"
+        ]
+      },
+      {
+        "variation_name": "Paper Foil Parallels",
+        "ui_description": "Carton standard (non Chrome) avec reflets argentés (Rainbow) ou dorés (Gold) sur le fond ou les bordures.",
+        "ai_detection_clues": [
+          "support carton standard",
+          "reflet argenté (Rainbow Foil) ou doré (Gold Foil) uniquement sur le fond ou les bordures"
+        ]
+      }
     ]
   },
 
   "Panini": {
-    "base": [
-      "Base",
-      "Base Variation",
-      "No Name Variation",
-      "Photo Variation",
-      "SP",
-      "SSP"
+    "Base & Inserts": [
+      {
+        "variation_name": "Base",
+        "ui_description": "Carte lisse ou chromée. Aucun reflet arc-en-ciel et aucune numérotation de série.",
+        "ai_detection_clues": [
+          "absence de reflet arc-en-ciel",
+          "mentions textuelles de niveau (Concourse, Premier Level, Courtside)",
+          "absence de numérotation séquentielle"
+        ]
+      },
+      {
+        "variation_name": "Inserts",
+        "ui_description": "Design thématique très marqué (flammes, vitraux...). Le nom de l'insert fait partie intégrante du design.",
+        "ai_detection_clues": [
+          "design thématique dominant",
+          "texte de l'insert identifié (Fireworks, Illusions, Stained Glass)"
+        ]
+      },
+      {
+        "variation_name": "SP & SSP",
+        "ui_description": "Photo très inhabituelle (zoom, entraînement) ou absence volontaire du nom du joueur (No Name).",
+        "ai_detection_clues": [
+          "absence textuelle du nom du joueur (No Name Variation)",
+          "cadrage photo zoomé inhabituel"
+        ]
+      },
+      {
+        "variation_name": "Case Hits",
+        "ui_description": "Designs artistiques ultra-rares : dessin animé (Downtown), explosif (Kaboom!), éclat de couleurs (Color Blast).",
+        "ai_detection_clues": [
+          "style d'illustration dessin animé ou comic-book",
+          "mot 'Downtown', 'Kaboom!', 'Color Blast' ou 'Manga' intégré au design"
+        ]
+      }
     ],
-    "parallels": {
-      "prizm_core": [
-        "Silver Prizm",
-        "Gold Prizm",
-        "Black Prizm 1/1"
-      ],
-      "colors": [
-        "Red",
-        "Blue",
-        "Green",
-        "Purple",
-        "Orange",
-        "Pink",
-        "Neon Green",
-        "Hyper"
-      ],
-      "patterns": [
-        "Cracked Ice",
-        "Scope",
-        "Mojo",
-        "Snake Skin",
-        "Tiger Stripe",
-        "Zebra",
-        "Peacock",
-        "Camo",
-        "Choice",
-        "Fast Break",
-        "Shimmer"
-      ]
-    },
-    "inserts": [
-      "Downtown",
-      "Color Blast",
-      "Kaboom",
-      "Fireworks",
-      "Emergent",
-      "Illusions",
-      "Stained Glass"
+    "Refractors & Parallels": [
+      {
+        "variation_name": "Silver Prizm",
+        "ui_description": "Fort éclat métallique arc-en-ciel sur l'ensemble de la surface chromée.",
+        "ai_detection_clues": [
+          "éclat métallique arc-en-ciel global",
+          "mot 'Prizm' rarement présent au dos (détection visuelle prioritaire)"
+        ]
+      },
+      {
+        "variation_name": "Numbered Color Prizms",
+        "ui_description": "Bordures colorées et brillantes. Numérotation gravée au dos (ex: 05/10 pour Gold).",
+        "ai_detection_clues": [
+          "Red + numérotation OCR /299",
+          "Blue + numérotation OCR /199",
+          "Purple + numérotation OCR /99",
+          "Orange + numérotation OCR /49",
+          "Tie-Dye (multicolore) + numérotation OCR /25",
+          "Gold + numérotation OCR /10",
+          "Black + numérotation OCR 1/1"
+        ]
+      },
+      {
+        "variation_name": "Animal Prints",
+        "ui_description": "Bordure ou fond imitant un pelage animal (Zèbre, Tigre, Paon). Très rare et non numéroté.",
+        "ai_detection_clues": [
+          "motifs zébrés noirs et blancs (Zebra)",
+          "motifs rayures de tigre (Tiger Stripe)",
+          "motifs plumes de paon (Peacock)"
+        ]
+      },
+      {
+        "variation_name": "Pattern Prizms",
+        "ui_description": "Reflet arc-en-ciel texturé : effet glace brisée (Cracked Ice) ou boule à facettes (Disco/Fast Break).",
+        "ai_detection_clues": [
+          "texture visuelle en éclats de verre (Cracked Ice)",
+          "motifs de petits cercles réguliers holographiques (Disco/Fast Break)"
+        ]
+      }
+    ]
+  },
+
+  "Upper_Deck": {
+    "Base & Inserts": [
+      {
+        "variation_name": "Base",
+        "ui_description": "Carton glacé classique. Dos avec statistiques détaillées. Aucun reflet ni numéro de série.",
+        "ai_detection_clues": [
+          "carton glacé standard sans reflets",
+          "bloc de statistiques étendu au dos",
+          "absence de numérotation séquentielle"
+        ]
+      },
+      {
+        "variation_name": "Young Guns (Rookies)",
+        "ui_description": "Mention 'YOUNG GUNS' en grosses lettres métallisées sur l'avant de la carte.",
+        "ai_detection_clues": [
+          "texte 'YOUNG GUNS' en police bold sur la face avant",
+          "numéro de carte OCR entre 201 et 250"
+        ]
+      },
+      {
+        "variation_name": "Inserts",
+        "ui_description": "Matériau ou texture spécifique (ex: effet toile de peinture pour les 'UD Canvas').",
+        "ai_detection_clues": [
+          "texture visuelle quadrillée ou type toile (Canvas)",
+          "nom de l'insert textuel (Dazzlers, Honor Roll)"
+        ]
+      },
+      {
+        "variation_name": "SP & Variations",
+        "ui_description": "Texte biographique en français (French Variation) ou photo alternative du joueur.",
+        "ai_detection_clues": [
+          "détection de la langue française dans le texte biographique au dos",
+          "mention textuelle 'French Variation'"
+        ]
+      },
+      {
+        "variation_name": "Case Hits",
+        "ui_description": "Fond métallisé uni (PMG) ou carte découpée en forme ovale (Jambalaya).",
+        "ai_detection_clues": [
+          "fond métallique uni couvrant 80% de la carte (PMG)",
+          "PMG Red + numérotation OCR /100",
+          "PMG Green + numérotation OCR /10",
+          "découpe de la carte non rectangulaire, forme ovale (Jambalaya)"
+        ]
+      }
     ],
-    "hits": [
-      "Autograph",
-      "Rookie Patch Auto",
-      "Memorabilia",
-      "Patch Auto",
-      "Dual Auto"
-    ],
-    "case_hits": [
-      "Downtown",
-      "Kaboom",
-      "Color Blast",
-      "Stained Glass"
+    "Refractors & Parallels": [
+      {
+        "variation_name": "Exclusives & High Gloss",
+        "ui_description": "Mention 'Exclusives' (sur /100) ou 'High Gloss' (sur /10) estampillée sur la face avant.",
+        "ai_detection_clues": [
+          "texte 'Exclusives' sur la face avant + numérotation OCR /100",
+          "texte 'High Gloss' sur la face avant + numérotation OCR /10"
+        ]
+      },
+      {
+        "variation_name": "Clear Cut",
+        "ui_description": "Carte transparente imprimée sur du plastique rigide (acétate).",
+        "ai_detection_clues": [
+          "support transparent type acétate",
+          "visibilité à travers l'arrière-plan de la carte"
+        ]
+      },
+      {
+        "variation_name": "Outburst Parallels",
+        "ui_description": "Effet holographique texturé type explosion ou verre brisé.",
+        "ai_detection_clues": [
+          "motif holographique radial éclatant (explosion)",
+          "Outburst Red + numérotation OCR /25",
+          "Outburst Gold + numérotation OCR 1/1"
+        ]
+      }
     ]
   },
 
   "Leaf": {
-    "base": [
-      "Base",
-      "Numbered Base"
+    "Base & Inserts": [
+      {
+        "variation_name": "Base",
+        "ui_description": "Design minimaliste. Les logos officiels des équipes sont souvent absents des tenues.",
+        "ai_detection_clues": [
+          "absence de logos officiels des équipes (NFL, NBA, MLB) sur les tenues",
+          "texte 'Pro Set' ou 'Metal Draft'"
+        ]
+      },
+      {
+        "variation_name": "Inserts",
+        "ui_description": "Forte utilisation de l'illustration (ex: style manga pour Anime Nation).",
+        "ai_detection_clues": [
+          "style de dessin manga/anime japonais",
+          "texte 'Lumber Kings' ou 'Vibrance'"
+        ]
+      },
+      {
+        "variation_name": "Case Hits",
+        "ui_description": "Cartes très épaisses ou aux découpes asymétriques complexes (die-cut).",
+        "ai_detection_clues": [
+          "découpe asymétrique die-cut",
+          "mention textuelle 'State Pride'"
+        ]
+      }
     ],
-    "parallels": {
-      "colors": [
-        "Gold",
-        "Blue",
-        "Green",
-        "Purple",
-        "Red",
-        "Black",
-        "1/1"
-      ],
-      "styles": [
-        "Crystal",
-        "Metal",
-        "Mojo"
-      ]
-    },
-    "inserts": [
-      "Prospect Inserts",
-      "Legends Inserts"
-    ],
-    "hits": [
-      "Autograph",
-      "Multi Auto",
-      "Inscription Auto",
-      "Patch Auto"
-    ],
-    "case_hits": []
+    "Refractors & Parallels": [
+      {
+        "variation_name": "Metal / Prismatic",
+        "ui_description": "Surface métallique extrêmement réfléchissante (effet miroir) avec reflet arc-en-ciel.",
+        "ai_detection_clues": [
+          "surface métallique à très haute réflexion (effet miroir)",
+          "mention 'Prismatic'"
+        ]
+      },
+      {
+        "variation_name": "Numbered Color Parallels",
+        "ui_description": "Bordures colorées brillantes avec numérotation estampillée (de /50 à 1/1).",
+        "ai_detection_clues": [
+          "Blue + numérotation OCR /50 ou /35",
+          "Purple + numérotation OCR /25",
+          "Black + numérotation OCR /10",
+          "Red + numérotation OCR /5",
+          "Gold + numérotation OCR 1/1"
+        ]
+      },
+      {
+        "variation_name": "Printing Plates",
+        "ui_description": "Plaque d'imprimerie en aluminium véritable (cyan, magenta, jaune ou noire). Pièce unique 1/1.",
+        "ai_detection_clues": [
+          "couleur monochrome (Cyan, Magenta, Jaune ou Noir)",
+          "matériau aluminium métallique véritable",
+          "sticker au dos indiquant 1/1"
+        ]
+      },
+      {
+        "variation_name": "Pre-Production Proofs",
+        "ui_description": "Épreuve de test aux bords parfois bruts. Mention '1/1 Pre-Production Proof'.",
+        "ai_detection_clues": [
+          "texte 'Pre-Production Proof' imprimé",
+          "sticker '1/1 Pre-Production Proof' au dos",
+          "bords bruts non massicotés"
+        ]
+      }
+    ]
   },
 
   "Futera": {
-    "base": [
-      "Base",
-      "Numbered Base"
+    "Base & Inserts": [
+      {
+        "variation_name": "Cartes de base Premium",
+        "ui_description": "Carton très épais et rigide. Finitions dorées ou cuivrées, sans reflet arc-en-ciel.",
+        "ai_detection_clues": [
+          "encadrement avec éléments dorés ou cuivrés brillants",
+          "épaisseur de carte premium (plus de 35pt)",
+          "absence de reflets arc-en-ciel"
+        ]
+      },
+      {
+        "variation_name": "Inserts Historiques",
+        "ui_description": "Dorure à chaud sur l'avant. Grand texte narratif très détaillé au dos.",
+        "ai_detection_clues": [
+          "dorure à chaud massive",
+          "présence d'un grand bloc de texte narratif OCR au dos",
+          "titre de l'insert textuel (Career Story, Conquerors)"
+        ]
+      },
+      {
+        "variation_name": "Case Hits",
+        "ui_description": "Encadrement en dorure massive, souvent scellées dans un boîtier rigide avec sticker Futera.",
+        "ai_detection_clues": [
+          "boîtier rigide encastré",
+          "sticker sceau de sécurité Futera textuel",
+          "encadrement doré prédominant"
+        ]
+      }
     ],
-    "parallels": {
-      "colors": [
-        "Gold",
-        "Platinum",
-        "Patch Parallel"
-      ]
-    },
-    "inserts": [
-      "Unique Memorabilia",
-      "Career Story Cards",
-      "Themed Inserts"
-    ],
-    "hits": [
-      "Autograph",
-      "Game Used Patch",
-      "Jumbo Patch",
-      "Premium Memorabilia"
-    ],
-    "case_hits": []
+    "Refractors & Parallels": [
+      {
+        "variation_name": "Heritage / Limited Base Parallels",
+        "ui_description": "Tirage très limité (souvent sur /50 ou moins). Numéro imprimé ou manuscrit au dos.",
+        "ai_detection_clues": [
+          "petit bloc encadré au dos contenant des chiffres",
+          "numérotation séquentielle OCR (XX/50, XX/30, XX/20)",
+          "chiffres parfois écrits à la main (manuscrits)"
+        ]
+      },
+      {
+        "variation_name": "Gold & Platinum",
+        "ui_description": "Cadre avec pellicule brillante or ou argent. Numérotées (Gold sur /15, Platinum 1/1).",
+        "ai_detection_clues": [
+          "pellicule métallique intégrale or ou argent",
+          "Gold + numérotation OCR /15 ou /10",
+          "Platinum + numérotation OCR 1/1 estampillée ou imprimée"
+        ]
+      }
+    ]
   }
 }

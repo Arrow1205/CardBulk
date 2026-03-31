@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
+import TYPE_CARTE from '@/data/type-carte.json'; // 📂 Import de ton super dictionnaire
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const action = formData.get("action") as string || "scan"; // 'scan' ou 'proxy'
+    const action = formData.get("action") as string || "scan"; 
     const imageUrl = formData.get("imageUrl") as string | null;
     const imageFile = formData.get("image") as File | null;
     const autoCrop = formData.get("auto_crop") === "true";
 
     let imageBuffer: Buffer;
 
-    // 1. Récupération de l'image 
     if (imageUrl && imageUrl.startsWith('http')) {
         const response = await fetch(imageUrl);
         const arrayBuffer = await response.arrayBuffer();
@@ -23,14 +23,24 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Aucune image fournie" }, { status: 400 });
     }
 
-    // 🔄 MODE PROXY : On renvoie l'image en Base64 au téléphone pour débloquer l'éditeur Canvas (CORS)
     if (action === "proxy") {
         return NextResponse.json({ base64: `data:image/jpeg;base64,${imageBuffer.toString("base64")}` });
     }
 
-    // 🧠 MODE SCAN : Détection IA + Auto Crop
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return NextResponse.json({ error: "Clé API manquante" }, { status: 400 });
+
+    // 🧠 PRÉPARATION DU CERVEAU IA : On ne garde que les indices pour économiser les tokens
+    const aiVariationsRules: any = {};
+    for (const [brand, categories] of Object.entries(TYPE_CARTE)) {
+      aiVariationsRules[brand] = {};
+      for (const [catName, variations] of Object.entries(categories as any)) {
+        aiVariationsRules[brand][catName] = (variations as any[]).map(v => ({
+          variation: v.variation_name,
+          clues: v.ai_detection_clues
+        }));
+      }
+    }
 
     const base64 = imageBuffer.toString("base64");
     const modelName = "gemini-2.5-flash"; 
@@ -38,18 +48,25 @@ export async function POST(req: Request) {
 
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur. 
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
-    MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts, ou tout autre élément du fond).
+    MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts...).
+    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION.
     
-    Renvoie UNIQUEMENT un JSON strict. 
-    Pour la clé "box_2d", donne les coordonnées exactes pour recadrer la carte. C'est un tableau [ymin, xmin, ymax, xmax] de valeurs entre 0.00 et 1.00.
+    Voici ton dictionnaire officiel des règles de variations :
+    ${JSON.stringify(aiVariationsRules)}
     
-    Exemple de format attendu :
+    RÈGLES ABSOLUES POUR LA VARIATION :
+    1. Identifie d'abord la marque (brand).
+    2. Cherche dans le dictionnaire ci-dessus les 'clues' qui correspondent à l'image.
+    3. ⚠️ EXCEPTION : Si la variation trouvée est 'Numbered Color Parallels' ou similaire, NE RENVOIE PAS ce nom générique. Renvoie la couleur dominante et la numérotation (ex: 'Red /299' ou 'Gold /10').
+    
+    Renvoie UNIQUEMENT un JSON strict avec ces clés exactes :
     {
-      "sport": "FOOTBALL ou BASKETBALL",
+      "sport": "FOOTBALL, BASKETBALL, BASEBALL, etc.",
       "playerName": "Prénom Nom",
       "club": "Nom du club",
       "brand": "Marque",
       "series": "Collection",
+      "variation": "Nom de la variation ou Couleur /Numéro",
       "year": "2024",
       "is_auto": false,
       "is_patch": false,
@@ -64,12 +81,7 @@ export async function POST(req: Request) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: prompt },
-            { inline_data: { mime_type: "image/jpeg", data: base64 } }
-          ]
-        }]
+        contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: base64 } }] }]
       })
     });
 
@@ -85,7 +97,6 @@ export async function POST(req: Request) {
     const parsedData = JSON.parse(jsonMatch[0]);
     let finalBase64 = null;
 
-    // ✂️ DÉCOUPE EXACTE SUR LES COORDONNÉES DE L'IA (Le rectangle rouge !)
     if (autoCrop && parsedData.box_2d && Array.isArray(parsedData.box_2d) && parsedData.box_2d.length === 4) {
       try {
         const [ymin, xmin, ymax, xmax] = parsedData.box_2d;
