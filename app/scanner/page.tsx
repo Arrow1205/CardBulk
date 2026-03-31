@@ -378,11 +378,15 @@ function ScannerContent() {
       return url;
   };
 
+  // 🥷 Fonction de nettoyage (version indestructible avec gestion des accents)
   const normalizeClubName = (str: string) => {
     if (!str) return '';
-    return str.toLowerCase()
-      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city)\b/g, '') 
-      .replace(/[^\w\s]/g, '') 
+    return str
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, "") // Enlève TOUS les accents
+      .toLowerCase()
+      .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city|tm)\b/g, '') // Enlève les parasites
+      .replace(/[^\w\s]/g, '') // Enlève les symboles bizarres (™, ©, -)
+      .replace(/\s+/g, ' ') // Évite les doubles espaces
       .trim();
   };
 
@@ -1048,9 +1052,15 @@ function ScannerContent() {
         finalImageUrlBack = supabase.storage.from('card-images').getPublicUrl(backPath).data.publicUrl;
       }
       
+      // ✨ MAGIE : On passe le nom saisi par l'utilisateur dans la moulinette de fusion
+      // Juste avant de l'envoyer à Supabase !
+      const finalClubName = matchClubWithAliases(formData.club, formData.sport);
+
       const cardDataToSave = { 
         user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
-        series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, club_name: formData.club, is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
+        series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 
+        club_name: finalClubName, // <-- On utilise le nom propre ici !
+        is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
       
       let currentCardId = editId;
