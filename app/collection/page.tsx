@@ -380,11 +380,13 @@ export default function CollectionPage() {
         if (!variationsTree[catKey]) variationsTree[catKey] = Array.isArray(brandData[catKey]) ? [] : {};
         
         if (Array.isArray(brandData[catKey])) {
-          variationsTree[catKey].push(...brandData[catKey]);
+          // 💡 LA CORRECTION : On extrait uniquement le 'variation_name' (le texte)
+          variationsTree[catKey].push(...brandData[catKey].map((v: any) => v.variation_name || v));
         } else {
           Object.keys(brandData[catKey]).forEach(subKey => {
             if (!variationsTree[catKey][subKey]) variationsTree[catKey][subKey] = [];
-            variationsTree[catKey][subKey].push(...brandData[catKey][subKey]);
+            // 💡 Idem ici, on extrait le texte
+            variationsTree[catKey][subKey].push(...brandData[catKey][subKey].map((v: any) => v.variation_name || v));
           });
         }
       });
