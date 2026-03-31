@@ -370,26 +370,48 @@ export default function CollectionPage() {
 
     const allJsonBrands = SET_DATA.brands?.map((b: any) => b.name) || [];
     
+    // 1. On récupère toutes les variations RÉELLEMENT présentes dans tes cartes affichées
+    const activeVariations = new Set(
+      baseCards
+        .filter(c => (!selectedSport || c.sport === selectedSport) && (selectedBrands.length === 0 || selectedBrands.includes(c.brand)))
+        .map(c => c.variation)
+        .filter(Boolean)
+    );
+
     let variationsTree: any = {};
     const brandsToUse = selectedBrands.length > 0 ? selectedBrands : Object.keys(TYPE_CARTE);
     
     brandsToUse.forEach(brand => {
-      const brandData = (TYPE_CARTE as any)[brand];
+      // On gère les espaces et les underscores pour que "Upper Deck" matche bien
+      const normalizedKey = brand.replace(/\s+/g, '_');
+      const brandData = (TYPE_CARTE as any)[brand] || (TYPE_CARTE as any)[normalizedKey];
       if(!brandData) return;
+
       Object.keys(brandData).forEach(catKey => {
-        if (!variationsTree[catKey]) variationsTree[catKey] = Array.isArray(brandData[catKey]) ? [] : {};
-        
-        if (Array.isArray(brandData[catKey])) {
-          // 💡 LA CORRECTION : On extrait uniquement le 'variation_name' (le texte)
-          variationsTree[catKey].push(...brandData[catKey].map((v: any) => v.variation_name || v));
-        } else {
-          Object.keys(brandData[catKey]).forEach(subKey => {
-            if (!variationsTree[catKey][subKey]) variationsTree[catKey][subKey] = [];
-            // 💡 Idem ici, on extrait le texte
-            variationsTree[catKey][subKey].push(...brandData[catKey][subKey].map((v: any) => v.variation_name || v));
+        const variations = brandData[catKey];
+        if (Array.isArray(variations)) {
+          variations.forEach((v: any) => {
+            const varName = v.variation_name || v;
+            // 💡 On ajoute au menu UNIQUEMENT si tu possèdes la carte !
+            if (activeVariations.has(varName)) {
+              if (!variationsTree[catKey]) variationsTree[catKey] = [];
+              variationsTree[catKey].push(varName);
+              activeVariations.delete(varName); // On l'enlève du Set pour voir ce qu'il reste
+            }
           });
         }
       });
+    });
+
+    // 💡 MAGIQUE : Toutes les couleurs/numérotations générées par l'IA ("Red /50") 
+    // qui ne sont pas dans le JSON vont dans une catégorie automatique à la fin du filtre !
+    if (activeVariations.size > 0) {
+      variationsTree["Couleurs & Numérotées (IA)"] = Array.from(activeVariations);
+    }
+
+    // On trie par ordre alphabétique pour que ce soit beau
+    Object.keys(variationsTree).forEach(key => {
+      variationsTree[key] = Array.from(new Set(variationsTree[key])).sort();
     });
 
     const filteredCards = baseCards.filter(card => {
