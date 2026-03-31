@@ -57,7 +57,9 @@ let ALL_SETS: string[] = [];
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
 
-// 🚀 NOUVELLE LOGIQUE D'EXTRACTION DES VARIATIONSlet ALL_VARIATIONS: string[] = [];
+// 🚀 NOUVELLE LOGIQUE D'EXTRACTION DES VARIATIONS
+let ALL_VARIATIONS: string[] = []; // <-- C'est cette ligne qui manquait !
+
 Object.values(TYPE_CARTE).forEach((brandData: any) => {
   Object.values(brandData).forEach((category: any) => {
     if (Array.isArray(category)) {
