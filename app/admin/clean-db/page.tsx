@@ -10,7 +10,7 @@ export default function CleanDBPage() {
   const [stats, setStats] = useState({ total: 0, processed: 0, updated: 0 });
 
   const runAIAssistant = async () => {
-    const confirm = window.confirm("Ceci va envoyer toutes les cartes sans variation à l'IA pour analyse. L'opération peut prendre quelques minutes. Continuer ?");
+    const confirm = window.confirm("Ceci va envoyer toutes les cartes à l'IA pour analyse. L'opération peut prendre quelques minutes. Continuer ?");
     if (!confirm) return;
 
     setLoading(true);
@@ -19,7 +19,7 @@ export default function CleanDBPage() {
     let updatedCount = 0;
 
     try {
-      // 1. On récupère TOUTES tes cartes (ID, variation actuelle, et surtout l'IMAGE)
+      // 1. On récupère TOUTES tes cartes
       const { data: cards, error: fetchError } = await supabase
         .from('cards')
         .select('id, variation, image_url, brand, series');
@@ -38,29 +38,30 @@ export default function CleanDBPage() {
         processedCount++;
         setStats(prev => ({ ...prev, processed: processedCount }));
 
-        // Si la carte n'a pas d'image, on saute
-        if (!card.image_url) {
-          setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: 'Pas d\'image', status: 'skipped' }, ...prev]);
+        // 🛡️ FILTRE DE SÉCURITÉ : On vérifie que l'image est bien une vraie URL internet valide
+        if (!card.image_url || typeof card.image_url !== 'string' || !card.image_url.startsWith('http')) {
+          setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: 'Image invalide/absente', status: 'skipped' }, ...prev]);
           continue;
         }
 
-        // OPTIMISATION : Si la carte a DÉJÀ une variation valide, tu peux décommenter les 2 lignes ci-dessous pour ne pas la refaire.
-        // Mais si tu veux TOUT forcer au nouveau format, laisse le code l'analyser !
-        // if (card.variation && card.variation !== "" && card.variation !== "Cartes de base") { continue; }
-
         try {
-          // 3. On envoie l'URL de l'image à ton API IA (/api/scan) en arrière-plan
+          // 3. On prépare l'envoi à l'API
           const formData = new FormData();
           formData.append("imageUrl", card.image_url);
-          formData.append("auto_crop", "false"); // Pas besoin de recadrer, on veut juste lire la carte !
+          formData.append("auto_crop", "false"); 
 
+          // 4. On appelle ton API (route.ts)
           const res = await fetch("/api/scan", { method: "POST", body: formData });
           const aiData = await res.json();
 
-          if (aiData && aiData.variation && !aiData.error) {
-            
-            // 4. L'IA a trouvé la variation ! On met à jour la base de données.
-            // (On met aussi à jour la numérotation au cas où l'IA trouve "Red /50")
+          // 🚨 LE DÉTECTEUR DE BUG EST ICI : Si l'API renvoie une erreur (comme la 400), on l'affiche !
+          if (res.status !== 200 || aiData.error) {
+             setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: `ERREUR: ${aiData.error || res.status}`, status: 'error' }, ...prev]);
+             continue; // On passe à la carte suivante
+          }
+
+          // 5. Si tout s'est bien passé, on sauvegarde
+          if (aiData && aiData.variation) {
             const updatePayload: any = { variation: aiData.variation };
             if (aiData.is_numbered) {
                updatePayload.is_numbered = true;
@@ -80,14 +81,14 @@ export default function CleanDBPage() {
             setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: aiData.variation, status: 'success' }, ...prev]);
             
           } else {
-            setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: 'Échec IA', status: 'error' }, ...prev]);
+            setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: 'Variation non trouvée', status: 'error' }, ...prev]);
           }
         } catch (apiErr) {
-          setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: 'Erreur Serveur', status: 'error' }, ...prev]);
+          setLogs(prev => [{ id: card.id, old: card.variation || 'Vide', new: 'Problème de connexion au serveur', status: 'error' }, ...prev]);
         }
 
-        // ⏱️ PAUSE DE SÉCURITÉ : On attend 2 secondes entre chaque image pour ne pas faire exploser le serveur Gemini (Rate Limit)
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // ⏱️ PAUSE DE SÉCURITÉ : 2.5 secondes entre chaque image pour ne pas brusquer l'IA
+        await new Promise(resolve => setTimeout(resolve, 2500));
       }
 
     } catch (err) {
@@ -95,7 +96,7 @@ export default function CleanDBPage() {
       alert("Une erreur fatale est survenue pendant le scan.");
     } finally {
       setLoading(false);
-      alert("🎉 Scan IA terminé !");
+      alert("Scan IA terminé ! Regarde le journal pour voir s'il y a des erreurs.");
     }
   };
 
@@ -109,12 +110,12 @@ export default function CleanDBPage() {
           </div>
           <h1 className="text-3xl font-black italic uppercase tracking-tighter">Re-Scan IA Complet</h1>
           <p className="text-white/60 text-sm leading-relaxed">
-            L'IA va repasser sur <strong>toutes tes cartes enregistrées</strong>. Elle va regarder la photo d'origine, appliquer ton nouveau dictionnaire, et remplir les variations vides (et même les numérotations !).
+            L'IA va repasser sur <strong>toutes tes cartes enregistrées</strong>. Elle va regarder la photo d'origine, appliquer ton nouveau dictionnaire, et remplir les variations vides.
           </p>
         </header>
 
         <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-xs text-red-200 text-center">
-          ⚠️ Garde cette page ouverte pendant toute l'opération. L'IA analyse environ 30 cartes par minute.
+          ⚠️ Garde cette page ouverte pendant toute l'opération. L'IA analyse environ 20 cartes par minute.
         </div>
 
         <button 
@@ -147,9 +148,9 @@ export default function CleanDBPage() {
                   <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                     <span className="text-white/40">ID: {log.id.slice(0, 6)}</span>
                     <div className="flex items-center gap-2 flex-1">
-                      <span className="text-red-300 line-through min-w-[80px]">{log.old}</span>
+                      <span className="text-red-300 line-through min-w-[80px] truncate">{log.old}</span>
                       <span className="text-white/30">➔</span>
-                      <span className="text-[#AFFF25] font-bold">{log.new}</span>
+                      <span className={`${log.status === 'error' ? 'text-red-500 font-bold' : 'text-[#AFFF25] font-bold'}`}>{log.new}</span>
                     </div>
                   </div>
                 </li>
