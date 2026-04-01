@@ -1064,8 +1064,9 @@ function ScannerContent() {
         finalImageUrlBack = supabase.storage.from('card-images').getPublicUrl(backPath).data.publicUrl;
       }
       
-      const finalClubName = matchClubWithAliases(formData.club, formData.sport);
-
+      // On désactive l'auto-correction et on sauvegarde EXACTEMENT ce que tu as tapé
+      const finalClubName = formData.club.trim();
+      
       const cardDataToSave = { 
         user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
         series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 

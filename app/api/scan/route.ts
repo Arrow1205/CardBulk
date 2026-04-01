@@ -59,6 +59,25 @@ export async function POST(req: Request) {
     2. Cherche dans le dictionnaire ci-dessus les 'clues' qui correspondent à l'image.
     3. ⚠️ EXCEPTION : Si la variation trouvée est 'Numbered Color Parallels' ou similaire, NE RENVOIE PAS ce nom générique. Renvoie la couleur dominante et la numérotation (ex: 'Red /299' ou 'Gold /10').
     
+    RÈGLES STRICTES D'IDENTIFICATION DES VARIATIONS (À LIRE ATTENTIVEMENT) :
+
+1. DÉFINITION D'UNE CARTE "BASE" :
+- C'est le design standard de la collection. 
+- ATTENTION : Une carte de la marque "Topps Chrome" ou "Finest" est naturellement brillante et métallique. Ce reflet métallique NE FAIT PAS d'elle un "Refractor" ou un "Insert". Si elle n'a pas de bordure de couleur spécifique ou de motif géométrique (wave, mojo), c'est une "Base".
+2. DÉFINITION D'UN "INSERT" :
+- Un Insert N'EST PAS juste une carte brillante. 
+- Un Insert possède un NOM DE SOUS-COLLECTION clairement imprimé avec une typographie spéciale sur le recto (exemples : "The Greats", "Memory Makers", "Summer Signings", "Champion"). Si le seul logo est celui de la marque (ex: "Topps Chrome" ou "Merlin") et de l'équipe, ce N'EST PAS un Insert.
+
+3. DÉFINITION D'UN "REFRACTOR" / "PARALLEL" :
+- Ne classe JAMAIS une carte en Refractor/Parallel juste à cause d'un reflet de lumière ou de flash.
+- Une vraie "Parallèle" se distingue par :
+  A) Une BORDURE DE COULEUR très nette (Bleu, Rouge, Vert, etc.) différente du design de base.
+  B) Un MOTIF GÉOMÉTRIQUE holographique dans le fond (carrés, vagues, bulles d'air).
+  C) La présence d'un numéro de série imprimé sur la carte (ex: "95/99"). Si tu vois un numéro de série, c'est obligatoirement une variation numérotée, tu dois l'extraire.
+
+4. LA RÈGLE DU DOUTE :
+- Si la carte n'a pas de nom de sous-collection écrit en gros (Insert), pas de couleur de bordure évidente (Parallel), et pas de numéro de série, tu DOIS obligatoirement la classer en "Base".
+
     Renvoie UNIQUEMENT un JSON strict avec ces clés exactes :
     {
       "sport": "FOOTBALL, BASKETBALL, BASEBALL, etc.",
