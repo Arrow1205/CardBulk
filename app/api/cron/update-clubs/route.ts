@@ -16,7 +16,7 @@ const CLUB_DATA: Record<string, any[]> = {
 const normalizeClubName = (str: string) => {
   if (!str) return '';
   return str.toLowerCase()
-    .replace(/\b(fc|sc|ac|rc|as|cf|osc|united|city)\b/g, '') 
+    .replace(/\b(fc|sc|ac|rc|as|cf|osc|tm)\b/g, '')
     .replace(/[^\w\s]/g, '') 
     .trim();
 };

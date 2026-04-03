@@ -57,8 +57,7 @@ let ALL_SETS: string[] = [];
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
 
-// 🚀 NOUVELLE LOGIQUE D'EXTRACTION DES VARIATIONS
-let ALL_VARIATIONS: string[] = []; // <-- C'est cette ligne qui manquait !
+let ALL_VARIATIONS: string[] = []; 
 
 Object.values(TYPE_CARTE).forEach((brandData: any) => {
   Object.values(brandData).forEach((category: any) => {
@@ -442,10 +441,8 @@ function ScannerContent() {
     }
   }
 
-  // 📂 RÉCUPÉRATION DES VARIATIONS POUR LA MARQUE ACTUELLE
   const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
 
-  // 💡 RÉCUPÉRATION DE LA DESCRIPTION UI (Si une variation est sélectionnée)
   let selectedVariationDescription = "";
   if (formData.variation && currentBrandVariations) {
     Object.values(currentBrandVariations).forEach((category: any) => {
@@ -454,7 +451,6 @@ function ScannerContent() {
         if (found) selectedVariationDescription = found.ui_description;
       }
     });
-    // Fallback: Si l'IA a détecté une couleur custom (ex: "Gold /10") qui n'est pas texto dans le JSON
     if (!selectedVariationDescription && formData.variation.includes('/')) {
         selectedVariationDescription = "Variation colorée ou numérotée détectée automatiquement par l'IA.";
     }
@@ -521,10 +517,14 @@ function ScannerContent() {
     }
   };
 
-  const processBackgroundScan = async (id: string, file: File) => {
+  // 💡 NOUVEAU PARAMÈTRE isAlreadyCropped
+  const processBackgroundScan = async (id: string, file: File, isAlreadyCropped: boolean = false) => {
     try {
       const body = new FormData(); body.append("image", file);
-      body.append("auto_crop", "true"); 
+      // 💡 On désactive l'auto-crop si l'image vient de la caméra ou a déjà été recadrée
+      if (!isAlreadyCropped) {
+         body.append("auto_crop", "true"); 
+      }
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
@@ -555,7 +555,7 @@ function ScannerContent() {
           club: matchClubWithAliases(cleanValue(data.club), aiSport),
           brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS),
           series: matchExactCase(cleanValue(data.series), ALL_SETS),
-          variation: cleanValue(data.variation), // Garde la variation brute de l'IA (incluant ex: "Red /10")
+          variation: cleanValue(data.variation), 
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -656,7 +656,8 @@ function ScannerContent() {
         const newId = Date.now().toString() + Math.random().toString();
         const newCard: PendingCard = { id: newId, file: fullImageFile, previewUrl: fullUrl, originalFile: fullImageFile, originalPreviewUrl: fullUrl, status: 'analyzing', aiResult: null };
         setPendingCards(prev => [...prev, newCard]);
-        processBackgroundScan(newId, fullImageFile);
+        // 💡 On passe "true" car l'image est déjà recadrée via le cadre jaune
+        processBackgroundScan(newId, fullImageFile, true);
       } else {
         stopCamera();
         if (activeSide === 'front') {
@@ -666,7 +667,8 @@ function ScannerContent() {
             setOriginalFileBack(fullImageFile);
             setOriginalPreviewUrlBack(fullUrl);
         }
-        processImageScan(fullImageFile, activeSide, activeSide === 'front'); 
+        // 💡 Idem, on passe "true"
+        processImageScan(fullImageFile, activeSide, activeSide === 'front', true); 
       }
     }, 'image/jpeg', 1.0);
   };
@@ -684,7 +686,7 @@ function ScannerContent() {
         return { id: Date.now().toString() + i, file: f, previewUrl: url, originalFile: f, originalPreviewUrl: url, status: 'analyzing', aiResult: null };
       });
       setPendingCards(newPending); setIsVerifyingBulk(true); setCurrentVerifyIndex(0);
-      newPending.forEach(c => processBackgroundScan(c.id, c.file));
+      newPending.forEach(c => processBackgroundScan(c.id, c.file, false));
     } else {
       const file = files[0];
       const url = URL.createObjectURL(file);
@@ -692,14 +694,14 @@ function ScannerContent() {
       if (activeSide === 'back') {
           setOriginalFileBack(file);
           setOriginalPreviewUrlBack(url);
-          processImageScan(file, 'back', false);
+          processImageScan(file, 'back', false, false);
       } else {
           setOriginalFile(file);
           setOriginalPreviewUrl(url);
           if (scanMode === 'lot' || scanMode === 'auto') {
               setBulkFiles([file]); setCurrentBulkIndex(0);
           }
-          processImageScan(file, 'front', true);
+          processImageScan(file, 'front', true, false);
       }
     }
   };
@@ -760,10 +762,7 @@ function ScannerContent() {
           if (isVerifyingBulk) {
               setPendingCards(prev => prev.map((c, idx) => idx === currentVerifyIndex ? { ...c, file: file, previewUrl: newUrl } : c));
           }
-          
-          if (!editId) {
-             processImageScan(file, activeSide, false);
-          }
+          // 💡 On a retiré processImageScan ici pour économiser les tokens !
       };
   };
 
@@ -774,7 +773,8 @@ function ScannerContent() {
     return found || rawString;
   };
 
-  const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false) => {
+  // 💡 NOUVEAU PARAMÈTRE isAlreadyCropped
+  const processImageScan = async (file: File, side: 'front' | 'back', resetForm: boolean = false, isAlreadyCropped: boolean = false) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const currentUrl = formData.website_url;
 
@@ -788,13 +788,15 @@ function ScannerContent() {
     setAnalyzing(true);
     try {
       const body = new FormData(); body.append("image", file);
-      body.append("auto_crop", "true"); 
+      // 💡 On désactive l'auto-crop si l'image vient de la caméra
+      if (!isAlreadyCropped) {
+         body.append("auto_crop", "true"); 
+      }
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
       const data = await res.json();
       
       if (!data.error) {
-        
         if (data.cropped_image_base64) {
           const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
           const blob = await resBlob.blob();
@@ -863,7 +865,7 @@ function ScannerContent() {
         setOriginalFile(file);
         setOriginalPreviewUrl(URL.createObjectURL(file));
         
-        processImageScan(file, 'front', false); 
+        processImageScan(file, 'front', false, false); 
       } else { alert("Impossible de trouver une image sur ce lien."); setAnalyzing(false); }
     } catch (err) { alert("Erreur lors de l'importation du lien."); setAnalyzing(false); }
   };
@@ -915,10 +917,7 @@ function ScannerContent() {
             setPreviewUrlBack(newUrl); 
           }
           setIsApplyingEdit(false);
-          
-          if (!editId) {
-             processImageScan(newFile, activeSide, false);
-          }
+          // 💡 On a retiré processImageScan ici pour économiser les tokens !
       }, 'image/jpeg', 0.95);
     } catch(e) {
       setIsApplyingEdit(false);
@@ -1012,10 +1011,7 @@ function ScannerContent() {
           setShowEditor(false);
           setImgSettings({ brightness: 100, contrast: 100, zoom: 1 });
           setIsApplyingEdit(false);
-
-          if (!editId) {
-             processImageScan(newFile, activeSide, false);
-          }
+          // 💡 On a retiré processImageScan ici pour économiser les tokens !
       }, 'image/jpeg', 0.95);
     } catch(e) {
       console.error(e);
@@ -1064,7 +1060,6 @@ function ScannerContent() {
         finalImageUrlBack = supabase.storage.from('card-images').getPublicUrl(backPath).data.publicUrl;
       }
       
-      // On désactive l'auto-correction et on sauvegarde EXACTEMENT ce que tu as tapé
       const finalClubName = formData.club.trim();
       
       const cardDataToSave = { 
@@ -1353,7 +1348,6 @@ function ScannerContent() {
         
         {!isWishlistMode && !isVerifyingBulk && (
           <div className="flex flex-col items-center gap-4 mb-8 w-full mt-4 lg:mt-0">
-            {/* 🌟 NOUVEAU MENU DES MODES DE SCAN (Ajout de 'Rapide') */}
             <div className="flex justify-center gap-4 sm:gap-6 w-full max-w-md">
               <button onClick={() => handleTabSwitch('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
               <button onClick={() => handleTabSwitch('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
@@ -1570,14 +1564,12 @@ function ScannerContent() {
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* 🌟 LE CHAMP VARIATION MAGIQUE (Mise à jour) */}
                 {scanMode !== 'quick' && (
                   <div>
                     <div className="relative">
                       <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
                         <option value="">Variation (ex: Base, Prizm Silver...)</option>
                         
-                        {/* Option fallback si l'IA renvoie une couleur qui n'est pas dans la liste */}
                         {formData.variation && !ALL_VARIATIONS.includes(formData.variation) && (
                            <option value={formData.variation}>{formData.variation}</option>
                         )}
@@ -1593,7 +1585,6 @@ function ScannerContent() {
                       <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                     </div>
 
-                    {/* 💡 L'ENCART UI POUR EXPLIQUER LA CARTE */}
                     {selectedVariationDescription && (
                       <div className="bg-[#AFFF25]/10 border border-[#AFFF25]/20 rounded-xl p-3 mt-3 mx-1 flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
                         <span className="text-[#AFFF25] mt-0.5"><Search size={16} /></span>
@@ -1658,7 +1649,6 @@ function ScannerContent() {
             )}
           </div>
 
-          {/* 🌟 NOUVEAU BOUTON D'ACTION SELON LE MODE */}
           {scanMode === 'quick' ? (
              <button 
                disabled={analyzing || !formData.variation || !formData.firstname || !formData.lastname} 
