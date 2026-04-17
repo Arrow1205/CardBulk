@@ -82,7 +82,7 @@ export async function POST(req: Request) {
     }`;
 
     // 🚀 L'APPEL UNIQUE ET DÉTAILLÉ
-    const modelName = "gemini-1.5-flash";
+    const modelName = "gemini-2.5-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
     
     const res = await fetch(apiUrl, {
