@@ -82,7 +82,7 @@ export async function POST(req: Request) {
     }`;
 
     // 🚀 LOGIQUE DE FALLBACK (ESSAI 1 : 2.0 FLASH)
-    let modelName = "gemini-1.5-flash";
+    let modelName = "gemini-1.5-flash-002";
     let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
     
     let res = await fetch(apiUrl, {
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
     // 🚀 ESSAI 2 : 1.5 FLASH (SI LE PREMIER ÉCHOUE)
     if (data.error) {
       console.warn(`⚠️ Échec avec ${modelName}. Tentative avec le modèle de secours 1.5-flash...`);
-      modelName = "gemini-1.5-pro";
+      modelName = "gemini-pro-vision";
       apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
       
       res = await fetch(apiUrl, {
