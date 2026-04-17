@@ -81,11 +81,11 @@ export async function POST(req: Request) {
       "box_2d": [ymin, xmin, ymax, xmax]
     }`;
 
-    // 🚀 LOGIQUE DE FALLBACK (ESSAI 1 : 2.0 FLASH)
-    let modelName = "gemini-1.5-flash-002";
-    let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+    // 🚀 L'APPEL UNIQUE ET DÉTAILLÉ
+    const modelName = "gemini-1.5-flash";
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
     
-    let res = await fetch(apiUrl, {
+    const res = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -93,23 +93,12 @@ export async function POST(req: Request) {
       })
     });
 
-    let data = await res.json();
+    const data = await res.json();
 
-    // 🚀 ESSAI 2 : 1.5 FLASH (SI LE PREMIER ÉCHOUE)
+    // 🚨 AFFICHAGE DE LA VRAIE ERREUR GOOGLE DANS VERCEL
     if (data.error) {
-      console.warn(`⚠️ Échec avec ${modelName}. Tentative avec le modèle de secours 1.5-flash...`);
-      modelName = "gemini-pro-vision";
-      apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-      
-      res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: base64 } }] }]
-        })
-      });
-      data = await res.json();
-      if (data.error) throw new Error(data.error.message);
+      console.error("🚨 ERREUR GOOGLE ORIGINALE :", JSON.stringify(data.error, null, 2));
+      throw new Error(`Erreur Google (${data.error.code}) : ${data.error.message}`);
     }
 
     const text = data.candidates[0].content.parts[0].text;
