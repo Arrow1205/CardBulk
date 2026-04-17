@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     }
 
     const base64 = imageBuffer.toString("base64");
-    const modelName = "gemini-2.5-flash"; 
+    const modelName = "gemini-1.5-flash"; 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur. 
