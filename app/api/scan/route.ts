@@ -81,21 +81,38 @@ export async function POST(req: Request) {
       "box_2d": [ymin, xmin, ymax, xmax]
     }`;
 
-    // 🚀 L'APPEL UNIQUE ET DÉTAILLÉ
-    const modelName = "gemini-2.5-flash";
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+    // 🚀 CONFIGURATION DE L'APPEL
+    const bodyConfig = {
+      contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: base64 } }] }]
+    };
+
+    // 🚀 ESSAI 1 : Modèle Stable (2.5 Flash)
+    let modelName = "gemini-2.5-flash";
+    let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
     
-    const res = await fetch(apiUrl, {
+    let res = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: base64 } }] }]
-      })
+      body: JSON.stringify(bodyConfig)
     });
 
-    const data = await res.json();
+    let data = await res.json();
 
-    // 🚨 AFFICHAGE DE LA VRAIE ERREUR GOOGLE DANS VERCEL
+    // 🚀 ESSAI 2 : Modèle Lite (si le 2.5 Flash est saturé en 503)
+    if (data.error && data.error.code === 503) {
+      console.warn(`⚠️ High Demand sur ${modelName}. Tentative avec gemini-2.5-flash-lite...`);
+      modelName = "gemini-2.5-flash-lite";
+      apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+      
+      res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyConfig)
+      });
+      data = await res.json();
+    }
+
+    // 🚨 GESTION DES ERREURS FINALES
     if (data.error) {
       console.error("🚨 ERREUR GOOGLE ORIGINALE :", JSON.stringify(data.error, null, 2));
       throw new Error(`Erreur Google (${data.error.code}) : ${data.error.message}`);
