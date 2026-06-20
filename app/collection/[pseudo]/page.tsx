@@ -44,7 +44,6 @@ export default function PublicCollectionPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeSport, setActiveSport] = useState<string>('ALL');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({ rookie: false, auto: false, patch: false, graded: false, numbered: false });
 
@@ -63,7 +62,7 @@ export default function PublicCollectionPage() {
       const publicColumns = 'id, sport, firstname, lastname, club_name, brand, series, variation, year, numbering_max, image_url, image_url_back, is_rookie, is_auto, is_patch, is_graded, grading_company, grading_grade';
 
       const [profileRes, cardsRes] = await Promise.all([
-     supabase.from('profiles').select('*').eq('id', ownerId).single(),
+        supabase.from('profiles').select('*').eq('id', ownerId).single(),
         supabase.from('cards')
           .select(publicColumns)
           .eq('user_id', ownerId)
@@ -86,26 +85,15 @@ export default function PublicCollectionPage() {
     fetchPublicData();
   }, [pseudo]);
 
-  const sportsPresent = ['ALL', ...Array.from(new Set(cards.map(c => c.sport)))];
-
   const filteredCards = cards.filter(card => {
     const searchMatch = searchTerm === '' || `${card.firstname} ${card.lastname} ${card.club_name} ${card.brand} ${card.series} ${card.year}`.toLowerCase().includes(searchTerm.toLowerCase());
-    const sportMatch = activeSport === 'ALL' || card.sport === activeSport;
     const rookieMatch = !filters.rookie || card.is_rookie;
     const autoMatch = !filters.auto || card.is_auto;
     const patchMatch = !filters.patch || card.is_patch;
     const gradedMatch = !filters.graded || card.is_graded;
     const numberedMatch = !filters.numbered || card.numbering_max !== null;
-    return searchMatch && sportMatch && rookieMatch && autoMatch && patchMatch && gradedMatch && numberedMatch;
+    return searchMatch && rookieMatch && autoMatch && patchMatch && gradedMatch && numberedMatch;
   });
-
-  const stats = {
-    total: cards.length,
-    auto: cards.filter(c => c.is_auto).length,
-    patch: cards.filter(c => c.is_patch).length,
-    graded: cards.filter(c => c.is_graded).length,
-    graded10: cards.filter(c => c.grading_grade === '10' || c.grading_grade === '10+').length,
-  };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
@@ -137,26 +125,6 @@ export default function PublicCollectionPage() {
           </div>
         </div>
       </header>
-
-      <section className="px-6 mb-8 mt-2 scrollbar-hide overflow-x-auto">
-        <div className="flex items-center gap-2.5 pb-2">
-          {sportsPresent.map(sport => (
-            <button key={sport} onClick={() => setActiveSport(sport)} className={`flex items-center gap-2 px-4 py-2.5 rounded-full border whitespace-nowrap transition-all duration-300 text-xs font-bold uppercase tracking-wider ${activeSport === sport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25] shadow-[0_0_15px_rgba(175,255,37,0.5)]' : 'bg-[#0A072E] text-white/70 border-white/10 hover:border-white/30 hover:text-white'}`}>
-              {sport !== 'ALL' && SPORT_CONFIG[sport] && <img src={`/asset/sports/${SPORT_CONFIG[sport].image}.png`} alt={sport} className="w-4 h-4 object-contain" />}
-              {sport === 'ALL' ? 'Toutes' : SPORT_CONFIG[sport]?.label || sport}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="px-6 mb-10 grid grid-cols-2 gap-4">
-        {[ { label: 'Cartes', value: stats.total.toLocaleString(), icon: Layers3 }, { label: 'Autographes', value: stats.auto, icon: Award }, { label: 'Mémos / Patchs', value: stats.patch, icon: Layers3 }, { label: 'Gradées 10', value: stats.graded10, icon: ShieldCheck, highlight: true } ].map((stat, i) => (
-          <div key={i} className={`bg-[#0A072E] p-5 rounded-2xl border ${stat.highlight ? 'border-[#AFFF25]/50 shadow-[0_0_20px_rgba(175,255,37,0.15)]' : 'border-white/5'} flex items-start gap-4`}>
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.highlight ? 'bg-[#AFFF25]/10 text-[#AFFF25]' : 'bg-white/5 text-white/50'}`}><stat.icon size={20} /></div>
-            <div><p className="text-[11px] font-bold text-white/50 uppercase tracking-widest mb-1">{stat.label}</p><p className={`text-2xl font-black italic uppercase leading-none ${stat.highlight ? 'text-[#AFFF25]' : 'text-white'}`}>{stat.value}</p></div>
-          </div>
-        ))}
-      </section>
 
       <section className="px-6 mb-8 sticky top-[108px] z-30 bg-[#040221] py-2">
         <div className="flex items-center gap-3">
