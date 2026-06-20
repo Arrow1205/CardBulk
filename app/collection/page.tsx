@@ -80,13 +80,12 @@ export default function CollectionPage() {
   
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedVariations, setSelectedVariations] = useState<string[]>([]); 
   
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
   
-  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | 'variations' | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -106,8 +105,6 @@ export default function CollectionPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInput, setChatInput] = useState('');
   
-  const [expandedVars, setExpandedVars] = useState<Record<string, boolean>>({ base: true });
-
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
@@ -125,7 +122,6 @@ export default function CollectionPage() {
           const parsed = JSON.parse(savedFilters);
           if (parsed.activeTab) setActiveTab(parsed.activeTab);
           if (parsed.selectedBrands) setSelectedBrands(parsed.selectedBrands);
-          if (parsed.selectedVariations) setSelectedVariations(parsed.selectedVariations);
           if (parsed.showAuto !== undefined) setShowAuto(parsed.showAuto);
           if (parsed.showPatch !== undefined) setShowPatch(parsed.showPatch);
           if (parsed.showNumbered !== undefined) setShowNumbered(parsed.showNumbered);
@@ -150,14 +146,13 @@ export default function CollectionPage() {
         searchQuery,
         selectedSport,
         selectedBrands,
-        selectedVariations,
         showAuto,
         showPatch,
         showNumbered
       };
       sessionStorage.setItem('cardbulk_collection_filters', JSON.stringify(filters));
     }
-  }, [activeTab, searchQuery, selectedSport, selectedBrands, selectedVariations, showAuto, showPatch, showNumbered]);
+  }, [activeTab, searchQuery, selectedSport, selectedBrands, showAuto, showPatch, showNumbered]);
 
 
   useEffect(() => {
@@ -338,11 +333,6 @@ export default function CollectionPage() {
     }
   };
 
-  const toggleVarNode = (node: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpandedVars(prev => ({ ...prev, [node]: !prev[node] }));
-  };
-
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
   const renderCardsAndFilters = () => {
@@ -369,26 +359,6 @@ export default function CollectionPage() {
     const activeClubs = Array.from(activeClubsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
     const allJsonBrands = SET_DATA.brands?.map((b: any) => b.name) || [];
-    
-    let variationsTree: any = {};
-    const brandsToUse = selectedBrands.length > 0 ? selectedBrands : Object.keys(TYPE_CARTE);
-    
-    brandsToUse.forEach(brand => {
-      const brandData = (TYPE_CARTE as any)[brand];
-      if(!brandData) return;
-      Object.keys(brandData).forEach(catKey => {
-        if (!variationsTree[catKey]) variationsTree[catKey] = Array.isArray(brandData[catKey]) ? [] : {};
-        
-        if (Array.isArray(brandData[catKey])) {
-          variationsTree[catKey].push(...brandData[catKey]);
-        } else {
-          Object.keys(brandData[catKey]).forEach(subKey => {
-            if (!variationsTree[catKey][subKey]) variationsTree[catKey][subKey] = [];
-            variationsTree[catKey][subKey].push(...brandData[catKey][subKey]);
-          });
-        }
-      });
-    });
 
     const filteredCards = baseCards.filter(card => {
       const searchTerm = searchQuery.toLowerCase().trim();
@@ -398,12 +368,11 @@ export default function CollectionPage() {
       const searchMatch = !searchQuery || fullName.includes(searchTerm) || reverseFullName.includes(searchTerm) || card.club_name?.toLowerCase().includes(searchTerm);
       const sportMatch = !selectedSport || card.sport === selectedSport;
       const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(card.brand);
-      const variationMatch = selectedVariations.length === 0 || selectedVariations.includes(card.variation);
       const autoMatch = !showAuto || card.is_auto;
       const patchMatch = !showPatch || card.is_patch;
       const numberedMatch = !showNumbered || card.is_numbered;
       
-      return searchMatch && sportMatch && brandMatch && variationMatch && autoMatch && patchMatch && numberedMatch;
+      return searchMatch && sportMatch && brandMatch && autoMatch && patchMatch && numberedMatch;
     });
 
     return (
@@ -438,9 +407,6 @@ export default function CollectionPage() {
                 <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
                   {selectedBrands.length > 0 ? `${selectedBrands.length} sél.` : 'Marques'} <ChevronDown size={14} className={openDropdown === 'brand' ? 'rotate-180' : ''} />
                 </button>
-                <button onClick={() => setOpenDropdown(openDropdown === 'variations' ? null : 'variations')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedVariations.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  {selectedVariations.length > 0 ? `${selectedVariations.length} sél.` : 'Variations'} <ChevronDown size={14} className={openDropdown === 'variations' ? 'rotate-180' : ''} />
-                </button>
               </div>
 
               {openDropdown === 'spec' && (
@@ -462,75 +428,6 @@ export default function CollectionPage() {
                     })}
                   </div>
                   <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
-                </div>
-              )}
-
-              {openDropdown === 'variations' && (
-                <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2 max-h-96 flex flex-col">
-                  <div className="flex-1 overflow-y-auto no-scrollbar space-y-2 mb-4 pr-2">
-                    {Object.keys(variationsTree).map(catKey => {
-                      const isArray = Array.isArray(variationsTree[catKey]);
-                      return (
-                        <div key={catKey} className="w-full">
-                          <div className="flex justify-between items-center py-2 border-b border-white/10 cursor-pointer" onClick={(e) => toggleVarNode(catKey, e)}>
-                            <span className="font-black text-[#AFFF25] uppercase text-xs tracking-widest">{formatLabel(catKey)}</span>
-                            {expandedVars[catKey] ? <Minus size={14} className="text-[#AFFF25]"/> : <Plus size={14} className="text-[#AFFF25]"/>}
-                          </div>
-                          
-                          {expandedVars[catKey] && (
-                            <div className="pl-3 mt-2 space-y-2 border-l-2 border-white/10 ml-1">
-                              {isArray ? (
-                                Array.from(new Set(variationsTree[catKey])).sort().map((variation: any) => {
-                                  const isActive = selectedVariations.includes(variation);
-                                  const toggleVariation = (e: any) => { e.stopPropagation(); setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]); };
-                                  return (
-                                    <div key={variation} onClick={toggleVariation} className="flex items-center justify-between py-1.5 cursor-pointer group">
-                                      <span className={`text-sm font-medium transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{variation}</span>
-                                      <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
-                                        <div className={`w-3 h-3 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
-                                      </div>
-                                    </div>
-                                  )
-                                })
-                              ) : (
-                                Object.keys(variationsTree[catKey]).map(subKey => {
-                                  const subNodeKey = `${catKey}-${subKey}`;
-                                  return (
-                                    <div key={subKey} className="w-full mb-2">
-                                      <div className="flex justify-between items-center py-1.5 cursor-pointer" onClick={(e) => toggleVarNode(subNodeKey, e)}>
-                                        <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold">{formatLabel(subKey)}</span>
-                                        {expandedVars[subNodeKey] ? <Minus size={12} className="text-white/40"/> : <Plus size={12} className="text-white/40"/>}
-                                      </div>
-                                      
-                                      {expandedVars[subNodeKey] && (
-                                        <div className="pl-3 mt-1 space-y-1 border-l-2 border-white/5 ml-1">
-                                          {Array.from(new Set(variationsTree[catKey][subKey])).sort().map((variation: any) => {
-                                            const isActive = selectedVariations.includes(variation);
-                                            const toggleVariation = (e: any) => { e.stopPropagation(); setSelectedVariations(prev => isActive ? prev.filter(s => s !== variation) : [...prev, variation]); };
-                                            return (
-                                              <div key={variation} onClick={toggleVariation} className="flex items-center justify-between py-1.5 cursor-pointer group">
-                                                <span className={`text-sm font-medium transition-colors ${isActive ? 'text-white' : 'text-white/60'} truncate pr-4`}>{variation}</span>
-                                                <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors shrink-0 ${isActive ? 'bg-[#AFFF25]' : 'bg-white/20'}`}>
-                                                  <div className={`w-3 h-3 rounded-full shadow-sm transition-transform ${isActive ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div>
-                                                </div>
-                                              </div>
-                                            )
-                                          })}
-                                        </div>
-                                      )}
-                                    </div>
-                                  )
-                                })
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <div className="pt-2 border-t border-white/10">
-                    <button onClick={() => setOpenDropdown(null)} className="w-full py-3 bg-[#AFFF25] text-[#040221] rounded-xl text-xs font-black uppercase tracking-widest transition-transform active:scale-95 shadow-[0_0_15px_rgba(175,255,37,0.3)]">Appliquer Filtres</button>
-                  </div>
                 </div>
               )}
             </div>

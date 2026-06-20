@@ -43,6 +43,7 @@ export default function CardDetailsPage() {
 
   const [card, setCard] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false); // 🌟 Nouvel état pour vérifier le propriétaire
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isHorizontal, setIsHorizontal] = useState(false);
 
@@ -64,16 +65,24 @@ export default function CardDetailsPage() {
   }, [cardId]);
 
   const fetchCard = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return router.push('/login'); 
+    // 🌟 1. On récupère d'abord la carte sans vérifier l'utilisateur
+    const { data } = await supabase.from('cards').select('*').eq('id', cardId).single();
     
-    const { data } = await supabase.from('cards').select('*').eq('id', cardId).eq('user_id', user.id).single();
-    if (data) {
-      setCard(data);
-      setIsHorizontal(data.is_horizontal || false);
-    } else {
-      router.push('/collection');
+    if (!data) {
+      return router.push('/'); // Redirection si la carte n'existe pas
     }
+
+    setCard(data);
+    setIsHorizontal(data.is_horizontal || false);
+
+    // 🌟 2. On vérifie silencieusement si l'utilisateur qui regarde est le propriétaire
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && user.id === data.user_id) {
+      setIsOwner(true);
+    } else {
+      setIsOwner(false);
+    }
+
     setLoading(false);
   };
 
@@ -118,7 +127,7 @@ export default function CardDetailsPage() {
   };
 
   const handleManualPriceUpdate = async () => {
-    if (!card) return;
+    if (!card || !isOwner) return; // Sécurité supplémentaire
     setIsUpdatingPrice(true); 
     
     const now = new Date().toISOString();
@@ -258,7 +267,7 @@ export default function CardDetailsPage() {
   };
 
   const toggleFavorite = async () => {
-    if (!card || card.is_wishlist) return;
+    if (!card || card.is_wishlist || !isOwner) return;
     setIsFavoriting(true);
     const newFavStatus = !card.is_favorite;
     setCard({ ...card, is_favorite: newFavStatus });
@@ -309,7 +318,10 @@ export default function CardDetailsPage() {
       {/* HEADER ADAPTÉ POUR LA SAFE AREA */}
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] pointer-events-none">
         <button onClick={() => router.back()} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><ChevronLeft size={20} /></button>
-        <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
+        {/* 🌟 On cache le bouton d'édition si l'utilisateur n'est pas le propriétaire */}
+        {isOwner && (
+          <button onClick={() => router.push(`/scanner?edit=${card.id}`)} className="pointer-events-auto w-10 h-10 bg-white/5 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 active:scale-95 transition-transform"><Edit size={18} /></button>
+        )}
       </header>
 
       {/* PARTIE GAUCHE (CARTE 3D) */}
@@ -384,7 +396,8 @@ export default function CardDetailsPage() {
             <div className="text-xl text-white uppercase tracking-wider font-light">{card.firstname || "Prénom"}</div>
             <div className="text-5xl lg:text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter break-words">{card.lastname || "Nom"}</div>
           </div>
-          {!card.is_wishlist && (
+          {/* 🌟 On cache l'étoile des favoris si l'utilisateur n'est pas le propriétaire */}
+          {isOwner && !card.is_wishlist && (
             <button onClick={toggleFavorite} disabled={isFavoriting} className="active:scale-90 transition-transform p-1 self-start mt-2">
               <Star size={28} strokeWidth={card.is_favorite ? 0 : 1.5} className={card.is_favorite ? "fill-[#AFFF25] text-[#AFFF25]" : "text-[#AFFF25]"} />
             </button>
@@ -437,33 +450,36 @@ export default function CardDetailsPage() {
             </div>
           </div>
 
-          <div className="col-span-2">
-            <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div>
-            <div className="flex flex-col">
-              <span className="text-sm sm:text-base font-bold text-white">
-                {card.purchase_price ? `${card.purchase_price} €` : "-"}
-              </span>
-              
-              {card.purchase_price > 0 && averagePrice !== null && (
-                (() => {
-                  const diff = averagePrice - card.purchase_price;
-                  const percent = (diff / card.purchase_price) * 100;
-                  const isPositive = diff >= 0;
-                  if (diff === 0) return (
-                    <div className="flex items-center gap-1 text-[11px] font-black mt-1 text-white/50">
-                      <span>0.00 € (0.0%)</span>
-                    </div>
-                  );
-                  return (
-                    <div className={`flex items-center gap-1 text-[11px] font-black mt-1 ${isPositive ? 'text-emerald-400' : 'text-rose-500'}`}>
-                      {isPositive ? <TrendingUp size={12} strokeWidth={3} /> : <TrendingDown size={12} strokeWidth={3} />}
-                      <span>{isPositive ? '+' : ''}{diff.toFixed(2)} € ({isPositive ? '+' : ''}{percent.toFixed(1)}%)</span>
-                    </div>
-                  );
-                })()
-              )}
+          {/* 🌟 On cache le prix d'achat et le pourcentage de diff aux visiteurs */}
+          {isOwner && (
+            <div className="col-span-2">
+              <div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Prix payé</div>
+              <div className="flex flex-col">
+                <span className="text-sm sm:text-base font-bold text-white">
+                  {card.purchase_price ? `${card.purchase_price} €` : "-"}
+                </span>
+                
+                {card.purchase_price > 0 && averagePrice !== null && (
+                  (() => {
+                    const diff = averagePrice - card.purchase_price;
+                    const percent = (diff / card.purchase_price) * 100;
+                    const isPositive = diff >= 0;
+                    if (diff === 0) return (
+                      <div className="flex items-center gap-1 text-[11px] font-black mt-1 text-white/50">
+                        <span>0.00 € (0.0%)</span>
+                      </div>
+                    );
+                    return (
+                      <div className={`flex items-center gap-1 text-[11px] font-black mt-1 ${isPositive ? 'text-emerald-400' : 'text-rose-500'}`}>
+                        {isPositive ? <TrendingUp size={12} strokeWidth={3} /> : <TrendingDown size={12} strokeWidth={3} />}
+                        <span>{isPositive ? '+' : ''}{diff.toFixed(2)} € ({isPositive ? '+' : ''}{percent.toFixed(1)}%)</span>
+                      </div>
+                    );
+                  })()
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="mt-8 pt-8 border-t border-white/10">
@@ -484,13 +500,16 @@ export default function CardDetailsPage() {
             </div>
             
             <div className="flex flex-col items-end gap-2 shrink-0">
-              <button 
-                onClick={handleManualPriceUpdate} 
-                disabled={isUpdatingPrice}
-                className="bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#AFFF25]/20 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2"
-              >
-                {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
-              </button>
+              {/* 🌟 Bouton d'actualisation manuelle réservé au propriétaire */}
+              {isOwner && (
+                <button 
+                  onClick={handleManualPriceUpdate} 
+                  disabled={isUpdatingPrice}
+                  className="bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#AFFF25]/20 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isUpdatingPrice ? <Loader2 size={14} className="animate-spin" /> : '🔄 Actualiser'}
+                </button>
+              )}
               
               <span className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-widest text-right whitespace-nowrap">
                 {priceHistory.length > 0 && card.updated_at 
@@ -519,21 +538,21 @@ export default function CardDetailsPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Area type="monotone" dataKey="prix" stroke="#AFFF25" strokeWidth={3} fillOpacity={1} fill="url(#colorPrix)" />
 
-                  {/* 🌟 NOUVEAUTÉ : Ligne repère de 0 € tout en bas */}
                   <ReferenceLine
                     y={0}
-                    stroke="rgba(255, 255, 255, 0.1)" // Trait très discret
+                    stroke="rgba(255, 255, 255, 0.1)"
                     label={{
                       value: '0 €',
                       position: 'insideBottomLeft',
-                      fill: 'rgba(255, 255, 255, 0.4)', // Texte discret
+                      fill: 'rgba(255, 255, 255, 0.4)', 
                       fontSize: 10,
                       fontWeight: 'bold',
-                      dy: -5 // On remonte très légèrement le texte pour pas qu'il soit coupé
+                      dy: -5 
                     }}
                   />
 
-                  {card?.purchase_price > 0 && (
+                  {/* 🌟 Ligne du prix d'achat réservée au propriétaire */}
+                  {isOwner && card?.purchase_price > 0 && (
                     <ReferenceLine
                       y={parseFloat(card.purchase_price)}
                       stroke="#3B82F6" 

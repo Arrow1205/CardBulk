@@ -182,7 +182,7 @@ export default function PublicCollectionPage() {
 
       <section className="px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {filteredCards.length > 0 ? filteredCards.map(card => (
-          <div key={card.id} className="bg-[#0A072E] rounded-2xl overflow-hidden border border-white/5 group transform transition-all duration-300 hover:border-[#AFFF25]/30 hover:-translate-y-1 relative aspect-[3/4]">
+          <div key={card.id} onClick={() => router.push(`/card/${card.id}`)} className="cursor-pointer bg-[#0A072E] rounded-2xl overflow-hidden border border-white/5 group transform transition-all duration-300 hover:border-[#AFFF25]/30 hover:-translate-y-1 relative aspect-[3/4]">
             <img src={card.image_url} alt={`${card.firstname} ${card.lastname}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 flex flex-col justify-end">
               <div className="flex items-center gap-2 mb-2">

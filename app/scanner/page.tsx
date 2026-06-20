@@ -57,18 +57,7 @@ let ALL_SETS: string[] = [];
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
 
-let ALL_VARIATIONS: string[] = []; 
-
-Object.values(TYPE_CARTE).forEach((brandData: any) => {
-  Object.values(brandData).forEach((category: any) => {
-    if (Array.isArray(category)) {
-      category.forEach((v: any) => ALL_VARIATIONS.push(v.variation_name));
-    }
-  });
-});
-ALL_VARIATIONS = Array.from(new Set(ALL_VARIATIONS));
-
-const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
+const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 type PendingCard = {
   id: string;
@@ -191,7 +180,6 @@ function ScannerContent() {
             club: data.club_name || '', 
             brand: data.brand || '', 
             series: data.series || '', 
-            variation: data.variation || '', 
             year: data.year?.toString() || '', 
             is_auto: data.is_auto || false, 
             is_patch: data.is_patch || false, 
@@ -441,23 +429,8 @@ function ScannerContent() {
     }
   }
 
-  const currentBrandVariations = (formData.brand && (TYPE_CARTE as any)[formData.brand]) ? (TYPE_CARTE as any)[formData.brand] : null;
-
-  let selectedVariationDescription = "";
-  if (formData.variation && currentBrandVariations) {
-    Object.values(currentBrandVariations).forEach((category: any) => {
-      if (Array.isArray(category)) {
-        const found = category.find((v: any) => v.variation_name === formData.variation);
-        if (found) selectedVariationDescription = found.ui_description;
-      }
-    });
-    if (!selectedVariationDescription && formData.variation.includes('/')) {
-        selectedVariationDescription = "Variation colorée ou numérotée détectée automatiquement par l'IA.";
-    }
-  }
-
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
-  const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : '';
+  const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-');
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   const startCamera = async () => {
@@ -555,7 +528,6 @@ function ScannerContent() {
           club: matchClubWithAliases(cleanValue(data.club), aiSport),
           brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS),
           series: matchExactCase(cleanValue(data.series), ALL_SETS),
-          variation: cleanValue(data.variation), 
           year: cleanValue(data.year),
           is_auto: !!data.is_auto,
           is_patch: !!data.is_patch,
@@ -835,11 +807,11 @@ function ScannerContent() {
           
           if (side === 'front') {
             return {
-              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: cleanValue(data.variation) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || cleanValue(data.variation), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -1064,7 +1036,7 @@ function ScannerContent() {
       
       const cardDataToSave = { 
         user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
-        series: formData.series, variation: formData.variation, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 
+        series: formData.series, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 
         club_name: finalClubName, 
         is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
@@ -1080,7 +1052,7 @@ function ScannerContent() {
          }
       }
 
-      const hasBasicInfo = formData.firstname && formData.lastname && formData.year && formData.brand && formData.series && formData.variation;
+      const hasBasicInfo = formData.firstname && formData.lastname && formData.year && formData.brand && formData.series;
       const hasNumberingIfRequired = !formData.is_numbered || (formData.is_numbered && formData.num_high);
 
       if (hasBasicInfo && hasNumberingIfRequired && currentCardId && !isWishlistMode) {
@@ -1101,7 +1073,7 @@ function ScannerContent() {
 
          const keywordsArray = [
            formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
-           formatStr(formData.firstname), formatStr(formData.lastname), formatStr(formData.variation), 
+           formatStr(formData.firstname), formatStr(formData.lastname), 
            formData.is_auto ? 'Auto' : '', formData.is_patch ? 'Patch' : '', 
            formData.is_numbered && formData.num_high ? formatStr(formData.num_high) : ''
          ];
@@ -1143,7 +1115,7 @@ function ScannerContent() {
 
     const keywordsArray = [
       formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
-      formatStr(formData.firstname), formatStr(formData.lastname), formatStr(formData.variation), 
+      formatStr(formData.firstname), formatStr(formData.lastname), 
       formData.is_auto ? 'Auto' : '', formData.is_patch ? 'Patch' : '', 
       formData.is_numbered && formData.num_high ? formatStr(formData.num_high) : ''
     ];
@@ -1437,29 +1409,6 @@ function ScannerContent() {
 
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
-        {scanMode === 'quick' && (
-          <div className="bg-white/5 border border-[#AFFF25]/50 shadow-[0_0_20px_rgba(175,255,37,0.1)] rounded-2xl p-4 mb-6 animate-in fade-in slide-in-from-top-4">
-            <label className="text-[10px] text-[#AFFF25] italic font-black tracking-widest block mb-3 uppercase flex items-center gap-2">
-              <Search size={14} /> Étape obligatoire pour eBay
-            </label>
-            <div className="relative">
-              <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-4 rounded-xl text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/80 transition-colors shadow-inner">
-                <option value="">Sélectionner la Variation (ex: Base, Prizm Silver...)</option>
-                {formData.variation && !ALL_VARIATIONS.includes(formData.variation) && (
-                   <option value={formData.variation}>{formData.variation}</option>
-                )}
-                {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => (
-                    <optgroup key={catKey} label={formatLabel(catKey)}>
-                      {(currentBrandVariations as any)[catKey].map((v: any) => (
-                        <option key={v.variation_name} value={v.variation_name}>{v.variation_name}</option>
-                      ))}
-                    </optgroup>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-4 top-4 text-[#AFFF25] pointer-events-none" size={18} />
-            </div>
-          </div>
-        )}
 
         {isWishlistMode && scanMode !== 'quick' && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-8">
@@ -1563,38 +1512,6 @@ function ScannerContent() {
                   <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection / Set</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
-
-                {scanMode !== 'quick' && (
-                  <div>
-                    <div className="relative">
-                      <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
-                        <option value="">Variation (ex: Base, Prizm Silver...)</option>
-                        
-                        {formData.variation && !ALL_VARIATIONS.includes(formData.variation) && (
-                           <option value={formData.variation}>{formData.variation}</option>
-                        )}
-                        
-                        {currentBrandVariations && Object.keys(currentBrandVariations).map(catKey => (
-                            <optgroup key={catKey} label={formatLabel(catKey)}>
-                              {(currentBrandVariations as any)[catKey].map((v: any) => (
-                                <option key={v.variation_name} value={v.variation_name}>{v.variation_name}</option>
-                              ))}
-                            </optgroup>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
-                    </div>
-
-                    {selectedVariationDescription && (
-                      <div className="bg-[#AFFF25]/10 border border-[#AFFF25]/20 rounded-xl p-3 mt-3 mx-1 flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
-                        <span className="text-[#AFFF25] mt-0.5"><Search size={16} /></span>
-                        <p className="text-[10px] text-[#AFFF25]/90 leading-relaxed italic">
-                          {selectedVariationDescription}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
                 
                 <div className="relative">
                   <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
@@ -1651,9 +1568,9 @@ function ScannerContent() {
 
           {scanMode === 'quick' ? (
              <button 
-               disabled={analyzing || !formData.variation || !formData.firstname || !formData.lastname} 
+               disabled={analyzing || !formData.firstname || !formData.lastname} 
                onClick={handleQuickSearch} 
-               className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(formData.variation && formData.firstname && formData.lastname) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95 shadow-[0_0_20px_rgba(175,255,37,0.4)]' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
+               className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(formData.firstname && formData.lastname) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95 shadow-[0_0_20px_rgba(175,255,37,0.4)]' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
              >
                <ExternalLink size={20} strokeWidth={2.5} /> Rechercher sur eBay
              </button>
