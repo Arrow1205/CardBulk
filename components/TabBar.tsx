@@ -7,6 +7,17 @@ export default function TabBar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  // 1. DÉFINIR LA RÈGLE DE MASQUAGE
+  // Remplace '/collection/' par le vrai début de ton URL dynamique si besoin.
+  // Par exemple, si ton dossier est app/[pseudo]/page.tsx, il faudra une logique différente.
+  // Ici, on cache si l'URL commence par "/collection/" ET qu'elle n'est pas juste "/collection" (qui est ta page privée).
+  const isHiddenPage = pathname?.startsWith('/collection/') && pathname !== '/collection';
+
+  // 2. SI ON EST SUR LA PAGE MASQUÉE, ON NE REND RIEN
+  if (isHiddenPage) {
+    return null;
+  }
+
   // Fonction pour vérifier si le lien est actif
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
