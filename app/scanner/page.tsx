@@ -430,7 +430,7 @@ function ScannerContent() {
   }
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
-  const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-');
+const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, '-') : null;
   const isFormStarted = Object.values(formData).some(val => (typeof val === 'string' && val.trim() !== '') || (typeof val === 'boolean' && val === true));
 
   const startCamera = async () => {
