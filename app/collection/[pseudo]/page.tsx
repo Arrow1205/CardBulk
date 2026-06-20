@@ -44,6 +44,7 @@ export default function PublicCollectionPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeSport, setActiveSport] = useState<string>('ALL');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({ rookie: false, auto: false, patch: false, graded: false, numbered: false });
 
@@ -85,14 +86,17 @@ export default function PublicCollectionPage() {
     fetchPublicData();
   }, [pseudo]);
 
+  const sportsPresent = ['ALL', ...Array.from(new Set(cards.map(c => c.sport)))];
+
   const filteredCards = cards.filter(card => {
     const searchMatch = searchTerm === '' || `${card.firstname} ${card.lastname} ${card.club_name} ${card.brand} ${card.series} ${card.year}`.toLowerCase().includes(searchTerm.toLowerCase());
+    const sportMatch = activeSport === 'ALL' || card.sport === activeSport;
     const rookieMatch = !filters.rookie || card.is_rookie;
     const autoMatch = !filters.auto || card.is_auto;
     const patchMatch = !filters.patch || card.is_patch;
     const gradedMatch = !filters.graded || card.is_graded;
     const numberedMatch = !filters.numbered || card.numbering_max !== null;
-    return searchMatch && rookieMatch && autoMatch && patchMatch && gradedMatch && numberedMatch;
+    return searchMatch && sportMatch && rookieMatch && autoMatch && patchMatch && gradedMatch && numberedMatch;
   });
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
@@ -101,7 +105,7 @@ export default function PublicCollectionPage() {
     <div className="min-h-screen bg-[#040221] text-white flex flex-col items-center justify-center p-6 text-center">
       <Layers3 size={60} className="text-red-500 mb-6" />
       <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter mb-2">Collection Introuvable</h1>
-      <p className="text-white/60 mb-8">La vitrine associée au pseudo "{pseudo}" n'existe pas ou est privée.</p>
+      <p className="text-white/60 mb-8">La collection associée au pseudo "{pseudo}" n'existe pas ou est privée.</p>
       <button onClick={() => router.push('/')} className="bg-[#AFFF25] text-[#040221] px-8 py-3 rounded-full font-bold uppercase text-sm active:scale-95 transition-all">Retour à l'accueil</button>
     </div>
   );
@@ -115,7 +119,7 @@ export default function PublicCollectionPage() {
                 <ChevronLeft size={20} />
             </button>
             <div className="flex-col">
-                <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">Vitrine</h1>
+                <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter">Collection</h1>
                 <p className='text-xs text-[#AFFF25] font-bold tracking-widest uppercase'>de @{owner?.pseudo || pseudo}</p>
             </div>
         </div>
@@ -126,11 +130,22 @@ export default function PublicCollectionPage() {
         </div>
       </header>
 
+      <section className="px-6 mb-8 mt-2 scrollbar-hide overflow-x-auto">
+        <div className="flex items-center gap-2.5 pb-2">
+          {sportsPresent.map(sport => (
+            <button key={sport} onClick={() => setActiveSport(sport)} className={`flex items-center gap-2 px-4 py-2.5 rounded-full border whitespace-nowrap transition-all duration-300 text-xs font-bold uppercase tracking-wider ${activeSport === sport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25] shadow-[0_0_15px_rgba(175,255,37,0.5)]' : 'bg-[#0A072E] text-white/70 border-white/10 hover:border-white/30 hover:text-white'}`}>
+              {sport !== 'ALL' && SPORT_CONFIG[sport] && <img src={`/asset/sports/${SPORT_CONFIG[sport].image}.png`} alt={sport} className="w-4 h-4 object-contain" />}
+              {sport === 'ALL' ? 'Toutes' : SPORT_CONFIG[sport]?.label || sport}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className="px-6 mb-8 sticky top-[108px] z-30 bg-[#040221] py-2">
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-            <input type="text" placeholder="Chercher dans cette vitrine..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-[#0A072E] border border-white/10 p-4 pl-12 rounded-full text-sm outline-none focus:border-[#AFFF25]/50 focus:bg-[#080531] transition-all" />
+            <input type="text" placeholder="Chercher dans cette collection..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-[#0A072E] border border-white/10 p-4 pl-12 rounded-full text-sm outline-none focus:border-[#AFFF25]/50 focus:bg-[#080531] transition-all" />
           </div>
           <button onClick={() => setShowFilters(!showFilters)} className={`w-12 h-12 rounded-full flex items-center justify-center border transition-all ${showFilters ? 'bg-[#AFFF25] border-[#AFFF25] text-[#040221]' : 'bg-[#0A072E] border-white/10 text-white/70 hover:border-white/30'}`}><SlidersHorizontal size={18} /></button>
         </div>
@@ -173,7 +188,7 @@ export default function PublicCollectionPage() {
         )) : (
           <div className="col-span-2 sm:col-span-3 md:col-span-4 text-center py-20 bg-[#0A072E] rounded-2xl border border-dashed border-white/10">
             <Layers3 size={40} className="text-white/20 mx-auto mb-4" />
-            <p className="text-white/50 font-medium">Cette vitrine est vide pour le moment.</p>
+            <p className="text-white/50 font-medium">Cette collection est vide pour le moment.</p>
           </div>
         )}
       </section>
