@@ -55,29 +55,28 @@ export async function GET(req: Request) {
       // 1️⃣ On actualise la date de scan pour dire "Le robot est passé par là"
       await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', card.id);
 
-      // 2️⃣ CONSTRUCTION INTELLIGENTE DES MOTS-CLÉS (Identique au scan manuel)
+      // 2️⃣ CONSTRUCTION DES MOTS-CLÉS — structure eBay : [Année] [Marque] [Collection] [Joueur] [Type] [Parallel] [/Numérotation] [Équipe] [Grade]
       let formattedYear = card.year;
       if (!['TENNIS', 'BASEBALL', 'F1'].includes(card.sport) && card.year && /^\d{4}$/.test(card.year.toString())) {
-        const yearNum = parseInt(card.year, 10); 
-        const prevYear = yearNum - 1; 
-        const shortYear = card.year.toString().slice(-2);
-        formattedYear = `${prevYear}-${shortYear}`;
+        const yearNum = parseInt(card.year, 10);
+        formattedYear = `${yearNum - 1}-${card.year.toString().slice(-2)}`;
       }
 
-      const annee = cleanData(formattedYear);
-      const brand = cleanData(card.brand);
-      const series = cleanData(card.series);
-      const prenom = cleanData(card.firstname);
-      const nom = cleanData(card.lastname);
+      const annee     = cleanData(formattedYear);
+      const brand     = cleanData(card.brand);
+      const series    = cleanData(card.series);
+      const prenom    = cleanData(card.firstname);
+      const nom       = cleanData(card.lastname);
+      const auto      = card.is_auto ? 'Auto' : '';
+      const patch     = card.is_patch ? 'Patch' : '';
       const variation = cleanData(card.variation);
-      
-      // 🌟 L'ajout des options Auto/Patch et Numérotation propre (sans doublon !)
-      const autoKeyword = card.is_auto ? 'Auto' : '';
-      const patchKeyword = card.is_patch ? 'Patch' : '';
-      const numerotation = card.is_numbered && card.numbering_max ? cleanData(card.numbering_max) : '';
+      const numero    = card.is_numbered && card.numbering_max ? `/${cleanData(card.numbering_max)}` : '';
+      const equipe    = cleanData(card.club_name);
+      const grade     = card.is_graded && card.grading_grade ? cleanData(card.grading_grade) : '';
 
-      const keywordsArray = [annee, brand, series, prenom, nom, variation, autoKeyword, patchKeyword, numerotation];
-      const keywords = keywordsArray.filter(Boolean).join(' ');
+      const keywords = [annee, brand, series, prenom, nom, auto, patch, variation, numero, equipe, grade]
+        .filter(Boolean)
+        .join(' ');
 
       if (!keywords) continue;
 

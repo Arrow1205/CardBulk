@@ -57,7 +57,7 @@ let ALL_SETS: string[] = [];
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
 
-const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: '', is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
+const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: new Date().getFullYear().toString(), is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 type PendingCard = {
   id: string;

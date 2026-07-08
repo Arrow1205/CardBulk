@@ -54,6 +54,8 @@ export default function CardDetailsPage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showEbayImageTip, setShowEbayImageTip] = useState(false);
   const [ebayImageUrl, setEbayImageUrl] = useState('');
+  const [showImageSearchHelp, setShowImageSearchHelp] = useState(false);
+  const [imageCopied, setImageCopied] = useState(false);
   const [touchStart, setTouchStart] = useState<{x: number, y: number, time: number} | null>(null);
 
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', transition: 'transform 0.3s ease-out' });
@@ -102,30 +104,29 @@ export default function CardDetailsPage() {
   };
 
   // 🧠 Le cerveau centralisé pour construire la recherche eBay
+  // Structure : [Année] [Marque] [Collection] [Joueur] [Type] [Parallel] [/Numérotation] [Équipe] [Grade]
   const buildEbaySearchQuery = (currentCard: any) => {
     let formattedYear = currentCard.year;
-    
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(currentCard.sport) && currentCard.year && /^\d{4}$/.test(currentCard.year.toString())) {
-      const yearNum = parseInt(currentCard.year, 10); 
-      const prevYear = yearNum - 1; 
-      const shortYear = currentCard.year.toString().slice(-2);
-      formattedYear = `${prevYear}-${shortYear}`;
+      const yearNum = parseInt(currentCard.year, 10);
+      formattedYear = `${yearNum - 1}-${currentCard.year.toString().slice(-2)}`;
     }
 
-    const annee = cleanData(formattedYear);
-    const brand = cleanData(currentCard.brand);
-    const series = cleanData(currentCard.series);
-    const prenom = cleanData(currentCard.firstname);
-    const nom = cleanData(currentCard.lastname);
-    const variation = cleanData(currentCard.variation);
-    
-    // 🌟 NOUVEAUTÉ : Ajout intelligent de Auto et Patch
-    const autoKeyword = currentCard.is_auto ? 'Auto' : '';
-    const patchKeyword = currentCard.is_patch ? 'Patch' : '';
-    const numerotation = currentCard.is_numbered && currentCard.numbering_max ? cleanData(currentCard.numbering_max) : '';
+    const annee      = cleanData(formattedYear);
+    const brand      = cleanData(currentCard.brand);
+    const series     = cleanData(currentCard.series);
+    const prenom     = cleanData(currentCard.firstname);
+    const nom        = cleanData(currentCard.lastname);
+    const variation  = cleanData(currentCard.variation);
+    const auto       = currentCard.is_auto ? 'Auto' : '';
+    const patch      = currentCard.is_patch ? 'Patch' : '';
+    const numero     = currentCard.is_numbered && currentCard.numbering_max ? `/${cleanData(currentCard.numbering_max)}` : '';
+    const equipe     = cleanData(currentCard.club_name);
+    const grade      = currentCard.is_graded && currentCard.grading_grade ? cleanData(currentCard.grading_grade) : '';
 
-    const keywordsArray = [annee, brand, series, prenom, nom, variation, autoKeyword, patchKeyword, numerotation];
-    return keywordsArray.filter(Boolean).join(' ');
+    return [annee, brand, series, prenom, nom, auto, patch, variation, numero, equipe, grade]
+      .filter(Boolean)
+      .join(' ');
   };
 
   const handleManualPriceUpdate = async () => {
@@ -623,6 +624,49 @@ export default function CardDetailsPage() {
             <button onClick={() => checkEbayPrices(false)} className="flex-1 bg-[#AFFF25] text-[#040221] py-3.5 rounded-full font-black uppercase tracking-widest text-[0.675rem] hover:bg-[#9ee615] active:scale-95 transition-transform flex items-center justify-center shadow-[0_0_15px_rgba(175,255,37,0.3)]">
               Ventes en cours
             </button>
+          </div>
+
+          {/* RECHERCHE PAR IMAGE */}
+          <div className="w-full max-w-[320px]">
+            <button
+              onClick={() => setShowImageSearchHelp(!showImageSearchHelp)}
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/50 text-xs font-bold uppercase tracking-wider hover:bg-white/10 active:scale-95 transition-all"
+            >
+              <span>🔍 Rechercher par image</span>
+              <span className={`transition-transform duration-200 ${showImageSearchHelp ? 'rotate-180' : ''}`}>▾</span>
+            </button>
+
+            {showImageSearchHelp && (
+              <div className="mt-3 bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold">Comment faire</p>
+                <ol className="flex flex-col gap-2.5">
+                  {[
+                    { n: '1', txt: 'Copie l\'URL de ton image ci-dessous' },
+                    { n: '2', txt: 'Ouvre eBay et clique sur l\'icône 📷 dans la barre de recherche' },
+                    { n: '3', txt: 'Colle l\'URL dans "Coller le lien de l\'image"' },
+                    { n: '4', txt: 'Clique sur Rechercher' },
+                  ].map(step => (
+                    <li key={step.n} className="flex items-start gap-3">
+                      <span className="w-5 h-5 rounded-full bg-[#AFFF25]/20 border border-[#AFFF25]/40 text-[#AFFF25] text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{step.n}</span>
+                      <span className="text-white/70 text-xs leading-relaxed">{step.txt}</span>
+                    </li>
+                  ))}
+                </ol>
+
+                {card.image_url && (
+                  <button
+                    onClick={() => {
+                      try { navigator.clipboard.writeText(card.image_url); } catch (_) {}
+                      setImageCopied(true);
+                      setTimeout(() => setImageCopied(false), 2500);
+                    }}
+                    className="w-full mt-1 bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#AFFF25]/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  >
+                    {imageCopied ? '✓ URL copiée !' : '📋 Copier l\'URL de l\'image'}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {card.website_url && (
