@@ -52,6 +52,7 @@ export default function CardDetailsPage() {
   const [isUpdatingPrice, setIsUpdatingPrice] = useState(false);
 
   const [isFlipped, setIsFlipped] = useState(false);
+  const [showEbayImageTip, setShowEbayImageTip] = useState(false);
   const [touchStart, setTouchStart] = useState<{x: number, y: number, time: number} | null>(null);
 
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', transition: 'transform 0.3s ease-out' });
@@ -166,15 +167,24 @@ export default function CardDetailsPage() {
     }
   };
 
-  const checkEbayPrices = (soldOnly: boolean = true) => {
+  const checkEbayPrices = async (soldOnly: boolean = true) => {
     if (!card) return;
-    
-    const keywords = buildEbaySearchQuery(card);
-    const searchQuery = encodeURIComponent(keywords);
-    
-    let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
-    if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
-    window.open(ebayUrl, '_blank');
+
+    if (card.image_url) {
+      await navigator.clipboard.writeText(card.image_url);
+      setShowEbayImageTip(true);
+      setTimeout(() => {
+        setShowEbayImageTip(false);
+        const ebayImageSearchUrl = `https://www.ebay.com/sch/i.html?_nkw=&LH_VisualSearch=1${soldOnly ? '&LH_Sold=1&LH_Complete=1' : ''}`;
+        window.open(ebayImageSearchUrl, '_blank');
+      }, 3000);
+    } else {
+      const keywords = buildEbaySearchQuery(card);
+      const searchQuery = encodeURIComponent(keywords);
+      let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
+      if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
+      window.open(ebayUrl, '_blank');
+    }
   };
 
   useEffect(() => {
@@ -304,7 +314,27 @@ export default function CardDetailsPage() {
 
   return (
     <div className="min-h-screen text-white font-sans relative overflow-x-hidden bg-[#040221]">
-      
+
+      {/* POPIN INSTRUCTION EBAY IMAGE SEARCH */}
+      {showEbayImageTip && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#080531] border border-white/10 rounded-3xl p-7 w-full max-w-sm shadow-[0_0_60px_rgba(175,255,37,0.15)] flex flex-col items-center text-center gap-5">
+            <div className="w-14 h-14 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25]/30 flex items-center justify-center text-2xl">📋</div>
+            <div>
+              <p className="text-[#AFFF25] font-black text-lg uppercase tracking-tight mb-2">URL copiée !</p>
+              <p className="text-white/70 text-sm leading-relaxed">
+                eBay va s'ouvrir dans 3 secondes.<br/>
+                Colle l'URL dans le champ <span className="text-white font-bold">"Paste an image link"</span> puis clique sur <span className="text-white font-bold">Go</span>.
+              </p>
+            </div>
+            <div className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
+              <span className="text-[#AFFF25] text-xl">⌘V</span>
+              <span className="text-white/60 text-xs">ou Ctrl+V pour coller</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* BACKGROUND GLOBAL */}
       <div className="fixed inset-0 z-0 bg-[#040221] transition-opacity duration-500">
         {(isFlipped && card.image_url_back ? card.image_url_back : card.image_url) && (
