@@ -173,7 +173,7 @@ export default function CardDetailsPage() {
 
     if (card.image_url) {
       try { navigator.clipboard.writeText(card.image_url); } catch (_) {}
-      const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=&LH_VisualSearch=1${soldOnly ? '&LH_Sold=1&LH_Complete=1' : ''}`;
+      const ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=&LH_VisualSearch=1${soldOnly ? '&LH_Sold=1&LH_Complete=1' : ''}`;
       setEbayImageUrl(ebayUrl);
       setShowEbayImageTip(true);
     } else {
@@ -321,8 +321,10 @@ export default function CardDetailsPage() {
             <div>
               <p className="text-[#AFFF25] font-black text-lg uppercase tracking-tight mb-2">URL copiée !</p>
               <p className="text-white/70 text-sm leading-relaxed">
-                Sur eBay, clique sur l'icône <span className="text-white font-bold">📷</span> dans la barre de recherche.<br/><br/>
-                Colle l'URL dans le champ <span className="text-white font-bold">"Paste an image link"</span> puis clique sur <span className="text-white font-bold">Go</span>.
+                1. Clique sur <span className="text-white font-bold">"Ouvrir eBay"</span> ci-dessous<br/>
+                2. Sur eBay, clique sur l'icône <span className="text-white font-bold">📷</span> dans la barre de recherche<br/>
+                3. Colle <span className="text-white font-bold">Cmd+V</span> dans le champ <span className="text-white font-bold">"Coller le lien de l'image"</span><br/>
+                4. Clique sur <span className="text-white font-bold">Rechercher</span>
               </p>
             </div>
             <button
