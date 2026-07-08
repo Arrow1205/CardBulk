@@ -74,7 +74,7 @@ const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 export default function CollectionPage() {
   const router = useRouter();
   
-  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' | 'scouty'>('cartes');
+  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' /* | 'scouty' */>('cartes');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   
@@ -100,15 +100,15 @@ export default function CollectionPage() {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
-  const [hasStartedScouty, setHasStartedScouty] = useState(false);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [chatInput, setChatInput] = useState('');
+  // const [hasStartedScouty, setHasStartedScouty] = useState(false);
+  // const [aiLoading, setAiLoading] = useState(false);
+  // const [messages, setMessages] = useState<Message[]>([]);
+  // const [chatInput, setChatInput] = useState('');
   
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -155,11 +155,11 @@ export default function CollectionPage() {
   }, [activeTab, searchQuery, selectedSport, selectedBrands, showAuto, showPatch, showNumbered]);
 
 
-  useEffect(() => {
-    if (activeTab === 'scouty') {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, aiLoading, activeTab]);
+  // useEffect(() => {
+  //   if (activeTab === 'scouty') {
+  //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // }, [messages, aiLoading, activeTab]);
 
   const fetchCollection = async () => {
     if (typeof window !== 'undefined') {
@@ -286,52 +286,52 @@ export default function CollectionPage() {
     if (selectedArray.length > 0) await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
   };
 
-  const handleAskAI = async (questionText: string) => {
-    if (!questionText.trim()) return;
+  // const handleAskAI = async (questionText: string) => {
+  //   if (!questionText.trim()) return;
 
-    if (!hasStartedScouty) setHasStartedScouty(true);
+  //   if (!hasStartedScouty) setHasStartedScouty(true);
 
-    const newMessages = [...messages, { role: 'user' as const, content: questionText }];
-    setMessages(newMessages);
-    setChatInput('');
-    setAiLoading(true);
+  //   const newMessages = [...messages, { role: 'user' as const, content: questionText }];
+  //   setMessages(newMessages);
+  //   setChatInput('');
+  //   setAiLoading(true);
 
-    const searchTerm = searchQuery.toLowerCase().trim();
-    const isGlobal = searchTerm.length === 0;
+  //   const searchTerm = searchQuery.toLowerCase().trim();
+  //   const isGlobal = searchTerm.length === 0;
 
-    const cardsToSend = isGlobal ? cards : cards.filter(card => {
-      const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
-      const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
-      return fullName.includes(searchTerm) || reverseFullName.includes(searchTerm);
-    });
+  //   const cardsToSend = isGlobal ? cards : cards.filter(card => {
+  //     const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
+  //     const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
+  //     return fullName.includes(searchTerm) || reverseFullName.includes(searchTerm);
+  //   });
 
-    const formattedCollection = cardsToSend.map(c => ({
-      joueur: `${c.firstname || ''} ${c.lastname || ''}`.trim(),
-      sport: c.sport || 'Inconnu',
-      carte: `${c.brand || 'Inconnu'} ${c.series || ''} ${c.year || ''}`.trim(),
-      details: [
-        c.is_numbered ? `Numérotée /${c.numbering_max}` : '',
-        c.is_auto ? 'Auto' : '',
-        c.is_patch ? 'Patch' : ''
-      ].filter(Boolean).join(' - ') || 'Base',
-      prix_paye: c.purchase_price ? `${c.purchase_price}€` : 'Non renseigné'
-    }));
+  //   const formattedCollection = cardsToSend.map(c => ({
+  //     joueur: `${c.firstname || ''} ${c.lastname || ''}`.trim(),
+  //     sport: c.sport || 'Inconnu',
+  //     carte: `${c.brand || 'Inconnu'} ${c.series || ''} ${c.year || ''}`.trim(),
+  //     details: [
+  //       c.is_numbered ? `Numérotée /${c.numbering_max}` : '',
+  //       c.is_auto ? 'Auto' : '',
+  //       c.is_patch ? 'Patch' : ''
+  //     ].filter(Boolean).join(' - ') || 'Base',
+  //     prix_paye: c.purchase_price ? `${c.purchase_price}€` : 'Non renseigné'
+  //   }));
 
-    try {
-      const response = await fetch('/api/scout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages, playerName: isGlobal ? "Global" : searchQuery, collectionData: formattedCollection }),
-      });
-      if (!response.ok) throw new Error('Erreur réseau');
-      const data = await response.json();
-      setMessages([...newMessages, { role: 'assistant' as const, content: data.text }]);
-    } catch (error) {
-      setMessages([...newMessages, { role: 'assistant' as const, content: "Erreur réseau. Veuillez réessayer plus tard." }]);
-    } finally {
-      setAiLoading(false);
-    }
-  };
+  //   try {
+  //     const response = await fetch('/api/scout', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ messages: newMessages, playerName: isGlobal ? "Global" : searchQuery, collectionData: formattedCollection }),
+  //     });
+  //     if (!response.ok) throw new Error('Erreur réseau');
+  //     const data = await response.json();
+  //     setMessages([...newMessages, { role: 'assistant' as const, content: data.text }]);
+  //   } catch (error) {
+  //     setMessages([...newMessages, { role: 'assistant' as const, content: "Erreur réseau. Veuillez réessayer plus tard." }]);
+  //   } finally {
+  //     setAiLoading(false);
+  //   }
+  // };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
@@ -589,10 +589,10 @@ export default function CollectionPage() {
             
             <button onClick={() => { setActiveTab('dossiers'); setSearchQuery(''); }} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Dossiers{activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             
-            <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
+            {/* <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
               <Sparkles size={14} className={activeTab === 'scouty' ? "text-[#AFFF25]" : "text-white/40"} /> Scouty
               {activeTab === 'scouty' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
-            </button>
+            </button> */}
           </div>
         )}
       </div>
@@ -619,7 +619,7 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {activeTab === 'scouty' && (
+        {/* activeTab === 'scouty' && (
           <div className="px-6 flex flex-col h-full relative animate-in fade-in duration-300 lg:max-w-2xl lg:mx-auto">
             {!hasStartedScouty ? (
               <div className="flex flex-col items-center justify-center h-full text-center pb-20">
@@ -639,7 +639,7 @@ export default function CollectionPage() {
             ) : (
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col space-y-4 pb-[220px]">
-                  
+
                   {messages.length === 0 ? (
                     <div className="space-y-6 pt-4">
                       <div className="flex items-start gap-3">
@@ -690,28 +690,28 @@ export default function CollectionPage() {
                       </div>
                     ))
                   )}
-                  
+
                   {aiLoading && (
                     <div className="bg-white/10 text-white self-start p-3.5 rounded-2xl rounded-tl-sm flex items-center gap-2">
                       <Loader2 size={16} className="animate-spin text-[#AFFF25]" />
                       <span className="text-xs font-medium text-white/70">Scouty analyse...</span>
                     </div>
                   )}
-                  
+
                   <div ref={messagesEndRef} />
                 </div>
 
                 <div className="fixed bottom-[108px] left-0 w-full px-6 bg-[#040221] pt-4 pb-2 z-40">
                   <div className="flex gap-2 lg:max-w-2xl lg:mx-auto">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={chatInput}
                       onChange={(e) => setChatInput(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleAskAI(chatInput)}
                       placeholder="Pose une question à Scouty..."
                       className="flex-1 bg-white/5 border border-white/10 rounded-full px-5 py-3.5 text-sm text-white focus:outline-none focus:border-[#2544ff] transition-colors"
                     />
-                    <button 
+                    <button
                       onClick={() => handleAskAI(chatInput)}
                       disabled={aiLoading || !chatInput.trim()}
                       className="w-12 h-12 rounded-full bg-[#2544ff] text-white flex items-center justify-center disabled:opacity-50 active:scale-95 transition-transform shrink-0 shadow-[0_4px_15px_rgba(37,68,255,0.4)]"
@@ -726,7 +726,7 @@ export default function CollectionPage() {
               </div>
             )}
           </div>
-        )}
+        ) */}
 
       </div>
 
