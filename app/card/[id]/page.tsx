@@ -171,19 +171,11 @@ export default function CardDetailsPage() {
 
   const checkEbayPrices = (soldOnly: boolean = true) => {
     if (!card) return;
-
-    if (card.image_url) {
-      try { navigator.clipboard.writeText(card.image_url); } catch (_) {}
-      const ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=&LH_VisualSearch=1${soldOnly ? '&LH_Sold=1&LH_Complete=1' : ''}`;
-      setEbayImageUrl(ebayUrl);
-      setShowEbayImageTip(true);
-    } else {
-      const keywords = buildEbaySearchQuery(card);
-      const searchQuery = encodeURIComponent(keywords);
-      let ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${searchQuery}`;
-      if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
-      window.open(ebayUrl, '_blank');
-    }
+    const keywords = buildEbaySearchQuery(card);
+    const searchQuery = encodeURIComponent(keywords);
+    let ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=${searchQuery}`;
+    if (soldOnly) ebayUrl += '&LH_Sold=1&LH_Complete=1';
+    window.open(ebayUrl, '_blank');
   };
 
   useEffect(() => {
@@ -630,9 +622,9 @@ export default function CardDetailsPage() {
           <div className="w-full max-w-[320px]">
             <button
               onClick={() => setShowImageSearchHelp(!showImageSearchHelp)}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/50 text-xs font-bold uppercase tracking-wider hover:bg-white/10 active:scale-95 transition-all"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-full bg-transparent border border-[#AFFF25] text-[#AFFF25] text-xs font-bold uppercase tracking-wider hover:bg-[#AFFF25]/10 active:scale-95 transition-all"
             >
-              <span>🔍 Rechercher par image</span>
+              <span>Rechercher par image</span>
               <span className={`transition-transform duration-200 ${showImageSearchHelp ? 'rotate-180' : ''}`}>▾</span>
             </button>
 
