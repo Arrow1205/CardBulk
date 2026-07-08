@@ -53,6 +53,7 @@ export default function CardDetailsPage() {
 
   const [isFlipped, setIsFlipped] = useState(false);
   const [showEbayImageTip, setShowEbayImageTip] = useState(false);
+  const [ebayImageUrl, setEbayImageUrl] = useState('');
   const [touchStart, setTouchStart] = useState<{x: number, y: number, time: number} | null>(null);
 
   const [tiltStyle, setTiltStyle] = useState({ transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)', transition: 'transform 0.3s ease-out' });
@@ -167,17 +168,14 @@ export default function CardDetailsPage() {
     }
   };
 
-  const checkEbayPrices = async (soldOnly: boolean = true) => {
+  const checkEbayPrices = (soldOnly: boolean = true) => {
     if (!card) return;
 
     if (card.image_url) {
-      await navigator.clipboard.writeText(card.image_url);
+      try { navigator.clipboard.writeText(card.image_url); } catch (_) {}
+      const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=&LH_VisualSearch=1${soldOnly ? '&LH_Sold=1&LH_Complete=1' : ''}`;
+      setEbayImageUrl(ebayUrl);
       setShowEbayImageTip(true);
-      setTimeout(() => {
-        setShowEbayImageTip(false);
-        const ebayImageSearchUrl = `https://www.ebay.com/sch/i.html?_nkw=&LH_VisualSearch=1${soldOnly ? '&LH_Sold=1&LH_Complete=1' : ''}`;
-        window.open(ebayImageSearchUrl, '_blank');
-      }, 3000);
     } else {
       const keywords = buildEbaySearchQuery(card);
       const searchQuery = encodeURIComponent(keywords);
@@ -317,20 +315,23 @@ export default function CardDetailsPage() {
 
       {/* POPIN INSTRUCTION EBAY IMAGE SEARCH */}
       {showEbayImageTip && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#080531] border border-white/10 rounded-3xl p-7 w-full max-w-sm shadow-[0_0_60px_rgba(175,255,37,0.15)] flex flex-col items-center text-center gap-5">
+        <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-6 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowEbayImageTip(false)}>
+          <div className="bg-[#080531] border border-white/10 rounded-3xl p-7 w-full max-w-sm shadow-[0_0_60px_rgba(175,255,37,0.15)] flex flex-col items-center text-center gap-5" onClick={e => e.stopPropagation()}>
             <div className="w-14 h-14 rounded-full bg-[#AFFF25]/10 border border-[#AFFF25]/30 flex items-center justify-center text-2xl">📋</div>
             <div>
               <p className="text-[#AFFF25] font-black text-lg uppercase tracking-tight mb-2">URL copiée !</p>
               <p className="text-white/70 text-sm leading-relaxed">
-                eBay va s'ouvrir dans 3 secondes.<br/>
+                Sur eBay, clique sur l'icône <span className="text-white font-bold">📷</span> dans la barre de recherche.<br/><br/>
                 Colle l'URL dans le champ <span className="text-white font-bold">"Paste an image link"</span> puis clique sur <span className="text-white font-bold">Go</span>.
               </p>
             </div>
-            <div className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
-              <span className="text-[#AFFF25] text-xl">⌘V</span>
-              <span className="text-white/60 text-xs">ou Ctrl+V pour coller</span>
-            </div>
+            <button
+              onClick={() => { setShowEbayImageTip(false); window.open(ebayImageUrl, '_blank'); }}
+              className="w-full py-4 bg-[#AFFF25] text-[#040221] rounded-full font-black uppercase tracking-widest text-sm active:scale-95 transition-transform"
+            >
+              Ouvrir eBay →
+            </button>
+            <button onClick={() => setShowEbayImageTip(false)} className="text-white/30 text-xs">Annuler</button>
           </div>
         </div>
       )}
