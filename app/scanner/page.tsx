@@ -148,6 +148,8 @@ function ScannerContent() {
 
   const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
   const [loadingSubsets, setLoadingSubsets] = useState(false);
+  const [scanExamples, setScanExamples] = useState<any[]>([]);
+  const [showCustomVariation, setShowCustomVariation] = useState(false);
 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
@@ -180,6 +182,21 @@ function ScannerContent() {
       setIsCarteOpen(true);
     }
   };
+
+  useEffect(() => {
+    const loadScanExamples = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from('scan_examples')
+        .select('brand, series, variation, sport, year, is_auto, is_patch, is_rookie, is_numbered')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(8);
+      if (data) setScanExamples(data);
+    };
+    loadScanExamples();
+  }, []);
 
   useEffect(() => {
     if (editId) {
@@ -366,8 +383,10 @@ function ScannerContent() {
   useEffect(() => {
     if (!formData.brand || !formData.year) {
       setDynamicSubsets([]);
+      setShowCustomVariation(false);
       return;
     }
+    setShowCustomVariation(false);
     const params = new URLSearchParams({ brand: formData.brand, year: formData.year });
     if (formData.series) params.set('series', formData.series);
     const playerStr = `${formData.firstname} ${formData.lastname}`.trim();
@@ -545,7 +564,10 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       const body = new FormData(); body.append("image", file);
       // 💡 On désactive l'auto-crop si l'image vient de la caméra ou a déjà été recadrée
       if (!isAlreadyCropped) {
-         body.append("auto_crop", "true"); 
+         body.append("auto_crop", "true");
+      }
+      if (scanExamples.length > 0) {
+        body.append("examples", JSON.stringify(scanExamples));
       }
 
       const res = await fetch("/api/scan", { method: "POST", body }); 
@@ -811,10 +833,13 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       const body = new FormData(); body.append("image", file);
       // 💡 On désactive l'auto-crop si l'image vient de la caméra
       if (!isAlreadyCropped) {
-         body.append("auto_crop", "true"); 
+         body.append("auto_crop", "true");
+      }
+      if (scanExamples.length > 0) {
+        body.append("examples", JSON.stringify(scanExamples));
       }
 
-      const res = await fetch("/api/scan", { method: "POST", body }); 
+      const res = await fetch("/api/scan", { method: "POST", body });
       const data = await res.json();
       
       if (!data.error) {
@@ -1134,6 +1159,22 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify({ cardId: currentCardId, keywords })
          }).catch(() => {});
+      }
+
+      if (!editId && hasBasicInfo && formData.variation && finalImageUrl && !isWishlistMode) {
+        supabase.from('scan_examples').insert([{
+          user_id: user.id,
+          image_url: finalImageUrl,
+          brand: formData.brand,
+          series: formData.series,
+          variation: formData.variation,
+          sport: formData.sport,
+          year: formData.year,
+          is_auto: formData.is_auto,
+          is_patch: formData.is_patch,
+          is_rookie: formData.is_rookie,
+          is_numbered: formData.is_numbered,
+        }]).catch(() => {});
       }
 
       if (isVerifyingBulk) {
@@ -1579,20 +1620,51 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
 
                 {/* VARIATION / SUBSET */}
                 <div className="relative">
-                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                  <select
+                    value={showCustomVariation ? '__autre__' : formData.variation}
+                    onChange={e => {
+                      if (e.target.value === '__autre__') {
+                        setShowCustomVariation(true);
+                        setFormData({...formData, variation: ''});
+                      } else {
+                        setShowCustomVariation(false);
+                        setFormData({...formData, variation: e.target.value});
+                      }
+                    }}
+                    className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"
+                  >
                     <option value="">{loadingSubsets ? 'Chargement...' : 'Variation / Subset'}</option>
                     {(dynamicSubsets.length > 0 ? dynamicSubsets : availableVariations.map((v: string) => ({value: v, label: v}))).map((s: {value: string, label: string}) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
                     ))}
-                    {formData.variation && ![...dynamicSubsets, ...availableVariations].some((s: any) => (typeof s === 'string' ? s : s.value) === formData.variation) && (
+                    {!showCustomVariation && formData.variation && ![...dynamicSubsets, ...availableVariations].some((s: any) => (typeof s === 'string' ? s : s.value) === formData.variation) && (
                       <option value={formData.variation}>{formData.variation}</option>
                     )}
+                    <option value="__autre__">— Autre (saisie libre) —</option>
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
-                  {formData.variation && (
+                  {!showCustomVariation && formData.variation && (
                     <p className="text-[10px] text-white/40 mt-1.5 px-4">{formData.variation}</p>
                   )}
                 </div>
+                {showCustomVariation && (
+                  <div className="relative mt-2">
+                    <input
+                      type="text"
+                      autoFocus
+                      placeholder="Saisir le subset (ex: BASE / Insert name)"
+                      value={formData.variation}
+                      onChange={e => setFormData({...formData, variation: e.target.value})}
+                      className="w-full bg-[#040221] border border-[#AFFF25]/50 p-3.5 rounded-full text-sm pl-4 outline-none focus:border-[#AFFF25] transition-colors text-white placeholder:text-white/30"
+                    />
+                    {formData.variation && (
+                      <button
+                        onClick={() => { setShowCustomVariation(false); setFormData({...formData, variation: ''}); }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg leading-none"
+                      >×</button>
+                    )}
+                  </div>
+                )}
                 
                 <div className="bg-white/5 rounded-2xl p-4 space-y-3 border border-white/10 mt-2">
                   {['AUTO', 'PATCH', 'ROOKIE', 'NUMÉROTÉE', 'GRADÉE'].map((l) => {

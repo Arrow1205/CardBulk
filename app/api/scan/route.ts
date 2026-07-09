@@ -10,6 +10,11 @@ export async function POST(req: Request) {
     const imageUrl = formData.get("imageUrl") as string | null;
     const imageFile = formData.get("image") as File | null;
     const autoCrop = formData.get("auto_crop") === "true";
+    const examplesRaw = formData.get("examples") as string | null;
+    let fewShotExamples: any[] = [];
+    if (examplesRaw) {
+      try { fewShotExamples = JSON.parse(examplesRaw); } catch {}
+    }
 
     let imageBuffer: Buffer;
 
@@ -61,6 +66,10 @@ export async function POST(req: Request) {
 
     const base64 = imageBuffer.toString("base64");
 
+    const fewShotSection = fewShotExamples.length > 0
+      ? `\n    EXEMPLES DE CARTES DÉJÀ VALIDÉES PAR L'UTILISATEUR (utilise ces confirmations pour affiner tes réponses) :\n${fewShotExamples.map((ex: any, i: number) => `    Exemple ${i + 1} : brand="${ex.brand}", series="${ex.series}", variation="${ex.variation}", sport="${ex.sport}", year="${ex.year}", is_auto=${ex.is_auto}, is_patch=${ex.is_patch}, is_rookie=${ex.is_rookie}, is_numbered=${ex.is_numbered}`).join('\n')}\n`
+      : '';
+
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur.
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
     MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts...).
@@ -71,7 +80,7 @@ export async function POST(req: Request) {
 
     Dictionnaire 2 — Références visuelles et subsets officiels par série (SETS) :
     ${JSON.stringify(setsReference)}
-
+    ${fewShotSection}
     PROCESSUS OBLIGATOIRE POUR LE CHAMP "variation" — SUIS CES ÉTAPES DANS L'ORDRE :
 
     ÉTAPE 1 — Identifie la marque (brand) et la série (series) visibles sur la carte.

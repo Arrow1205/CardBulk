@@ -633,9 +633,9 @@ export default function CardDetailsPage() {
                 <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold">Comment faire</p>
                 <ol className="flex flex-col gap-2.5">
                   {[
-                    { n: '1', txt: 'Copie l\'URL de ton image ci-dessous' },
-                    { n: '2', txt: 'Ouvre eBay et clique sur l\'icône 📷 dans la barre de recherche' },
-                    { n: '3', txt: 'Colle l\'URL dans "Coller le lien de l\'image"' },
+                    { n: '1', txt: 'Clique sur le bouton ci-dessous — l\'URL est copiée et eBay s\'ouvre' },
+                    { n: '2', txt: 'Sur eBay, clique sur l\'icône 📷 dans la barre de recherche' },
+                    { n: '3', txt: 'Colle l\'URL (Cmd+V) dans "Coller le lien de l\'image"' },
                     { n: '4', txt: 'Clique sur Rechercher' },
                   ].map(step => (
                     <li key={step.n} className="flex items-start gap-3">
@@ -651,10 +651,11 @@ export default function CardDetailsPage() {
                       try { navigator.clipboard.writeText(card.image_url); } catch (_) {}
                       setImageCopied(true);
                       setTimeout(() => setImageCopied(false), 2500);
+                      window.open('https://www.ebay.fr/', '_blank');
                     }}
                     className="w-full mt-1 bg-[#AFFF25]/10 border border-[#AFFF25]/30 text-[#AFFF25] px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#AFFF25]/20 active:scale-95 transition-all flex items-center justify-center gap-2"
                   >
-                    {imageCopied ? '✓ URL copiée !' : '📋 Copier l\'URL de l\'image'}
+                    {imageCopied ? '✓ URL copiée — eBay ouvert !' : '📋 Copier l\'URL + Ouvrir eBay'}
                   </button>
                 )}
               </div>

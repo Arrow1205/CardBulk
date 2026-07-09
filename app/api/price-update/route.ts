@@ -10,56 +10,54 @@ export async function POST(req: Request) {
     }
 
     const appId = process.env.EBAY_APP_ID;
-    const certId = process.env.EBAY_CERT_ID;
 
-    if (!appId || !certId) {
+    if (!appId) {
       return NextResponse.json({ success: false, error: 'Configuration Vercel manquante' }, { status: 500 });
     }
 
-    // 🌟 NOUVEAUTÉ : On actualise la date de la carte DÈS LE DÉBUT de l'opération !
-    // Comme ça, on sait que le scan a eu lieu, même s'il ne trouve rien.
+    // Actualise la date dès le début, même si aucun prix n'est trouvé
     await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', cardId);
 
-    const credentials = Buffer.from(`${appId}:${certId}`).toString('base64');
-    const tokenResponse = await fetch('https://api.ebay.com/identity/v1/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${credentials}`
-      },
-      body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope'
-    });
-
-    const tokenData = await tokenResponse.json();
-    if (!tokenData.access_token) throw new Error("eBay a refusé l'accès.");
-
+    // Finding API — findCompletedItems : ventes réussies (équivalent LH_Sold=1&LH_Complete=1)
+    // Pas besoin de token OAuth, l'App ID suffit
     const query = encodeURIComponent(keywords);
-    const searchUrl = `https://api.ebay.com/buy/browse/v1/item_summary/search?q=${query}&limit=10`;
+    const searchUrl =
+      `https://svcs.ebay.com/services/search/FindingService/v1` +
+      `?OPERATION-NAME=findCompletedItems` +
+      `&SERVICE-VERSION=1.0.0` +
+      `&SECURITY-APPNAME=${appId}` +
+      `&RESPONSE-DATA-FORMAT=JSON` +
+      `&keywords=${query}` +
+      `&itemFilter%280%29.name=SoldItemsOnly` +
+      `&itemFilter%280%29.value=true` +
+      `&paginationInput.entriesPerPage=20`;
 
-    const searchResponse = await fetch(searchUrl, {
-      headers: {
-        'Authorization': `Bearer ${tokenData.access_token}`,
-        'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US'
-      }
-    });
-
+    const searchResponse = await fetch(searchUrl);
     const searchData = await searchResponse.json();
 
-    if (!searchData.itemSummaries || searchData.itemSummaries.length === 0) {
-      return NextResponse.json({ success: false, error: 'Aucune annonce active.' });
+    const items: any[] =
+      searchData?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || [];
+
+    if (items.length === 0) {
+      return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
     }
 
     let prices: number[] = [];
-    searchData.itemSummaries.forEach((item: any) => {
-      const title = (item.title || "").toUpperCase();
-      const isGradedOrLot = title.includes('PSA') || title.includes('PCA') || title.includes('LOT') || title.includes('BGS') || title.includes('CGC');
-      if (item.price && item.price.value && !isGradedOrLot) {
-         const priceNum = parseFloat(item.price.value);
-         if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+    items.forEach((item: any) => {
+      const title = (item.title?.[0] || '').toUpperCase();
+      const isGradedOrLot =
+        title.includes('PSA') || title.includes('PCA') ||
+        title.includes('LOT') || title.includes('BGS') || title.includes('CGC');
+      const priceVal = item.sellingStatus?.[0]?.currentPrice?.[0]?.['__value__'];
+      if (priceVal && !isGradedOrLot) {
+        const priceNum = parseFloat(priceVal);
+        if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
       }
     });
 
-    if (prices.length === 0) return NextResponse.json({ success: false, error: 'Annonces exclues.' });
+    if (prices.length === 0) {
+      return NextResponse.json({ success: false, error: 'Annonces exclues (gradées ou lots).' });
+    }
 
     prices.sort((a, b) => a - b);
     if (prices.length >= 4) { prices.pop(); prices.shift(); }
