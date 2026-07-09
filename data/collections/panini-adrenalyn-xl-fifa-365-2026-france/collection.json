@@ -1,0 +1,949 @@
+{
+  "collection_id": "panini-adrenalyn-xl-fifa-365-2026-france",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2025 (octobre)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "ADRENALYN XL / FIFA 365",
+    "support": "Cartes",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "452 cartes de base",
+    "dotation_boite": "La petite boîte en métal contient 2 cartes en édition limitée"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "CORE",
+      "section": "POWERBOT1.",
+      "description": null
+    },
+    {
+      "subset": "POWER",
+      "section": "ROAD TO FIFA WORLD CUP 26FWC1.",
+      "description": null
+    },
+    {
+      "subset": "JEWEL",
+      "section": "ELITE CUTJWL1.",
+      "description": null
+    },
+    {
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1.",
+      "description": null
+    },
+    {
+      "subset": "CLUB 99",
+      "section": "CLUB 99",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "GOLDGOL1. Mohamed Salah",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Germain) Golden BallerGOL3. Khvicha Kvaratskhelia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Germain) Golden BallerGOL4. Alessandro Bastoni",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC) Golden BallerGOL7. Julián Álvarez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Club Badge",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Emile Højbjerg",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Lm16. Mason Greenwood",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS2. Gianluigi Donnarumma",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS3. Ashraf Hakimi",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS4. Nuno Mendes",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS5. Lucas Hernández",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS6. Willian Pacho",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS7. Marquinhos",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain) TitanPAS8. Lucas Beraldo",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS9. João Neves",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS10. Warren Zaïre",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Emery",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS11. Vitinha",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS12. Fabián Ruiz",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain) MagicianPAS13. Khvicha Kvaratskhelia",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS14. Kang-in Lee",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS15. Désiré Doué",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS16. Bradley Barcola",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS17. Gonçalo Ramos",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)PAS18. Ousmane Dembélé",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain) DominatorBLE1. Club Badge",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Cheek",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Jim",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS2. Bento",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS3. Nawaf Al",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Boushal",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS4. Sultan Al",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Ghannam",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS5. Salem Al",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Najdi",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS6. Mohamed Simakan",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS7. Aymeric Laporte",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC) TitanNAS8. Mohamed Al",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Fatil",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS9. Abdullah Al",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Khaibari",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS10. Ali Al",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Hassan",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS11. Otávio",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS12. Marcelo Brozović",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC) MagicianNAS13. Wesley",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS14. Ayman Yahya",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS15. Ángelo",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS16. Sadio Mané",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS17. Abdul Rahman Ghareeb",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)NAS18. Cristiano Ronaldo",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC) DominatorATM1. Club Badge",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold",
+      "mention": null,
+      "subset": "CORE",
+      "section": "POWERBOT1."
+    },
+    {
+      "numero": null,
+      "joueur": "Emiliano Martínez",
+      "mention": null,
+      "subset": "POWER",
+      "section": "ROAD TO FIFA WORLD CUP 26FWC1."
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold",
+      "mention": null,
+      "subset": "POWER",
+      "section": "ROAD TO FIFA WORLD CUP 26FWC1."
+    },
+    {
+      "numero": null,
+      "joueur": "Alisson",
+      "mention": null,
+      "subset": "JEWEL",
+      "section": "ELITE CUTJWL1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)JWL4. Francesco Acerbi",
+      "mention": null,
+      "subset": "JEWEL",
+      "section": "ELITE CUTJWL1."
+    },
+    {
+      "numero": null,
+      "joueur": "Alisson",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)FAN4. Mike Maignan",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)FAN11. Piero Hincapié",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)FAN29. Alejandro Grimaldo",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Emery",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Germain)FAN62. Jonathan Burkardt",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)FAN67. Rafael Leão",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)FAN69. Geovany Quenda",
+      "mention": null,
+      "subset": "FANS",
+      "section": "FANS' FAVOURITEFAN1."
+    },
+    {
+      "numero": "1",
+      "joueur": "Alexis Mac Allister",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "2",
+      "joueur": "Cody Gakpo",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "3",
+      "joueur": "Fabián Ruiz",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "4",
+      "joueur": "Bradley Barcola",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "5",
+      "joueur": "Granit Xhaka",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "6",
+      "joueur": "Denzel Dumfries",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "7",
+      "joueur": "Lautaro Martínez",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "8",
+      "joueur": "Santiago Giménez",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "9",
+      "joueur": "Trincão",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "10",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "11",
+      "joueur": "Giuliano Simeone",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "12",
+      "joueur": "Wojciech Szczęsny",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "13",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "14",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "15",
+      "joueur": "Kylian Mbappé",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "16",
+      "joueur": "Lautaro Martínez",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "17",
+      "joueur": "Phil Foden",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "18",
+      "joueur": "Harry Kane",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "19",
+      "joueur": "Marcus Rashford",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "20",
+      "joueur": "Dayot Upamecano",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "21",
+      "joueur": "Marc-André ter Stegen",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "22",
+      "joueur": "Florian Wirtz",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "23",
+      "joueur": "Erling Haaland",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "24",
+      "joueur": "Viktor Gyökeres",
+      "mention": null,
+      "subset": "CLUB 99",
+      "section": "CLUB 99"
+    },
+    {
+      "numero": "AUT-ALV",
+      "joueur": "Julián Alvarez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-ARA",
+      "joueur": "Ronald Araújo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-BAC",
+      "joueur": "Bradley Barcola",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-BAR",
+      "joueur": "Pablo Barrios",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-CAM",
+      "joueur": "Eduardo Camavinga",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-CAR",
+      "joueur": "Daniel Carvajal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-DPA",
+      "joueur": "Rodrigo De Paul",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-DUD",
+      "joueur": "Jerzy Dudek",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-FIG",
+      "joueur": "Luís Figo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-HAA",
+      "joueur": "Erling Haaland",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-INI",
+      "joueur": "Andrés Iniesta",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-LAR",
+      "joueur": "Henrik Larsson",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-LAU",
+      "joueur": "Michael Laudrup",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-MAL",
+      "joueur": "Paolo Maldini",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-MAR",
+      "joueur": "Lautaro Martínez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-MES",
+      "joueur": "Lionel Messi",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-OWE",
+      "joueur": "Michael Owen",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-OYA",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-PIQ",
+      "joueur": "Gerard Piqué",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-PIR",
+      "joueur": "Andrea Pirlo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-PUL",
+      "joueur": "Christian Pulisic",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-SAL",
+      "joueur": "William Saliba",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-SCH",
+      "joueur": "Bernd Schneider",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-SHE",
+      "joueur": "Alan Shearer",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-SNE",
+      "joueur": "Wesley Sneijder",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-TRE",
+      "joueur": "David Trezeguet",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-VIN",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-VIT",
+      "joueur": "Vitinha",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-YAM",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-ZAM",
+      "joueur": "Iván Zamorano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-ZEM",
+      "joueur": "Warren Zaïre-Emery",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "AUT-ZID",
+      "joueur": "Zinedine Zidane",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/005180_0.jpg",
+    "images/005180b1pr_0.jpg",
+    "images/005180b26fpf.jpg",
+    "images/005180box24_0.jpg",
+    "images/005180spafgd_0.webp",
+    "images/005180tinf_0.jpg",
+    "images/005180tinf_1.jpg",
+    "images/005180tinf_3.jpg",
+    "images/005180tinf_4.jpg",
+    "images/005180tinpf_1.jpg",
+    "images/005180tinpf_2.jpg",
+    "images/005180tinpf_3.jpg",
+    "images/005180tinpf_4.jpg",
+    "images/bandeau-fifa-365-2019-04.png",
+    "images/bandeau-fifa-365-2021-soon.png",
+    "images/bandeau-fifa-365-2021.png",
+    "images/bundle005180box-2p05.jpg",
+    "images/bundle005180box-2p08.jpg",
+    "images/bundle005180box-2p13.jpg",
+    "images/bundle005180box-2p14.jpg",
+    "images/bundle005180boxprors_2.webp",
+    "images/fifa-365-adrenalyn-xl-2026-trading-cards-autorgaph-cards-005180-d-1.png",
+    "images/fifa-365-adrenalyn-xl-2026-trading-cards-cardsmixq-005180.webp"
+  ],
+  "stats": {
+    "total_cartes": 122,
+    "total_autographes": 32,
+    "total_inserts": 85,
+    "total_images": 23,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "CLUB 99",
+      "CORE",
+      "FANS",
+      "JEWEL",
+      "POWER"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI ADRENALYN XL / FIFA 365, édité par PANINI en 2025 (octobre) pour le marché France. Il contient 452 cartes de base. Les subsets détectés sont : AUTOGRAPH, BASE, CLUB 99, CORE, FANS, JEWEL, POWER. La checklist compte 122 cartes au total, dont 32 autographes et 85 inserts."
+}

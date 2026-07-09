@@ -1,0 +1,5360 @@
+{
+  "collection_id": "panini-select-la-liga-2025-26-soccer-cards",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2026 (avril)",
+    "pays": "U.S.A.",
+    "editeur": "PANINI",
+    "serie": "SELECT / LA LIGA",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "250 cartes de base + 200 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte HOBBY BOX de :9 cartes de base parallèles5 cartes de base parallèles numérotées7 cartes spéciales par insertion ou cartes spéciales par insertion parallèles+ 3 cartes AUTOGRAPH ou MEMORABILIA"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "TERRACE",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "MEZZANINE",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "FIELD LEVEL",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "EQUALIZERS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "SELECT FUTURE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "SNAPSHOTS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Jules Kounde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Joan Garcia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Ferran Torres",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Trent Alexander-Arnold",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Franco Mastantuono",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Arda Guler",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Dean Huijsen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Alex Baena",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Marc Pubill",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Giacomo Raspadori",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Alexander Sorloth",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Conor Gallagher",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Nico Williams",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Maroan Sannadi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Mikel Jauregizar",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Aymeric Laporte",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Alejandro Rego",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Sergi Cardona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Tajon Buchanan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Pape Gueye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Santiago Mourino",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Luiz Junior",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Valentin Gomez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Cucho Hernandez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Pablo Garcia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Antony",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Pau Lopez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Pablo Duran",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Fran Beltran",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Iago Aspas",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Jones El-Abdellaoui",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "35",
+      "joueur": "Oscar Mingueza",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "36",
+      "joueur": "Alvaro Garcia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "37",
+      "joueur": "Augusto Batalla",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Jozhua Vertrouwd",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Jorge de Frutos",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Alemao",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Ante Budimir",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Victor Munoz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "43",
+      "joueur": "Sergio Herrera",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Asier Osambela",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "45",
+      "joueur": "Aimar Oroz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Mateo Joseph",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Pablo Torre",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Johan Mojica",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Leo Roman",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Vedat Muriqi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Jon Martin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "52",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "53",
+      "joueur": "Brais Mendez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Takefusa Kubo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Ander Barrenetxea",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Javi Guerra",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "57",
+      "joueur": "Luis Rioja",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Diego Lopez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "59",
+      "joueur": "Arnaut Danjuma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Pepelu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "61",
+      "joueur": "Mario Martin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Borja Mayoral",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "63",
+      "joueur": "Mauro Arambarri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Djene",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "65",
+      "joueur": "Davinchi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "66",
+      "joueur": "Luca Koleosho",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "67",
+      "joueur": "Roberto Fernandez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Javi Puado",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Pol Lozano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "70",
+      "joueur": "Ramon Terrats",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "71",
+      "joueur": "Youssef Enriquez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "72",
+      "joueur": "Carles Alena",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Carlos Vicente",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "74",
+      "joueur": "Pablo Ibanez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Lucas Boye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Azzedine Ounahi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Jhon Solis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "78",
+      "joueur": "Vladyslav Krapyvtsov",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "79",
+      "joueur": "Viktor Tsygankov",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Vitor Reis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "81",
+      "joueur": "Akor Adams",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Juanlu Sanchez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Alexis Sanchez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Lucien Agoume",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Odysseas Vlachodimos",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "86",
+      "joueur": "David Affengruber",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Rafa Mir",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Pedro Bigas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Alvaro Rodriguez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Rodrigo Mendoza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Pablo Martinez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Jeremy Toljan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Pablo Campos",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Karl Etta Eyong",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Ivan Romero",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Luka Ilic",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Josip Brekalo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "98",
+      "joueur": "Haissem Hassan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "99",
+      "joueur": "Aaron Escandell",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Santi Cazorla",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "101",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Dani Olmo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "103",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Fermin Lopez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Alejandro Balde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Marcus Rashford",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Roony Bardghji",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Pau Cubarsi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Frenkie de Jong",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "111",
+      "joueur": "Aurelien Tchouameni",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Endrick",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Gonzalo Garcia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Eduardo Camavinga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "117",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Rodrygo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "119",
+      "joueur": "Federico Valverde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Eder Militao",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "122",
+      "joueur": "Giuliano Simeone",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Johnny Cardoso",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Koke",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "126",
+      "joueur": "David Hancko",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Jan Oblak",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Thiago Almada",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "129",
+      "joueur": "Marcos Llorente",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "130",
+      "joueur": "Pablo Barrios",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "131",
+      "joueur": "Oihan Sancet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Dani Vivian",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Unai Simon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "134",
+      "joueur": "Inaki Williams",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "135",
+      "joueur": "Alex Berenguer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Jesus Areso",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "137",
+      "joueur": "Renato Veiga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "138",
+      "joueur": "Pau Navarro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Nicolas Pepe",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Georges Mikautadze",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Santi Comesana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Alberto Moleiro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Abde Ezzalzouli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Nelson Deossa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Isco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Sergi Altimira",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Angel Ortiz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "148",
+      "joueur": "Rodrigo Riquelme",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Ilaix Moriba",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Ferran Jutgla",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "151",
+      "joueur": "Bryan Zaragoza",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "152",
+      "joueur": "Javi Rodriguez",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "153",
+      "joueur": "Sergio Camello",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "154",
+      "joueur": "Andrei Ratiu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "155",
+      "joueur": "Isi Palazon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "156",
+      "joueur": "Pep Chavarria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "157",
+      "joueur": "Lucas Torro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "158",
+      "joueur": "Ruben Garcia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "159",
+      "joueur": "Enzo Boyomo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "160",
+      "joueur": "Jon Moncayola",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "161",
+      "joueur": "Samu Costa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "162",
+      "joueur": "Jan Virgili",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "163",
+      "joueur": "Marc Domenech",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "164",
+      "joueur": "Sergi Darder",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "165",
+      "joueur": "Orri Oskarsson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "166",
+      "joueur": "Alex Remiro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "167",
+      "joueur": "Sergio Gomez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "168",
+      "joueur": "Pablo Marin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "169",
+      "joueur": "Cesar Tarrega",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "170",
+      "joueur": "Hugo Duro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "171",
+      "joueur": "Andre Almeida",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "172",
+      "joueur": "Julen Agirrezabala",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "173",
+      "joueur": "Adrian Liso",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "174",
+      "joueur": "David Soria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "175",
+      "joueur": "Juan Iglesias",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "176",
+      "joueur": "Luis Milla",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "177",
+      "joueur": "Tyrhys Dolan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "178",
+      "joueur": "Marko Dmitrovic",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "179",
+      "joueur": "Omar El Hilali",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "180",
+      "joueur": "Edu Exposito",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "181",
+      "joueur": "Toni Martinez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "182",
+      "joueur": "Antonio Blanco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "183",
+      "joueur": "Antonio Sivera",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "184",
+      "joueur": "Jonny Otto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "185",
+      "joueur": "Vladyslav Vanat",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "186",
+      "joueur": "Yaser Asprilla",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "187",
+      "joueur": "Joel Roca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "188",
+      "joueur": "Arnau Martinez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "189",
+      "joueur": "Isaac Romero",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "190",
+      "joueur": "Ruben Vargas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "191",
+      "joueur": "Jose Angel Carmona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "192",
+      "joueur": "Matias Dituro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "193",
+      "joueur": "Andre Silva",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "194",
+      "joueur": "Federico Redondo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "195",
+      "joueur": "Carlos Alvarez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "196",
+      "joueur": "Roger Brugue",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "197",
+      "joueur": "Manu Sanchez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "198",
+      "joueur": "Salomon Rondon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "199",
+      "joueur": "Ilyas Chaira",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "200",
+      "joueur": "Leander Dendoncker",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "201",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "202",
+      "joueur": "Alberto Moleiro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "203",
+      "joueur": "Oihan Sancet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "204",
+      "joueur": "Javi Guerra",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "205",
+      "joueur": "Andre Almeida",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "206",
+      "joueur": "Iago Aspas",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "207",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "208",
+      "joueur": "Alex Remiro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "209",
+      "joueur": "Dani Vivian",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "210",
+      "joueur": "Ante Budimir",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "211",
+      "joueur": "Inaki Williams",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "212",
+      "joueur": "Isco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "213",
+      "joueur": "Pablo Barrios",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "214",
+      "joueur": "Javi Puado",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "215",
+      "joueur": "Trent Alexander-Arnold",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "216",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "217",
+      "joueur": "Alexis Sanchez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "218",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "219",
+      "joueur": "Pablo Torre",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "220",
+      "joueur": "Diego Lopez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "221",
+      "joueur": "David Soria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "222",
+      "joueur": "Alexander Sorloth",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "223",
+      "joueur": "Alex Berenguer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "224",
+      "joueur": "Santi Cazorla",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "225",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "226",
+      "joueur": "Unai Simon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "227",
+      "joueur": "Aimar Oroz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "228",
+      "joueur": "Takefusa Kubo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "229",
+      "joueur": "Vitor Reis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "230",
+      "joueur": "Jan Oblak",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "231",
+      "joueur": "Ferran Torres",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "232",
+      "joueur": "Bryan Zaragoza",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "233",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "234",
+      "joueur": "Conor Gallagher",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "235",
+      "joueur": "Karl Etta Eyong",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "236",
+      "joueur": "Federico Valverde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "237",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "238",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "239",
+      "joueur": "Arda Guler",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "240",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "241",
+      "joueur": "Nico Williams",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "242",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "243",
+      "joueur": "Vladyslav Vanat",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "244",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "245",
+      "joueur": "Orri Oskarsson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "246",
+      "joueur": "Hugo Duro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "247",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "248",
+      "joueur": "Dani Olmo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "249",
+      "joueur": "Mauro Arambarri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "250",
+      "joueur": "Alex Baena",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "1",
+      "joueur": "Inaki Williams",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Eduardo Camavinga",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Nico Williams",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Giacomo Raspadori",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Gerard Moreno",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Ferran Torres",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Unai Simon",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Thiago Almada",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Joan Garcia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Ante Budimir",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Aurelien Tchouameni",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Alex Remiro",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Luiz Junior",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Pablo Torre",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Conor Gallagher",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Hugo Duro",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Takefusa Kubo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Dani Olmo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Alex Berenguer",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Nico Williams",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Alexander Sorloth",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Ante Budimir",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Jon Guridi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Andre Silva",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Pau Cubarsi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Luis Milla",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Viktor Tsygankov",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Matias Moreno",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Pep Chavarria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Borja Iglesias",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Javi Puado",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Vedat Muriqi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Cucho Hernandez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Salomon Rondon",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Sergio Gomez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Juanlu Sanchez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Hugo Duro",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Pape Gueye",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Ferran Torres",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Hector Bellerin",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Jan Oblak",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Santi Comesana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Roony Bardghji",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Ilias Akhomach",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Omar El Hilali",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Mateo Joseph",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Carlos Alvarez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Renato Veiga",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Martim Neto",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Marc Pubill",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Endrick",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Victor Munoz",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Marc Domenech",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Jon Martin",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Mikel Jauregizar",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Pablo Garcia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Orri Oskarsson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Karl Etta Eyong",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Marc Bernal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Luka Sucic",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Franco Mastantuono",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Valentin Gomez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Vladyslav Vanat",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Jan Virgili",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Vitor Reis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Arda Guler",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Ronald Araujo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Joan Garcia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Sergi Cardona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Alberto Moleiro",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Juan Foyth",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Martin Valjent",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Takefusa Kubo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Javi Guerra",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "10",
+      "joueur": "David Soria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Thiago Almada",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Johnny Cardoso",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Pablo Fornals",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Rodrigo Riquelme",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Natan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Williot Swedberg",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Alvaro Garcia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Sergio Herrera",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Maroan Sannadi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Inaki Williams",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Dani Vivian",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Trent Alexander-Arnold",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Federico Valverde",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SNAPSHOTS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Vitor Reis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Federico Valverde",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Santi Cazorla",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Trent Alexander-Arnold",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Nico Williams",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Oihan Sancet",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Eder Militao",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Pau Cubarsi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Koke",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Alexis Sanchez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Arda Guler",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Alex Baena",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Orri Oskarsson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Isco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Alexander Sorloth",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Dean Huijsen",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Jan Oblak",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Franco Mastantuono",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Team Badge",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Team Badge",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "TEAM BADGES HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alex Berenguer",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Aimar Oroz",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Lucas Boye",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Aleix Febas",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Mauro Arambarri",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Portu",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Manu Sanchez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Jorge de Frutos",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Bryan Zaragoza",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Jofre Carreras",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Pablo Torre",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Sergi Altimira",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Brahim Diaz",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Santi Cazorla",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Cesar Azpilicueta",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Luis Rioja",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Georges Mikautadze",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Alex Baena",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Unai Simon",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Brais Mendez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Karl Etta Eyong",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Mikel Jauregizar",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Dean Huijsen",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Pau Cubarsi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Orri Oskarsson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Franco Mastantuono",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Giuliano Simeone",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Gonzalo Garcia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Davinchi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Arda Guler",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Vitor Reis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Alberto Moleiro",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Jan Virgili",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Pablo Garcia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Roony Bardghji",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Luka Sucic",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Jon Martin",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Javi Guerra",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Alejandro Balde",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Fermin Lopez",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Pablo Barrios",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Alvaro Carreras",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Aitor Paredes / Dani Vivian",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Alexander Sorloth / Julian Alvarez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Ante Budimir / Sergio Herrera",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Ferran Torres / Robert Lewandowski",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Fran Perez / Sergio Camello",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Borja Iglesias / Iago Aspas",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Antony / Cucho Hernandez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Alvaro Carreras / Dean Huijsen",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Carlos Soler / Goncalo Guedes",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Dani Parejo / Gerard Moreno",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Inaki Williams",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Alex Berenguer",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Alex Baena",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Alexander Sorloth",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Ante Budimir",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Carlos Vicente",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Fermin Lopez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Ferran Torres",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Borja Mayoral",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Vitor Reis",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Jorge de Frutos",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Oscar Mingueza",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Iago Aspas",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Pablo Torre",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Takuma Asano",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Pablo Garcia",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Giovani Lo Celso",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Jude Bellingham",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Ander Barrenetxea",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Alexis Sanchez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Ruben Vargas",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Arnaut Danjuma",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Andre Almeida",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Tajon Buchanan",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Georges Mikautadze",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Nico Williams",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "2",
+      "joueur": "Mikel Jauregizar",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "3",
+      "joueur": "Conor Gallagher",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "4",
+      "joueur": "Marcos Llorente",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "5",
+      "joueur": "Jan Oblak",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "6",
+      "joueur": "Enzo Boyomo",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "7",
+      "joueur": "Jon Moncayola",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "8",
+      "joueur": "Antonio Blanco",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "9",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "10",
+      "joueur": "Frenkie de Jong",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "11",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "12",
+      "joueur": "Adrian Liso",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "13",
+      "joueur": "Thomas Lemar",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "14",
+      "joueur": "Yaser Asprilla",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "15",
+      "joueur": "Isi Palazon",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "16",
+      "joueur": "Luiz Felipe",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "17",
+      "joueur": "Marcos Alonso",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "18",
+      "joueur": "Antonio Raillo",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "19",
+      "joueur": "Sergi Altimira",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "20",
+      "joueur": "Abde Ezzalzouli",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "21",
+      "joueur": "Arda Guler",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "22",
+      "joueur": "Alvaro Carreras",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "23",
+      "joueur": "Federico Valverde",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "24",
+      "joueur": "Pablo Marin",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "25",
+      "joueur": "Takefusa Kubo",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "26",
+      "joueur": "Juanlu Sanchez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "27",
+      "joueur": "Javi Guerra",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "28",
+      "joueur": "Julen Agirrezabala",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "29",
+      "joueur": "Renato Veiga",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "30",
+      "joueur": "Rafa Marin",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "1",
+      "joueur": "Maroan Sannadi",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Unai Simon",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Matteo Ruggeri",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Robin Le Normand",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Aimar Oroz",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Ander Guevara",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Antonio Sivera",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Dani Olmo",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Jules Kounde",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Djene",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Mauro Arambarri",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Arnau Martinez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Florian Lejeune",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Ferran Jutgla",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Jan Virgili",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Samu Costa",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Marc Bartra",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Cucho Hernandez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Franco Mastantuono",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Rodrygo",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Trent Alexander-Arnold",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Orri Oskarsson",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Jon Martin",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Djibril Sow",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Jose Angel Carmona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Diego Lopez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Nicolas Pepe",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Alberto Moleiro",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Fernando Morientes",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Sergio Camello",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Sonny Anderson",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Juanlu Sanchez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Abel Ruiz",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Manor Solomon",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Ronald Araujo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Marc Bernal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Gerard Moreno",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Inaki Williams",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Steve McManaman",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Gorka Guruzeta",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Omar El Hilali",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Javi Rodriguez",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Ferran Torres",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Dani Vivian",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Isaac Romero",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Bryan Gil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Fernando Hierro",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Paul Breitner",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Luka Modric",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Samuel Eto'o",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Sergino Dest",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "25",
+      "joueur": "David Silva",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Cesar Montes",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Enzo Maresca",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Ronaldo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Edu Exposito",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "30",
+      "joueur": "David Villa",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Leander Dendoncker",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "2",
+      "joueur": "Pablo Barrios",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "3",
+      "joueur": "Hector Bellerin",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "4",
+      "joueur": "Kylian Mbappe",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "5",
+      "joueur": "Vedat Muriqi",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "6",
+      "joueur": "Diego Simeone",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "7",
+      "joueur": "Isco",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "8",
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "9",
+      "joueur": "Omar Alderete",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "10",
+      "joueur": "Ander Barrenetxea",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "11",
+      "joueur": "Luiz Felipe",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "12",
+      "joueur": "Gerard Martin",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "13",
+      "joueur": "Robert Navarro",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "14",
+      "joueur": "Bryan Zaragoza",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "15",
+      "joueur": "Grady Diangana",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "16",
+      "joueur": "Borja Iglesias",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "17",
+      "joueur": "Mario Martin",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "18",
+      "joueur": "Sergio Herrera",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "19",
+      "joueur": "Dani Ceballos",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "20",
+      "joueur": "Giovani Lo Celso",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "21",
+      "joueur": "Lamine Yamal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "22",
+      "joueur": "Yerry Mina",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "23",
+      "joueur": "Henrik Larsson",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "25",
+      "joueur": "Moses Simon",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "26",
+      "joueur": "Pablo Zabaleta",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "27",
+      "joueur": "Jerzy Dudek",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "28",
+      "joueur": "Pep Guardiola",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "29",
+      "joueur": "Joan Capdevila",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "30",
+      "joueur": "Diego Forlan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "31",
+      "joueur": "Ciro Immobile",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "32",
+      "joueur": "Zlatan Ibrahimovic",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "33",
+      "joueur": "Gareth Bale",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "34",
+      "joueur": "Johnny Cardoso",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "35",
+      "joueur": "Ronald Koeman",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "36",
+      "joueur": "Martin Odegaard",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "37",
+      "joueur": "Antony",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "38",
+      "joueur": "Kang-in Lee",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "39",
+      "joueur": "Zinedine Zidane",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "40",
+      "joueur": "Alvaro Morata",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "41",
+      "joueur": "Gary Lineker",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "42",
+      "joueur": "Raul de Tomas",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "43",
+      "joueur": "Lionel Messi",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "44",
+      "joueur": "Sergio Busquets",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "45",
+      "joueur": "Hugo Sanchez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT FEW"
+    },
+    {
+      "numero": "1",
+      "joueur": "Inaki Williams / Nico Williams",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Lionel Messi / Neymar Jr",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Dani Olmo / Ferran Torres",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Brais Mendez / Mikel Oyarzabal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Ronaldo / Vini Jr",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "6",
+      "joueur": "David Silva / David Villa",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Leander Dendoncker / Santi Cazorla",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Hector Bellerin / Isco",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Mesut Ozil / Zinedine Zidane",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Johnny Cardoso / Julian Alvarez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT PAIRINGS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alex Berenguer",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Javi Puado",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Inaki Pena",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Eder Militao",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Oihan Sancet",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Joan Garcia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Santi Cazorla",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Fran Perez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Fran Gonzalez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Borja Mayoral",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Pepelu",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Benat Turrientes",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Iker Munoz",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Alberto Moleiro",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Hugo Alvarez",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Chimy Avila",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Sergi Darder",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Ricardo Quaresma",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Alejandro Frances",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Ivan Zamorano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Luis Figo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Andres Iniesta",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Gonzalo Garcia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Diego Godin",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Diego Carlos",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Michel",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Fermin Lopez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Marcelo Saracchi",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Goncalo Guedes",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Arnaut Danjuma",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Marcus Rashford",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Donny van de Beek",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Manu Sanchez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Iago Aspas",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Aurelien Tchouameni",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Dani Carvajal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Hugo Duro",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Antonio Rudiger",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Juan Cruz",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Igor Zubeldia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Xabi Alonso",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Nacho Monreal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Giuliano Simeone",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Dani Rodriguez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "20",
+      "joueur": "David Hancko",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Rafa Mir",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Alexis Sanchez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Emilio Butragueno",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Tecatito Corona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "26",
+      "joueur": "Lilian Thuram",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "27",
+      "joueur": "Carlos Vela",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "28",
+      "joueur": "Robert Pires",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "29",
+      "joueur": "Emiliano Martinez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "30",
+      "joueur": "Douglas Luiz",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "31",
+      "joueur": "Javier Mascherano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "32",
+      "joueur": "Fernando Torres",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "33",
+      "joueur": "James Rodriguez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "34",
+      "joueur": "Facundo Pellistri",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "35",
+      "joueur": "Roberto Ayala",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "36",
+      "joueur": "Thierry Henry",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "37",
+      "joueur": "Rivaldo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "38",
+      "joueur": "Neymar Jr",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "39",
+      "joueur": "Ludovic Giuly",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "40",
+      "joueur": "Romario",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "41",
+      "joueur": "Fabio Cannavaro",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "42",
+      "joueur": "Luis Suarez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "43",
+      "joueur": "Claude Makelele",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "44",
+      "joueur": "Michael Laudrup",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Aitor Paredes",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Roberto Carlos",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Sergio Gomez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Hector Fort",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Eric Garcia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Wesley Sneijder",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Jorge de Frutos",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Federico Valverde",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Jose Luis Gaya",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Antonio Blanco",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Alex Remiro",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Alvaro Djalo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Brais Mendez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Andrei Ratiu",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Raphinha",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Raul Asencio",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Paulo Gazzaniga",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Inigo Ruiz de Galarreta",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Unai Gomez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Hugo Sotelo",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Angel Di Maria",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Pol Lozano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Marcos Acuna",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Vitor Baia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Rafael Marquez",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Isi Palazon",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Edinson Cavani",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Martin Zubimendi",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Fabian Ruiz",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "2",
+      "joueur": "Mikel Jauregizar",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "3",
+      "joueur": "Alex Baena",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "4",
+      "joueur": "Mikel Oyarzabal",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "5",
+      "joueur": "Dani Olmo",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "6",
+      "joueur": "Vini Jr",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "7",
+      "joueur": "Pablo Torre",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "8",
+      "joueur": "Rodrigo Riquelme",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "9",
+      "joueur": "Aimar Oroz",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "10",
+      "joueur": "Gonzalo Garcia",
+      "mention": null,
+      "subset": "AUTOGRAPHED MEMORABILIA",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/25-26select_sc_laliga_hobby.png",
+    "images/bandeau-liga-adrenalyn-2021-2022.png",
+    "images/bandeau-panini-belgique-red-devils-2026.png",
+    "images/bandeau-panini-score-laliga-2022-23.png",
+    "images/basefield_black_oskarrson.png",
+    "images/basemezz_pepe.png",
+    "images/baseterrace_guerra.png",
+    "images/equalizers_hernandez.png",
+    "images/future_mikel.png",
+    "images/guest_610ca4c3-203e-455b-a1bf-7f786ec4768a.webp",
+    "images/pitchside_signatures_laliga_camelo.png",
+    "images/select_pairings_zadine_ozil.png",
+    "images/select_stars_signatures_laliga_romario.png",
+    "images/stained_glass_reis.png"
+  ],
+  "stats": {
+    "total_cartes": 743,
+    "total_autographes": 193,
+    "total_inserts": 210,
+    "total_images": 14,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "AUTOGRAPHED MEMORABILIA",
+      "BASE",
+      "INSERT",
+      "MEMORABILIA"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI SELECT / LA LIGA, édité par PANINI en 2026 (avril) pour le marché U.S.A.. Il contient 250 cartes de base + 200 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, AUTOGRAPHED MEMORABILIA, BASE, INSERT, MEMORABILIA. La checklist compte 743 cartes au total, dont 193 autographes et 210 inserts."
+}

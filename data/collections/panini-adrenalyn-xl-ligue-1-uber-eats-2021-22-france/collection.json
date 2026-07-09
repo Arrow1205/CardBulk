@@ -1,0 +1,2913 @@
+{
+  "collection_id": "panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-france",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2021 (septembre)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "ADRENALYN XL / LIGUE 1",
+    "support": "Cartes",
+    "version": "V.F.",
+    "contenu_global": "468 cartes"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "10",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Paul Bernardoni",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Vincent Manceau",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Mateo Pavlović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Ismaël Traoré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Romain Thomas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Ibrahim Amadou",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Pierrick Capelle",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Mathias Pereira Lage",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Angelo Fulgini",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Stéphane Bahoken",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Loïs Diony",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Ludovic Butelle",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Souleyman Doumbia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Antonin Bobichon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Lassana Coulibaly",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Thomas Mangani",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Benoît Costil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Enock Kwateng",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Edson Mexer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Laurent Koscielny",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Loris Benito",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Tom Lacoux",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "35",
+      "joueur": "Yacine Adli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "37",
+      "joueur": "Rémi Oudin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Samuel Kalu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Ui-jo Hwang",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Gaëtan Poussin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Paul Baysse",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Toma Basic",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Sékou Mara",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Gautier Larsonneur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Ronaël Pierre-Gabriel",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Brendan Chardonnet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Lilian Brassier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Romain Perraud",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "52",
+      "joueur": "Haris Belkebla",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "53",
+      "joueur": "Hugo Magnetti",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Franck Honorat",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Romain Faivre",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Irvin Cardona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Sébastien Cibois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "59",
+      "joueur": "Jean-Kévin Duverne",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Jean Lucas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Jérémy Le Douaron",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "65",
+      "joueur": "Arthur Desmas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "67",
+      "joueur": "Cédric Hountondji",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Florent Ogier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Vital N’Simba",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "70",
+      "joueur": "Johan Gastien",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "71",
+      "joueur": "Jonathan Iglesias",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "72",
+      "joueur": "Jason Berthomier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Jim Allevinah",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "74",
+      "joueur": "Jodel Dossou",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Mohamed Bayo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Ouparine Djoco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Alidu Seidu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "78",
+      "joueur": "Sofyan Chader",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "79",
+      "joueur": "David Gomis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Yohann Magnin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Jean-Louis Leca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Jonathan Clauss",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Jonathan Gradit",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "86",
+      "joueur": "Steven Fortes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Facundo Medina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Clément Michelin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Seko Fofana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Yannick Cahuzac",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Cheick Doucouré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Gaël Kakuta",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Ignatius Ganago",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Wuilker Fariñez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Loïc Badé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Tony Mauricio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Simon Banza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "98",
+      "joueur": "Corentin Jean",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "101",
+      "joueur": "Oréstis Karnézis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Zeki Çelik",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "103",
+      "joueur": "José Fonte",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Sven Botman",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Reinildo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Benjamin André",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Xeka",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Renato Sanches",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Jonathan Bamba",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Jonathan David",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "111",
+      "joueur": "Burak Yilmaz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Lucas Chevalier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Domagoj Bradarić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Luiz Araújo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Yusuf Yazici",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Jonathan Ikoné",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Jérôme Hergault",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Trevoh Chalobah",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "122",
+      "joueur": "Julien Laporte",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Andreaw Gravillon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Vincent Le Goff",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Fabien Lemoine",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "126",
+      "joueur": "Laurent Abergel",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Enzo Le Fée",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Terem Moffi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "129",
+      "joueur": "Yoane Wissa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "131",
+      "joueur": "Jérémy Morel",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Quentin Boisgard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Thomas Monconduit",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "134",
+      "joueur": "Armand Laurienté",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "138",
+      "joueur": "Léo Dubois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Jason Denayer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Marcelo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Mattia De Sciglio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Bruno Guimarães",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Lucas Paquetá",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Houssem Aouar",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Karl Toko Ekambi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Tino Kadewere",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Islam Slimani",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "148",
+      "joueur": "Julian Pollersbeck",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Sinaly Diomandé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Maxence Caqueret",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "151",
+      "joueur": "Thiago Mendes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "152",
+      "joueur": "Rayan Cherki",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "154",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "155",
+      "joueur": "Steve Mandanda",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "156",
+      "joueur": "Pol Lirola",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "157",
+      "joueur": "Leonardo Balerdi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "158",
+      "joueur": "Alvaro Gonzalez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "159",
+      "joueur": "Duje Ćaleta-Car",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "160",
+      "joueur": "Yuto Nagatomo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "161",
+      "joueur": "Boubacar Kamara",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "162",
+      "joueur": "Pape Gueye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "163",
+      "joueur": "Dimitri Payet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "164",
+      "joueur": "Dario Benedetto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "165",
+      "joueur": "Arkadiusz Milik",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "166",
+      "joueur": "Simon Ngapandouetnbu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "167",
+      "joueur": "Jordan Amavi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "168",
+      "joueur": "Lucas Perrin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "169",
+      "joueur": "Michaël Cuisance",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "170",
+      "joueur": "Valentin Rongier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "172",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "173",
+      "joueur": "Alexandre Oukidja",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "174",
+      "joueur": "Fabien Centonze",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "175",
+      "joueur": "Dylan Bronn",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "176",
+      "joueur": "John Boye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "178",
+      "joueur": "Kévin N'Doram",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "179",
+      "joueur": "Habib Maïga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "180",
+      "joueur": "Pape Matar Sarr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "181",
+      "joueur": "Victorien Angban",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "182",
+      "joueur": "Ibrahima Niane",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "183",
+      "joueur": "Papa Ndiaga Yade",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "184",
+      "joueur": "Marc-Aurèle Caillard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "185",
+      "joueur": "Thomas Delaine",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "186",
+      "joueur": "Boubakar Kouyaté",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "187",
+      "joueur": "Lamine Gueye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "188",
+      "joueur": "Opa Nguette",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "190",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "191",
+      "joueur": "Benjamin Lecomte",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "192",
+      "joueur": "Ruben Aguilar",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "193",
+      "joueur": "Djibril Sidibé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "194",
+      "joueur": "Guillermo Maripán",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "195",
+      "joueur": "Axel Disasi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "196",
+      "joueur": "Caio Henrique",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "197",
+      "joueur": "Youssouf Fofana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "198",
+      "joueur": "Aurélien Tchouaméni",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "199",
+      "joueur": "Aleksandr Golovin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "200",
+      "joueur": "Kevin Volland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "201",
+      "joueur": "Wissam Ben Yedder",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "202",
+      "joueur": "Vito Mannone",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "203",
+      "joueur": "Benoît Badiashile",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "204",
+      "joueur": "Fodé Ballo-Touré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "205",
+      "joueur": "Sofiane Diop",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "206",
+      "joueur": "Cesc Fàbregas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "208",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "209",
+      "joueur": "Jonas Omlin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "210",
+      "joueur": "Junior Sambia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "211",
+      "joueur": "Pedro Mendes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "212",
+      "joueur": "Ambroise Oyongo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "213",
+      "joueur": "Mihailo Ristić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "215",
+      "joueur": "Téji Savanier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "216",
+      "joueur": "Florent Mollet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "217",
+      "joueur": "Stephy Mavididi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "218",
+      "joueur": "Gaëtan Laborde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "219",
+      "joueur": "Andy Delort",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "220",
+      "joueur": "Dimitry Bertaud",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "221",
+      "joueur": "Nicolas Cozza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "222",
+      "joueur": "Arnaud Souquet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "223",
+      "joueur": "Joris Chotard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "224",
+      "joueur": "Damien Le Tallec",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "226",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "228",
+      "joueur": "Sébastien Corchia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "229",
+      "joueur": "Andrei Girotto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "230",
+      "joueur": "Nicolas Pallois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "231",
+      "joueur": "Dennis Appiah",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "232",
+      "joueur": "Abdoulaye Touré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "233",
+      "joueur": "Pedro Chirivella",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "234",
+      "joueur": "Ludovic Blas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "235",
+      "joueur": "Randal Kolo Muani",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "236",
+      "joueur": "Moses Simon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "237",
+      "joueur": "Kalifa Coulibaly",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "238",
+      "joueur": "Denis Petrić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "240",
+      "joueur": "Fábio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "241",
+      "joueur": "Kader Bamba",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "242",
+      "joueur": "Marcus Coco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "244",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "245",
+      "joueur": "Walter Benítez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "246",
+      "joueur": "Jordan Lotomba",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "247",
+      "joueur": "Jean-Clair Todibo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "248",
+      "joueur": "Dante",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "249",
+      "joueur": "Hassane Kamara",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "250",
+      "joueur": "Morgan Schneiderlin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "251",
+      "joueur": "Hicham Boudaoui",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "252",
+      "joueur": "Alexis Claude-Maurice",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "253",
+      "joueur": "Myziane Maolida",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "254",
+      "joueur": "Amine Gouiri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "255",
+      "joueur": "Kasper Dolberg",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "256",
+      "joueur": "Teddy Boulhendi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "257",
+      "joueur": "Youcef Atal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "258",
+      "joueur": "Pierre Lees-Melou",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "259",
+      "joueur": "Alexis Trouillet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "260",
+      "joueur": "Khephren Thuram",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "262",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "263",
+      "joueur": "Keylor Navas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "264",
+      "joueur": "Sergio Ramos",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "265",
+      "joueur": "Marquinhos",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "266",
+      "joueur": "Presnel Kimpembe",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "267",
+      "joueur": "Juan Bernat",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "268",
+      "joueur": "Idrissa Gueye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "269",
+      "joueur": "Leandro Paredes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "272",
+      "joueur": "Neymar Jr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "273",
+      "joueur": "Kylian Mbappé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "274",
+      "joueur": "Gianluigi Donnarumma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "275",
+      "joueur": "Achraf Hakimi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "276",
+      "joueur": "Georginio Wijnaldum",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "277",
+      "joueur": "Danilo Pereira",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "278",
+      "joueur": "Pablo Sarabia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "280",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "281",
+      "joueur": "Predrag Rajković",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "282",
+      "joueur": "Thomas Foket",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "283",
+      "joueur": "Wout Faes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "284",
+      "joueur": "Yunis Abdelhamid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "285",
+      "joueur": "Ghislain Konan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "286",
+      "joueur": "Moreto Cassamá",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "287",
+      "joueur": "Dion Lopy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "288",
+      "joueur": "Xavier Chavalerin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "289",
+      "joueur": "Nathanaël Mbuku",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "290",
+      "joueur": "Boulaye Dia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "291",
+      "joueur": "El Bilal Touré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "292",
+      "joueur": "Yehvann Diouf",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "293",
+      "joueur": "Valon Berisha",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "294",
+      "joueur": "Marshall Munetsi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "295",
+      "joueur": "Mathieu Cafaro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "296",
+      "joueur": "Moussa Doumbia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "297",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "299",
+      "joueur": "Alfred Gomis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "300",
+      "joueur": "Hamari Traoré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "301",
+      "joueur": "Gerzino Nyamsi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "302",
+      "joueur": "Nayef Aguerd",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "303",
+      "joueur": "Faitout Maouassa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "304",
+      "joueur": "James Léa-Siliki",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "305",
+      "joueur": "Eduardo Camavinga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "307",
+      "joueur": "Jérémy Doku",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "308",
+      "joueur": "Martin Terrier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "309",
+      "joueur": "Serhou Guirassy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "310",
+      "joueur": "Romain Salin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "311",
+      "joueur": "Brandon Soppy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "312",
+      "joueur": "Adrien Truffert",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "313",
+      "joueur": "Flavien Tait",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "314",
+      "joueur": "Jonas Martin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "316",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "317",
+      "joueur": "Jessy Moulin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "318",
+      "joueur": "Timothée Kolodziejczak",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "319",
+      "joueur": "Harold Moukoudi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "320",
+      "joueur": "Pape Abou Cissé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "321",
+      "joueur": "Miguel Trauco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "322",
+      "joueur": "Mahdi Camara",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "323",
+      "joueur": "Yvan Neyou",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "324",
+      "joueur": "Denis Bouanga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "325",
+      "joueur": "Romain Hamouma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "326",
+      "joueur": "Wahbi Khazri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "327",
+      "joueur": "Arnaud Nordin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "328",
+      "joueur": "Étienne Green",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "329",
+      "joueur": "Gabriel Silva",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "331",
+      "joueur": "Aïmen Moueffek",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "332",
+      "joueur": "Zaydou Youssouf",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "335",
+      "joueur": "Matz Sels",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "336",
+      "joueur": "Frédéric Guilbert",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "337",
+      "joueur": "Stefan Mitrović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "338",
+      "joueur": "Alexander Djiku",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "339",
+      "joueur": "Anthony Caci",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "340",
+      "joueur": "Jean-Eudes Aholou",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "341",
+      "joueur": "Jean-Ricner Bellegarde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "342",
+      "joueur": "Dimitri Liénard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "343",
+      "joueur": "Adrien Thomasson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "344",
+      "joueur": "Habib Diallo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "345",
+      "joueur": "Ludovic Ajorque",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "346",
+      "joueur": "Eiji Kawashima",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "347",
+      "joueur": "Mehdi Chahiri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "348",
+      "joueur": "Sanjin Prcić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "349",
+      "joueur": "Mahamé Siby",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "350",
+      "joueur": "Ibrahima Sissoko",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "352",
+      "joueur": "Écusson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "353",
+      "joueur": "Gauthier Gallon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "354",
+      "joueur": "Dylan Saint-Louis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "355",
+      "joueur": "Oualid El Hajjam",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "356",
+      "joueur": "Jimmy Giraudon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "357",
+      "joueur": "Yoann Salmier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "358",
+      "joueur": "Maxime Barthelmé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "359",
+      "joueur": "Florian Tardieu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "360",
+      "joueur": "Rominigue Kouamé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "361",
+      "joueur": "Dylan Chambost",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "362",
+      "joueur": "Alimami Gory",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "364",
+      "joueur": "Sébastien Renot",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "365",
+      "joueur": "Stone Mambo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "366",
+      "joueur": "Karim Azamoum",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "367",
+      "joueur": "Tristan Dingomé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "368",
+      "joueur": "Levi Lumeka",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "370",
+      "joueur": "Vincent Manceau",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "371",
+      "joueur": "Angelo Fulgini",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "373",
+      "joueur": "Rémi Oudin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "374",
+      "joueur": "Gautier Larsonneur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "375",
+      "joueur": "Irvin Cardona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "376",
+      "joueur": "Florent Ogier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "377",
+      "joueur": "Jonathan Iglesias",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "378",
+      "joueur": "Jonathan Clauss",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "379",
+      "joueur": "Seko Fofana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "380",
+      "joueur": "Zeki Çelik",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "381",
+      "joueur": "Andreaw Gravillon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "382",
+      "joueur": "Fabien Lemoine",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "385",
+      "joueur": "Duje Ćaleta-Car",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "386",
+      "joueur": "Alexandre Oukidja",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "387",
+      "joueur": "Habib Maïga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "388",
+      "joueur": "Guillermo Maripán",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "389",
+      "joueur": "Pedro Mendes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "390",
+      "joueur": "Florent Mollet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "391",
+      "joueur": "Andrei Girotto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "392",
+      "joueur": "Moses Simon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "393",
+      "joueur": "Dante",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "394",
+      "joueur": "Pierre Lees-Melou",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "395",
+      "joueur": "Presnel Kimpembe",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "396",
+      "joueur": "Predrag Rajković",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "397",
+      "joueur": "Yunis Abdelhamid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "398",
+      "joueur": "Nayef Aguerd",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "399",
+      "joueur": "Benjamin Bourigeaud",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "400",
+      "joueur": "Romain Hamouma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "401",
+      "joueur": "Wahbi Khazri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "402",
+      "joueur": "Alexander Djiku",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "403",
+      "joueur": "Adrien Thomasson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "404",
+      "joueur": "Jimmy Giraudon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "406",
+      "joueur": "Mehdi Zerkane",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "407",
+      "joueur": "Romain Faivre",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "408",
+      "joueur": "Loïc Badé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "409",
+      "joueur": "Sven Botman",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "410",
+      "joueur": "Terem Moffi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "411",
+      "joueur": "Maxence Caqueret",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "412",
+      "joueur": "Rayan Cherki",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "413",
+      "joueur": "Pape Gueye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "414",
+      "joueur": "Pape Matar Sarr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "415",
+      "joueur": "Sofiane Dio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "416",
+      "joueur": "Aurélien Tchouaméni",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "417",
+      "joueur": "Nicolas Cozza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "418",
+      "joueur": "Randal Kolo Muani",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "419",
+      "joueur": "Jean-Clair Todibo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "420",
+      "joueur": "Khephren Thuram",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "421",
+      "joueur": "Dion Lopy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "422",
+      "joueur": "Adrien Truffert",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "424",
+      "joueur": "Anthony Lopes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "425",
+      "joueur": "Benjamin Lecomte",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "426",
+      "joueur": "Alban Lafont",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "428",
+      "joueur": "Youssouf Fofana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "429",
+      "joueur": "Jordan Ferri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "430",
+      "joueur": "Morgan Schneiderlin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "431",
+      "joueur": "Idrissa Gueye",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "433",
+      "joueur": "Mohamed Bayo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "434",
+      "joueur": "Jonathan David",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "435",
+      "joueur": "Tino Kadewere",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "436",
+      "joueur": "Andy Delort",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "437",
+      "joueur": "Kasper Dolberg",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "438",
+      "joueur": "Boulaye Dia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "439",
+      "joueur": "Serhou Guirassy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "440",
+      "joueur": "Ludovic Ajorque",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "442",
+      "joueur": "Pur-Sang et Or",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "443",
+      "joueur": "Hat-Ch’trick",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "444",
+      "joueur": "Octo’Gones",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "445",
+      "joueur": "Savants de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "446",
+      "joueur": "Les Petits Princes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "447",
+      "joueur": "Super Hérault",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "448",
+      "joueur": "Riviera Connection",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "449",
+      "joueur": "Voix Royale",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "451",
+      "joueur": "Gaël Kakuta",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "452",
+      "joueur": "Reinildo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "453",
+      "joueur": "Benjamin André",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "454",
+      "joueur": "Jonathan Bamba",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "455",
+      "joueur": "Lucas Paquetá",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "456",
+      "joueur": "Karl Toko Ekambi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "457",
+      "joueur": "Boubacar Kamara",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "458",
+      "joueur": "Dimitri Payet",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "459",
+      "joueur": "Arkadiusz Milik",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "460",
+      "joueur": "Aleksandr Golovin",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "462",
+      "joueur": "Téji Savanier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "463",
+      "joueur": "Gaëtan Laborde",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "464",
+      "joueur": "Amine Gouiri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "465",
+      "joueur": "Keylor Navas",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "466",
+      "joueur": "Marquinhos",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-ligue-1-cartes-2021-22-1.png",
+    "images/bandeau-ligue-1-cartes-2021-22-2.png",
+    "images/bandeau-ligue-1-cartes-2023-24.png",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-blister-de-7-pochettes.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-boite-de-10-pochettes.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-carte-edition-limitee-houssem-aouar.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-carte-edition-limitee-kylian-mbappe.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-carte-edition-limitee-renato-sanches.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-carte-edition-limitee-sergio-ramos.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-carte-edition-limitee-steve-mandanda.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-carte-edition-limitee-wissam-ben-yedder.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-pack-stars.png",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-pack-supporter.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-pochette-fat-pack-de-30-cartes.jpg",
+    "images/panini-adrenalyn-xl-ligue-1-uber-eats-2021-22-starter-pack-de-demarrage.jpg"
+  ],
+  "stats": {
+    "total_cartes": 409,
+    "total_autographes": 0,
+    "total_inserts": 0,
+    "total_images": 15,
+    "subsets_detectes": [
+      "BASE"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI ADRENALYN XL / LIGUE 1, édité par PANINI en 2021 (septembre) pour le marché France. Il contient 468 cartes. Les subsets détectés sont : BASE. La checklist compte 409 cartes au total, dont 0 autographes et 0 inserts."
+}

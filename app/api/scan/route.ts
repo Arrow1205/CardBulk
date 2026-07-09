@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
-import TYPE_CARTE from '@/data/type-carte.json'; 
+import TYPE_CARTE from '@/data/type-carte.json';
+import SET_DATA from '@/data/sets.json';
 
 export async function POST(req: Request) {
   try {
@@ -42,26 +43,42 @@ export async function POST(req: Request) {
       }
     }
 
+    // Dictionnaire visual_hints + common_subsets par marque/série
+    const setsReference: any = {};
+    for (const brand of (SET_DATA.brands || []) as any[]) {
+      setsReference[brand.name] = {};
+      if (brand.sports) {
+        for (const sets of Object.values(brand.sports) as any[][]) {
+          for (const set of sets) {
+            setsReference[brand.name][set.name] = {
+              visual_hints: set.visual_hints,
+              common_subsets: set.common_subsets
+            };
+          }
+        }
+      }
+    }
+
     const base64 = imageBuffer.toString("base64");
 
-    const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur. 
+    const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur.
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
     MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts...).
-    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION.
-    
-    Voici ton dictionnaire officiel des règles de variations :
+    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION (SUBSET).
+
+    Dictionnaire 1 — Règles visuelles de variation par marque (TYPE_CARTE) :
     ${JSON.stringify(aiVariationsRules)}
-    
-    RÈGLES ABSOLUES POUR LA VARIATION :
-    1. Identifie d'abord la marque (brand).
-    2. Cherche dans le dictionnaire ci-dessus les 'clues' qui correspondent à l'image.
-    3. ⚠️ EXCEPTION : Si la variation trouvée est 'Numbered Color Parallels' ou similaire, NE RENVOIE PAS ce nom générique. Renvoie la couleur dominante et la numérotation (ex: 'Red /299' ou 'Gold /10').
-    
-    RÈGLES STRICTES D'IDENTIFICATION DES VARIATIONS :
-    1. DÉFINITION D'UNE CARTE "BASE" : Design standard. Une carte métallique Topps Chrome sans bordure de couleur est une Base.
-    2. DÉFINITION D'UN "INSERT" : Nom de sous-collection imprimé (ex: "The Greats").
-    3. DÉFINITION D'UN "REFRACTOR" / "PARALLEL" : Bordure de couleur nette, motif géométrique holographique ou numéro de série (ex: "95/99").
-    4. LA RÈGLE DU DOUTE : Si rien de spécial n'est détecté, c'est une "Base".
+
+    Dictionnaire 2 — Références visuelles et subsets officiels par série (SETS) :
+    ${JSON.stringify(setsReference)}
+
+    RÈGLES ABSOLUES POUR LE CHAMP "variation" :
+    1. Le champ "variation" représente le SUBSET de la carte (BASE, AUTOGRAPH, INSERT, MEMORABILIA, etc.).
+    2. Identifie d'abord la marque (brand) et la série (series).
+    3. Consulte le Dictionnaire 2 pour trouver les "common_subsets" de cette série — renvoie l'un d'eux si applicable.
+    4. Utilise le Dictionnaire 1 pour affiner via les indices visuels.
+    5. ⚠️ Si la variation trouvée est un PARALLEL (Refractor, Gold, couleur), NE RENVOIE PAS ce nom générique comme variation. Renvoie la couleur et la numérotation (ex: 'Gold /10', 'Red /299') dans le champ "variation".
+    6. LA RÈGLE DU DOUTE : Si rien de spécial, renvoie "Base".
 
     Renvoie UNIQUEMENT un JSON strict avec ces clés exactes :
     {

@@ -1,0 +1,3312 @@
+{
+  "collection_id": "panini-adrenalyn-xl-uefa-euro-2020-2021-kick-off-fiche-signale-tique-france",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2021 (mars)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "ADRENALYN XL / UEFA EURO",
+    "support": "Cartes",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "405 cartes dont 213 spéciales",
+    "dotation_boite": "LES CARTES \"LIMITED EDITION\" Pack de démarrage (2 cartes) Kylian Mbappé/FRA Cristiano Ronaldo/POR Pack Supporter (1 carte aléatoire parmi 3 modèles) Kévin De Bruyne/BEL Antoine Griezmann/FRA Marcus Rashford/ANG Boîte en métal (3 cartes) Robert Lewandowski/POL Paul Pogba/FRA Sergio Ramos/SPA Pochette Premium (1 carte aléatoire parmi 8 modèles) Dries Mertens/BEL Christian Eriksen/DAN Harry Maguire/ENG Olivier Giroud/FRA Memphis Depay/NED Arkadiusz Milik/POL João Cancelo/POR Aaron Ramsey/WAL Pochette Premium Or (3 cartes) Gianluigi Donnarumma/ITA Ansu Fati/SPA Luka Modrić/CRO"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "1. Kevin De Bruyne",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Luka Modrić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Harry Kane",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Kylian Mbappé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Invincible",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Gianluigi Donnarumma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Matthijs de Ligt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Robert Lewandowski",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Cristiano Ronaldo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Pavao Pervan",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Stefan Lainer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "12. David Alaba",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Martin Hinteregger",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Marcel Sabitzer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Xaver Schlager",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Christoph Baumgartner",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Marko Arnautovic",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Thibaut Courtois",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Thomas Meunier",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Timothy Castagne",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Kevin De Bruyne",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Youri Tielemans",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Eden Hazard",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Romelu Lukaku",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Dries Mertens",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Dominic Livaković",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Borba Barišić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Nikola Vlašić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Mateo Kovačić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Marcelo Brozović",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Bruno Petković",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Ivan Perišić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Andrej Kramarić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Jan Boril",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Vladimir Coufal",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Ondřej Čelůstka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Jakob Jankto",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Alex Král",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Lukáš Masopust",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Tomáš Souček",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Matěj Vydra",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Kasper Schmeichel",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Andreas Christensen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Pierre Emile Højberg",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Daniel Wass",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "51. Yussuf Poulsen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "52. Robert Skov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "53. Martin Braithwaite",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "54. Kasper Dolberg",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "55. Jordan Pickford",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "56. Kieran Trippier",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "57. Harry Maguire",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "58. Trent Alexander",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "59. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "60. Mason Mount",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "61. Harry Kane",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "62. Jadon Sancho",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "63. Raheem Sterling",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "64. David De Gea",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "65. Pau Torres",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "66. José Gayà",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "67. Thiago",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "68. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "69. Rodri",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "70. Ferran Torres",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "71. Ansu Fati",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "72. Álvaro Morata",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "73. Jere Uronen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "74. Paulus Arajuuri",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "75. Jukka Raitala",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "76. Glen Kamara",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "77. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "78. Robin Lod",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "79. Fredrik Jensen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "80. Joel Pohjanpalo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "81. Teemu Pukki",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "82. Lucas Hernández",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "83. Clément Lenglet",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "84. Dayot Upamecano",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "85. Adrien Rabiot",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "86. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "87. Paul Pogba",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "88. Anthony Martial",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "89. Kylian Mbappé",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "90. Olivier Giroud",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "91. Antonio Rüdiger",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "92. Matthias Ginter",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "93. Emre Can",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "94. Julian Brandt",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "95. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "96. Julian Draxler",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "97. Leroy Sané",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "98. Timo Werner",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "99. Serge Gnabry",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "100. Ádám Lang",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "101. Willi Orban",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "102. Zsolt Kalmar",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "103. Dávid Sigér",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "104. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "105. Ádám Szalai",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "106. Nemanja Nikolić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "107. Roland Sallai",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "108. Filip Holender",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "109. Gianluigi Donnarumma",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "110. Leonardo Bonucci",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "111. Alessandro Florenzi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "112. Nicolò Barella",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "113. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "114. Jorginho",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "115. Lorenzo Pellegrini",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "116. Ciro Immobile",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "117. Federico Chiesa",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "118. Stole Dimitrievski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "119. Darko Velkovski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "120. Arijan Ademi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "121. Enis Bardhi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "122. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "123. Eljif Elmas",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "124. Ezglan Alloski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "125. Boban Nikolov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "126. Ilija Nestorovski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "127. Jasper Cillesen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "128. Matthijs de Ligt",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "129. Nathan Aké",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "130. Frenkie de Jong",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "131. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "132. Donny van de Beek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "133. Luuk de Jong",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "134. Memphis Depay",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "135. Quincy Promes",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "136. Wojciech Szczęsny",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "137. Tomasz Kędziora",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "138. Jan Bedarnek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "139. Bartosz Bereszyński",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "140. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "141. Mateusz Klich",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "142. Piot Zieliński",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "143. Arkadiusz Milik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "144. Robert Lewandowski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "145. Rúben Dias",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "146. Raphaël Guerreiro",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "147. João Cancelo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "148. Bruno Fernandes",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "149. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "150. Bernardo Silva",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "151. Rúben Neves",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "152. Cristiano Ronaldo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "153. João Félix",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "154. Anton Shunin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "155. Andrei Semenov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "156. Georgi Dzhikiya",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "157. Mário Fernandes",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "158. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "159. Roman Zobnin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "160. Magomed Ozdoev",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "161. Anton Miranchuk",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "162. Artem Dzyuba",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "163. Kieran Tierney",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "164. Stuart Armstrong",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "165. Scott Mc",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Tominay",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "166. Ryan Christie",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "167. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "168. Callum Mc",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Gregor",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "169. Ryan Jack",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "170. Oliver Mc",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Burnie",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "171. Lyndon Davies",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "172. Yann Sommer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "173. Nico Elvedi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "174. Fabian Schär",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "175. Manuel Akanji",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "176. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "177. Remo Freuler",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "178. Granit Xhaka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "179. Xherdan Shaqiri",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "180. Haris Seferović",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "181. Marek Rodák",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "182. Martin Vaijent",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "183. Milan Škriniar",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "184. Patrik Hrošovský",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "185. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "186. Ondrej Duda",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "187. Stanislav Lobotka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "188. Róbert Mak",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "189. Róbert Boženík",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "190. Robin Olsen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "191. Pontis Jansson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "192. Victor Nilsson Lindelöf",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "193. Ludwig Augustinsson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "194. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "195. Viktor Claesson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "196. Kristoffer Olsson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "197. Emil Forsberg",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "198. Dejan Kulusevski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "199. Mert Günok",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "200. Merih Demiral",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "201. Çağlar Söyüncü",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "202. Zeki Çelik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "203. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "204. Umut Meraş",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "205. Cengiz Ünder",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "206. Yusuf Yazici",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "207. Kenan Karaman",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "208. Eduard Sobol",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "209. Oleksandr Karaveev",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "210. Mykola Matviyenko",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "211. Oleksandr Zinchenko",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "212. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "213. Ruslan Malinovskyi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "214. Taras Stepanenko",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "215. Viktor Tsygankov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "216. Roman Yaremchuk",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "217. Connor Roberts",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "218. Tom Lockyer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "219. Joe Rodon",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "220. Ethan Ampadu",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "221. Second Skin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "222. Daniel James",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "223. Harry Wilson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "224. Aaron Ramsey",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "225. Kieffer Moore",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "226. Aleksandr Dragovic",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "227. Julian Baumgartlinger",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "228. Stefan Ilsanker",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "229. Toby Alderweireld",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "230. Jan Vertonghen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "231. Axel Witsel",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "232. Dejan Lovren",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "233. Domagoj Vida",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "234. Luka Modrić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "235. Tomáš Vaclík",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "236. Pavel Kadeřábek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "237. Vladimir Darida",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "238. Simon Kjær",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "239. Christian Eriksen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "240. Thomas Delaney",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "241. Kyle Walker",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "242. Eric Dier",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "243. Marcus Rashford",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "244. Sergio Ramos",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "245. Jesús Navas",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "246. Sergio Busquets",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "247. Lukas Hradecky",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "248. Joona Toivio",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "249. Tim Sparv",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "250. Hugo Lloris",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "251. Raphaël Varane",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "252. Antoine Griezmann",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "253. Manuel Neuer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "254. Joshua Kimmich",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "255. Toni Kroos",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "256. Péter Gulácsi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "257. Ádám Nagy",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "258. Dominik Szoboszlai",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "259. Giorgio Chiellini",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "260. Marco Verratti",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "261. Lorenzo Insigne",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "262. Stefan Ristovski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "263. Aleksandar Trajkovski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "264. Goran Pandev",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "265. Daley Blind",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "266. Virgil van Dijk",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "267. Georginio Wijnaldum",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "268. Kamil Glik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "269. Grzegorz Krychowiak",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "270. Kamil Grosicki",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "271. Rui Patrício",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "272. Pepe",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "273. Danilo Pereira",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "274. Fedor Kudryashov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "275. Yuri Zhirkov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "276. Aleksei Ionov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "277. David Marshall",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "278. Andrew Robertson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "279. John Mc",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Ginn",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "280. Ricardo Rodriguez",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "281. Denis Zakaria",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "282. Breel Embolo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "283. Peter Pekarik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "284. Juraj Kucka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "285. Marek Hamsik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "286. Mikael Lustig",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "287. Sebastian Larsson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "288. Albin Ekdal",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "289. Hakan Çalhanoğlu",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "290. Ozan Tufan",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "291. Burak Yilmaz",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "292. Andriy Pyatov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "293. Yavhen Konoplyanka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "294. Andriy Yarmolenko",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "295. Wayne Hennessey",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "296. Ben Davies",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "297. Gareth Bale",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "298. Thibaut Courtois",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "299. Dominic Livaković",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "300. Kasper Schmeichel",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "301. Jordan Pickford",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "302. David De Gea",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "303. Jasper Cillesen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "304. Yann Sommer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "305. Robin Olsen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "306. Mert Günok",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "307. Martin Hinteregger",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "308. Clément Lenglet",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "309. Antonio Rüdiger",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "310. Leonardo Bonucci",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "311. Nathan Aké",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "312. Jan Bedarnek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "313. Rúben Dias",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "314. Georgi Dzhikiya",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "315. Nico Elvedi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "316. Milan Škriniar",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "317. Victor Nilsson Lindelöf",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "318. Çağlar Söyüncü",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "319. Mateo Kovačić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "320. Alex Král",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "321. Pierre Emile Højberg",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "322. Thiago",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "323. Glen Kamara",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "324. Julian Draxler",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "325. Jorginho",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "326. Eljif Elmas",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "327. Donny van de Beek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "328. Rúben Neves",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "329. Granit Xhaka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "330. Daniel James",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "331. Marko Arnautovic",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "332. Dries Mertens",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "333. Andrej Kramarić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "334. Yussuf Poulsen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "335. Álvaro Morata",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "336. Olivier Giroud",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "337. Ciro Immobile",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "338. Memphis Depay",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "339. Arkadiusz Milik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "340. Haris Seferović",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "341. Kenan Karaman",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "342. Roman Yaremchuk",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "343. Stefan Posch",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "343. Aleksandr Dragovic",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "344. Jérémy Doku",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "344. Yannick Carrasco",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "345. Ivan Perišić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "345. Josip Brekalo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "346. Adam Hložek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "346. Matěj Vydra",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "347. Joakim Mæhle",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "347. Daniel Wass",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "348. Declan Rice",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "348. Jordan Henderson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "349. Dani Olmo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "349. Sergio Busquets",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "350. Paulus Arajuuri",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "350. Sauli Väisänen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "351. Eduardo Camavinga",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Golo Kanté",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "352. Toni Kroos",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "352. Kai Havertz",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "353. Ádám Szalai",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "353. Willi Orban",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "354. Moise Kean",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "354. Ciro Immobile",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "355. Kamil Glik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "355. Sebastian Walukiewicz",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "356. Aleksandr Mostovoi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "356. Denis Cheryshev",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "357. Djibril Sow",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "357. Granit Xhaka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "358. Alexander Isak",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "358. Marcus Berg",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "359. Ahmed Kutucu",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "359. Burak Yilmaz",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "360. Illya Zabarnyi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "360. Serhiy Kryvtsov",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "361. Xaver Schlager",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "361. Christoph Baumgartner",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "361. Marcel Sabitzer",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "362. Yannick Carrasco",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "362. Youri Tielemans",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "362. Axel Witsel",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "363. Luka Modrić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "363. Mateo Kovačić",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "363. Marcelo Brozović",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "364. Vladimir Coufal",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "364. Tomáš Vaclík",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "364. Jan Boril",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "365. Yussuf Poulsen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "365. Martin Braithwaite",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "365. Kasper Dolberg",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "366. Raheem Sterling",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "366. Jadon Sancho",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "366. Harry Kane",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "367. Pau Torres",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "367. David De Gea",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "367. Sergio Ramos",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "368. Robin Lod",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "368. Glen Kamara",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "368. Tim Sparv",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "369. Dayot Upamecano",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "369. Hugo Lloris",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "369. Raphaël Varane",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "370. Marco Verratti",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "370. Jorginho",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "370. Nicolo Barella",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "371. Frenkie de Jong",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "371. Donny van de Beek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "371. Georginio Wijnaldum",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "372. Kamil Glik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "372. Wojciech Szczęsny",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "372. Jan Bedarnek",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "373. Bernardo Silva",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "373. Cristiano Ronaldo",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "373. João Félix",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "374. Magomed Ozdoev",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "374. Roman Zobnin",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "374. Anton Miranchuk",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "375. Victor Nilsson Lindelöf",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "375. Robin Olsen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "375. Pontis Jansson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "376. Merih Demiral",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "376. Ozan Kabak",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "376. Zeki Çelik",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "377. Oleksandr Zinchenko",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "377. Taras Stepanenko",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "377. Ruslan Malinovskyi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "378. Daniel James",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "378. Gareth Bale",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "378. Kieffer Moore",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "379. Eden Hazard",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "380. Tomáš Souček",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "381. Jason Sancho",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "382. Rodri",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "383. Paul Pogba",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "384. Julian Brandt",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "385. Frenkie de Jong",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "386. Bernardo Silva",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "387. Andrew Robertson",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "388. David Alaba",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "389. Marcelo Brozović",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "390. Raheem Sterling",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "391. Antoine Griezmann",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "392. Virgil van Dijk",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "393. Mário Fernandes",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "394. Merih Demiral",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "395. Ruslan Malinovskyi",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "396. Gareth Bale",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "397. Youri Tielemans",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "398. Christian Eriksen",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "399. Sergio Ramos",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "400. Teemu Pukki",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "401. Marco Verratti",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "402. Piot Zieliński",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "403. João Félix",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "404. Granit Xhaka",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    },
+    {
+      "numero": null,
+      "joueur": "405. Dejan Kulusevski",
+      "mention": null,
+      "subset": "TEAM MATE",
+      "section": "SECOND SKIN"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-euro-2020-kick-off-2021-allemagne.png",
+    "images/bandeau-euro-2020-kick-off-2021-soon.png",
+    "images/cards_type_defensive-rocks.jpg",
+    "images/cards_type_fans-favourites.jpg",
+    "images/cards_type_goal-machines.jpg",
+    "images/cards_type_goal-stoppers.jpg",
+    "images/cards_type_jewels.jpg",
+    "images/cards_type_key-players.jpg",
+    "images/cards_type_maestro-prodigies.jpg",
+    "images/cards_type_power-trios.jpg",
+    "images/cards_type_second_skins.jpg",
+    "images/cards_type_secret-heroes.jpg",
+    "images/cards_type_shinging-stars.jpg",
+    "images/cards_type_team-mates.jpg",
+    "images/panini-adrenalyn-xl-euro-2020-kick-off-2021-boite-de-24-pochettes.png",
+    "images/panini-adrenalyn-xl-euro-2020-kick-off-2021-france-blister-de-7-pochettes.jpg",
+    "images/panini-adrenalyn-xl-euro-2020-kick-off-2021-france-boite-metal-collector-avec-cartes-limited-edition.jpg",
+    "images/panini-adrenalyn-xl-euro-2020-kick-off-2021-france-fatpack-de-26-cartes.jpg",
+    "images/panini-adrenalyn-xl-euro-2020-kick-off-2021-france-starter-pack-de-demarrage-avec-cartes-limited-edition.jpg",
+    "images/panini-adrenalyn-xl-uefa-euro-2020-kick-off-2021-pack-supporter-4-pochettes-carte-limited-edition-de-bruyne.jpg",
+    "images/panini-adrenalyn-xl-uefa-euro-2020-kick-off-2021-pack-supporter-4-pochettes-carte-limited-edition-griezmann.jpg",
+    "images/panini-adrenalyn-xl-uefa-euro-2020-kick-off-2021-pack-supporter-4-pochettes-carte-limited-edition-rashford.jpg"
+  ],
+  "stats": {
+    "total_cartes": 464,
+    "total_autographes": 0,
+    "total_inserts": 455,
+    "total_images": 22,
+    "subsets_detectes": [
+      "BASE",
+      "TEAM MATE"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI ADRENALYN XL / UEFA EURO, édité par PANINI en 2021 (mars) pour le marché France. Il contient 405 cartes dont 213 spéciales. Les subsets détectés sont : BASE, TEAM MATE. La checklist compte 464 cartes au total, dont 0 autographes et 455 inserts."
+}

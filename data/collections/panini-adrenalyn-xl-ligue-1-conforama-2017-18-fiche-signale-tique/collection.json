@@ -1,0 +1,36 @@
+{
+  "collection_id": "panini-adrenalyn-xl-ligue-1-conforama-2017-18-fiche-signale-tique",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2017 (août)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "ADRENALYN XL / LIGUE 1",
+    "support": "Cartes",
+    "version": "V.F.",
+    "contenu_global": "471 cartes + 100 cartes (mise à jour en novembre 2017)"
+  },
+  "subsets": [],
+  "checklist": [],
+  "cartes_rares": [],
+  "images": [
+    "images/LIGUE-1-BOITE-CARTON-24-POCHETTES-e1545425526744.jpg",
+    "images/bandeau-ligue-1-cartes-2023-24.png",
+    "images/bandeau-ligue1-2019-2020.png",
+    "images/bandeau-ligue1-2020-2021.png",
+    "images/default.jpg",
+    "images/ligue-1-box-e1545425101202.jpg",
+    "images/ligue-1-pochettes-par-10.jpg",
+    "images/ligue-1-pochettes-par-6.jpg",
+    "images/ligue-1-premium.jpg",
+    "images/ligue-1-starter-pack.jpg"
+  ],
+  "stats": {
+    "total_cartes": 0,
+    "total_autographes": 0,
+    "total_inserts": 0,
+    "total_images": 10,
+    "subsets_detectes": []
+  },
+  "gemini_context": "Ce set est le PANINI ADRENALYN XL / LIGUE 1, édité par PANINI en 2017 (août) pour le marché France. Il contient 471 cartes + 100 cartes (mise à jour en novembre 2017). La checklist compte 0 cartes au total, dont 0 autographes et 0 inserts."
+}

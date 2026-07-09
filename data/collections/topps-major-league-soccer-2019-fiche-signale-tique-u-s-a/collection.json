@@ -1,0 +1,37 @@
+{
+  "collection_id": "topps-major-league-soccer-2019-fiche-signale-tique-u-s-a",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2019 (mars)",
+    "pays": "U.S.A.",
+    "editeur": "TOPPS",
+    "serie": "MAJOR LEAGUE SOCCER",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "200 cartes"
+  },
+  "subsets": [],
+  "checklist": [],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-minions-02.png",
+    "images/bandeau-topps-now-mls-2022.png",
+    "images/bandeau-topps-stars-wars-2021-mandalorian.png",
+    "images/topps-major-league-soccer-2019-carte-johnson.jpg",
+    "images/topps-major-league-soccer-2019-carte-kaku.jpg",
+    "images/topps-major-league-soccer-2019-carte-martinez.jpg",
+    "images/topps-major-league-soccer-2019-carte-rooney.jpg",
+    "images/topps-major-league-soccer-2019-carte-techera.jpg",
+    "images/topps-major-league-soccer-2019-carte-vela.jpg",
+    "images/topps-major-league-soccer-2019-hobby-box.png",
+    "images/topps-major-league-soccer-2019-value-box.png"
+  ],
+  "stats": {
+    "total_cartes": 0,
+    "total_autographes": 0,
+    "total_inserts": 0,
+    "total_images": 11,
+    "subsets_detectes": []
+  },
+  "gemini_context": "Ce set est le TOPPS MAJOR LEAGUE SOCCER, édité par TOPPS en 2019 (mars) pour le marché U.S.A.. Il contient 200 cartes. La checklist compte 0 cartes au total, dont 0 autographes et 0 inserts."
+}

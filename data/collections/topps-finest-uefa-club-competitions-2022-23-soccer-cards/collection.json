@@ -1,0 +1,2288 @@
+{
+  "collection_id": "topps-finest-uefa-club-competitions-2022-23-soccer-cards",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2023 (septembre)",
+    "pays": "U.S.A. Distribué notamment en France",
+    "editeur": "TOPPS",
+    "serie": "FINEST / UEFA CHAMPIONS LEAGUE / UEFA EUROPA LEAGUE",
+    "support": "Cartes chromées",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "170 cartes de base + 65 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte MASTER BOX de : nombreuses cartes parallèles par insertion + 2 cartes AUTOGRAPH"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "FINEST MOMENTS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "THE MAN",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "DUAL",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "THE MAN",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Sergiño Dest - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Lucas Gourna-Douath - FC Salzburg",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Manuel Ugarte - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Karim Benzema - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Thomas Müller - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Youssoufa Moukoko - Borussia Dortmund",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Harry Kane - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Daichi Kamada - Eintracht Frankfurt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Youri Regeer - AFC Ajax",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Mathys Tel - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Hugo Ekitike - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Manuel Neuer - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Gonçalo Borges - FC Porto",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Giovanni Reyna - Borussia Dortmund",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Jude Bellingham - Borussia Dortmund",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Nicolò Barella - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Trent Alexander-Arnold - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Andreas Schjelderup - SL Benfica",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Luka Modrić - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Darwin Núñez - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Reece James - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Heung-min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Karim Adeyemi - Borussia Dortmund",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Vini Jr. - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Benjamin Sesko - FC Salzburg",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Gonçalo Ramos - SL Benfica",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "35",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Mykhailo Mudryk - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Joško Gvardiol - RB Leipzig",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Alphonso Davies - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Edson Álvarez - AFC Ajax",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Daizen Maeda - Celtic FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "43",
+      "joueur": "Jamie Bynoe-Gittens - Borussia Dortmund",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Warren Zaïre-Emery - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "45",
+      "joueur": "Mohamed Salah - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Antoine Griezmann - Atlético de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Christopher Nkunku - RB Leipzig",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Aurélien Tchouameni - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Casper Tengstedt - SL Benfica",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Julián Álvarez - Manchester City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Matías Soulé - Juventus",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "52",
+      "joueur": "Sotiris Alexandropoulos - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "53",
+      "joueur": "Evanilson - FC Porto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Faride Alidou - Eintracht Frankfurt",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Leonardo Bonucci - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Matthijs de Ligt - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "57",
+      "joueur": "Kai Havertz - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Samuel Iling-Junior - Juventus",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Dário Essugo - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "61",
+      "joueur": "Dominik Szoboszlai - RB Leipzig",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Romelu Lukaku - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "63",
+      "joueur": "Lorenzo Lucca - AFC Ajax",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Phil Foden - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "65",
+      "joueur": "Mateo Tanlongo - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "66",
+      "joueur": "Enzo Fernández - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "67",
+      "joueur": "Federico Chiesa - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Ousmane Dembélé - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Reo Hatate - Celtic FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "70",
+      "joueur": "Ryan Gravenberch - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "71",
+      "joueur": "João Félix - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "72",
+      "joueur": "Dušan Vlahović - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Dijon Kameri - FC Salzburg",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "74",
+      "joueur": "Marcus Edwards - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Neymar Jr - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Christian Pulisic - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Eduardo Camavinga - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "78",
+      "joueur": "Hyeongyu Oh - Celtic FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Hákon Arnar Haraldsson - F.C. Copenhagen",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "81",
+      "joueur": "Thibaut Courtois - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Jamal Musiala - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Kyogo Furuhashi - Celtic FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Nicolò Fagioli - Juventus",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Luka Sucic - FC Salzburg",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "86",
+      "joueur": "Pablo Barrios - Atlético de Madrid",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Kristjan Asllani - FC Internazionale Milano",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Raheem Sterling - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Lautaro Martínez - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Charles De Ketelaere - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Rafael Leão - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Roony Bardghji - F.C. Copenhagen",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Francisco Conceição - AFC Ajax",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Pablo Torre - FC Barcelona",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Luis Díaz - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Sandro Tonali - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "98",
+      "joueur": "Randal Kolo Muani - Eintracht Frankfurt",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "99",
+      "joueur": "Sergio Ramos - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "101",
+      "joueur": "Maurits Kjaergaard - FC Salzburg",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Malik Tillman - Rangers F.C",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "103",
+      "joueur": "Marco Reus - Borussia Dortmund",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Arnaut Danjuma - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Leon King - Rangers F.C",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Federico Valverde - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Tomoki Iwata - Celtic FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Mehdi Taremi - FC Porto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Soumaïla Coulibaly - Borussia Dortmund",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Andreas Skov Olsen - Club Brugge",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "111",
+      "joueur": "William Clem - F.C. Copenhagen",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Bobby Clark - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Harvey Elliott - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Mario Götze - Eintracht Frankfurt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Antonio ýolak - Rangers F.C",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Paxten Aaronson - Eintracht Frankfurt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "117",
+      "joueur": "Stefan Bajcetic - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "119",
+      "joueur": "Alfie Devine - Tottenham Hotspur",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Gianluigi Donnarumma - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Memphis Depay - Atlético de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "122",
+      "joueur": "Conor Gallagher - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Kepa Arrizabalaga - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Pepê - FC Porto",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Rico Lewis - Manchester City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "126",
+      "joueur": "Steven Bergwijn - AFC Ajax",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Timo Werner - RB Leipzig",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Noa Lang - Club Brugge",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "131",
+      "joueur": "João Cancelo - FC Bayern München",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Moreira Jr. - SL Benfica",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Enzo Barrenechea - Juventus",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "134",
+      "joueur": "Riyad Mahrez - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "135",
+      "joueur": "Jorne Spileers - Club Brugge",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Fabio Miretti - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "137",
+      "joueur": "Milan Škriniar - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "138",
+      "joueur": "Lynnt Audoor - Club Brugge",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Valentín Carboni - FC Internazionale Milano",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Eden Hazard - Real Madrid C.F",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Antonio Nusa - Club Brugge",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Alex Lowry - Rangers F.C",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Yacine Adli - AC Milan",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Fashion Sakala - Rangers F.C",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Marquinhos - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Cody Gakpo - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Richarlison - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "148",
+      "joueur": "António Silva - SL Benfica",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Tommaso Barbieri - Juventus",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Fikayo Tomori - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CHAMPIONS LEAGUE"
+    },
+    {
+      "numero": "FM-1",
+      "joueur": "Filippo Inzaghi - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-2",
+      "joueur": "Frank Rijkaard - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-3",
+      "joueur": "Patrick Kluivert - AFC Ajax",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-4",
+      "joueur": "Zinedine Zidane - Real Madrid C.F",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-5",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FR-2",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-3",
+      "joueur": "Jamie Bynoe-Gittens - Borussia Dortmund",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-4",
+      "joueur": "Issahaku Fatawu - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-5",
+      "joueur": "Enzo Fernández - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-6",
+      "joueur": "Andreas Schjelderup - SL Benfica",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-7",
+      "joueur": "Warren Zaïre-Emery - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-8",
+      "joueur": "Hugo Ekitike - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-9",
+      "joueur": "Dijon Kameri - FC Salzburg",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "FR-10",
+      "joueur": "Pablo Torre - FC Barcelona",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "FINEST ROOKIES"
+    },
+    {
+      "numero": "PF-1",
+      "joueur": "Alessandro Del Piero - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-2",
+      "joueur": "Cafu - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-3",
+      "joueur": "Antoine Griezmann - Atlético de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-4",
+      "joueur": "Jamie Bynoe-Gittens - Borussia Dortmund",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-5",
+      "joueur": "Mykhailo Mudryk - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-6",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-7",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-8",
+      "joueur": "Jamal Musiala - FC Bayern München",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-9",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-10",
+      "joueur": "Cristiano Ronaldo - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-11",
+      "joueur": "Henrik Larsson - Celtic FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-12",
+      "joueur": "Benjamin Sesko - FC Salzburg",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-14",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-15",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-16",
+      "joueur": "Julián Álvarez - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-17",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-18",
+      "joueur": "Karim Benzema - Real Madrid C.F",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-19",
+      "joueur": "Gonçalo Ramos - SL Benfica",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-20",
+      "joueur": "Heung-Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PFF-1",
+      "joueur": "Alessandro Del Piero - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-2",
+      "joueur": "Cafu - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-3",
+      "joueur": "Antoine Griezmann - Atlético de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-4",
+      "joueur": "Jamie Bynoe-Gittens - Borussia Dortmund",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-5",
+      "joueur": "Mykhailo Mudryk - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-6",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-7",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-8",
+      "joueur": "Jamal Musiala - FC Bayern München",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-9",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-10",
+      "joueur": "Cristiano Ronaldo - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-11",
+      "joueur": "Henrik Larsson - Celtic FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-12",
+      "joueur": "Benjamin Sesko - FC Salzburg",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-14",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-15",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-16",
+      "joueur": "Juliá Álvarez - Manchester City",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-17",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-18",
+      "joueur": "Karim Benzema - Real Madrid C.F",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-19",
+      "joueur": "Gonçalo Ramos - SL Benfica",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "PFF-20",
+      "joueur": "Heung-Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRIZED FOOTBALLERS FUSION"
+    },
+    {
+      "numero": "FTM-1",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-2",
+      "joueur": "Ronaldinho - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-3",
+      "joueur": "Steven Gerrard - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-4",
+      "joueur": "Kyogo Furuhashi - Celtic FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-5",
+      "joueur": "Luís Figo - Real Madrid C.F",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-6",
+      "joueur": "Cristiano Ronaldo - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-7",
+      "joueur": "Christian Pulisic - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-8",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-9",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "A-AA",
+      "joueur": "Trent Alexander-Arnold - Liverpool FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AB",
+      "joueur": "Alessandro Bastoni - FC Internazionale Milano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AC",
+      "joueur": "Ashley Cole - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AD",
+      "joueur": "Alphonso Davies - FC Bayern München",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AE",
+      "joueur": "Anthony Elanga - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AF",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AG",
+      "joueur": "Alejandro Garnacho - Manchester United",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-AK",
+      "joueur": "Ansgar Knauff - Eintracht Frankfurt",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-BA",
+      "joueur": "Alejandro Balde - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-BG",
+      "joueur": "Jamie Bynoe-Gittens - Borussia Dortmund",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-CA",
+      "joueur": "Fabio Cannavaro - Juventus",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-CC",
+      "joueur": "Cameron Carter-Vickers - Celtic FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-CD",
+      "joueur": "Charles De Ketelaere - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-CN",
+      "joueur": "Christopher Nkunku - RB Leipzig",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-CR",
+      "joueur": "Cristiano Ronaldo - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DJ",
+      "joueur": "Diogo Jota - Liverpool FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DM",
+      "joueur": "Moreira Jr. - SL Benfica",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DN",
+      "joueur": "Darwin Núñez - Liverpool FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DO",
+      "joueur": "Dani Olmo - RB Leipzig",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DR",
+      "joueur": "Devyne Rensch - AFC Ajax",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DT",
+      "joueur": "David Turnbull - Celtic FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DV",
+      "joueur": "Dušan Vlahović - Juventus",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-DZ",
+      "joueur": "Dino Zoff - Juventus",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-EC",
+      "joueur": "Eduardo Camavinga - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-EH",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-FC",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-FT",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-GO",
+      "joueur": "Joe Gomez - Liverpool FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-GR",
+      "joueur": "Gonçalo Ramos - SL Benfica",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-GV",
+      "joueur": "Joško Gvardiol - RB Leipzig",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-HH",
+      "joueur": "Hákon Arnar Haraldsson - F.C. Copenhagen",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-HZ",
+      "joueur": "Eden Hazard - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-IF",
+      "joueur": "Issahaku Fatawu - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-JB",
+      "joueur": "Jude Bellingham - Borussia Dortmund",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-JD",
+      "joueur": "Jermain Defoe - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-JF",
+      "joueur": "João Félix - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-JG",
+      "joueur": "Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-JM",
+      "joueur": "Jamal Musiala - FC Bayern München",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-JS",
+      "joueur": "Jude Soonsup-Bell - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-K",
+      "joueur": "Kaká - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-KA",
+      "joueur": "Karim Adeyemi - Borussia Dortmund",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-KD",
+      "joueur": "Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-KG",
+      "joueur": "Bobby Clark - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-KH",
+      "joueur": "Kai Havertz - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-KJ",
+      "joueur": "Kaio Jorge - Juventus",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-LA",
+      "joueur": "Liel Abada - Celtic FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-LE",
+      "joueur": "Rafael Leão - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-LM",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-LU",
+      "joueur": "Romelu Lukaku - FC Internazionale Milano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-MA",
+      "joueur": "Lautaro Martínez - FC Internazionale Milano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-MD",
+      "joueur": "Mohamed Daramy - F.C. Copenhagen",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-MM",
+      "joueur": "Mason Mount - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-MO",
+      "joueur": "Luka Modrić - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-N",
+      "joueur": "Neymar Jr - Paris Saint-Germain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-NE",
+      "joueur": "David Neres - SL Benfica",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-NL",
+      "joueur": "Noa Lang - Club Brugge",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-NO",
+      "joueur": "Noah Okafor - FC Salzburg",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-P",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-PD",
+      "joueur": "Paulo Dybala - AS Roma",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-PG",
+      "joueur": "Pedro Gonçalves - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-PT",
+      "joueur": "Pablo Torre - FC Barcelona",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-R",
+      "joueur": "Ronaldo - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-RB",
+      "joueur": "Roony Bardghji - F.C. Copenhagen",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-RE",
+      "joueur": "Giovanni Reyna - Borussia Dortmund",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-RH",
+      "joueur": "Reo Hatate - Celtic FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-RM",
+      "joueur": "Riyad Mahrez - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-RR",
+      "joueur": "Rodrigo Ribeiro - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-SB",
+      "joueur": "Stefan Bajcetic - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-SD",
+      "joueur": "Sergiño Dest - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-SJ",
+      "joueur": "Fashion Sakala - Rangers F.C",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-SK",
+      "joueur": "Shinji Kagawa - Borussia Dortmund",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-ST",
+      "joueur": "Sandro Tonali - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-TA",
+      "joueur": "Thiago Alcântara - Liverpool FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-TW",
+      "joueur": "Timo Werner - RB Leipzig",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-V",
+      "joueur": "Vini Jr. - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-WZ",
+      "joueur": "Warren Zaïre-Emery - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-X",
+      "joueur": "Xavi - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "A-YR",
+      "joueur": "Youri Regeer - AFC Ajax",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "BASE"
+    },
+    {
+      "numero": "DA-CA",
+      "joueur": "Eduardo Camavinga/David Alaba - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-CV",
+      "joueur": "Virgil van Dijk/Jamie Carragher - Liverpool FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-GP",
+      "joueur": "Gennaro Gattuso/Andrea Pirlo - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-HD",
+      "joueur": "Erling Haaland/Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-MR",
+      "joueur": "Lionel Messi/Cristiano Ronaldo - FC Barcelona/Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-VR",
+      "joueur": "Frank Rijkaard/Marco van Basten - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-ZN",
+      "joueur": "Zinedine Zidane/Ronaldo - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-KS",
+      "joueur": "Heung-Min Son/Harry Kane - Tottenham Hotspur FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "DA-RR",
+      "joueur": "Rivaldo/Ronaldinho - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DUAL"
+    },
+    {
+      "numero": "FM-1",
+      "joueur": "Fillipo Inzaghi - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-2",
+      "joueur": "Frank Rijkaard - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-3",
+      "joueur": "Patrick Kluivert - AFC Ajax",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FM-4",
+      "joueur": "Zinedine Zidane - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FR-1",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FR-4",
+      "joueur": "Issahaku Fatawu - Sporting Clube de Portugal",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FR-5",
+      "joueur": "Enzo Fernández - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FR-8",
+      "joueur": "Hugo Ekitiké - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "FR-9",
+      "joueur": "Dijon Kameri - FC Salzburg",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "FINEST MOMENTS"
+    },
+    {
+      "numero": "PF-1",
+      "joueur": "Alessandro Del Piero - Juventus",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-2",
+      "joueur": "Cafu - AC Milan",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-3",
+      "joueur": "Antoine Griezmann - Atlético de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-5",
+      "joueur": "Mykhailo Mudryk - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-7",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-8",
+      "joueur": "Jamal Musiala - FC Bayern München",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-14",
+      "joueur": "Fábio Carvalho - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-15",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "PF-20",
+      "joueur": "Heung-min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRIZED FOOTBALLERS"
+    },
+    {
+      "numero": "FTM-1",
+      "joueur": "Erling Haaland - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-2",
+      "joueur": "Ronaldinho - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-3",
+      "joueur": "Steven Gerrard - Liverpool FCFTM-5 Luís Figo - Real Madrid C.F",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "THE MAN"
+    },
+    {
+      "numero": "FTM-6",
+      "joueur": "Cristiano Ronaldo - Sporting Clube de Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "THE MAN"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/23uclf_5002_theman_haaland_8.jpg",
+    "images/23uclf_5003_prizedfootballersfusionvariation_mbappe_8.jpg",
+    "images/23uclf_5006_base_messi_8.jpg",
+    "images/23uclf_5007_finestrookiesauto_carvalho_8.jpg",
+    "images/23uclf_5009_prizedfootballersauto_muslala_8.jpg",
+    "images/bandeau-match-attax-uefa-2022-23-1st-edition-2.png",
+    "images/bandeau-topps-now-ucl-2021-new.png",
+    "images/bandeau-topps-now-uel-2021-2022.png",
+    "images/topps-finest-ucc-2022-23-boite-master-box.png"
+  ],
+  "stats": {
+    "total_cartes": 313,
+    "total_autographes": 109,
+    "total_inserts": 61,
+    "total_images": 9,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le TOPPS FINEST / UEFA CHAMPIONS LEAGUE / UEFA EUROPA LEAGUE, édité par TOPPS en 2023 (septembre) pour le marché U.S.A. Distribué notamment en France. Il contient 170 cartes de base + 65 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, BASE, INSERT. La checklist compte 313 cartes au total, dont 109 autographes et 61 inserts."
+}

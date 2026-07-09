@@ -1,0 +1,1778 @@
+{
+  "version": "1.0",
+  "description": "Base enrichie des sets de cartes de sport - indices visuels + templates eBay",
+  "brands": [
+    {
+      "name": "Topps",
+      "sports": {
+        "football_soccer": [
+          {
+            "name": "Bowman Chrome",
+            "full_name": "Topps Bowman Chrome Soccer",
+            "visual_hints": "logo Bowman en haut, design chromé brillant, arc-en-ciel refractors, fond sombre",
+            "common_subsets": ["Base", "Autograph", "Refractor", "Gold Refractor", "Superfractor"],
+            "ebay_keywords": ["Bowman Chrome Soccer", "Bowman Chrome Football"],
+            "ebay_template": "{joueur} Bowman Chrome Soccer {saison} {numero}",
+            "notes": "Rare pour le foot, surtout jeunes joueurs émergents"
+          },
+          {
+            "name": "Bundesliga",
+            "full_name": "Topps Bundesliga",
+            "visual_hints": "logo Bundesliga officiel, couleurs clubs allemands, logo Topps discret",
+            "common_subsets": ["Base", "Gold", "Chrome", "Autograph"],
+            "ebay_keywords": ["Topps Bundesliga"],
+            "ebay_template": "{joueur} Topps Bundesliga {saison} {numero}",
+            "notes": "Set officiel Bundesliga, souvent co-brandé avec DFL"
+          },
+          {
+            "name": "Chrome",
+            "full_name": "Topps Chrome Soccer / UEFA Champions League",
+            "visual_hints": "logo Topps Chrome, finition chromée brillante, bords argentés, refractors arc-en-ciel",
+            "common_subsets": ["Base", "Refractor", "Gold Refractor", "Autograph", "Superfractor", "Prizm"],
+            "ebay_keywords": ["Topps Chrome Soccer", "Topps Chrome UCL", "Topps Chrome UEFA"],
+            "ebay_template": "{joueur} Topps Chrome {competition} {saison} {numero}",
+            "notes": "Peut être UCL, UEL ou autres compétitions UEFA"
+          },
+          {
+            "name": "Chrome Sapphire",
+            "full_name": "Topps Chrome Sapphire Edition Soccer",
+            "visual_hints": "logo Chrome Sapphire, teintes bleues saphir dominantes, finition premium brillante",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Topps Chrome Sapphire Soccer", "Chrome Sapphire Edition"],
+            "ebay_template": "{joueur} Chrome Sapphire {saison} {numero}",
+            "notes": "Edition limitée premium du Chrome classique"
+          },
+          {
+            "name": "Deco",
+            "full_name": "Topps Deco Soccer",
+            "visual_hints": "design artistique géométrique stylisé, couleurs vives, style décoratif unique",
+            "common_subsets": ["Base", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps Deco Soccer", "Topps Deco Football"],
+            "ebay_template": "{joueur} Topps Deco {saison} {numero}",
+            "notes": "Set haut de gamme au design très distinctif"
+          },
+          {
+            "name": "Dynasty",
+            "full_name": "Topps Dynasty Soccer",
+            "visual_hints": "design très premium noir et or, logo Dynasty, numérotation très basse (souvent /10 ou moins)",
+            "common_subsets": ["Base", "Autograph Patch", "Dual Auto", "Triple Auto"],
+            "ebay_keywords": ["Topps Dynasty Soccer", "Topps Dynasty Football"],
+            "ebay_template": "{joueur} Topps Dynasty {saison}",
+            "notes": "Set ultra-premium, tirages très limités"
+          },
+          {
+            "name": "Decades",
+            "full_name": "Topps Decades Soccer",
+            "visual_hints": "design rétro thématique par décennie, typographie vintage, couleurs d'époque",
+            "common_subsets": ["Base", "Autograph", "Relic"],
+            "ebay_keywords": ["Topps Decades Soccer"],
+            "ebay_template": "{joueur} Topps Decades Soccer {numero}",
+            "notes": "Hommage aux grandes années du football"
+          },
+          {
+            "name": "Fan Set",
+            "full_name": "Topps Fan Set Soccer",
+            "visual_hints": "design simple accessible, logo Topps, prix d'entrée de gamme",
+            "common_subsets": ["Base"],
+            "ebay_keywords": ["Topps Fan Set Soccer"],
+            "ebay_template": "{joueur} Topps Fan Set {saison}",
+            "notes": "Set entrée de gamme"
+          },
+          {
+            "name": "Finest",
+            "full_name": "Topps Finest Soccer",
+            "visual_hints": "logo Finest, finition chromée colorée, cadres colorés distinctifs par parallèle",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Gold Refractor", "Superfractor"],
+            "ebay_keywords": ["Topps Finest Soccer", "Finest Football"],
+            "ebay_template": "{joueur} Topps Finest Soccer {saison} {numero}",
+            "notes": "Très apprécié pour les autos chromées"
+          },
+          {
+            "name": "Gold",
+            "full_name": "Topps Gold UEFA Club Competitions",
+            "visual_hints": "logo TOPPS GOLD en haut à gauche, trophées UEFA (UCL/UEL/UECL) en haut à droite, fond géométrique rouge et blanc, encadrement or",
+            "common_subsets": ["Base", "Current Stars", "Autograph", "Gold Parallel", "Red Parallel"],
+            "ebay_keywords": ["Topps Gold UEFA", "Topps Gold UEFA Club Competitions"],
+            "ebay_template": "{joueur} Topps Gold UEFA {saison} {numero}",
+            "notes": "Set UEFA Club Competitions (UCL + UEL + UECL), saison format 2025-26"
+          },
+          {
+            "name": "Inception",
+            "full_name": "Topps Inception Soccer",
+            "visual_hints": "logo Inception, fond translucide effet verre ou cristal, design épuré premium",
+            "common_subsets": ["Base", "Autograph", "Rookie Auto Patch"],
+            "ebay_keywords": ["Topps Inception Soccer"],
+            "ebay_template": "{joueur} Topps Inception Soccer {saison} {numero}",
+            "notes": "Set premium axé autos et patches"
+          },
+          {
+            "name": "Knockout",
+            "full_name": "Topps Knockout Soccer",
+            "visual_hints": "design dynamique style combat/sport, typographie bold, effets graphiques intenses",
+            "common_subsets": ["Base", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps Knockout Soccer"],
+            "ebay_template": "{joueur} Topps Knockout {saison} {numero}",
+            "notes": "Orthographe correcte : Knockout (pas Knokout)"
+          },
+          {
+            "name": "Living Set",
+            "full_name": "Topps Living Set Soccer",
+            "visual_hints": "design artistique illustré (pas photo), style peinture ou illustration, numérotation croissante visible",
+            "common_subsets": ["Base (numérotée à la vente)"],
+            "ebay_keywords": ["Topps Living Set Soccer", "Topps Living Set Football"],
+            "ebay_template": "{joueur} Topps Living Set Soccer {numero_carte}",
+            "notes": "Chaque carte a un numéro unique dans la série, tirage limité à la durée de vente"
+          },
+          {
+            "name": "Match Attax",
+            "full_name": "Topps Match Attax",
+            "visual_hints": "logo Match Attax, design coloré pour enfants/ados, stats visibles sur la carte, fond coloré club",
+            "common_subsets": ["Base", "Star Player", "100 Club", "Hat-Trick Heroes", "Limited Edition"],
+            "ebay_keywords": ["Match Attax", "Match Attax UCL", "Match Attax Extra"],
+            "ebay_template": "{joueur} Match Attax {saison} {numero}",
+            "notes": "Set grand public, moins premium, fort marché secondaire pour les rares"
+          },
+          {
+            "name": "Merlin",
+            "full_name": "Topps Merlin Heritage Soccer",
+            "visual_hints": "logo Merlin, design rétro nostalgique, style sticker vintage années 90, fond coloré simple",
+            "common_subsets": ["Base", "Auto", "Relic"],
+            "ebay_keywords": ["Topps Merlin Soccer", "Merlin Heritage Football"],
+            "ebay_template": "{joueur} Topps Merlin {saison} {numero}",
+            "notes": "Hommage aux stickers Merlin des années 80-90"
+          },
+          {
+            "name": "MLS",
+            "full_name": "Topps MLS Soccer",
+            "visual_hints": "logo MLS officiel, couleurs clubs MLS américains, logo Topps",
+            "common_subsets": ["Base", "Chrome", "Autograph", "Gold"],
+            "ebay_keywords": ["Topps MLS", "Topps MLS Soccer"],
+            "ebay_template": "{joueur} Topps MLS {saison} {numero}",
+            "notes": "Set officiel Major League Soccer"
+          },
+          {
+            "name": "Museum Collection",
+            "full_name": "Topps Museum Collection Soccer",
+            "visual_hints": "logo Museum Collection, design élégant fond neutre crème ou brun, style galerie d'art, très premium",
+            "common_subsets": ["Base", "Autograph", "Quad Relic", "Copper", "Gold"],
+            "ebay_keywords": ["Topps Museum Collection Soccer", "Museum Collection Football"],
+            "ebay_template": "{joueur} Topps Museum Collection {saison} {numero}",
+            "notes": "Set très haut de gamme, faible tirage"
+          },
+          {
+            "name": "Now",
+            "full_name": "Topps Now Soccer",
+            "visual_hints": "logo Topps Now, design simple avec photo d'actualité, numérotation visible, fond blanc ou sobre",
+            "common_subsets": ["Base (print-on-demand)", "Autograph"],
+            "ebay_keywords": ["Topps Now Soccer", "Topps Now Football"],
+            "ebay_template": "{joueur} Topps Now {saison} {numero_carte}",
+            "notes": "Cartes commémoratives événements récents, tirage limité à la commande"
+          },
+          {
+            "name": "Premier League",
+            "full_name": "Topps Premier League",
+            "visual_hints": "logo Premier League officiel, couleurs pourpre et blanc EPL, logo Topps",
+            "common_subsets": ["Base", "Gold", "Chrome", "Autograph"],
+            "ebay_keywords": ["Topps Premier League", "Topps EPL"],
+            "ebay_template": "{joueur} Topps Premier League {saison} {numero}",
+            "notes": "Set officiel EPL, distinct du Chrome Premier League"
+          },
+          {
+            "name": "Premier League Chrome",
+            "full_name": "Topps Chrome Premier League",
+            "visual_hints": "logo Chrome + logo Premier League, finition chromée brillante, fond coloré club, refractors arc-en-ciel",
+            "common_subsets": ["Base", "Refractor", "Gold Refractor", "Autograph", "Superfractor"],
+            "ebay_keywords": ["Topps Chrome Premier League", "Chrome EPL"],
+            "ebay_template": "{joueur} Chrome Premier League {saison} {numero}",
+            "notes": "Version chromée premium du set EPL"
+          },
+          {
+            "name": "Pristine",
+            "full_name": "Topps Pristine Soccer",
+            "visual_hints": "logo Pristine, design très épuré et luxueux, fond blanc pur ou nacré, finition premium",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Topps Pristine Soccer"],
+            "ebay_template": "{joueur} Topps Pristine Soccer {saison} {numero}",
+            "notes": "Set ultra-premium, faibles tirages"
+          },
+          {
+            "name": "Project22",
+            "full_name": "Topps Project 22 Soccer",
+            "visual_hints": "design artistique collaboratif avec artistes, style unique par artiste, logo Project 22",
+            "common_subsets": ["Base (artiste numéroté)"],
+            "ebay_keywords": ["Topps Project 22 Soccer"],
+            "ebay_template": "{joueur} Topps Project 22 {artiste} {numero}",
+            "notes": "Collab artistique, chaque carte identifiable par l'artiste"
+          },
+          {
+            "name": "Royalty",
+            "full_name": "Topps Royalty Soccer",
+            "visual_hints": "design royal/luxe, tons or et bordeaux, encadrement ornemental, très premium",
+            "common_subsets": ["Base", "Autograph", "Emerald", "Ruby"],
+            "ebay_keywords": ["Topps Royalty Soccer"],
+            "ebay_template": "{joueur} Topps Royalty Soccer {saison} {numero}",
+            "notes": "Set très limité haut de gamme"
+          },
+          {
+            "name": "Stadium Club",
+            "full_name": "Topps Stadium Club Soccer",
+            "visual_hints": "logo Stadium Club, grande photo action pleine carte sans bordure, finition brillante photo-réaliste",
+            "common_subsets": ["Base", "Chrome", "Autograph", "Black & White"],
+            "ebay_keywords": ["Topps Stadium Club Soccer", "Stadium Club Football"],
+            "ebay_template": "{joueur} Stadium Club Soccer {saison} {numero}",
+            "notes": "Reconnaissable à la photo pleine carte sans bordure"
+          },
+          {
+            "name": "Stadium Club Chrome",
+            "full_name": "Topps Stadium Club Chrome Soccer",
+            "visual_hints": "logo Stadium Club Chrome, photo pleine carte + finition chromée, refractors arc-en-ciel",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Gold Refractor"],
+            "ebay_keywords": ["Stadium Club Chrome Soccer"],
+            "ebay_template": "{joueur} Stadium Club Chrome Soccer {saison} {numero}",
+            "notes": "Version chromée du Stadium Club"
+          },
+          {
+            "name": "Summer Signing",
+            "full_name": "Topps Summer Signing Soccer",
+            "visual_hints": "logo Summer Signing, design estival, célèbre les transferts d'été",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Summer Signing"],
+            "ebay_template": "{joueur} Topps Summer Signing {saison}",
+            "notes": "Cartes commémoratives des transferts estivaux"
+          },
+          {
+            "name": "Super Star",
+            "full_name": "Topps Super Star Soccer",
+            "visual_hints": "logo Super Star, design festif coloré, étoile dorée visible",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Super Star Soccer"],
+            "ebay_template": "{joueur} Topps Super Star {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Team Set",
+            "full_name": "Topps Team Set Soccer",
+            "visual_hints": "design aux couleurs officielles du club, logo Topps + logo club, format set d'équipe",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Team Set {club}"],
+            "ebay_template": "{joueur} Topps {club} Team Set {saison}",
+            "notes": "Identifier le club pour la requête eBay"
+          },
+          {
+            "name": "Tier One",
+            "full_name": "Topps Tier One Soccer",
+            "visual_hints": "logo Tier One, design minimaliste élégant, fond sombre premium, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Relic Auto"],
+            "ebay_keywords": ["Topps Tier One Soccer"],
+            "ebay_template": "{joueur} Topps Tier One Soccer {saison} {numero}",
+            "notes": "Set premium axé autographes"
+          },
+          {
+            "name": "Total Football",
+            "full_name": "Topps Total Football",
+            "visual_hints": "logo Total Football, design coloré moderne, large roster de joueurs",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Topps Total Football", "Topps Total Soccer"],
+            "ebay_template": "{joueur} Topps Total Football {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "UEFA Club Competitions",
+            "full_name": "Topps UEFA Club Competitions",
+            "visual_hints": "logo UEFA visible, trophées UCL/UEL/UECL, logo Topps, design officiel UEFA",
+            "common_subsets": ["Base", "Gold", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps UEFA Club Competitions", "Topps UEFA"],
+            "ebay_template": "{joueur} Topps UEFA {saison} {numero}",
+            "notes": "Set générique UEFA, à distinguer du Topps Gold UEFA"
+          },
+          {
+            "name": "Women's Champions League (UWCL)",
+            "full_name": "Topps Women's Champions League",
+            "visual_hints": "logo UEFA Women's Champions League (ballon rose/violet), logo Topps, joueurs féminines",
+            "common_subsets": ["Base", "Autograph", "Gold"],
+            "ebay_keywords": ["Topps UWCL", "Topps Women's Champions League"],
+            "ebay_template": "{joueur} Topps UWCL {saison} {numero}",
+            "notes": "Set féminin UCL"
+          },
+          {
+            "name": "Women's Champions League Chrome",
+            "full_name": "Topps Chrome Women's Champions League",
+            "visual_hints": "logo Chrome + logo UWCL, finition chromée, joueuses féminines, refractors",
+            "common_subsets": ["Base", "Refractor", "Autograph"],
+            "ebay_keywords": ["Topps Chrome UWCL", "Chrome Women's Champions League"],
+            "ebay_template": "{joueur} Chrome UWCL {saison} {numero}",
+            "notes": "Version chromée du set UWCL"
+          }
+        ],
+        "tennis": [
+          {
+            "name": "Chrome",
+            "full_name": "Topps Chrome Tennis",
+            "visual_hints": "logo Topps Chrome, finition chromée brillante, joueur de tennis en action, refractors",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Gold Refractor"],
+            "ebay_keywords": ["Topps Chrome Tennis"],
+            "ebay_template": "{joueur} Topps Chrome Tennis {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Chrome Sapphire",
+            "full_name": "Topps Chrome Sapphire Tennis",
+            "visual_hints": "teintes bleues saphir, logo Chrome Sapphire, finition premium, joueur tennis",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Topps Chrome Sapphire Tennis"],
+            "ebay_template": "{joueur} Chrome Sapphire Tennis {saison} {numero}",
+            "notes": "Edition limitée premium"
+          },
+          {
+            "name": "Graphite",
+            "full_name": "Topps Graphite Tennis",
+            "visual_hints": "logo Graphite, design sombre tons gris/anthracite, joueur tennis",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Graphite Tennis"],
+            "ebay_template": "{joueur} Topps Graphite Tennis {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Now",
+            "full_name": "Topps Now Tennis",
+            "visual_hints": "logo Topps Now, design sobre, photo match/tournoi récent, numérotation visible",
+            "common_subsets": ["Base"],
+            "ebay_keywords": ["Topps Now Tennis"],
+            "ebay_template": "{joueur} Topps Now Tennis {numero_carte}",
+            "notes": "Commémore des performances récentes en tournoi"
+          },
+          {
+            "name": "Royalty",
+            "full_name": "Topps Royalty Tennis",
+            "visual_hints": "design luxueux or et bordeaux, encadrement ornemental, logo Royalty, joueur tennis",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Royalty Tennis"],
+            "ebay_template": "{joueur} Topps Royalty Tennis {saison} {numero}",
+            "notes": "Set premium tirage très limité"
+          }
+        ],
+        "basketball": [
+          {
+            "name": "Allen & Ginter",
+            "full_name": "Topps Allen & Ginter Basketball",
+            "visual_hints": "logo Allen & Ginter, design victorien/vintage XIXe siècle, encadrement fleuri, fond coloré pastel",
+            "common_subsets": ["Base", "Mini", "Autograph", "Relic"],
+            "ebay_keywords": ["Allen & Ginter Basketball"],
+            "ebay_template": "{joueur} Allen Ginter Basketball {saison} {numero}",
+            "notes": "Design très distinctif style vieille époque, multi-sport possible"
+          },
+          {
+            "name": "Bowman",
+            "full_name": "Topps Bowman Basketball",
+            "visual_hints": "logo Bowman, design accessible, focus rookies/prospects, fond coloré simple",
+            "common_subsets": ["Base", "Prospect", "Autograph"],
+            "ebay_keywords": ["Bowman Basketball"],
+            "ebay_template": "{joueur} Bowman Basketball {saison} {numero}",
+            "notes": "Axé sur les rookies et prospects NBA"
+          },
+          {
+            "name": "Bowman Chrome",
+            "full_name": "Topps Bowman Chrome Basketball",
+            "visual_hints": "logo Bowman Chrome, finition chromée, focus rookies, refractors arc-en-ciel",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Gold Refractor", "Superfractor"],
+            "ebay_keywords": ["Bowman Chrome Basketball"],
+            "ebay_template": "{joueur} Bowman Chrome Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Draft",
+            "full_name": "Topps Bowman Draft Basketball",
+            "visual_hints": "logo Bowman Draft, design axé draft NBA, prospects en tenue universitaire ou civile",
+            "common_subsets": ["Base", "Autograph", "Chrome Auto"],
+            "ebay_keywords": ["Bowman Draft Basketball"],
+            "ebay_template": "{joueur} Bowman Draft Basketball {annee} {numero}",
+            "notes": "Cartes émises après la draft NBA"
+          },
+          {
+            "name": "Chrome",
+            "full_name": "Topps Chrome Basketball",
+            "visual_hints": "logo Topps Chrome, finition chromée brillante, refractors, design moderne",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Gold Refractor", "Superfractor"],
+            "ebay_keywords": ["Topps Chrome Basketball"],
+            "ebay_template": "{joueur} Topps Chrome Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Chrome Sapphire",
+            "full_name": "Topps Chrome Sapphire Basketball",
+            "visual_hints": "teintes saphir bleues, logo Chrome Sapphire, finition ultra-premium",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Chrome Sapphire Basketball"],
+            "ebay_template": "{joueur} Chrome Sapphire Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Dynasty",
+            "full_name": "Topps Dynasty Basketball",
+            "visual_hints": "logo Dynasty, design noir et or très premium, numérotation ultra-basse (/10 ou moins)",
+            "common_subsets": ["Autograph Patch", "Dual Auto", "Triple Auto"],
+            "ebay_keywords": ["Topps Dynasty Basketball"],
+            "ebay_template": "{joueur} Topps Dynasty Basketball {saison}",
+            "notes": "Ultra-premium, tirages très restreints"
+          },
+          {
+            "name": "Finest",
+            "full_name": "Topps Finest Basketball",
+            "visual_hints": "logo Finest, chromé coloré, cadres colorés par parallèle, design moderne",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Gold Refractor"],
+            "ebay_keywords": ["Topps Finest Basketball"],
+            "ebay_template": "{joueur} Topps Finest Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Heritage",
+            "full_name": "Topps Heritage Basketball",
+            "visual_hints": "logo Heritage, design rétro inspiré des sets vintage Topps (années 50-70), typographie ancienne",
+            "common_subsets": ["Base", "Short Print", "Autograph", "Relic"],
+            "ebay_keywords": ["Topps Heritage Basketball"],
+            "ebay_template": "{joueur} Topps Heritage Basketball {saison} {numero}",
+            "notes": "Design basé sur un set vintage Topps spécifique chaque année"
+          },
+          {
+            "name": "Living Set",
+            "full_name": "Topps Living Set Basketball",
+            "visual_hints": "illustration artistique (pas photo), style peinture, numéro de série croissant visible",
+            "common_subsets": ["Base"],
+            "ebay_keywords": ["Topps Living Set Basketball"],
+            "ebay_template": "{joueur} Topps Living Set Basketball {numero_carte}",
+            "notes": "Print-on-demand, numéro unique dans la série"
+          },
+          {
+            "name": "Now",
+            "full_name": "Topps Now Basketball",
+            "visual_hints": "logo Topps Now, design sobre, photo match récent, numérotation visible",
+            "common_subsets": ["Base"],
+            "ebay_keywords": ["Topps Now Basketball"],
+            "ebay_template": "{joueur} Topps Now Basketball {numero_carte}",
+            "notes": "Commémore des performances ou événements récents"
+          },
+          {
+            "name": "Midnight",
+            "full_name": "Topps Midnight Basketball",
+            "visual_hints": "design sombre tons noirs et violets, effets lumineux néon, atmosphère nocturne",
+            "common_subsets": ["Base", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps Midnight Basketball"],
+            "ebay_template": "{joueur} Topps Midnight Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Series 1",
+            "full_name": "Topps Series 1 Basketball",
+            "visual_hints": "logo Topps Series 1, design classique Topps, grand set de base en début de saison",
+            "common_subsets": ["Base", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps Series 1 Basketball"],
+            "ebay_template": "{joueur} Topps Series 1 Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Series 2",
+            "full_name": "Topps Series 2 Basketball",
+            "visual_hints": "logo Topps Series 2, second wave du set de base annuel",
+            "common_subsets": ["Base", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps Series 2 Basketball"],
+            "ebay_template": "{joueur} Topps Series 2 Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Stadium Club",
+            "full_name": "Topps Stadium Club Basketball",
+            "visual_hints": "logo Stadium Club, grande photo action pleine carte sans bordure, finition brillante",
+            "common_subsets": ["Base", "Chrome", "Autograph"],
+            "ebay_keywords": ["Stadium Club Basketball"],
+            "ebay_template": "{joueur} Stadium Club Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Tribute",
+            "full_name": "Topps Tribute Basketball",
+            "visual_hints": "logo Tribute, design hommage élégant, fond sobre, numérotation basse, premium",
+            "common_subsets": ["Base", "Autograph", "Relic Auto", "Dual Relic"],
+            "ebay_keywords": ["Topps Tribute Basketball"],
+            "ebay_template": "{joueur} Topps Tribute Basketball {saison} {numero}",
+            "notes": "Set premium avec reliques et autos"
+          },
+          {
+            "name": "Update",
+            "full_name": "Topps Update Basketball",
+            "visual_hints": "logo Topps Update, complément en fin de saison, inclut rookies tardifs et trades",
+            "common_subsets": ["Base", "Autograph", "Parallel"],
+            "ebay_keywords": ["Topps Update Basketball"],
+            "ebay_template": "{joueur} Topps Update Basketball {saison} {numero}",
+            "notes": "Complète la Series 1 & 2 en fin de saison"
+          }
+        ],
+        "baseball": [
+          {
+            "name": "Series 1",
+            "full_name": "Topps Series 1 Baseball",
+            "visual_hints": "logo Topps Series 1, grand set de base annuel, design classique Topps, photo action",
+            "common_subsets": ["Base", "Gold", "Autograph", "Short Print", "1952 Redux"],
+            "ebay_keywords": ["Topps Series 1 Baseball"],
+            "ebay_template": "{joueur} Topps Series 1 Baseball {annee} {numero}",
+            "notes": "Set de base principal, sort en février"
+          },
+          {
+            "name": "Series 2",
+            "full_name": "Topps Series 2 Baseball",
+            "visual_hints": "logo Topps Series 2, même design que Series 1, seconde vague",
+            "common_subsets": ["Base", "Gold", "Autograph", "Short Print"],
+            "ebay_keywords": ["Topps Series 2 Baseball"],
+            "ebay_template": "{joueur} Topps Series 2 Baseball {annee} {numero}",
+            "notes": "Sort en juin"
+          },
+          {
+            "name": "Update Series",
+            "full_name": "Topps Update Series Baseball",
+            "visual_hints": "logo Topps Update, fin de saison, rookies et trades inclus",
+            "common_subsets": ["Base", "Gold", "Autograph", "All-Star"],
+            "ebay_keywords": ["Topps Update Baseball"],
+            "ebay_template": "{joueur} Topps Update Baseball {annee} {numero}",
+            "notes": "Sort en octobre, clôture l'année Topps"
+          },
+          {
+            "name": "Chrome",
+            "full_name": "Topps Chrome Baseball",
+            "visual_hints": "logo Topps Chrome, finition chromée brillante, refractors arc-en-ciel, design similaire Series 1 mais chromé",
+            "common_subsets": ["Base", "Refractor", "Gold Refractor", "Autograph", "Superfractor"],
+            "ebay_keywords": ["Topps Chrome Baseball"],
+            "ebay_template": "{joueur} Topps Chrome Baseball {annee} {numero}",
+            "notes": "Sort en septembre, très populaire"
+          },
+          {
+            "name": "Chrome Sapphire",
+            "full_name": "Topps Chrome Sapphire Edition Baseball",
+            "visual_hints": "teintes saphir bleues distinctives, logo Chrome Sapphire, finition premium",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Chrome Sapphire Baseball"],
+            "ebay_template": "{joueur} Chrome Sapphire Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Chrome Black",
+            "full_name": "Topps Chrome Black Baseball",
+            "visual_hints": "fond noir premium, logo Chrome Black, design sombre et élégant",
+            "common_subsets": ["Base", "Autograph", "Gold"],
+            "ebay_keywords": ["Topps Chrome Black Baseball"],
+            "ebay_template": "{joueur} Chrome Black Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Cosmic Chrome",
+            "full_name": "Topps Cosmic Chrome Baseball",
+            "visual_hints": "effets spatiaux cosmiques (galaxie, étoiles), tons violets/bleus/roses iridescents",
+            "common_subsets": ["Base", "Autograph", "Refractor"],
+            "ebay_keywords": ["Topps Cosmic Chrome Baseball"],
+            "ebay_template": "{joueur} Cosmic Chrome Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Gilded Collection",
+            "full_name": "Topps Gilded Collection Baseball",
+            "visual_hints": "finition or métallique dorée, logo Gilded Collection, ultra-premium",
+            "common_subsets": ["Base", "Autograph", "Gold Framed"],
+            "ebay_keywords": ["Topps Gilded Collection Baseball"],
+            "ebay_template": "{joueur} Topps Gilded Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Finest",
+            "full_name": "Topps Finest Baseball",
+            "visual_hints": "logo Finest, chromé coloré, cadres colorés distinctifs",
+            "common_subsets": ["Base", "Refractor", "Autograph"],
+            "ebay_keywords": ["Topps Finest Baseball"],
+            "ebay_template": "{joueur} Topps Finest Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Pristine",
+            "full_name": "Topps Pristine Baseball",
+            "visual_hints": "design épuré fond blanc nacré, logo Pristine, très premium",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Topps Pristine Baseball"],
+            "ebay_template": "{joueur} Topps Pristine Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Heritage",
+            "full_name": "Topps Heritage Baseball",
+            "visual_hints": "design rétro vintage années 50-70, typographie ancienne, fond coloré pastel, dos style vintage",
+            "common_subsets": ["Base", "Short Print", "Autograph", "Relic", "Real One Auto"],
+            "ebay_keywords": ["Topps Heritage Baseball"],
+            "ebay_template": "{joueur} Topps Heritage Baseball {annee} {numero}",
+            "notes": "Chaque année reproduit un design vintage spécifique"
+          },
+          {
+            "name": "Heritage High Number",
+            "full_name": "Topps Heritage High Number Baseball",
+            "visual_hints": "même design Heritage mais numéros de carte élevés (501+), complément fin de saison",
+            "common_subsets": ["Base", "Short Print", "Autograph"],
+            "ebay_keywords": ["Topps Heritage High Number Baseball"],
+            "ebay_template": "{joueur} Heritage High Number {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Archives",
+            "full_name": "Topps Archives Baseball",
+            "visual_hints": "mélange de designs vintage Topps réédités, dos et faces style rétro, logo Archives",
+            "common_subsets": ["Base", "Autograph", "Fan Favorites"],
+            "ebay_keywords": ["Topps Archives Baseball"],
+            "ebay_template": "{joueur} Topps Archives Baseball {annee} {numero}",
+            "notes": "Reproduit des designs classiques Topps avec joueurs actuels"
+          },
+          {
+            "name": "Archives Signature Series",
+            "full_name": "Topps Archives Signature Series Baseball",
+            "visual_hints": "design archives + sticker autographe, logo Archives Signature Series",
+            "common_subsets": ["Active Player Edition", "Retired Player Edition"],
+            "ebay_keywords": ["Archives Signature Series Baseball"],
+            "ebay_template": "{joueur} Archives Signature Series {annee}",
+            "notes": "Autographes sur cartes achetées en packs"
+          },
+          {
+            "name": "Stadium Club",
+            "full_name": "Topps Stadium Club Baseball",
+            "visual_hints": "grande photo action pleine carte sans bordure, logo Stadium Club, finition brillante",
+            "common_subsets": ["Base", "Chrome", "Autograph", "Black & White"],
+            "ebay_keywords": ["Topps Stadium Club Baseball"],
+            "ebay_template": "{joueur} Stadium Club Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Stadium Club Chrome",
+            "full_name": "Topps Stadium Club Chrome Baseball",
+            "visual_hints": "photo pleine carte + finition chromée, logo Stadium Club Chrome, refractors",
+            "common_subsets": ["Base", "Refractor", "Autograph"],
+            "ebay_keywords": ["Stadium Club Chrome Baseball"],
+            "ebay_template": "{joueur} Stadium Club Chrome Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Museum Collection",
+            "full_name": "Topps Museum Collection Baseball",
+            "visual_hints": "design galerie d'art, fond crème/brun élégant, logo Museum Collection, premium",
+            "common_subsets": ["Base", "Autograph", "Quad Relic", "Copper", "Gold"],
+            "ebay_keywords": ["Topps Museum Collection Baseball"],
+            "ebay_template": "{joueur} Museum Collection Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Tribute",
+            "full_name": "Topps Tribute Baseball",
+            "visual_hints": "logo Tribute, design hommage élégant, numérotation basse, premium",
+            "common_subsets": ["Base", "Autograph", "Relic Auto"],
+            "ebay_keywords": ["Topps Tribute Baseball"],
+            "ebay_template": "{joueur} Topps Tribute Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Tier One",
+            "full_name": "Topps Tier One Baseball",
+            "visual_hints": "logo Tier One, design minimaliste élégant, fond sombre, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Relic Auto"],
+            "ebay_keywords": ["Topps Tier One Baseball"],
+            "ebay_template": "{joueur} Topps Tier One Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Dynasty",
+            "full_name": "Topps Dynasty Baseball",
+            "visual_hints": "design noir et or très premium, logo Dynasty, tirages ultra-bas",
+            "common_subsets": ["Autograph Patch", "Dual Auto"],
+            "ebay_keywords": ["Topps Dynasty Baseball"],
+            "ebay_template": "{joueur} Topps Dynasty Baseball {annee}",
+            "notes": ""
+          },
+          {
+            "name": "Diamond Icons",
+            "full_name": "Topps Diamond Icons Baseball",
+            "visual_hints": "design diamant/cristal, logo Diamond Icons, très premium numérotation basse",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Diamond Icons Baseball"],
+            "ebay_template": "{joueur} Diamond Icons Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Definitive Collection",
+            "full_name": "Topps Definitive Collection Baseball",
+            "visual_hints": "logo Definitive Collection, design élégant noir premium, tirages très bas",
+            "common_subsets": ["Base", "Autograph", "Relic Auto"],
+            "ebay_keywords": ["Topps Definitive Collection Baseball"],
+            "ebay_template": "{joueur} Definitive Collection Baseball {annee}",
+            "notes": ""
+          },
+          {
+            "name": "Sterling",
+            "full_name": "Topps Sterling Baseball",
+            "visual_hints": "logo Sterling, design argent métallique premium, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Relic"],
+            "ebay_keywords": ["Topps Sterling Baseball"],
+            "ebay_template": "{joueur} Topps Sterling Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Inception",
+            "full_name": "Topps Inception Baseball",
+            "visual_hints": "logo Inception, fond translucide cristal, design épuré premium",
+            "common_subsets": ["Base", "Autograph", "Rookie Auto Patch"],
+            "ebay_keywords": ["Topps Inception Baseball"],
+            "ebay_template": "{joueur} Topps Inception Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Five Star",
+            "full_name": "Topps Five Star Baseball",
+            "visual_hints": "logo Five Star, 5 étoiles visibles, design ultra-premium noir et or",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Topps Five Star Baseball"],
+            "ebay_template": "{joueur} Five Star Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Gold Label",
+            "full_name": "Topps Gold Label Baseball",
+            "visual_hints": "étiquette or stylisée, logo Gold Label, tons dorés, design élégant",
+            "common_subsets": ["Class 1", "Class 2", "Class 3", "Autograph"],
+            "ebay_keywords": ["Topps Gold Label Baseball"],
+            "ebay_template": "{joueur} Gold Label Baseball {annee} {classe} {numero}",
+            "notes": "3 classes de base différentes dans le même set"
+          },
+          {
+            "name": "Fire",
+            "full_name": "Topps Fire Baseball",
+            "visual_hints": "effets flammes, tons rouge/orange/jaune vifs, design dynamique",
+            "common_subsets": ["Base", "Gold Minted", "Autograph"],
+            "ebay_keywords": ["Topps Fire Baseball"],
+            "ebay_template": "{joueur} Topps Fire Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Big League",
+            "full_name": "Topps Big League Baseball",
+            "visual_hints": "logo Big League, design coloré et fun, entrée de gamme, style comics/cartoonish",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Topps Big League Baseball"],
+            "ebay_template": "{joueur} Topps Big League Baseball {annee} {numero}",
+            "notes": "Set entrée de gamme"
+          },
+          {
+            "name": "Allen & Ginter",
+            "full_name": "Topps Allen & Ginter Baseball",
+            "visual_hints": "logo Allen & Ginter, design victorien XIXe siècle, encadrement fleuri, fond pastel, mini cards",
+            "common_subsets": ["Base", "Mini", "Autograph", "Relic", "Non-Sport"],
+            "ebay_keywords": ["Allen & Ginter Baseball", "Allen Ginter"],
+            "ebay_template": "{joueur} Allen Ginter Baseball {annee} {numero}",
+            "notes": "Inclut des non-sportifs (célébrités, animaux...). Mini = format réduit"
+          },
+          {
+            "name": "Opening Day",
+            "full_name": "Topps Opening Day Baseball",
+            "visual_hints": "logo Opening Day, design entrée de gamme, commémore l'ouverture de saison MLB",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Topps Opening Day Baseball"],
+            "ebay_template": "{joueur} Topps Opening Day Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Now",
+            "full_name": "Topps Now Baseball",
+            "visual_hints": "logo Topps Now, photo match/exploit récent, numérotation visible, design sobre",
+            "common_subsets": ["Base"],
+            "ebay_keywords": ["Topps Now Baseball"],
+            "ebay_template": "{joueur} Topps Now Baseball {numero_carte}",
+            "notes": ""
+          },
+          {
+            "name": "Living Set",
+            "full_name": "Topps Living Set Baseball",
+            "visual_hints": "illustration artistique style années 50-60, numéro croissant visible, pas de photo",
+            "common_subsets": ["Base"],
+            "ebay_keywords": ["Topps Living Set Baseball"],
+            "ebay_template": "{joueur} Topps Living Set Baseball {numero_carte}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Baseball",
+            "full_name": "Topps Bowman Baseball",
+            "visual_hints": "logo Bowman, focus rookies et prospects MLB, design accessible",
+            "common_subsets": ["Base", "Prospect", "Autograph"],
+            "ebay_keywords": ["Bowman Baseball"],
+            "ebay_template": "{joueur} Bowman Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Chrome",
+            "full_name": "Topps Bowman Chrome Baseball",
+            "visual_hints": "logo Bowman Chrome, finition chromée, refractors, rookies et prospects",
+            "common_subsets": ["Base", "Refractor", "Gold Refractor", "Autograph", "Superfractor"],
+            "ebay_keywords": ["Bowman Chrome Baseball"],
+            "ebay_template": "{joueur} Bowman Chrome Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Draft",
+            "full_name": "Topps Bowman Draft Baseball",
+            "visual_hints": "logo Bowman Draft, prospects post-draft MLB, tenue d'équipe mineure ou civile",
+            "common_subsets": ["Base", "Chrome", "Autograph"],
+            "ebay_keywords": ["Bowman Draft Baseball"],
+            "ebay_template": "{joueur} Bowman Draft Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Sterling",
+            "full_name": "Topps Bowman Sterling Baseball",
+            "visual_hints": "logo Bowman Sterling, design argent premium, prospects MLB, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Refractor Auto"],
+            "ebay_keywords": ["Bowman Sterling Baseball"],
+            "ebay_template": "{joueur} Bowman Sterling Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Inception",
+            "full_name": "Topps Bowman Inception Baseball",
+            "visual_hints": "logo Bowman Inception, fond translucide cristal, prospects, premium",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Bowman Inception Baseball"],
+            "ebay_template": "{joueur} Bowman Inception Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Bowman Heritage",
+            "full_name": "Topps Bowman Heritage Baseball",
+            "visual_hints": "logo Bowman Heritage, design rétro vintage Bowman années 50, prospects",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Bowman Heritage Baseball"],
+            "ebay_template": "{joueur} Bowman Heritage Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Holiday",
+            "full_name": "Topps Holiday Baseball",
+            "visual_hints": "thème fêtes de fin d'année, fond neige ou flocons, personnage/joueur déguisé, logo Holiday",
+            "common_subsets": ["Base", "Autograph", "Metallic Snowflake Parallel"],
+            "ebay_keywords": ["Topps Holiday Baseball"],
+            "ebay_template": "{joueur} Topps Holiday Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Triple Threads",
+            "full_name": "Topps Triple Threads Baseball",
+            "visual_hints": "logo Triple Threads, fenêtres reliques (jersey/bat), design premium fond sombre, numérotation basse",
+            "common_subsets": ["Base", "Relic", "Autograph Relic", "Triple Relic"],
+            "ebay_keywords": ["Topps Triple Threads Baseball"],
+            "ebay_template": "{joueur} Triple Threads Baseball {annee} {numero}",
+            "notes": ""
+          }
+        ],
+        "american_football": [
+          {
+            "name": "Chrome (legacy)",
+            "full_name": "Topps Chrome NFL (legacy)",
+            "visual_hints": "logo Topps Chrome ancien, finition chromée, joueurs NFL, design vintage",
+            "common_subsets": ["Base", "Refractor", "Autograph"],
+            "ebay_keywords": ["Topps Chrome NFL", "Topps Chrome Football"],
+            "ebay_template": "{joueur} Topps Chrome NFL {annee} {numero}",
+            "notes": "Topps n'a plus la licence NFL depuis 2016 — cartes legacy seulement"
+          },
+          {
+            "name": "Finest (legacy)",
+            "full_name": "Topps Finest NFL (legacy)",
+            "visual_hints": "logo Finest, chromé coloré, joueurs NFL, design vintage",
+            "common_subsets": ["Base", "Refractor", "Autograph"],
+            "ebay_keywords": ["Topps Finest NFL", "Topps Finest Football"],
+            "ebay_template": "{joueur} Topps Finest NFL {annee} {numero}",
+            "notes": "Legacy uniquement"
+          },
+          {
+            "name": "Triple Threads (legacy)",
+            "full_name": "Topps Triple Threads NFL (legacy)",
+            "visual_hints": "fenêtres reliques multiples, logo Triple Threads, design premium, joueurs NFL",
+            "common_subsets": ["Relic", "Autograph Relic"],
+            "ebay_keywords": ["Topps Triple Threads NFL", "Triple Threads Football"],
+            "ebay_template": "{joueur} Triple Threads NFL {annee} {numero}",
+            "notes": "Legacy uniquement"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Panini",
+      "sports": {
+        "football_soccer": [
+          {
+            "name": "Adrenalyn",
+            "full_name": "Panini Adrenalyn XL Soccer",
+            "visual_hints": "logo Adrenalyn XL, design gaming/cartes à jouer, format oversized parfois, tons bleus et jaunes",
+            "common_subsets": ["Base", "Limited Edition", "Star Player", "Power"],
+            "ebay_keywords": ["Panini Adrenalyn Soccer", "Adrenalyn XL Football"],
+            "ebay_template": "{joueur} Adrenalyn {competition} {saison} {numero}",
+            "notes": "Souvent lié à une compétition (UCL, Liga...)"
+          },
+          {
+            "name": "Chronicles",
+            "full_name": "Panini Chronicles Soccer",
+            "visual_hints": "logo Chronicles, set omnibus mélangeant plusieurs designs de marques Panini (Prizm, Select, Mosaic...) dans un même produit",
+            "common_subsets": ["Base", "Prizm", "Select", "Mosaic", "Luminance", "Autograph"],
+            "ebay_keywords": ["Panini Chronicles Soccer"],
+            "ebay_template": "{joueur} Chronicles Soccer {saison} {numero}",
+            "notes": "Identifier le sous-set exact (Chronicles Prizm vs Chronicles Select...)"
+          },
+          {
+            "name": "Donruss",
+            "full_name": "Panini Donruss Soccer",
+            "visual_hints": "logo Donruss, design classique fond coloré avec liseré, style années 80-90 modernisé, cadre avec le nom du joueur en bas",
+            "common_subsets": ["Base", "Rated Rookie", "Press Proof", "Autograph"],
+            "ebay_keywords": ["Panini Donruss Soccer", "Donruss Football"],
+            "ebay_template": "{joueur} Donruss Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Donruss Optic",
+            "full_name": "Panini Donruss Optic Soccer",
+            "visual_hints": "logo Donruss Optic, version chromée du Donruss, refractors arc-en-ciel, finition brillante",
+            "common_subsets": ["Base", "Rated Rookie", "Autograph", "Holo", "Gold"],
+            "ebay_keywords": ["Donruss Optic Soccer", "Donruss Optic Football"],
+            "ebay_template": "{joueur} Donruss Optic Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Eternity",
+            "full_name": "Panini Eternity Soccer",
+            "visual_hints": "logo Eternity, design élégant intemporel, tons dorés et noirs premium",
+            "common_subsets": ["Base", "Autograph", "Relic"],
+            "ebay_keywords": ["Panini Eternity Soccer"],
+            "ebay_template": "{joueur} Panini Eternity Soccer {saison} {numero}",
+            "notes": "Set premium haut de gamme"
+          },
+          {
+            "name": "Flawless",
+            "full_name": "Panini Flawless Soccer",
+            "visual_hints": "logo Flawless, design diamant/gemme, fond sombre très luxueux, numérotation ultra-basse (/20 ou moins)",
+            "common_subsets": ["Base", "Autograph", "Patch Auto", "Dual Auto"],
+            "ebay_keywords": ["Panini Flawless Soccer"],
+            "ebay_template": "{joueur} Panini Flawless Soccer {saison} {numero}",
+            "notes": "Ultra-premium, cartes souvent monture gemme"
+          },
+          {
+            "name": "Immaculate",
+            "full_name": "Panini Immaculate Soccer",
+            "visual_hints": "logo Immaculate, design blanc nacré très élégant, patches premium, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto", "Dual Patch"],
+            "ebay_keywords": ["Panini Immaculate Soccer"],
+            "ebay_template": "{joueur} Panini Immaculate Soccer {saison} {numero}",
+            "notes": "Set premium axé reliques et autos"
+          },
+          {
+            "name": "Mosaic",
+            "full_name": "Panini Mosaic Soccer",
+            "visual_hints": "logo Mosaic, design mosaïque/carreaux colorés en arrière-plan, finition brillante, parallèles holographiques",
+            "common_subsets": ["Base", "Prizm", "Pink", "Gold", "Autograph"],
+            "ebay_keywords": ["Panini Mosaic Soccer", "Mosaic Football"],
+            "ebay_template": "{joueur} Mosaic Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "National Treasures",
+            "full_name": "Panini National Treasures Soccer",
+            "visual_hints": "logo National Treasures, fenêtres patches jumbo premium, fond sombre luxueux, numérotation très basse",
+            "common_subsets": ["Base", "Autograph Patch", "Dual Auto Patch", "Logoman"],
+            "ebay_keywords": ["National Treasures Soccer", "NT Soccer"],
+            "ebay_template": "{joueur} National Treasures Soccer {saison} {numero}",
+            "notes": "Set ultra-premium, patches et autos haute valeur"
+          },
+          {
+            "name": "Obsidian",
+            "full_name": "Panini Obsidian Soccer",
+            "visual_hints": "logo Obsidian, design sombre fond noir obsidienne, effets électriques/néon, très premium",
+            "common_subsets": ["Base", "Autograph", "Electric Etch"],
+            "ebay_keywords": ["Panini Obsidian Soccer"],
+            "ebay_template": "{joueur} Panini Obsidian Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Prizm",
+            "full_name": "Panini Prizm Soccer",
+            "visual_hints": "logo Prizm, finition chromée avec parallèles prismatiques arc-en-ciel, design épuré fond blanc ou coloré selon parallèle",
+            "common_subsets": ["Base", "Silver Prizm", "Gold Prizm", "Red Prizm", "Autograph", "Hyper"],
+            "ebay_keywords": ["Panini Prizm Soccer", "Prizm Football"],
+            "ebay_template": "{joueur} Prizm Soccer {saison} {numero}",
+            "notes": "Le Silver Prizm est la parallèle de référence la plus recherchée"
+          },
+          {
+            "name": "Revolution",
+            "full_name": "Panini Revolution Soccer",
+            "visual_hints": "logo Revolution, design dynamique tourbillon/spirale, effets holographiques colorés",
+            "common_subsets": ["Base", "Autograph", "Cubic", "Infinite"],
+            "ebay_keywords": ["Panini Revolution Soccer"],
+            "ebay_template": "{joueur} Revolution Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Score",
+            "full_name": "Panini Score Soccer",
+            "visual_hints": "logo Score, design entrée de gamme accessible, fond coloré simple, similaire Donruss",
+            "common_subsets": ["Base", "Gold", "Autograph"],
+            "ebay_keywords": ["Panini Score Soccer"],
+            "ebay_template": "{joueur} Panini Score Soccer {saison} {numero}",
+            "notes": "Entrée de gamme"
+          },
+          {
+            "name": "Select",
+            "full_name": "Panini Select Soccer",
+            "visual_hints": "logo Select, design concentriques cercles colorés en fond, parallèles Concourse/Premier Level/Field Level",
+            "common_subsets": ["Base Concourse", "Premier Level", "Field Level", "Autograph", "Tri-Color Prizm"],
+            "ebay_keywords": ["Panini Select Soccer", "Select Football"],
+            "ebay_template": "{joueur} Select Soccer {saison} {niveau} {numero}",
+            "notes": "3 niveaux de base : Concourse (base), Premier Level, Field Level (rares)"
+          },
+          {
+            "name": "Serie A",
+            "full_name": "Panini Serie A Soccer",
+            "visual_hints": "logo Serie A officiel, couleurs TIM/officiel, clubs italiens Serie A",
+            "common_subsets": ["Base", "Autograph", "Gold"],
+            "ebay_keywords": ["Panini Serie A"],
+            "ebay_template": "{joueur} Panini Serie A {saison} {numero}",
+            "notes": "Set officiel Ligue italienne"
+          },
+          {
+            "name": "Spectra",
+            "full_name": "Panini Spectra Soccer",
+            "visual_hints": "logo Spectra, design spectral iridescent tons holographiques violets/verts/bleus, très premium",
+            "common_subsets": ["Base", "Autograph", "Neon", "Nebula"],
+            "ebay_keywords": ["Panini Spectra Soccer"],
+            "ebay_template": "{joueur} Panini Spectra Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Top Class",
+            "full_name": "Panini Top Class Soccer",
+            "visual_hints": "logo Top Class, design moderne épuré, tons bleus et argent, compétitions mondiales",
+            "common_subsets": ["Base", "Autograph", "Prizm"],
+            "ebay_keywords": ["Panini Top Class Soccer"],
+            "ebay_template": "{joueur} Panini Top Class {saison} {numero}",
+            "notes": ""
+          }
+        ],
+        "basketball_nba": [
+          {
+            "name": "Court Kings",
+            "full_name": "Panini Court Kings Basketball",
+            "visual_hints": "logo Court Kings, design artistique style peinture impressionniste, fond coloré texturé toile",
+            "common_subsets": ["Base", "Autograph", "Artist Proof"],
+            "ebay_keywords": ["Panini Court Kings Basketball", "Court Kings NBA"],
+            "ebay_template": "{joueur} Court Kings {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Donruss",
+            "full_name": "Panini Donruss Basketball",
+            "visual_hints": "logo Donruss, design classique cadre coloré, style années 80 modernisé",
+            "common_subsets": ["Base", "Rated Rookie", "Press Proof", "Autograph"],
+            "ebay_keywords": ["Panini Donruss Basketball", "Donruss NBA"],
+            "ebay_template": "{joueur} Donruss Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Donruss Optic",
+            "full_name": "Panini Donruss Optic Basketball",
+            "visual_hints": "logo Donruss Optic, version chromée Donruss, refractors, finition brillante",
+            "common_subsets": ["Base", "Rated Rookie", "Autograph", "Holo", "Gold"],
+            "ebay_keywords": ["Donruss Optic Basketball", "Donruss Optic NBA"],
+            "ebay_template": "{joueur} Donruss Optic Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Flawless",
+            "full_name": "Panini Flawless Basketball",
+            "visual_hints": "logo Flawless, fond sombre luxueux, monture gemme/diamant, numérotation ultra-basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto", "Dual Auto"],
+            "ebay_keywords": ["Panini Flawless Basketball"],
+            "ebay_template": "{joueur} Panini Flawless Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Hoops",
+            "full_name": "Panini Hoops Basketball",
+            "visual_hints": "logo Hoops, design coloré fun, entrée de gamme NBA, panier de basket visible parfois",
+            "common_subsets": ["Base", "Autograph", "Premium Box"],
+            "ebay_keywords": ["Panini Hoops Basketball", "Hoops NBA"],
+            "ebay_template": "{joueur} Panini Hoops Basketball {saison} {numero}",
+            "notes": "Entrée de gamme NBA très populaire"
+          },
+          {
+            "name": "Immaculate",
+            "full_name": "Panini Immaculate Basketball",
+            "visual_hints": "logo Immaculate, blanc nacré très élégant, patches premium, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto", "Dual Patch"],
+            "ebay_keywords": ["Panini Immaculate Basketball"],
+            "ebay_template": "{joueur} Panini Immaculate Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Mosaic",
+            "full_name": "Panini Mosaic Basketball",
+            "visual_hints": "logo Mosaic, arrière-plan mosaïque coloré, finition brillante, parallèles holo",
+            "common_subsets": ["Base", "Prizm", "Pink", "Gold", "Autograph"],
+            "ebay_keywords": ["Panini Mosaic Basketball", "Mosaic NBA"],
+            "ebay_template": "{joueur} Mosaic Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "National Treasures",
+            "full_name": "Panini National Treasures Basketball",
+            "visual_hints": "logo National Treasures, patches jumbo premium, fond luxueux sombre, numérotation très basse",
+            "common_subsets": ["Base", "Autograph Patch", "Logoman", "Dual Auto Patch"],
+            "ebay_keywords": ["National Treasures Basketball", "NT Basketball"],
+            "ebay_template": "{joueur} National Treasures Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Obsidian",
+            "full_name": "Panini Obsidian Basketball",
+            "visual_hints": "logo Obsidian, fond noir obsidienne, effets électriques colorés, premium",
+            "common_subsets": ["Base", "Autograph", "Electric Etch"],
+            "ebay_keywords": ["Panini Obsidian Basketball"],
+            "ebay_template": "{joueur} Panini Obsidian Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Prizm",
+            "full_name": "Panini Prizm Basketball",
+            "visual_hints": "logo Prizm, chromé prismatique arc-en-ciel, design épuré, la parallèle Silver est iconique",
+            "common_subsets": ["Base", "Silver Prizm", "Gold Prizm", "Red Prizm", "Autograph", "Draft Picks"],
+            "ebay_keywords": ["Panini Prizm Basketball", "Prizm NBA"],
+            "ebay_template": "{joueur} Prizm Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Revolution",
+            "full_name": "Panini Revolution Basketball",
+            "visual_hints": "logo Revolution, design tourbillon holographique, effets colorés dynamiques",
+            "common_subsets": ["Base", "Autograph", "Cubic", "Infinite"],
+            "ebay_keywords": ["Panini Revolution Basketball"],
+            "ebay_template": "{joueur} Revolution Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Select",
+            "full_name": "Panini Select Basketball",
+            "visual_hints": "logo Select, design cercles concentriques, 3 niveaux de base (Concourse/Premier/Field)",
+            "common_subsets": ["Base Concourse", "Premier Level", "Field Level", "Autograph", "Tri-Color Prizm"],
+            "ebay_keywords": ["Panini Select Basketball", "Select NBA"],
+            "ebay_template": "{joueur} Select Basketball {saison} {niveau} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Spectra",
+            "full_name": "Panini Spectra Basketball",
+            "visual_hints": "logo Spectra, iridescent holographique violets/verts, très premium",
+            "common_subsets": ["Base", "Autograph", "Neon", "Nebula"],
+            "ebay_keywords": ["Panini Spectra Basketball"],
+            "ebay_template": "{joueur} Panini Spectra Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Top Class",
+            "full_name": "Panini Top Class Basketball",
+            "visual_hints": "logo Top Class, design épuré bleu/argent, compétitions mondiales",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Panini Top Class Basketball"],
+            "ebay_template": "{joueur} Panini Top Class Basketball {saison} {numero}",
+            "notes": ""
+          }
+        ],
+        "american_football_nfl": [
+          {
+            "name": "Contenders",
+            "full_name": "Panini Contenders Football NFL",
+            "visual_hints": "logo Contenders, design ticket de championnat/playoff, fond style billet, rookies very recherchés",
+            "common_subsets": ["Base", "Rookie Ticket Auto", "Championship Ticket", "Cracked Ice"],
+            "ebay_keywords": ["Panini Contenders Football", "Contenders NFL"],
+            "ebay_template": "{joueur} Contenders Football {annee} {numero}",
+            "notes": "Les Rookie Ticket Auto sont les cartes clés"
+          },
+          {
+            "name": "Donruss",
+            "full_name": "Panini Donruss Football NFL",
+            "visual_hints": "logo Donruss, design classique cadre coloré, style années 80 modernisé, joueurs NFL",
+            "common_subsets": ["Base", "Rated Rookie", "Press Proof", "Autograph"],
+            "ebay_keywords": ["Panini Donruss Football", "Donruss NFL"],
+            "ebay_template": "{joueur} Donruss Football {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Flawless",
+            "full_name": "Panini Flawless Football NFL",
+            "visual_hints": "logo Flawless, fond sombre luxueux, monture gemme, numérotation ultra-basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Panini Flawless Football NFL"],
+            "ebay_template": "{joueur} Panini Flawless Football {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Immaculate",
+            "full_name": "Panini Immaculate Football NFL",
+            "visual_hints": "logo Immaculate, blanc nacré élégant, patches premium, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Panini Immaculate Football NFL"],
+            "ebay_template": "{joueur} Panini Immaculate Football {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Mosaic",
+            "full_name": "Panini Mosaic Football NFL",
+            "visual_hints": "logo Mosaic, mosaïque colorée en fond, brillant, joueurs NFL",
+            "common_subsets": ["Base", "Prizm", "Pink", "Gold", "Autograph"],
+            "ebay_keywords": ["Panini Mosaic Football", "Mosaic NFL"],
+            "ebay_template": "{joueur} Mosaic Football {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "National Treasures",
+            "full_name": "Panini National Treasures Football NFL",
+            "visual_hints": "logo National Treasures, patches jumbo premium, fond sombre, numérotation très basse",
+            "common_subsets": ["Base", "Autograph Patch", "Logoman"],
+            "ebay_keywords": ["National Treasures Football", "NT Football NFL"],
+            "ebay_template": "{joueur} National Treasures Football {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Prizm",
+            "full_name": "Panini Prizm Football NFL",
+            "visual_hints": "logo Prizm, chromé prismatique, design épuré, Silver Prizm iconique, joueurs NFL",
+            "common_subsets": ["Base", "Silver Prizm", "Gold Prizm", "Red Prizm", "Autograph"],
+            "ebay_keywords": ["Panini Prizm Football", "Prizm NFL"],
+            "ebay_template": "{joueur} Prizm Football {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Select",
+            "full_name": "Panini Select Football NFL",
+            "visual_hints": "logo Select, cercles concentriques, 3 niveaux de base, joueurs NFL",
+            "common_subsets": ["Base Concourse", "Premier Level", "Field Level", "Autograph"],
+            "ebay_keywords": ["Panini Select Football", "Select NFL"],
+            "ebay_template": "{joueur} Select Football {annee} {niveau} {numero}",
+            "notes": ""
+          }
+        ],
+        "baseball": [
+          {
+            "name": "Donruss Baseball",
+            "full_name": "Panini Donruss Baseball",
+            "visual_hints": "logo Donruss, design cadre coloré classique, joueurs MLB (sans logo équipe — Panini sans licence MLB)",
+            "common_subsets": ["Base", "Rated Rookie", "Press Proof", "Autograph"],
+            "ebay_keywords": ["Panini Donruss Baseball"],
+            "ebay_template": "{joueur} Donruss Baseball {annee} {numero}",
+            "notes": "ATTENTION : Panini n'a pas la licence MLB — pas de logos équipe/ligue sur les cartes"
+          },
+          {
+            "name": "National Treasures Baseball",
+            "full_name": "Panini National Treasures Baseball",
+            "visual_hints": "logo National Treasures, patches premium, fond sombre, numérotation très basse, sans logos MLB",
+            "common_subsets": ["Base", "Autograph Patch", "Logoman"],
+            "ebay_keywords": ["National Treasures Baseball", "Panini NT Baseball"],
+            "ebay_template": "{joueur} National Treasures Baseball {annee} {numero}",
+            "notes": "Sans logos MLB — identifiable par l'absence des emblèmes officiels"
+          },
+          {
+            "name": "Prizm Baseball",
+            "full_name": "Panini Prizm Baseball",
+            "visual_hints": "logo Prizm, chromé prismatique, sans logos MLB, joueurs en maillot sans écusson équipe",
+            "common_subsets": ["Base", "Silver Prizm", "Autograph"],
+            "ebay_keywords": ["Panini Prizm Baseball"],
+            "ebay_template": "{joueur} Panini Prizm Baseball {annee} {numero}",
+            "notes": "Sans logos MLB"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Upper Deck",
+      "sports": {
+        "hockey": [
+          {
+            "name": "Allure",
+            "full_name": "Upper Deck Allure Hockey",
+            "visual_hints": "logo Allure Upper Deck, design épuré moderne, fond sombre, joueurs NHL",
+            "common_subsets": ["Base", "Autograph", "Red Rainbow"],
+            "ebay_keywords": ["Upper Deck Allure Hockey"],
+            "ebay_template": "{joueur} Upper Deck Allure Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Artifacts",
+            "full_name": "Upper Deck Artifacts Hockey",
+            "visual_hints": "logo Artifacts, design artéfact/relique mis en avant, fond bois ou parchemin, patches visibles",
+            "common_subsets": ["Base", "Autograph", "Relic", "Tundra"],
+            "ebay_keywords": ["Upper Deck Artifacts Hockey"],
+            "ebay_template": "{joueur} UD Artifacts Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Black Diamond",
+            "full_name": "Upper Deck Black Diamond Hockey",
+            "visual_hints": "logo Black Diamond, design diamant noir premium, fond sombre, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Triple Diamond", "Quad Diamond"],
+            "ebay_keywords": ["Upper Deck Black Diamond Hockey"],
+            "ebay_template": "{joueur} Black Diamond Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Extended Series",
+            "full_name": "Upper Deck Extended Series Hockey",
+            "visual_hints": "logo Upper Deck, design similaire Series 1/2 UD, complément fin de saison NHL",
+            "common_subsets": ["Base", "Autograph", "Clear Cut"],
+            "ebay_keywords": ["Upper Deck Extended Series Hockey"],
+            "ebay_template": "{joueur} UD Extended Series Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Ice",
+            "full_name": "Upper Deck Ice Hockey",
+            "visual_hints": "logo Ice, design glacé transparent/blanc bleuté, finition acetate ou fond glacial",
+            "common_subsets": ["Base", "Autograph", "Premieres"],
+            "ebay_keywords": ["Upper Deck Ice Hockey"],
+            "ebay_template": "{joueur} Upper Deck Ice Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "O-Pee-Chee",
+            "full_name": "Upper Deck O-Pee-Chee Hockey",
+            "visual_hints": "logo O-Pee-Chee (OPC), design rétro canadien, fond coloré style années 70-80, très reconnaissable",
+            "common_subsets": ["Base", "Retro", "Marquee Rookies", "Autograph"],
+            "ebay_keywords": ["O-Pee-Chee Hockey", "OPC Hockey"],
+            "ebay_template": "{joueur} O-Pee-Chee Hockey {saison} {numero}",
+            "notes": "Set légendaire au Canada"
+          },
+          {
+            "name": "O-Pee-Chee Platinum",
+            "full_name": "Upper Deck O-Pee-Chee Platinum Hockey",
+            "visual_hints": "logo OPC Platinum, finition chromée premium, version luxe du OPC classique, refractors",
+            "common_subsets": ["Base", "Refractor", "Autograph", "Rainbow"],
+            "ebay_keywords": ["O-Pee-Chee Platinum Hockey", "OPC Platinum"],
+            "ebay_template": "{joueur} OPC Platinum Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Series 1",
+            "full_name": "Upper Deck Series 1 Hockey",
+            "visual_hints": "logo Upper Deck, grand set de base NHL, design classique UD, photo action",
+            "common_subsets": ["Base", "Young Guns (rookies)", "Autograph", "Clear Cut"],
+            "ebay_keywords": ["Upper Deck Series 1 Hockey"],
+            "ebay_template": "{joueur} Upper Deck Series 1 Hockey {saison} {numero}",
+            "notes": "Les Young Guns rookies sont les cartes les plus recherchées"
+          },
+          {
+            "name": "Series 2",
+            "full_name": "Upper Deck Series 2 Hockey",
+            "visual_hints": "logo Upper Deck, même design Series 1, seconde vague NHL",
+            "common_subsets": ["Base", "Young Guns", "Autograph", "Clear Cut"],
+            "ebay_keywords": ["Upper Deck Series 2 Hockey"],
+            "ebay_template": "{joueur} Upper Deck Series 2 Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "SP Authentic",
+            "full_name": "Upper Deck SP Authentic Hockey",
+            "visual_hints": "logo SP Authentic, design épuré premium, autographes sur cartes, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Sign of the Times", "Future Watch Auto"],
+            "ebay_keywords": ["SP Authentic Hockey"],
+            "ebay_template": "{joueur} SP Authentic Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "SP Game Used",
+            "full_name": "Upper Deck SP Game Used Hockey",
+            "visual_hints": "logo SP Game Used, fenêtres reliques (puck, bâton, jersey), design premium",
+            "common_subsets": ["Base", "Relic", "Autograph Relic", "Patch Auto"],
+            "ebay_keywords": ["SP Game Used Hockey"],
+            "ebay_template": "{joueur} SP Game Used Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "SPx",
+            "full_name": "Upper Deck SPx Hockey",
+            "visual_hints": "logo SPx, design angular géométrique, fond holographique, premium",
+            "common_subsets": ["Base", "Autograph", "Rookie Auto Jersey"],
+            "ebay_keywords": ["Upper Deck SPx Hockey"],
+            "ebay_template": "{joueur} SPx Hockey {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "The Cup",
+            "full_name": "Upper Deck The Cup Hockey",
+            "visual_hints": "logo The Cup (Coupe Stanley stylisée), ultra-premium, patchs et autos numérotés /99 ou moins, boîte une carte par pack",
+            "common_subsets": ["Base", "Autograph", "Patch Auto", "Rookie Patch Auto (RPA)", "Enshrinements"],
+            "ebay_keywords": ["Upper Deck The Cup Hockey"],
+            "ebay_template": "{joueur} Upper Deck The Cup Hockey {saison} {numero}",
+            "notes": "Le set le plus premium du hockey, RPAs très recherchées"
+          },
+          {
+            "name": "Trilogy",
+            "full_name": "Upper Deck Trilogy Hockey",
+            "visual_hints": "logo Trilogy, design triptyque (3 sections), numérotation basse, premium",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Upper Deck Trilogy Hockey"],
+            "ebay_template": "{joueur} Upper Deck Trilogy Hockey {saison} {numero}",
+            "notes": ""
+          }
+        ],
+        "basketball": [
+          {
+            "name": "Exquisite Collection",
+            "full_name": "Upper Deck Exquisite Collection Basketball",
+            "visual_hints": "logo Exquisite Collection, ultra-premium fond noir luxueux, patches et autos numérotés très bas, boîte une carte",
+            "common_subsets": ["Base", "Autograph Patch", "Rookie Patch Auto", "Logoman"],
+            "ebay_keywords": ["Upper Deck Exquisite Basketball", "Exquisite Collection NBA"],
+            "ebay_template": "{joueur} Exquisite Collection Basketball {saison} {numero}",
+            "notes": "Set historique ultra-premium, RPAs vintage très recherchées"
+          },
+          {
+            "name": "Fleer Retro",
+            "full_name": "Upper Deck Fleer Retro Basketball",
+            "visual_hints": "logo Fleer Retro, design vintage années 90, typographie rétro, tons classiques",
+            "common_subsets": ["Base", "Autograph", "Metal Universe"],
+            "ebay_keywords": ["Fleer Retro Basketball", "UD Fleer Retro"],
+            "ebay_template": "{joueur} Fleer Retro Basketball {annee} {numero}",
+            "notes": "Reproduction de designs classiques Fleer"
+          },
+          {
+            "name": "Skybox Metal Universe",
+            "full_name": "Upper Deck Skybox Metal Universe Basketball",
+            "visual_hints": "logo Skybox Metal Universe, design métallique brillant très distinctif années 90, effets galactiques/cosmos",
+            "common_subsets": ["Base", "Precious Metal Gems (PMG)", "Autograph"],
+            "ebay_keywords": ["Skybox Metal Universe Basketball", "Metal Universe NBA"],
+            "ebay_template": "{joueur} Metal Universe Basketball {annee} {numero}",
+            "notes": "Les PMG (vert /75, rouge /10) sont ultra-recherchées"
+          },
+          {
+            "name": "SP Authentic",
+            "full_name": "Upper Deck SP Authentic Basketball",
+            "visual_hints": "logo SP Authentic, design épuré fond blanc ou crème, autographes directs sur cartes",
+            "common_subsets": ["Base", "Autograph", "Sign of the Times"],
+            "ebay_keywords": ["SP Authentic Basketball"],
+            "ebay_template": "{joueur} SP Authentic Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "SP Game Used",
+            "full_name": "Upper Deck SP Game Used Basketball",
+            "visual_hints": "logo SP Game Used, fenêtres reliques jersey/chaussure, design premium",
+            "common_subsets": ["Base", "Relic", "Autograph Relic"],
+            "ebay_keywords": ["SP Game Used Basketball"],
+            "ebay_template": "{joueur} SP Game Used Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "UD Black",
+            "full_name": "Upper Deck Black Basketball",
+            "visual_hints": "logo UD Black, fond noir très premium, design épuré luxueux, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Upper Deck Black Basketball"],
+            "ebay_template": "{joueur} UD Black Basketball {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Ultimate Collection",
+            "full_name": "Upper Deck Ultimate Collection Basketball",
+            "visual_hints": "logo Ultimate Collection, ultra-premium fond foncé, patches et autos basse numérotation",
+            "common_subsets": ["Base", "Autograph", "Patch Auto", "Rookie Auto Patch"],
+            "ebay_keywords": ["Upper Deck Ultimate Collection Basketball"],
+            "ebay_template": "{joueur} Ultimate Collection Basketball {saison} {numero}",
+            "notes": ""
+          }
+        ],
+        "baseball": [
+          {
+            "name": "SP",
+            "full_name": "Upper Deck SP Baseball",
+            "visual_hints": "logo SP Upper Deck, design épuré vintage, fond sobre, numérotation basse parfois",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Upper Deck SP Baseball"],
+            "ebay_template": "{joueur} Upper Deck SP Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "SP Authentic",
+            "full_name": "Upper Deck SP Authentic Baseball",
+            "visual_hints": "logo SP Authentic, design épuré, autographes directs sur cartes",
+            "common_subsets": ["Base", "Autograph", "Sign of the Times"],
+            "ebay_keywords": ["SP Authentic Baseball"],
+            "ebay_template": "{joueur} SP Authentic Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "SPx",
+            "full_name": "Upper Deck SPx Baseball",
+            "visual_hints": "logo SPx, design géométrique angulaire, holographique, premium",
+            "common_subsets": ["Base", "Autograph", "Rookie Auto Jersey"],
+            "ebay_keywords": ["Upper Deck SPx Baseball"],
+            "ebay_template": "{joueur} SPx Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Sweet Spot",
+            "full_name": "Upper Deck Sweet Spot Baseball",
+            "visual_hints": "logo Sweet Spot, autographes sur cuir de baseball (Sweet Spot leather), design unique",
+            "common_subsets": ["Base", "Sweet Spot Leather Auto", "Autograph"],
+            "ebay_keywords": ["Upper Deck Sweet Spot Baseball"],
+            "ebay_template": "{joueur} Sweet Spot Baseball {annee} {numero}",
+            "notes": "Les autos sur cuir de balle sont très distinctives"
+          },
+          {
+            "name": "UD Black",
+            "full_name": "Upper Deck Black Baseball",
+            "visual_hints": "logo UD Black, fond noir premium, design luxueux épuré",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Upper Deck Black Baseball"],
+            "ebay_template": "{joueur} UD Black Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Ultimate Collection",
+            "full_name": "Upper Deck Ultimate Collection Baseball",
+            "visual_hints": "logo Ultimate Collection, ultra-premium fond foncé, patches et autos basse numérotation",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Upper Deck Ultimate Collection Baseball"],
+            "ebay_template": "{joueur} Ultimate Collection Baseball {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Upper Deck",
+            "full_name": "Upper Deck Baseball (base set)",
+            "visual_hints": "logo Upper Deck classique, photo action fond blanc ou coloré, design épuré historique",
+            "common_subsets": ["Base", "Star Rookies", "Autograph"],
+            "ebay_keywords": ["Upper Deck Baseball"],
+            "ebay_template": "{joueur} Upper Deck Baseball {annee} {numero}",
+            "notes": "Le set de base fondateur Upper Deck depuis 1989"
+          }
+        ],
+        "football_soccer": [
+          {
+            "name": "Goodwin Champions",
+            "full_name": "Upper Deck Goodwin Champions Soccer",
+            "visual_hints": "logo Goodwin Champions, design victorien XIXe siècle, encadrement fleuri, multi-sport",
+            "common_subsets": ["Base", "Mini", "Autograph", "Canvas"],
+            "ebay_keywords": ["Goodwin Champions Soccer", "UD Goodwin Soccer"],
+            "ebay_template": "{joueur} Goodwin Champions Soccer {annee} {numero}",
+            "notes": "Multi-sport, peut inclure des non-sportifs"
+          },
+          {
+            "name": "MLS Upper Deck",
+            "full_name": "Upper Deck MLS Soccer",
+            "visual_hints": "logo MLS + logo Upper Deck, design classique UD, clubs MLS américains",
+            "common_subsets": ["Base", "Autograph", "Relic"],
+            "ebay_keywords": ["Upper Deck MLS Soccer"],
+            "ebay_template": "{joueur} Upper Deck MLS {annee} {numero}",
+            "notes": "Set officiel MLS produit par Upper Deck"
+          },
+          {
+            "name": "World Cup Upper Deck",
+            "full_name": "Upper Deck World Cup Soccer",
+            "visual_hints": "logo FIFA World Cup + Upper Deck, design officiel Coupe du Monde, couleurs nationales",
+            "common_subsets": ["Base", "Autograph", "Gold"],
+            "ebay_keywords": ["Upper Deck World Cup Soccer"],
+            "ebay_template": "{joueur} Upper Deck World Cup {annee} {numero}",
+            "notes": "Émis lors des années Coupe du Monde"
+          }
+        ],
+        "multi_sport": [
+          {
+            "name": "Goodwin Champions",
+            "full_name": "Upper Deck Goodwin Champions Multi-Sport",
+            "visual_hints": "logo Goodwin Champions, design victorien XIXe siècle, encadrement fleuri, mélange de sports et célébrités",
+            "common_subsets": ["Base", "Mini", "Autograph", "Canvas", "Memorabilia"],
+            "ebay_keywords": ["Goodwin Champions", "UD Goodwin Champions"],
+            "ebay_template": "{joueur} Goodwin Champions {annee} {numero}",
+            "notes": "Multi-sport et célébrités, préciser le sport dans la requête si possible"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Leaf",
+      "sports": {
+        "tennis": [
+          {
+            "name": "Metal",
+            "full_name": "Leaf Metal Tennis",
+            "visual_hints": "logo Leaf Metal, finition métallique brillante, design premium, joueur tennis",
+            "common_subsets": ["Base", "Autograph", "Prismatic"],
+            "ebay_keywords": ["Leaf Metal Tennis"],
+            "ebay_template": "{joueur} Leaf Metal Tennis {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Pro Set",
+            "full_name": "Leaf Pro Set Tennis",
+            "visual_hints": "logo Leaf Pro Set, design accessible entrée de gamme, joueur tennis",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Leaf Pro Set Tennis"],
+            "ebay_template": "{joueur} Leaf Pro Set Tennis {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Trinity",
+            "full_name": "Leaf Trinity Tennis",
+            "visual_hints": "logo Trinity Leaf, design triptyque premium, numérotation basse",
+            "common_subsets": ["Base", "Autograph", "Patch Auto"],
+            "ebay_keywords": ["Leaf Trinity Tennis"],
+            "ebay_template": "{joueur} Leaf Trinity Tennis {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Ultimate Draft",
+            "full_name": "Leaf Ultimate Draft Tennis",
+            "visual_hints": "logo Leaf Ultimate Draft, design premium, focus sur jeunes joueurs/prospects",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Leaf Ultimate Draft Tennis"],
+            "ebay_template": "{joueur} Leaf Ultimate Draft Tennis {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Valiant",
+            "full_name": "Leaf Valiant Tennis",
+            "visual_hints": "logo Leaf Valiant, design vaillant/héroïque, tons or et bleu, premium",
+            "common_subsets": ["Base", "Autograph", "Gold"],
+            "ebay_keywords": ["Leaf Valiant Tennis"],
+            "ebay_template": "{joueur} Leaf Valiant Tennis {annee} {numero}",
+            "notes": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "Futera",
+      "sports": {
+        "football_soccer": [
+          {
+            "name": "Fans Selection",
+            "full_name": "Futera Fans Selection Soccer",
+            "visual_hints": "logo Futera, design années 90-2000 style européen, fond coloré club, cartes premium pour l'époque",
+            "common_subsets": ["Base", "Autograph", "Foil"],
+            "ebay_keywords": ["Futera Fans Selection Soccer", "Futera Fans Selection Football"],
+            "ebay_template": "{joueur} Futera Fans Selection {saison} {numero}",
+            "notes": "Marque britannique premium des années 90-2000"
+          },
+          {
+            "name": "Live",
+            "full_name": "Futera Live Soccer",
+            "visual_hints": "logo Futera Live, design dynamique action, tons vifs, format moderne",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Futera Live Soccer"],
+            "ebay_template": "{joueur} Futera Live Soccer {saison} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Unique",
+            "full_name": "Futera Unique Soccer",
+            "visual_hints": "logo Futera Unique, design très premium luxueux, tirage extrêmement limité, souvent 1/1",
+            "common_subsets": ["Base", "Autograph", "1/1"],
+            "ebay_keywords": ["Futera Unique Soccer"],
+            "ebay_template": "{joueur} Futera Unique Soccer {saison} {numero}",
+            "notes": "Set ultra-rare, tirages souvent à 1 exemplaire"
+          },
+          {
+            "name": "Vintage",
+            "full_name": "Futera Vintage Soccer",
+            "visual_hints": "logo Futera Vintage, design rétro nostalgique, hommage aux grands joueurs historiques",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Futera Vintage Soccer"],
+            "ebay_template": "{joueur} Futera Vintage Soccer {numero}",
+            "notes": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ace Authentic",
+      "sports": {
+        "tennis": [
+          {
+            "name": "All Star",
+            "full_name": "Ace Authentic All Star Tennis",
+            "visual_hints": "logo Ace Authentic, design All Star tennis, fond coloré, joueurs de tennis",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Ace Authentic All Star Tennis"],
+            "ebay_template": "{joueur} Ace Authentic All Star Tennis {annee} {numero}",
+            "notes": "Marque spécialisée tennis"
+          },
+          {
+            "name": "Grand Slam",
+            "full_name": "Ace Authentic Grand Slam Tennis",
+            "visual_hints": "logo Ace Authentic Grand Slam, design tournois du Grand Chelem, fond court de tennis",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Ace Authentic Grand Slam Tennis"],
+            "ebay_template": "{joueur} Ace Authentic Grand Slam Tennis {annee} {numero}",
+            "notes": ""
+          },
+          {
+            "name": "Rookie Stars",
+            "full_name": "Ace Authentic Rookie Stars Tennis",
+            "visual_hints": "logo Ace Authentic Rookie Stars, focus sur jeunes talents tennis",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["Ace Authentic Rookie Stars Tennis"],
+            "ebay_template": "{joueur} Ace Authentic Rookie Stars Tennis {annee} {numero}",
+            "notes": ""
+          }
+        ]
+      },
+      "note_series": "Les Series 1 à 20 d'Ace Authentic suivent le même modèle : logo Ace Authentic + numéro de série, autographes tennis, design sobre. Template : {joueur} Ace Authentic Series {N} Tennis {annee}"
+    },
+    {
+      "name": "DAKA",
+      "sports": {
+        "football_soccer": [
+          {
+            "name": "Club Editions",
+            "full_name": "DAKA Club Editions Soccer",
+            "visual_hints": "logo DAKA, design premium aux couleurs officielles du club, finition luxueuse, souvent numéroté",
+            "common_subsets": ["Base", "Autograph", "Gold Edition"],
+            "ebay_keywords": ["DAKA {club} Soccer", "DAKA Football {club}"],
+            "ebay_template": "{joueur} DAKA {club} {saison} {numero}",
+            "notes": "Identifier le club est essentiel pour la requête eBay. Clubs couverts : AC Milan, Ajax, Atletico Madrid, Bayer Leverkusen, FC Barcelona, Juventus, Liverpool, Manchester City, Real Madrid, Eintracht Frankfurt, Espanyol",
+            "clubs": [
+              "AC Milan", "Ajax Amsterdam", "Atletico Madrid", "Bayer Leverkusen",
+              "Eintracht Frankfurt", "Espanyol", "FC Barcelona", "Juventus",
+              "Liverpool", "Manchester City", "Real Madrid"
+            ]
+          },
+          {
+            "name": "National Team Editions",
+            "full_name": "DAKA National Team Editions Soccer",
+            "visual_hints": "logo DAKA, couleurs officielles équipe nationale, design premium",
+            "common_subsets": ["Base", "Autograph"],
+            "ebay_keywords": ["DAKA {pays} National Team Soccer"],
+            "ebay_template": "{joueur} DAKA {pays} {saison} {numero}",
+            "notes": "Pays couverts : Belgium, Croatia, Nederland, Serbia",
+            "national_teams": ["Belgium", "Croatia", "Nederland", "Serbia"]
+          }
+        ]
+      }
+    }
+  ],
+  "gemini_prompt_injection": {
+    "description": "Fragment de prompt à injecter dans Gemini au moment du scan pour identifier le set et générer la requête eBay",
+    "system_instructions": "Tu es un expert en identification de cartes de sport de collection. Quand tu analyses une image de carte, tu dois : 1) Identifier précisément le set à partir des indices visuels (logos, design, couleurs, finition), 2) Extraire les données de la carte (joueur, numéro, subset, saison), 3) Générer une requête eBay optimale de 4 à 6 mots maximum. RÈGLES pour la requête eBay : utilise le nom court du joueur, l'année courte (ex: 2025 pas 2025-26), la marque + set court, le numéro si visible. Évite les mots génériques (card, trading, soccer, football sauf si nécessaire pour disambiguation). Retourne UNIQUEMENT un JSON valide sans markdown.",
+    "output_format": {
+      "joueur": "Prénom NOM",
+      "marque": "Topps | Panini | Upper Deck | Leaf | Futera | Ace Authentic | DAKA",
+      "set_name": "Nom court du set (ex: Gold UEFA, Prizm, Chrome...)",
+      "full_set_name": "Nom complet officiel",
+      "saison": "2025-26 (format saison) ou 2025 (format année)",
+      "subset": "Current Stars | Base | Autograph | etc.",
+      "numero": "57 ou null",
+      "sport": "football_soccer | basketball | baseball | hockey | tennis | american_football",
+      "competition": "UEFA | NBA | MLB | NHL | ATP | WTA | NFL | null",
+      "grade": "PSA 9 | BGS 9.5 | SGC 10 | null",
+      "parallel": "Silver | Gold | Red | Holo | null",
+      "confiance": 0.95,
+      "ebay_query": "Giroud Topps Gold UEFA 2025",
+      "ebay_query_alt": "Giroud Gold UEFA Current Stars 2025"
+    }
+  }
+}

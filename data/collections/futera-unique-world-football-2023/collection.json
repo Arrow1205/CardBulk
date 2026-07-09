@@ -1,0 +1,1303 @@
+{
+  "collection_id": "futera-unique-world-football-2023",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2023 (juillet)",
+    "pays": "France",
+    "editeur": "FUTERA",
+    "serie": "UNIQUE WORLD FOOTBALL",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "120 cartes de base + nombreuses cartes MEMORABILIA / OR / AUTOGRAPH",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par étui de : 5 cartes de base 1 carte de base parallèle + 1 carte MEMORABILIA ou OR ou AUTOGRAPH"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "GOALKEEPERS",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "DEFENDERS",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "MIDFIELDERS",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "FORWARDS",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "NEXT",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "GREATS",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "CONQUEROR\n\nCQ",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "COACHES\n\nCH",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "ELITE\n\nEL",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "FUTURE\n\nFT",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "GLORY\n\nGL",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "HEADLINERS\n\nHD",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "HEROES MEMO\n\nHRM",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "HOTSHOTS\n\nHS",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "LEGACY\n\nLG",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "LEGENDS\n\nLEG",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "MAESTRO\n\nMS",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "MAJESTIC\n\nMJ",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "MASTERS DUO\n\nMA",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "MEMOSTARS\n\nMR",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "PLAYMAKER\n\nPM",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "PRESTIGE\n\nPT",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "PROFILE\n\nPE",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "REFLECTION\n\nRF",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "TRIBUTE\n\nTR",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "VERSUS - DUAL MEMO\n\nVS",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "VICTORY\n\nVC",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "XTRA-TIME\n\nXT",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "WORLD CLASS\n\nWC",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "CHAMPIONS\n\nCMG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "EMINENCE\n\nEMG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "GOLDEN GOALS\n\nGG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "MASTERS OF THE GAME \n\nMGG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "MOMENTS\n\nMTG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "MYTHICALS\n\nMYG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "PHENOMS\n\nPNG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "PROMINENT\n\nPRG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "SUPERSTARS MEMO\n\nSSG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "TITANS\n\nTTG",
+      "description": null
+    },
+    {
+      "subset": "OR",
+      "section": "WORLD STARS\n\nWTG",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "Alisson - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPERS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Thibaut Courtois - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPERS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Ederson - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPERS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Emiliano Martínez - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPERS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Jan Oblak - Slovenia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPERS"
+    },
+    {
+      "numero": "6",
+      "joueur": "David Alaba - Austria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Trent Alexander-Arnold - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "8",
+      "joueur": "João Cancelo - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Alphonso Davies - Canada",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Rúben Dias - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Denzel Dumfries - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Joško Gvardiol - Croatia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Achraf Hakimi - Morocco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Théo Hernandez - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Reece James - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Kalidou Koulibaly - Senegal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Jules Koundé - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Aymeric Laporte - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Marquinhos - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Lisandro Martínez - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Éder Militão - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Kim Min-jae - South Korea",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Antonio Rüdiger - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "25",
+      "joueur": "William Saliba - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "26",
+      "joueur": "Thiago Silva - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "27",
+      "joueur": "Milan Škriniar - Slovakia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "28",
+      "joueur": "Dayot Upamecano - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "29",
+      "joueur": "Virgil Van Dijk - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "30",
+      "joueur": "Raphaël Varane - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "DEFENDERS"
+    },
+    {
+      "numero": "31",
+      "joueur": "Sofyan Amrabat - Morocco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "32",
+      "joueur": "Jude Bellingham - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "33",
+      "joueur": "Marcelo Brozović - Croatia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "34",
+      "joueur": "Eduardo Camavinga - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "35",
+      "joueur": "Casemiro - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "36",
+      "joueur": "Kevin De Bruyne - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "37",
+      "joueur": "Frenkie De Jong - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "38",
+      "joueur": "Rodrigo De Paul - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "39",
+      "joueur": "Bruno Fernandes - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "40",
+      "joueur": "Enzo Fernández - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "41",
+      "joueur": "Phil Foden - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "42",
+      "joueur": "Gavi - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "43",
+      "joueur": "Ryan Gravenberch - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "44",
+      "joueur": "Jack Grealish - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "45",
+      "joueur": "Jorginho - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "46",
+      "joueur": "Joshua Kimmich - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "47",
+      "joueur": "Alexis Mac Allister - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "48",
+      "joueur": "Sergej Milinković-Savić - Serbia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "49",
+      "joueur": "Luka Modrić - Croatia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "50",
+      "joueur": "Jamal Musiala - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "51",
+      "joueur": "Pedri - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "52",
+      "joueur": "Declan Rice - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "53",
+      "joueur": "Rodri - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "54",
+      "joueur": "Bukayo Saka - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "55",
+      "joueur": "Bernardo Silva - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "56",
+      "joueur": "Aurélien Tchouaméni - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "57",
+      "joueur": "Sandro Tonali - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "58",
+      "joueur": "Federico Valverde - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "59",
+      "joueur": "Marco Verratti - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "60",
+      "joueur": "Florian Wirtz - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MIDFIELDERS"
+    },
+    {
+      "numero": "61",
+      "joueur": "Julián Álvarez - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "62",
+      "joueur": "Karim Benzema - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "63",
+      "joueur": "Ousmane Dembele - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "64",
+      "joueur": "Luis Díaz - Colombia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "65",
+      "joueur": "Ansu Fati - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "66",
+      "joueur": "João Félix - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "67",
+      "joueur": "Cody Gakpo - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "68",
+      "joueur": "Olivier Giroud - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "69",
+      "joueur": "Antoine Griezmann - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "70",
+      "joueur": "Erling Haaland - Norway",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "71",
+      "joueur": "Kai Havertz - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "72",
+      "joueur": "Son Heung-min - South Korea",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "73",
+      "joueur": "Ciro Immobile - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "74",
+      "joueur": "Harry Kane - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "75",
+      "joueur": "Khvicha Kvaratskhelia - Georgia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "76",
+      "joueur": "Robert Lewandowski - Poland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "77",
+      "joueur": "Sadio Mané - Senegal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "78",
+      "joueur": "Gabriel Martinelli - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "79",
+      "joueur": "Lautaro Martínez - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "80",
+      "joueur": "Kylian Mbappé - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "81",
+      "joueur": "Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "82",
+      "joueur": "Neymar - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "83",
+      "joueur": "Christopher Nkunku - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "84",
+      "joueur": "Darwin Núñez - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "85",
+      "joueur": "Victor Osimhen - Nigeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "86",
+      "joueur": "Gonçalo Ramos - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "87",
+      "joueur": "Cristiano Ronaldo - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "88",
+      "joueur": "Mohamed Salah - Egypt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "89",
+      "joueur": "Vinicius Jr - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "90",
+      "joueur": "Dušan Vlahović - Serbia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FORWARDS"
+    },
+    {
+      "numero": "91",
+      "joueur": "Karim Adeyemi - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "92",
+      "joueur": "Alejandro Balde - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "93",
+      "joueur": "Moisés Caicedo - Ecuador",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "94",
+      "joueur": "Wilfried Gnonto - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "96",
+      "joueur": "Yéremy Pino - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "97",
+      "joueur": "Giovanni Reyna - United States",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "98",
+      "joueur": "António Silva - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "99",
+      "joueur": "Maarten Vandevoordt - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "100",
+      "joueur": "Nicola Zalewski - Poland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "NEXT"
+    },
+    {
+      "numero": "101",
+      "joueur": "Franz Beckenbauer - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "102",
+      "joueur": "Dennis Bergkamp - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "103",
+      "joueur": "George Best - Northern Ireland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "104",
+      "joueur": "Roberto Carlos - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "105",
+      "joueur": "Eusébio - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "106",
+      "joueur": "Luís Figo - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "107",
+      "joueur": "Garrincha - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "108",
+      "joueur": "Paul Gascoigne - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "109",
+      "joueur": "Thierry Henry - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "110",
+      "joueur": "Andrés Iniesta - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "111",
+      "joueur": "Paolo Maldini - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "112",
+      "joueur": "Diego Maradona - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "113",
+      "joueur": "Gerd Müller - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "114",
+      "joueur": "Pelé - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "115",
+      "joueur": "Juan Román Riquelme - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "116",
+      "joueur": "Romário - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "117",
+      "joueur": "Ronaldinho - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "118",
+      "joueur": "Ronaldo - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "119",
+      "joueur": "Xavi - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "120",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GREATS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Virgil van Dijk - Netherlands",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "CONQUEROR\n\nCQ"
+    },
+    {
+      "numero": "16",
+      "joueur": "Zico - Brazil",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "COACHES\n\nCH"
+    },
+    {
+      "numero": "24",
+      "joueur": "Dusan Vlahovic - Serbia",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "ELITE\n\nEL"
+    },
+    {
+      "numero": "16",
+      "joueur": "Dusan Vlahovic - Serbia",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "FUTURE\n\nFT"
+    },
+    {
+      "numero": "19",
+      "joueur": "Jadon Sancho - England",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "GLORY\n\nGL"
+    },
+    {
+      "numero": "24",
+      "joueur": "Carlos Tevez - Argentina",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "HEADLINERS\n\nHD"
+    },
+    {
+      "numero": "19",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "HEROES MEMO\n\nHRM"
+    },
+    {
+      "numero": "24",
+      "joueur": "Dusan Vlahovic - Serbia",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "HOTSHOTS\n\nHS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Pablo Zabaleta - Argentina",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "LEGACY\n\nLG"
+    },
+    {
+      "numero": "24",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "LEGENDS\n\nLEG"
+    },
+    {
+      "numero": "24",
+      "joueur": "Marco Verratti - Italy",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "MAESTRO\n\nMS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Dusan Vlahovic - Serbia",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "MAJESTIC\n\nMJ"
+    },
+    {
+      "numero": "24",
+      "joueur": "Jamie Vardy & Riyad Mahrez",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "MASTERS DUO\n\nMA"
+    },
+    {
+      "numero": "32",
+      "joueur": "Marco Verratti - Italy",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "MEMOSTARS\n\nMR"
+    },
+    {
+      "numero": "16",
+      "joueur": "Bernardo Silva - Portugal",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "PLAYMAKER\n\nPM"
+    },
+    {
+      "numero": "32",
+      "joueur": "Oleksandr Zinchenko - Ukraine",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "PRESTIGE\n\nPT"
+    },
+    {
+      "numero": "32",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "PROFILE\n\nPE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Kyle Walker - England",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "REFLECTION\n\nRF"
+    },
+    {
+      "numero": "24",
+      "joueur": "Thiago Silva - Brazil",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "TRIBUTE\n\nTR"
+    },
+    {
+      "numero": "19",
+      "joueur": "Virgil van Dijk & Sergio Ramos",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "VERSUS - DUAL MEMO\n\nVS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Oleksandr Zinchenko - Ukraine",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "VICTORY\n\nVC"
+    },
+    {
+      "numero": "24",
+      "joueur": "Oleksandr Zinchenko - Ukraine",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "XTRA-TIME\n\nXT"
+    },
+    {
+      "numero": "24",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "WORLD CLASS\n\nWC"
+    },
+    {
+      "numero": "40",
+      "joueur": "Vinicius Jr - Brazil",
+      "mention": null,
+      "subset": "OR",
+      "section": "CHAMPIONS\n\nCMG"
+    },
+    {
+      "numero": "40",
+      "joueur": "Sandro Tonali - Italy",
+      "mention": null,
+      "subset": "OR",
+      "section": "EMINENCE\n\nEMG"
+    },
+    {
+      "numero": "56",
+      "joueur": "Zlatan Ibrahimović",
+      "mention": null,
+      "subset": "OR",
+      "section": "GOLDEN GOALS\n\nGG"
+    },
+    {
+      "numero": "40",
+      "joueur": "Dušan Vlahović - Serbia",
+      "mention": null,
+      "subset": "OR",
+      "section": "MASTERS OF THE GAME \n\nMGG"
+    },
+    {
+      "numero": "40",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "OR",
+      "section": "MOMENTS\n\nMTG"
+    },
+    {
+      "numero": "40",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "OR",
+      "section": "MYTHICALS\n\nMYG"
+    },
+    {
+      "numero": "40",
+      "joueur": "Florian Wirtz - Germany",
+      "mention": null,
+      "subset": "OR",
+      "section": "PHENOMS\n\nPNG"
+    },
+    {
+      "numero": "48",
+      "joueur": "Florian Wirtz - Germany",
+      "mention": null,
+      "subset": "OR",
+      "section": "PROMINENT\n\nPRG"
+    },
+    {
+      "numero": "32",
+      "joueur": "Marco Verratti - Italy",
+      "mention": null,
+      "subset": "OR",
+      "section": "SUPERSTARS MEMO\n\nSSG"
+    },
+    {
+      "numero": "32",
+      "joueur": "Zinedine Zidane - France",
+      "mention": null,
+      "subset": "OR",
+      "section": "TITANS\n\nTTG"
+    },
+    {
+      "numero": "40",
+      "joueur": "France - Zinedine Zidane & Michel Platini",
+      "mention": null,
+      "subset": "OR",
+      "section": "WORLD STARS\n\nWTG"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-futera-fans-selection-wolverhampton-2025-26.png",
+    "images/bandeau-futera-unique-barcelona-2024-25.png",
+    "images/bandeau-futera-unique-liverpool-2024-25-1.png",
+    "images/futera-unique-world-football-2023-annonce.jpg",
+    "images/futera-unique-world-football-2023-display-de-4-boites.png",
+    "images/futera-unique-world-football-2023-lot-de-4-boites.png"
+  ],
+  "stats": {
+    "total_cartes": 152,
+    "total_autographes": 0,
+    "total_inserts": 11,
+    "total_images": 6,
+    "subsets_detectes": [
+      "BASE",
+      "MEMORABILIA",
+      "OR"
+    ]
+  },
+  "gemini_context": "Ce set est le FUTERA UNIQUE WORLD FOOTBALL, édité par FUTERA en 2023 (juillet) pour le marché France. Il contient 120 cartes de base + nombreuses cartes MEMORABILIA / OR / AUTOGRAPH. Les subsets détectés sont : BASE, MEMORABILIA, OR. La checklist compte 152 cartes au total, dont 0 autographes et 11 inserts."
+}

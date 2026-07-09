@@ -1,0 +1,653 @@
+{
+  "collection_id": "panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-france",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2026 (février)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "ADRENALYN XL / FIFA WORLD CUP",
+    "support": "Cartes",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "630 cartes",
+    "dotation_boite": "La petite boîte en métal contient 3 cartes en édition limitée aléatoires1 carte issue du lot MIX 22 cartes issues du lot MIX 3"
+  },
+  "subsets": [
+    {
+      "subset": "RARE",
+      "section": "GOLDEN BALLER1.",
+      "description": null
+    },
+    {
+      "subset": "HERO",
+      "section": "TEAM LOGO10.",
+      "description": null
+    },
+    {
+      "subset": "CORE",
+      "section": "CONTENDER514.",
+      "description": null
+    },
+    {
+      "subset": "POWER-UP",
+      "section": "TOP KEEPER550.",
+      "description": null
+    },
+    {
+      "subset": "POWER-UP",
+      "section": "DEFENSIVE ROCK559.",
+      "description": null
+    },
+    {
+      "subset": "POWER-UP",
+      "section": "MIDFIELD MAESTRO568.",
+      "description": null
+    },
+    {
+      "subset": "POWER-UP",
+      "section": "GOAL MACHINE586.",
+      "description": null
+    },
+    {
+      "subset": "SPECIAL",
+      "section": "MASTER ROOKIE608.",
+      "description": null
+    },
+    {
+      "subset": "ULTRA RARE",
+      "section": "ETERNOS 22628.",
+      "description": null
+    },
+    {
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "Lionel Messi",
+      "mention": null,
+      "subset": "RARE",
+      "section": "GOLDEN BALLER1."
+    },
+    {
+      "numero": null,
+      "joueur": "Min",
+      "mention": null,
+      "subset": "RARE",
+      "section": "GOLDEN BALLER1."
+    },
+    {
+      "numero": null,
+      "joueur": "Rayan Aït",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Nouri",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Gree",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Car",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Andre ter Stegen",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Ricner Bellegarde",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Dicka",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Naimat",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Taamari",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Arab",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Rashdan",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Rawabdeh",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Mardi",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Nesyri",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Haydos",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Amin",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Ganehi",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Buraikan",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Dawsari",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Aqidi",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Tambakti",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Dawsari",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Khaibari",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Juwayr",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Shamat",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Sheheri",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Tominay",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Ginn",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Doak",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Kennie",
+      "mention": null,
+      "subset": "HERO",
+      "section": "TEAM LOGO10."
+    },
+    {
+      "numero": null,
+      "joueur": "Italy",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Northern Ireland 514. Wales",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Bosnia and Herzegovina 515. Ukraine",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Sweden 515. Poland",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Albania 516. Turkey",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Romania 516. Slovakia",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Kosovo 517. Denmark",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "North Macedonia 517. Czech Republic",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Republic of Ireland 518. New Caledonia",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Jamaica 518. DR Congo 519. Suriname",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Bolivia 519. Iraq520. Morten Hjulmand",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Emile Ho",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Jbjerg",
+      "mention": null,
+      "subset": "CORE",
+      "section": "CONTENDER514."
+    },
+    {
+      "numero": null,
+      "joueur": "Emiliano Martinez",
+      "mention": null,
+      "subset": "POWER-UP",
+      "section": "TOP KEEPER550."
+    },
+    {
+      "numero": null,
+      "joueur": "Eder Militao",
+      "mention": null,
+      "subset": "POWER-UP",
+      "section": "DEFENSIVE ROCK559."
+    },
+    {
+      "numero": null,
+      "joueur": "Enzo Fernandez",
+      "mention": null,
+      "subset": "POWER-UP",
+      "section": "MIDFIELD MAESTRO568."
+    },
+    {
+      "numero": null,
+      "joueur": "Tominay",
+      "mention": null,
+      "subset": "POWER-UP",
+      "section": "MIDFIELD MAESTRO568."
+    },
+    {
+      "numero": null,
+      "joueur": "Julian Alvarez",
+      "mention": null,
+      "subset": "POWER-UP",
+      "section": "GOAL MACHINE586."
+    },
+    {
+      "numero": null,
+      "joueur": "Nesyri",
+      "mention": null,
+      "subset": "POWER-UP",
+      "section": "GOAL MACHINE586."
+    },
+    {
+      "numero": null,
+      "joueur": "Nico Paz",
+      "mention": null,
+      "subset": "SPECIAL",
+      "section": "MASTER ROOKIE608."
+    },
+    {
+      "numero": null,
+      "joueur": "Nahuel Molina / Emiliano Martinez / Cristian Romero",
+      "mention": null,
+      "subset": "ULTRA RARE",
+      "section": "ETERNOS 22628."
+    },
+    {
+      "numero": "02",
+      "joueur": "Javier Mascherano",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "03",
+      "joueur": "Lionel Messi",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "04",
+      "joueur": "Gabriel Batistuta",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "05",
+      "joueur": "Pelé",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "06",
+      "joueur": "Ronaldo",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "07",
+      "joueur": "Rivaldo",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "08",
+      "joueur": "Kaká",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "09",
+      "joueur": "Luka Modrić",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "10",
+      "joueur": "Michel Platini",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "11",
+      "joueur": "Zinédine Zidane",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "12",
+      "joueur": "Thierry Henry",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "13",
+      "joueur": "Manuel Neuer",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "14",
+      "joueur": "Franz Beckenbauer",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "15",
+      "joueur": "Lothar Matthäus",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "16",
+      "joueur": "Miroslav Klose",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "17",
+      "joueur": "Paolo Maldini",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "18",
+      "joueur": "Fabio Cannavaro",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "19",
+      "joueur": "Francesco Totti",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "20",
+      "joueur": "Robin van Persie",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "21",
+      "joueur": "Andrés Iniesta",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "22",
+      "joueur": "Sergio Busquets",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "23",
+      "joueur": "David Villa",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    },
+    {
+      "numero": "24",
+      "joueur": "Luis Suárez",
+      "mention": null,
+      "subset": "FIFA WORLD CUP MASTER",
+      "section": "FIFA WORLD CUP MASTER"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/184-hero_fifa-26-tcg.jpg",
+    "images/204-icon_fifa-26-tcg.jpg",
+    "images/310_fanfavourite_fifa-26-tcg.jpg",
+    "images/5-goldenballers_fifa-26-tcg.jpg",
+    "images/522-contenders_fifa-26-tcg.jpg",
+    "images/555_top-keepers_fifa-26-tcg.jpg",
+    "images/562_defensive-rocks_fifa-26-tcg.jpg",
+    "images/578_midfield-maestros_fifa-26-tcg.jpg",
+    "images/605_goal-machine_fifa-26-tcg.jpg",
+    "images/623_master-rookie_fifa-26-tcg.jpg",
+    "images/624-secret-weapons_fifa-26-tcg.jpg",
+    "images/628-eternos_fifa-26-tcg.jpg",
+    "images/bandeau-panini-instant-fifa-world-cup-2026.png",
+    "images/bundle005461adb50nko_2-d.png",
+    "images/bundle005461adb50nko_4-d.png",
+    "images/fifa-world-cup-2026-adrenalyn-xl-trading-cards-classic-tins-005461_1.webp",
+    "images/fifa-world-cup-2026-adrenalyn-xl-trading-cards-dream-box-005461_1.webp",
+    "images/fifa-world-cup-2026-adrenalyn-xl-trading-cards-mixq1-005461.webp",
+    "images/fifa-world-cup-2026-adrenalyn-xl-trading-cards-pocket-tins-005461_1.webp",
+    "images/fifa-world-cup-2026-adrenalyn-xl-trading-cards-upgrade-set-005461.webp",
+    "images/momentum-card_fifa-26-tcg.jpg",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-blister-de-3-pochettes.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-blister-de-7-pochettes.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-blister-pochette-premium.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-boite-de-24-pochettes.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-boite-de-36-pochettes.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-boite-update-final-teams-set.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-classeur.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-pochette-premium-gold.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-special-box.png",
+    "images/panini-adrenalyn-xl-fifa-world-cup-can-mex-usa-2026-starter-pack.png",
+    "images/panini-axl-fifa-world-cup-2026-carte-625-mascot-maple.png",
+    "images/panini-axl-fifa-world-cup-2026-carte-626-mascot-clutch.png",
+    "images/panini-axl-fifa-world-cup-2026-carte-627-mascot-zayu.png"
+  ],
+  "stats": {
+    "total_cartes": 76,
+    "total_autographes": 0,
+    "total_inserts": 76,
+    "total_images": 34,
+    "subsets_detectes": [
+      "CORE",
+      "FIFA WORLD CUP MASTER",
+      "HERO",
+      "POWER-UP",
+      "RARE",
+      "SPECIAL",
+      "ULTRA RARE"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI ADRENALYN XL / FIFA WORLD CUP, édité par PANINI en 2026 (février) pour le marché France. Il contient 630 cartes. Les subsets détectés sont : CORE, FIFA WORLD CUP MASTER, HERO, POWER-UP, RARE, SPECIAL, ULTRA RARE. La checklist compte 76 cartes au total, dont 0 autographes et 76 inserts."
+}

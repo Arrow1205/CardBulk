@@ -12,7 +12,7 @@ import NBA_PLAYERS from '@/data/nba-player.json';
 import MLB_PLAYERS from '@/data/mlb-player.json';
 import TENNIS_PLAYERS from '@/data/tennis-player.json';
 
-import SET_DATA from '@/data/set.json';
+import SET_DATA from '@/data/sets.json';
 import TYPE_CARTE from '@/data/type-carte.json';
 
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
@@ -51,13 +51,13 @@ let ALL_SETS: string[] = [];
 (SET_DATA.brands || []).forEach((b: any) => {
   if (b.sports) {
     Object.values(b.sports).forEach((arr: any) => {
-      if (Array.isArray(arr)) ALL_SETS.push(...arr);
+      if (Array.isArray(arr)) ALL_SETS.push(...arr.map((s: any) => s.name).filter(Boolean));
     });
   }
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
 
-const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', year: new Date().getFullYear().toString(), is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
+const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: new Date().getFullYear().toString(), is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
 type PendingCard = {
   id: string;
@@ -419,14 +419,23 @@ function ScannerContent() {
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
   const availableBrands = SET_DATA.brands || [];
+  let availableSetObjects: any[] = [];
   let availableSets: string[] = [];
+  let availableVariations: string[] = [];
   if (formData.brand && formData.sport && SPORT_CONFIG[formData.sport]) {
     const selectedBrandObj = availableBrands.find((b: any) => b.name?.toLowerCase() === formData.brand.toLowerCase());
     const sportJsonKey = SPORT_CONFIG[formData.sport].jsonKey;
-    if (selectedBrandObj && selectedBrandObj.sports) {
+    if (selectedBrandObj?.sports) {
       const sportsData = selectedBrandObj.sports as any;
-      if (sportsData[sportJsonKey]) availableSets = sportsData[sportJsonKey];
+      if (sportsData[sportJsonKey]) {
+        availableSetObjects = sportsData[sportJsonKey];
+        availableSets = availableSetObjects.map((s: any) => s.name).filter(Boolean);
+      }
     }
+  }
+  if (formData.series) {
+    const matchedSet = availableSetObjects.find((s: any) => s.name?.toLowerCase() === formData.series.toLowerCase());
+    if (matchedSet?.common_subsets) availableVariations = matchedSet.common_subsets;
   }
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;
@@ -807,11 +816,11 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
           
           if (side === 'front') {
             return {
-              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
+              ...prev, sport: aiSport || prev.sport, firstname: fname || prev.firstname, lastname: lname || prev.lastname, club: matchedClub || prev.club, brand: matchExactCase(cleanValue(data.brand), ALL_BRANDS) || prev.brand, series: matchExactCase(cleanValue(data.series), ALL_SETS) || prev.series, variation: cleanValue(data.variation) || prev.variation, year: cleanValue(data.year) || prev.year, is_auto: !!data.is_auto || prev.is_auto, is_patch: !!data.is_patch || prev.is_patch, is_rookie: !!data.is_rookie || prev.is_rookie, is_numbered: !!data.is_numbered || prev.is_numbered, num_low: cleanValue(data.num_low) || prev.num_low, num_high: cleanValue(data.num_high) || prev.num_high, is_graded: !!data.is_graded || prev.is_graded, grading_company: cleanValue(data.grading_company) || prev.grading_company, grading_grade: cleanValue(data.grading_grade) || prev.grading_grade
             };
           } else {
             return {
-              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
+              ...prev, sport: prev.sport || aiSport, firstname: prev.firstname || fname, lastname: prev.lastname || lname, club: prev.club || matchedClub, brand: prev.brand || matchExactCase(cleanValue(data.brand), ALL_BRANDS), series: prev.series || matchExactCase(cleanValue(data.series), ALL_SETS), variation: prev.variation || cleanValue(data.variation), year: prev.year || cleanValue(data.year), is_auto: prev.is_auto || !!data.is_auto, is_patch: prev.is_patch || !!data.is_patch, is_rookie: prev.is_rookie || !!data.is_rookie, is_numbered: prev.is_numbered || !!data.is_numbered, num_low: prev.num_low || cleanValue(data.num_low), num_high: prev.num_high || cleanValue(data.num_high), is_graded: prev.is_graded || !!data.is_graded, grading_company: prev.grading_company || cleanValue(data.grading_company), grading_grade: prev.grading_grade || cleanValue(data.grading_grade)
             };
           }
         });
@@ -1036,7 +1045,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       
       const cardDataToSave = { 
         user_id: user.id, sport: formData.sport, firstname: formData.firstname, lastname: formData.lastname, brand: formData.brand, 
-        series: formData.series, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 
+        series: formData.series, variation: formData.variation || null, year: parseInt(formData.year) || null, is_rookie: formData.is_rookie, is_auto: formData.is_auto, is_patch: formData.is_patch, is_numbered: formData.is_numbered, numbering_low: parseInt(formData.num_low) || null, numbering_max: parseInt(formData.num_high) || null, purchase_price: parseFloat(formData.price) || 0, image_url: finalImageUrl, image_url_back: finalImageUrlBack, 
         club_name: finalClubName, 
         is_wishlist: isWishlistMode, website_url: formData.website_url, is_graded: formData.is_graded, grading_company: formData.is_graded ? formData.grading_company : null, grading_grade: formData.is_graded ? formData.grading_grade : null
       };
@@ -1512,7 +1521,16 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                   <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection / Set</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
-                
+
+                <div className="relative">
+                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                    <option value="">Variation / Subset</option>
+                    {availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}
+                    {formData.variation && !availableVariations.includes(formData.variation) && <option value={formData.variation}>{formData.variation}</option>}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                </div>
+
                 <div className="relative">
                   <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />

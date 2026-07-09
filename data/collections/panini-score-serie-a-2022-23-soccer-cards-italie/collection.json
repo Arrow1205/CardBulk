@@ -1,0 +1,2843 @@
+{
+  "collection_id": "panini-score-serie-a-2022-23-soccer-cards-italie",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2023 (avril)",
+    "pays": "Italie",
+    "editeur": "PANINI",
+    "serie": "SCORE / SERIE A",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "200 cartes de base + 200 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte RETAIL BOX de : 3 cartes parallèles avec effet SWIRL numérotées 5 cartes parallèles avec effet SWIRL supplémentaires non numérotées 12 cartes spéciales par insertion + 1 carte AUTOGRAPH dans 1 boîte sur 5"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "CAPTAIN",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "HOT ROOKIES",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "SCORE TEAM",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "Brahim Diaz - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Charles De Ketelaere - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Fikayo Tomori - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Ismael Bennacer - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Olivier Giroud - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Mike Maignan - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Pierre Kalulu - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Rafael Leao - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Sandro Tonali - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Theo Hernandez - AC Milan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Aleksa Terzic - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Arthur Cabral - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Cristiano Biraghi - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Dodo - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Igor - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Jonathan Ikone - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Luka Jovic - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Nicolas Gonzalez - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Nikola Milenkovic - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Rolando Mandragora - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Bryan Cristante - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Felix Afena-Gyan - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Gianluca Mancini - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Leonardo Spinazzola - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Lorenzo Pellegrini - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Nicola Zalewski - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Nicolo Zaniolo - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Paulo Dybala - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Tammy Abraham - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Zeki Celik - AS Roma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Duvan Zapata - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Ederson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Jeremie Boga - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Joakim Maehle - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "35",
+      "joueur": "Juan Musso - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "36",
+      "joueur": "Mario Pasalic - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "37",
+      "joueur": "Merih Demiral - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Rasmus Hojlund - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Ruslan Malinovskyi - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Teun Koopmeiners - Atalanta BC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Andrea Cambiaso - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Emanuel Vignato - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "43",
+      "joueur": "Jerdy Schouten - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Denso Kasius - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "45",
+      "joueur": "Lukasz Skorupski - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Marko Arnautovic - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Musa Barrow - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Nicolas Dominguez - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Riccardo Orsolini - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Roberto Soriano - Bologna FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Charles Pickel - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "52",
+      "joueur": "David Okereke - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "53",
+      "joueur": "Ionut Radu - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Johan Vasquez - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Luca Zanimacchia - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Matteo Bianchetti - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "57",
+      "joueur": "Paolo Ghiglione - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Santiago Ascacibar - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "59",
+      "joueur": "Cyriel Dessers - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Vlad Chiriches - US Cremonese",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "61",
+      "joueur": "Fabiano Parisi - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Filippo Bandinelli - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "63",
+      "joueur": "Guglielmo Vicario - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Liam Henderson - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "65",
+      "joueur": "Liberato Cacace - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "66",
+      "joueur": "Martin Satriano - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "67",
+      "joueur": "Mattia Destro - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Nedim Bajrami - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Petar Stojanovic - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "70",
+      "joueur": "Razvan Marin - Empoli FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "71",
+      "joueur": "Alessandro Bastoni - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "72",
+      "joueur": "Andre Onana - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Denzel Dumfries - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "74",
+      "joueur": "Hakan Calhanoglu - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Kristjan Asllani - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Lautaro Martinez - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Marcelo Brozovic - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "78",
+      "joueur": "Nicolo Barella - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "79",
+      "joueur": "Robin Gosens - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Romelu Lukaku - FC Internazionale Milano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "81",
+      "joueur": "Adrien Tameze - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Antonin Barak - ACF Fiorentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Diego Coppola - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Davide Faraoni - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Kevin Lasagna - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "86",
+      "joueur": "Ivan Ilic - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Josh Doig - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Koray Gunter - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Lorenzo Montipo - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Martin Hongla - Hellas Verona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Angel Di Maria - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Danilo - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Dusan Vlahovic - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Fabio Miretti - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Filip Kostic - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Gleison Bremer - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Leonardo Bonucci - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "98",
+      "joueur": "Manuel Locatelli - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "99",
+      "joueur": "Juan Cuadrado - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Weston McKennie - Juventus",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "101",
+      "joueur": "Alexis Blin - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Assan Ceesay - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "103",
+      "joueur": "Joan Gonzalez - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Lameck Banda - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Gabriel Strefezza - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Marin Pongracic - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Lorenzo Colombo - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Morten Hjulmand - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Valentin Gendrey - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Wladimiro Falcone - US Lecce",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "111",
+      "joueur": "Michele Di Gregorio - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Andrea Carboni - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Andrea Colpani - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Carlos Augusto - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Dany Mota - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Filippo Ranocchia - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "117",
+      "joueur": "Gianluca Caprari - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Matteo Pessina - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "119",
+      "joueur": "Nicolo Rovella - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Stefano Sensi - AC Monza",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Daniele Verde - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "122",
+      "joueur": "David Strelec - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Dimitrios Nikolaou - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Emmanuel Gyasi - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Giulio Maggiore - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "126",
+      "joueur": "Ivan Provedel - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Jakub Kiwior - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Mattia Caldara - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "129",
+      "joueur": "Mbala Nzola - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "130",
+      "joueur": "Simone Bastoni - Spezia Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "131",
+      "joueur": "Alessio Romagnoli - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Ciro Immobile - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Felipe Anderson - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "134",
+      "joueur": "Luis Alberto - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "135",
+      "joueur": "Pedro - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Luka Romero - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "137",
+      "joueur": "Manuel Lazzari - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "138",
+      "joueur": "Matteo Cancellieri - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Mattia Zaccagni - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Sergej Milinkovic-Savic - SS Lazio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Alex Meret - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Andre-Frank Zambo Anguissa - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Eljif Elmas - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Min-jae Kim - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Giovanni Di Lorenzo - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Hirving Lozano - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Khvicha Kvaratskhelia - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "148",
+      "joueur": "Matteo Politano - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Piotr Zielinski - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Victor Osimhen - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "151",
+      "joueur": "Alessandro Buongiorno - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "152",
+      "joueur": "Antonio Sanabria - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "153",
+      "joueur": "David Zima - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "154",
+      "joueur": "Mergim Vojvoda - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "155",
+      "joueur": "Nemanja Radonjic - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "156",
+      "joueur": "Pietro Pellegri - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "157",
+      "joueur": "Samuele Ricci - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "158",
+      "joueur": "Sasa Lukic - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "159",
+      "joueur": "Vanja Milinkovic-Savic - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "160",
+      "joueur": "Wilfried Singo - Torino FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "161",
+      "joueur": "Antonio Candreva - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "162",
+      "joueur": "Bartosz Bereszynski - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "163",
+      "joueur": "Emil Audero - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "164",
+      "joueur": "Fabio Quagliarella - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "165",
+      "joueur": "Francesco Caputo - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "166",
+      "joueur": "Gerard Yepes - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "167",
+      "joueur": "Manolo Gabbiadini - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "168",
+      "joueur": "Mehdi Leris - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "169",
+      "joueur": "Omar Colley - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "170",
+      "joueur": "Tommaso Augello - UC Sampdoria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "171",
+      "joueur": "Beto - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "172",
+      "joueur": "Bram Nuytinck - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "173",
+      "joueur": "Destiny Udogie - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "174",
+      "joueur": "Festy Ebosele - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "175",
+      "joueur": "Gerard Deulofeu - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "176",
+      "joueur": "Jaka Bijol - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "177",
+      "joueur": "Jean-Victor Makengo - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "178",
+      "joueur": "Marco Silvestri - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "179",
+      "joueur": "Roberto Pereyra - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "180",
+      "joueur": "Rodrigo Becao - Udinese Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "181",
+      "joueur": "Domagoj Bradaric - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "182",
+      "joueur": "Emil Bohinen - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "183",
+      "joueur": "Erik Botheim - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "184",
+      "joueur": "Federico Bonazzoli - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "185",
+      "joueur": "Flavius Daniliuc - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "186",
+      "joueur": "Junior Sambia - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "187",
+      "joueur": "Lassana Coulibaly - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "188",
+      "joueur": "Lorenzo Pirola - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "189",
+      "joueur": "Boulaye Dia - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "190",
+      "joueur": "Matteo Lovato - US Salernitana",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "191",
+      "joueur": "Agustin Alvarez - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "192",
+      "joueur": "Andrea Consigli - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "193",
+      "joueur": "Davide Frattesi - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "194",
+      "joueur": "Domenico Berardi - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "195",
+      "joueur": "Georgios Kyriakopoulos - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "196",
+      "joueur": "Giacomo Raspadori - SSC Napoli",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "197",
+      "joueur": "Gian Marco Ferrari - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "198",
+      "joueur": "Armand Lauriente - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "199",
+      "joueur": "Kristian Thorstvedt - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Mike Maignan - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "2",
+      "joueur": "Rui Patricio - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "3",
+      "joueur": "Juan Musso - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "4",
+      "joueur": "Guglielmo Vicario - Empoli FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "5",
+      "joueur": "Wojciech Szczesny - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "6",
+      "joueur": "Michele Di Gregorio - AC Monza",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "7",
+      "joueur": "Andrea Consigli - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "8",
+      "joueur": "Alex Meret - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "9",
+      "joueur": "Vanja Milinkovic-Savic - Torino FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "10",
+      "joueur": "Emil Audero - UC Sampdoria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "1",
+      "joueur": "Rafael Leao - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "2",
+      "joueur": "Theo Hernandez - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "3",
+      "joueur": "Tommaso Pobega - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "4",
+      "joueur": "Dodo - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "5",
+      "joueur": "Riccardo Sottil - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "6",
+      "joueur": "Felix Afena-Gyan - US Cremonese",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "7",
+      "joueur": "Rade Krunic - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "8",
+      "joueur": "Ederson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "9",
+      "joueur": "Giorgio Scalvini - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "10",
+      "joueur": "David Okereke - US Cremonese",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "11",
+      "joueur": "Martin Satriano - Empoli FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "12",
+      "joueur": "Andrea Pinamonti - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "13",
+      "joueur": "Denzel Dumfries - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "14",
+      "joueur": "Federico Dimarco - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "15",
+      "joueur": "Dusan Vlahovic - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "16",
+      "joueur": "Nicolo Rovella - AC Monza",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "17",
+      "joueur": "Gonzalo Villar - UC Sampdoria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "18",
+      "joueur": "Dany Mota - AC Monza",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "19",
+      "joueur": "Mario Gila - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "20",
+      "joueur": "Marcos Antonio - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "21",
+      "joueur": "Hirving Lozano - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "22",
+      "joueur": "Min-jae Kim - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "23",
+      "joueur": "Samuele Ricci - Torino FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "24",
+      "joueur": "Wilfried Singo - Torino FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "25",
+      "joueur": "Beto - Udinese Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "26",
+      "joueur": "Enzo Ebosse - Udinese Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "27",
+      "joueur": "Erik Botheim - US Salernitana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "28",
+      "joueur": "Lorenzo Pirola - US Salernitana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "29",
+      "joueur": "Giacomo Raspadori - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "30",
+      "joueur": "Kristian Thorstvedt - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "1",
+      "joueur": "Davide Calabria - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "2",
+      "joueur": "Cristiano Biraghi - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "3",
+      "joueur": "Lorenzo Pellegrini - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "4",
+      "joueur": "Roberto Soriano - Bologna FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "5",
+      "joueur": "Matteo Pessina - AC Monza",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "6",
+      "joueur": "Samir Handanovic - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "7",
+      "joueur": "Ciro Immobile - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "8",
+      "joueur": "Giovanni Di Lorenzo - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "9",
+      "joueur": "Federico Fazio - US Salernitana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "10",
+      "joueur": "Gian Marco Ferrari - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "1",
+      "joueur": "Mike Maignan - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Sandro Tonali - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Theo Hernandez - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Lorenzo Pellegrini - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Nicolo Zaniolo - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Paulo Dybala - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Alessandro Bastoni - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Denzel Dumfries - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Lautaro Martinez - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Nicolo Barella - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Angel Di Maria - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Dusan Vlahovic - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Gleison Bremer - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Manuel Locatelli - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Rafael Leao - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Ciro Immobile - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Piotr Zielinski - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Victor Osimhen - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Domenico Berardi - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Giacomo Raspadori - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Leo Ostigard - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Yacine Adli - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Arthur Cabral - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Edoardo Bove - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Nicola Zalewski - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Rasmus Hojlund - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Liberato Cacace - Empoli FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Kristjan Asllani - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Raoul Bellanova - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Fabio Miretti - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Matias Soule - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Nicolo Fagioli - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Lorenzo Colombo - US Lecce",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Luka Romero - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Matteo Cancellieri - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Khvicha Kvaratskhelia - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "17",
+      "joueur": "David Zima - Torino FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Festy Ebosele - Udinese Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Agustin Alvarez - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Armand Lauriente - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Fikayo Tomori - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Rafael Leao - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Sandro Tonali - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Theo Hernandez - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Lorenzo Pellegrini - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Tammy Abraham - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Hakan Calhanoglu - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Lautaro Martinez - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Nicolo Barella - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Romelu Lukaku - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Dusan Vlahovic - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Weston McKennie - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Manuel Locatelli - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Ciro Immobile - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Sergej Milinkovic-Savic - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Khvicha Kvaratskhelia - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Victor Osimhen - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Boulaye Dia - US Salernitana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Domenico Berardi - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Kaka - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Charles De Ketelaere - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Pierre Kalulu - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Arthur Cabral - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Felix Afena-Gyan - US Cremonese",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Nicola Zalewski - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Giorgio Scalvini - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Andrea Pinamonti - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Kristjan Asllani - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Raoul Bellanova - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Fabio Miretti - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Nicolo Fagioli - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Nicolo Rovella - AC Monza",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Daniel Maldini - Spezia Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Rasmus Hojlund - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Matteo Cancellieri - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Eljif Elmas - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Khvicha Kvaratskhelia - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Samuele Ricci - Torino FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Destiny Udogie - Udinese Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Giacomo Raspadori - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alexis Saelemaekers - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "2",
+      "joueur": "Sandro Tonali - AC Milan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "3",
+      "joueur": "Nicolas Gonzalez - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "4",
+      "joueur": "Pierluigi Gollini - ACF Fiorentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "5",
+      "joueur": "Bryan Cristante - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "6",
+      "joueur": "Tammy Abraham - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "7",
+      "joueur": "Lorenzo Pellegrini - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "8",
+      "joueur": "Roger Ibanez - AS Roma",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "9",
+      "joueur": "Duvan Zapata - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "10",
+      "joueur": "Mario Pasalic - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "11",
+      "joueur": "Teun Koopmeiners - Atalanta BC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "12",
+      "joueur": "Marko Arnautovic - Bologna FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "13",
+      "joueur": "Lautaro Martinez - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "14",
+      "joueur": "Milan Skriniar - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "15",
+      "joueur": "Nicolo Barella - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "16",
+      "joueur": "Romelu Lukaku - FC Internazionale Milano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "17",
+      "joueur": "Adrien Rabiot - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "18",
+      "joueur": "Weston McKennie - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "19",
+      "joueur": "Juan Cuadrado - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "20",
+      "joueur": "Leonardo Bonucci - Juventus",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "21",
+      "joueur": "Matteo Pessina - AC Monza",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "22",
+      "joueur": "Giulio Maggiore - US Salernitana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "23",
+      "joueur": "Luis Alberto - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "24",
+      "joueur": "Sergej Milinkovic-Savic - SS Lazio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "25",
+      "joueur": "Stanislav Lobotka - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "26",
+      "joueur": "Piotr Zielinski - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "27",
+      "joueur": "Victor Osimhen - SSC Napoli",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "28",
+      "joueur": "Boulaye Dia - US Salernitana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "29",
+      "joueur": "Davide Frattesi - US Sassuolo Calcio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "S-AP",
+      "joueur": "Andrea Pirlo - AC Milan #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-K",
+      "joueur": "Kaka - AC Milan #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-LAN",
+      "joueur": "Luca Antonelli - AC Milan #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MVB",
+      "joueur": "Marco Van Basten - AC Milan #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PM",
+      "joueur": "Paolo Maldini - AC Milan #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-AGD",
+      "joueur": "Alberto Gilardino - ACF Fiorentina #/64",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-LT",
+      "joueur": "Luca Toni - ACF Fiorentina #/39",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RUD",
+      "joueur": "Antonio Rudiger - AS Roma #/64",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-DB",
+      "joueur": "Dennis Bergkamp - FC Internazionale Milano #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-GBI",
+      "joueur": "Giuseppe Bergomi - FC Internazionale Milano #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-LPO",
+      "joueur": "Lukas Podolski - FC Internazionale Milano #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-NV",
+      "joueur": "Nemanja Vidic - FC Internazionale Milano #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-NBO",
+      "joueur": "Nicolas Burdisso - FC Internazionale Milano #/89",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PI",
+      "joueur": "Paul Ince - FC Internazionale Milano #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RC",
+      "joueur": "Roberto Carlos - FC Internazionale Milano #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RM",
+      "joueur": "Rafael Marquez - Hellas Verona FC #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-CAB",
+      "joueur": "Antonio Cabrini - Juventus #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PEV",
+      "joueur": "Patrice Evra - Juventus #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-AN",
+      "joueur": "Alessandro Nesta - SS Lazio #/89",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-ASA",
+      "joueur": "Alexis Saelemaekers - AC Milan #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-CDK",
+      "joueur": "Charles De Ketelaere - AC Milan #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-OG",
+      "joueur": "Olivier Giroud - AC Milan #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-KLU",
+      "joueur": "Pierre Kalulu - AC Milan #/89",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-THZ",
+      "joueur": "Theo Hernandez - AC Milan #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MKA",
+      "joueur": "Marash Kumbulla - AS Roma #/89",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PD",
+      "joueur": "Paulo Dybala - AS Roma #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-HCU",
+      "joueur": "Hakan Calhanoglu - FC Internazionale Milano #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-ABK",
+      "joueur": "Antonin Barak - ACF Fiorentina #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-ARA",
+      "joueur": "Adrien Rabiot - Juventus #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-AAZ",
+      "joueur": "Agustin Alvarez - US Sassuolo Calcio #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MPE",
+      "joueur": "Matteo Pessina - AC Monza #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-DMA",
+      "joueur": "Daniel Maldini - Spezia Calcio #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-ARG",
+      "joueur": "Alessio Romagnoli - SS Lazio #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-TKO",
+      "joueur": "Teun Koopmeiners - Atalanta BC #/1",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MOA",
+      "joueur": "Mathias Olivera - SSC Napoli #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-minecraft-2022-time-to-mine-cartes-1.png",
+    "images/bandeau-panini-fc-ligue1-2022-02.png",
+    "images/bandeau-panini-score-laliga-2022-23.png",
+    "images/panini-score-serie-a-2022-23-soccer-cards-boite-fatpack-de-12-pochettes-de-30-cartes.png",
+    "images/panini-score-serie-a-2022-23-soccer-cards-boite-retail-de-20-pochettes-de-10-cartes.png",
+    "images/panini-score-serie-a-2022-23-soccer-cards-pochette-de-10-cartes.webp",
+    "images/panini-score-serie-a-2022-23-soccer-cards-pochette-fat-pack-de-30-cartes.webp",
+    "images/panini-score-serie-a-2022-23-soccer-cards-starter-pack-de-demarrage.webp",
+    "images/panini-score-serie-a-2022-23-soccer-cards-visuel.webp"
+  ],
+  "stats": {
+    "total_cartes": 393,
+    "total_autographes": 35,
+    "total_inserts": 159,
+    "total_images": 9,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI SCORE / SERIE A, édité par PANINI en 2023 (avril) pour le marché Italie. Il contient 200 cartes de base + 200 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, BASE, INSERT. La checklist compte 393 cartes au total, dont 35 autographes et 159 inserts."
+}

@@ -1,0 +1,183 @@
+{
+  "collection_id": "futera-unique-liverpool-fc-2024-25-coup-d-il-avec-check-list",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2025 (septembre)",
+    "pays": "France Sortie mondiale",
+    "editeur": "FUTERA",
+    "serie": "UNIQUE",
+    "support": "Cartes",
+    "version": null,
+    "contenu_global": null,
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par coffret de :3 cartes de base parallèles numérotées3 cartes HERITAGE numérotées2 cartes MEMORABILIA+ 1 carte MEMORABILIA ou 1 carte OR ou 1 carte AUTOGRAPH"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS CLASSIC ON CARDSTBA01.",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS ELITE ON CARDELTA01.",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "ONE OF ONE ON CARDOFA01.",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH OR",
+      "section": "ONE OF ONE ON CARDOFAG01.",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "THE GREATS ON CARDTGSA01.",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "BASE #/15 #/9 #/7 #/5 1/1LFC01. Alisson BeckerLFC02. Caoimhin KelleherLFC03. Vítězslav JarošLFC04. Joe GomezLFC05. Virgil van DijkLFC06. Ibrahima KonateLFC07. Kostas TsimikasLFC08. Andy RobertsonLFC09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLFC10. Jarell QuansahLFC11. Conor BradleyLFC12. Wataru EndōLFC13. Dominik SzoboszlaiLFC14. Alexis Mac AllisterLFC15. Curtis JonesLFC16. Harvey ElliottLFC17. Ryan GravenberchLFC18. Tyler MortonLFC19. James Mc",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ConnellLFC20. Luis DíazLFC21. Darwin NúñezLFC22. Mohamed SalahLFC23. Cody GakpoLFC25. Federico ChiesaLFC26. Rio NgumohaHERITAGE #/15 #/9 #/6 #/4 #/2 1/1LHT01. Alisson BeckerLHT02. Caoimhin KelleherLHT03. Vítězslav JarošLHT04. Joe GomezLHT05. Virgil van DijkLHT06. Ibrahima KonateLHT07. Kostas TsimikasLHT08. Andy RobertsonLHT09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLHT10. Jarell QuansahLHT11. Conor BradleyLHT12. Wataru EndōLHT13. Dominik SzoboszlaiLHT14. Alexis Mac AllisterLHT15. Curtis JonesLHT16. Harvey ElliottLHT17. Ryan GravenberchLHT18. Tyler MortonLHT19. James Mc",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ConnellLHT20. Luis DíazLHT21. Darwin NúñezLHT22. Mohamed SalahLHT23. Cody GakpoLHT25. Federico ChiesaLHT26. Rio NgumohaMEMORABILIA / CONQUERORS #/9 #/5 #/4 #/3 #/2 1/1LCQ01. Virgil van DijkLCQ02. Alisson BeckerLCQ03. Ibrahima KonatéLCQ05. Luis DíazLCQ06. Mohamed SalahLCQ07. Ryan GravenberchLCQ08. Dominik SzoboszlaiLCQ09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLCQ10. Andrew RobertsonMEMORABILIA / SUPERSTARS #/9 #/5 #/4 #/3 #/2 1/1LSS01. Virgil van DijkLSS02. Alisson BeckerLSS03. Ibrahima KonatéLSS05. Luis DíazLSS06. Mohamed SalahLSS07. Ryan GravenberchLSS08. Dominik SzoboszlaiLSS09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLSS10. Andrew RobertsonMEMORABILIA / TITANS #/9 #/5 #/4 #/3 #/2 1/1LTT01. Virgil van DijkLTT02. Alisson BeckerLTT03. Ibrahima KonatéLTT05. Luis DíazLTT06. Mohamed SalahLTT07. Ryan GravenberchLTT08. Dominik SzoboszlaiLTT09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLTT10. Andrew RobertsonOR / CHAMPIONS #/3 1/1LCH01. Virgil van DijkLCH02. Alisson BeckerLCH03. Ibrahima KonatéLCH05. Luis DíazLCH06. Mohamed SalahLCH07. Ryan GravenberchLCH08. Dominik SzoboszlaiLCH09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLCH10. Andrew RobertsonOR / ECLIPSE #/4 1/1LEC01. Virgil van DijkLEC02. Alisson BeckerLEC03. Ibrahima KonatéLEC05. Luis DíazLEC06. Mohamed SalahLEC07. Ryan GravenberchLEC08. Dominik SzoboszlaiLEC09. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "ArnoldLEC10. Andrew Robertson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Robbie FowlerSTBA02. Michael OwenSTBA03. Javier MascheranoSTBA04. Jamie CarragherSTBA05. Emile HeskeySTBA06. John BarnesSTBA07. Jason Mc",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS CLASSIC ON CARDSTBA01."
+    },
+    {
+      "numero": null,
+      "joueur": "AteerSTBA08. David FaircloughSTBA09. Jimmy Case",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS CLASSIC ON CARDSTBA01."
+    },
+    {
+      "numero": null,
+      "joueur": "Robbie FowlerELTA02. Michael OwenELTA03. Jamie CarragherELTA04. Emile HeskeyELTA05. John BarnesELTA06. Jason Mc",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS ELITE ON CARDELTA01."
+    },
+    {
+      "numero": null,
+      "joueur": "AteerELTA07. David FaircloughELTA08. Jimmy Case",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS ELITE ON CARDELTA01."
+    },
+    {
+      "numero": null,
+      "joueur": "Kenny DalglishOFA02. Jan MølbyOFA03. John AldridgeOFA04. Phil NealOFA05. Kevin KeeganOFA06. Bruce GrobbelaarOFA07. Phil ThompsonOFA08. Alan KennedyOFA09. Neil Ruddock",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "ONE OF ONE ON CARDOFA01."
+    },
+    {
+      "numero": null,
+      "joueur": "Kenny DalglishOFAG02. Jan MølbyOFAG03. John AldridgeOFAG04. Phil NealOFAG05. Kevin KeeganOFAG06. Bruce GrobbelaarOFAG07. Phil ThompsonOFAG08. Neil Ruddock",
+      "mention": null,
+      "subset": "AUTOGRAPH OR",
+      "section": "ONE OF ONE ON CARDOFAG01."
+    },
+    {
+      "numero": null,
+      "joueur": "Bruce Grobbelaar",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "THE GREATS ON CARDTGSA01."
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/2024-25-futera-liverpool-unique-soccer-cards-sell-sheet_pages-to-jpg-0001.jpg"
+  ],
+  "stats": {
+    "total_cartes": 17,
+    "total_autographes": 7,
+    "total_inserts": 1,
+    "total_images": 1,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "AUTOGRAPH OR",
+      "BASE"
+    ]
+  },
+  "gemini_context": "Ce set est le FUTERA UNIQUE, édité par FUTERA en 2025 (septembre) pour le marché France Sortie mondiale. Les subsets détectés sont : AUTOGRAPH, AUTOGRAPH OR, BASE. La checklist compte 17 cartes au total, dont 7 autographes et 1 inserts."
+}

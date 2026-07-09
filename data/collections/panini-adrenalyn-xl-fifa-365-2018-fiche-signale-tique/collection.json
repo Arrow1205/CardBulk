@@ -1,0 +1,34 @@
+{
+  "collection_id": "panini-adrenalyn-xl-fifa-365-2018-fiche-signale-tique",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2017 (septembre)",
+    "pays": "Allemagne / Angleterre",
+    "editeur": "PANINI",
+    "serie": "ADRENALYN XL / FIFA 365",
+    "support": "Cartes",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "459 cartes"
+  },
+  "subsets": [],
+  "checklist": [],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-fifa-365-2019-04.png",
+    "images/bandeau-fifa-365-2021-soon.png",
+    "images/bandeau-fifa-365-2021.png",
+    "images/fifa-365-2018-blister-e1546006273280.jpg",
+    "images/fifa-365-2018-bundle.jpg",
+    "images/fifa-365-2018-multipack.jpg",
+    "images/fifa-365-2018-starter-pack.jpg",
+    "images/fifa-365-2018-tin-box-e1546006294521.jpg"
+  ],
+  "stats": {
+    "total_cartes": 0,
+    "total_autographes": 0,
+    "total_inserts": 0,
+    "total_images": 8,
+    "subsets_detectes": []
+  },
+  "gemini_context": "Ce set est le PANINI ADRENALYN XL / FIFA 365, édité par PANINI en 2017 (septembre) pour le marché Allemagne / Angleterre. Il contient 459 cartes. La checklist compte 0 cartes au total, dont 0 autographes et 0 inserts."
+}

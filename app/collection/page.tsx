@@ -28,7 +28,7 @@ const SPORT_FOLDERS: Record<string, string> = {
 
 const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 
-import SET_DATA from '@/data/set.json';
+import SET_DATA from '@/data/sets.json';
 import TYPE_CARTE from '@/data/type-carte.json';
 
 type Message = { role: 'user' | 'assistant', content: string };

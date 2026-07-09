@@ -1,0 +1,100 @@
+{
+  "collection_id": "panini-prizm-x-monopoly-fifa-world-cup-2026-soccer-cards-coup-d-il-avec-check-li",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2026 (mars)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "PRIZM / MONOPOLY / FIFA WORLD CUP",
+    "support": "Cartes chromées",
+    "version": null,
+    "contenu_global": null,
+    "dotation_boite": "La boîte BLASTER BOX U.S.A. peut contenir des cartes parallèles numérotées ou FREE PARKING rares"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "BLACK MONEY BLASTBMB-1.",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "WHITE MONEY BLASTWMB-1.",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "BASE1. Lionel Messi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Emery",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Kennie",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Carthy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Jay Okocha",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Diego Maradona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BLACK MONEY BLASTBMB-1."
+    },
+    {
+      "numero": null,
+      "joueur": "Paolo Maldini",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WHITE MONEY BLASTWMB-1."
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/13031839_11j7lw8r_2-1.png",
+    "images/25-26_monopoly_fifa_blaster_c2919-2.png",
+    "images/81rhehxwmkl._ac_sl1500_-d.png",
+    "images/bandeau-panini-instant-fifa-world-cup-2026.png"
+  ],
+  "stats": {
+    "total_cartes": 7,
+    "total_autographes": 0,
+    "total_inserts": 2,
+    "total_images": 4,
+    "subsets_detectes": [
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI PRIZM / MONOPOLY / FIFA WORLD CUP, édité par PANINI en 2026 (mars) pour le marché France. Les subsets détectés sont : BASE, INSERT. La checklist compte 7 cartes au total, dont 0 autographes et 2 inserts."
+}

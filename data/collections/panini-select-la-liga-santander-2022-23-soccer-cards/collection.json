@@ -1,0 +1,4553 @@
+{
+  "collection_id": "panini-select-la-liga-santander-2022-23-soccer-cards",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2023 (avril)",
+    "pays": "U.S.A.",
+    "editeur": "PANINI",
+    "serie": "SELECT / LA LIGA",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "250 cartes de base + 200 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte HOBBY BOX de : 9 cartes parallèles 5 cartes parallèles numérotées 7 cartes spéciales par insertion ou cartes spéciales par insertion parallèles + 3 cartes AUTOGRAPH ou MEMORABILIA"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "TERRACE",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "MEZZANINE",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "FIELD LEVEL",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "EQUALIZERS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "SELECT FUTURE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "SELECT STARS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "STAINED GLASS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "VISIONARY",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA",
+      "description": null
+    },
+    {
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "Srdan Babic - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Kaiky Fernandes - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Largie Ramazani - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Lucas Robertone - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Sergio Akieme - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Dani Vivian - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Inaki Williams - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Oihan Sancet - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Unai Vencedor - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Alvaro Morata - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Jan Oblak - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Joao Felix - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Koke - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Rodrigo de Paul - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Aimar Oroz - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Chimy Avila - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "18",
+      "joueur": "David Garcia - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Manu Sanchez - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Ruben Garcia - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Pacha Espino - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Choco Lozano - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Jeremias Ledesma - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Brian Ocampo - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Theo Bongonda - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Alex Collado - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Edgar Badia - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Lucas Boye - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Pol Lirola - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Raul Guti - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Ousmane Dembélé - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "35",
+      "joueur": "Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "36",
+      "joueur": "David Soria - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "37",
+      "joueur": "Djene - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Enes Unal - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Nemanja Maksimovic - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Portu - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Miguel Gutierrez - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Oriol Romeu - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "43",
+      "joueur": "Rodrigo Riquelme - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Yan Couto - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "45",
+      "joueur": "Yangel Herrera - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Alvaro Garcia - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Fran Garcia - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Oscar Trejo - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Radamel Falcao - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Sergio Camello - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Agustin Marchesin - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "52",
+      "joueur": "Fran Beltran - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "53",
+      "joueur": "Franco Cervi - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Iago Aspas - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Oscar Rodriguez - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Edu Exposito - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "57",
+      "joueur": "Javi Puado - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Nico Melamed - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "59",
+      "joueur": "Alvaro Fernandez - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Vinicius Souza - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "61",
+      "joueur": "Antonio Raillo - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Iddrisu Baba - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "63",
+      "joueur": "Kang-in Lee - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Predrag Rajkovic - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "65",
+      "joueur": "Rodrigo Battaglia - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "66",
+      "joueur": "Juanmi - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "67",
+      "joueur": "Luiz Felipe - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Luiz Henrique - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Nabil Fekir - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "70",
+      "joueur": "Rui Silva - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "71",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "72",
+      "joueur": "David Alaba - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "74",
+      "joueur": "Thibaut Courtois - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Aihen Munoz - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Brais Mendez - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "78",
+      "joueur": "Jon Karrikaburu - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "79",
+      "joueur": "Takefusa Kubo - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Umar Sadiq - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "81",
+      "joueur": "Gonzalo Plata - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Joaquin Fernandez - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Monchu - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Sergio Asenjo - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Shon Weissman - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "86",
+      "joueur": "Erik Lamela - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Ivan Rakitic - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Papu Gomez - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Tanguy Nianzou - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Youssef En-Nesyri - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Giorgi Mamardashvili - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Hugo Guillamon - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Jesus Vazquez - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Jose Luis Gaya - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Yunus Musah - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Dani Parejo - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Raul Albiol - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "98",
+      "joueur": "Nicolas Jackson - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "99",
+      "joueur": "Pau Torres - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Yeremy Pino - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "TERRACE"
+    },
+    {
+      "numero": "101",
+      "joueur": "El Bilal Toure - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Lazaro Vinicius - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "103",
+      "joueur": "Samu Costa - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Alex Berenguer - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Inigo Martinez - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Mikel Vesga - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Nico Williams - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Yeray Alvarez - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Angel Correa - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "111",
+      "joueur": "Antoine Griezmann - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Axel Witsel - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Jose Maria Gimenez - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Marcos Llorente - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Nahuel Molina - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Reinildo Mandava - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "117",
+      "joueur": "Thomas Lemar - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Yannick Carrasco - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "119",
+      "joueur": "Jon Moncayola - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Moi Gomez - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Sergio Herrera - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "122",
+      "joueur": "Alex Fernandez - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Alvaro Negredo - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Antonio Blanco - Cadiz CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Ezequiel Ponce - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "126",
+      "joueur": "Omar Mascarell - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Roger Marti - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "129",
+      "joueur": "Eric Garcia - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "130",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "131",
+      "joueur": "Franck Kessie - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "134",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "135",
+      "joueur": "Raphinha - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Borja Mayoral - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "137",
+      "joueur": "Carles Alena - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "138",
+      "joueur": "Mauro Arambarri - Getafe CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Arnau Martinez - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Rodrigo Riquelme - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Taty Castellanos - Girona FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Alejandro Catena - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Stole Dimitrievski - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Unai Lopez - Rayo Vallecano",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Javi Galan - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Gabri Veiga - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Martin Braithwaite - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "148",
+      "joueur": "Joselu - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Sergi Darder - RCD Espanyol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Martin Valjent - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "151",
+      "joueur": "Pablo Maffeo - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "152",
+      "joueur": "Vedat Muriqi - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "153",
+      "joueur": "Alex Moreno - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "154",
+      "joueur": "Borja Iglesias - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "155",
+      "joueur": "Guido Rodriguez - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "156",
+      "joueur": "Rodri Sanchez - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "157",
+      "joueur": "Sergio Canales - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "158",
+      "joueur": "Willian Jose - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "159",
+      "joueur": "Antonio Rudiger - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "160",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "161",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "162",
+      "joueur": "Federico Valverde - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "163",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "164",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "165",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "166",
+      "joueur": "Alex Remiro - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "167",
+      "joueur": "Ander Barrenetxea - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "168",
+      "joueur": "Benat Turrientes - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "169",
+      "joueur": "David Silva - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "170",
+      "joueur": "Martin Zubimendi - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "171",
+      "joueur": "Mikel Merino - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "172",
+      "joueur": "Mohamed-Ali Cho - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "173",
+      "joueur": "Robin Le Normand - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "174",
+      "joueur": "Kenedy - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "175",
+      "joueur": "Roque Mesa - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "176",
+      "joueur": "Sergi Guardiola - R. Valladolid CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "177",
+      "joueur": "Alex Telles - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "178",
+      "joueur": "Yassine Bounou - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "179",
+      "joueur": "Gonzalo Montiel - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "180",
+      "joueur": "Tecatito Corona - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "181",
+      "joueur": "Joan Jordan - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "182",
+      "joueur": "Kasper Dolberg - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "183",
+      "joueur": "Marcao - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "184",
+      "joueur": "Marcos Acuna - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "185",
+      "joueur": "Rafa Mir - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "186",
+      "joueur": "Edinson Cavani - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "187",
+      "joueur": "Gabriel Paulista - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "188",
+      "joueur": "Hugo Duro - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "189",
+      "joueur": "Ilaix Moriba - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "190",
+      "joueur": "Nico Gonzalez - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "191",
+      "joueur": "Samu Castillejo - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "192",
+      "joueur": "Samuel Lino - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "193",
+      "joueur": "Thierry Correia - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "194",
+      "joueur": "Alex Baena - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "195",
+      "joueur": "Alfonso Pedraza - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "196",
+      "joueur": "Arnaut Danjuma - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "197",
+      "joueur": "Gerard Moreno - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "198",
+      "joueur": "Giovani Lo Celso - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "199",
+      "joueur": "Juan Foyth - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "200",
+      "joueur": "Samuel Chukwueze - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "MEZZANINE"
+    },
+    {
+      "numero": "201",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "202",
+      "joueur": "Inaki Williams - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "203",
+      "joueur": "Nico Williams - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "204",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "205",
+      "joueur": "Alvaro Morata - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "206",
+      "joueur": "Antoine Griezmann - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "207",
+      "joueur": "Jan Oblak - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "208",
+      "joueur": "Joao Felix - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "209",
+      "joueur": "Jose Maria Gimenez - Atletico de Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "210",
+      "joueur": "Chimy Avila - CA Osasuna",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "211",
+      "joueur": "Lucas Boye - Elche CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "212",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "213",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "214",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "215",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "216",
+      "joueur": "Ousmane Dembélé - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "217",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "218",
+      "joueur": "Raphinha - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "219",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "220",
+      "joueur": "Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "221",
+      "joueur": "Iago Aspas - Celta",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "222",
+      "joueur": "Lazaro Vinicius - UD Almeria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "223",
+      "joueur": "Kang-in Lee - RCD Mallorca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "224",
+      "joueur": "Nabil Fekir - Real Betis",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "225",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "226",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "227",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "228",
+      "joueur": "Federico Valverde - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "229",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "230",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "231",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "232",
+      "joueur": "Thibaut Courtois - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "233",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "234",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "235",
+      "joueur": "Alex Remiro - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "236",
+      "joueur": "David Silva - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "237",
+      "joueur": "Martin Zubimendi - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "238",
+      "joueur": "Mikel Merino - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "239",
+      "joueur": "Jon Karrikaburu - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "240",
+      "joueur": "Mohamed-Ali Cho - Real Sociedad",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "241",
+      "joueur": "Yassine Bounou - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "242",
+      "joueur": "Joan Jordan - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "243",
+      "joueur": "Rafa Mir - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "244",
+      "joueur": "Youssef En-Nesyri - Sevilla FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "245",
+      "joueur": "Nico Gonzalez - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "246",
+      "joueur": "Yunus Musah - Valencia CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "247",
+      "joueur": "Arnaut Danjuma - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "248",
+      "joueur": "Gerard Moreno - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "249",
+      "joueur": "Pau Torres - Villarreal CF",
+      "mention": null,
+      "subset": "BASE",
+      "section": "FIELD LEVEL"
+    },
+    {
+      "numero": "1",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Cristiano Ronaldo - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Antoine Griezmann - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Jan Oblak - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Joao Felix - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Ousmane Dembélé - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Raphinha - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Federico Valverde - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Thibaut Courtois - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Takefusa Kubo - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Giorgi Mamardashvili - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Arnaut Danjuma - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Yeremy Pino - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ARTISTIC IMPRESSIONS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Inaki Williams - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Angel Correa - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Antoine Griezmann - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Joao Felix - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Chimy Avila - CA Osasuna",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Alex Fernandez - Cadiz CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Lucas Boye - Elche CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Raphinha - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Borja Mayoral - Getafe CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Taty Castellanos - Girona FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Radamel Falcao - Rayo Vallecano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Iago Aspas - Celta",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Joselu - RCD Espanyol",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Kang-in Lee - RCD Mallorca",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Nabil Fekir - Real Betis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Takefusa Kubo - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Shon Weissman - R. Valladolid CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Youssef En-Nesyri - Sevilla FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Edinson Cavani - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Gerard Moreno - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "EQUALIZERS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Kaiky Fernandes - UD Almeria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Largie Ramazani - UD Almeria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Nico Williams - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Unai Vencedor - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Matheus Cunha - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Abde Ezzalzouli - CA Osasuna",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Victor Chust - Cadiz CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Alejandro Balde - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Pablo Torre - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Arnau Martinez - Girona FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Reinier - Girona FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Sergio Camello - Rayo Vallecano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Jorgen Strand Larsen - Celta",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Gabri Veiga - Celta",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Nico Melamed - RCD Espanyol",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Luiz Henrique - Real Betis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Mohamed-Ali Cho - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Robert Navarro - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Gonzalo Plata - R. Valladolid CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Giorgi Mamardashvili - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Nico Gonzalez - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Samuel Lino - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Alex Baena - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT FUTURE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Jan Oblak - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Koke - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Rodrigo de Paul - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Jon Moncayola - CA Osasuna",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Enes Unal - Getafe CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Juanmi - Real Betis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "13",
+      "joueur": "David Alaba - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Federico Valverde - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Marco Asensio - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Thibaut Courtois - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Alex Remiro - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Aritz Elustondo - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "20",
+      "joueur": "David Silva - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Yassine Bounou - Sevilla FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Ivan Rakitic - Sevilla FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Hugo Duro - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Arnaut Danjuma - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Pau Torres - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SELECT STARS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Cristiano Ronaldo - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "3",
+      "joueur": "Lazaro Vinicius - UD Almeria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "4",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Alvaro Morata - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "6",
+      "joueur": "Antoine Griezmann - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "7",
+      "joueur": "Jan Oblak - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Jose Maria Gimenez - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Marcos Llorente - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "10",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "11",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "12",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "13",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "16",
+      "joueur": "Raphinha - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "17",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "19",
+      "joueur": "David Alaba - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "21",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "22",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "23",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "24",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "25",
+      "joueur": "Alex Baena - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "26",
+      "joueur": "Mohamed-Ali Cho - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "27",
+      "joueur": "Yunus Musah - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "28",
+      "joueur": "Arnaut Danjuma - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "29",
+      "joueur": "Gerard Moreno - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "30",
+      "joueur": "Yeremy Pino - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "2",
+      "joueur": "Athletic Club - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "5",
+      "joueur": "Cadiz CF - Cadiz CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "8",
+      "joueur": "Getafe CF - Getafe CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "9",
+      "joueur": "Girona FC - Girona FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "14",
+      "joueur": "Real Betis - Real Betis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "15",
+      "joueur": "Real Madrid - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "18",
+      "joueur": "Sevilla FC - Sevilla FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "19",
+      "joueur": "Valencia CF - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "20",
+      "joueur": "Villarreal CF - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alex Berenguer - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Oihan Sancet - Athletic Club",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Jose Maria Gimenez - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Nahuel Molina - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Thomas Lemar - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Eric Garcia - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Ousmane Dembélé - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Sergio Busquets - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Mauro Arambarri - Getafe CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Cristhian Stuani - Girona FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Fran Garcia - Rayo Vallecano",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Fran Beltran - Celta",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Vedat Muriqi - RCD Mallorca",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Sergio Canales - Real Betis",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Mikel Merino - Real Sociedad",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Joan Jordan - Sevilla FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Papu Gomez - Sevilla FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Thierry Correia - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Yunus Musah - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Samuel Chukwueze - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Yeremy Pino - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "UNSTOPPABLE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "2",
+      "joueur": "Cristiano Ronaldo - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "3",
+      "joueur": "Angel Correa - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "4",
+      "joueur": "Joao Felix - Atletico de Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "5",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "6",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "7",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "8",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "9",
+      "joueur": "Ousmane Dembélé - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "10",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "11",
+      "joueur": "Robert Lewandowski - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "12",
+      "joueur": "Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "13",
+      "joueur": "Nicolas Jackson - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "14",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "15",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "16",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "17",
+      "joueur": "Federico Valverde - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "18",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "19",
+      "joueur": "Thibaut Courtois - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "20",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "21",
+      "joueur": "Alex Baena - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "22",
+      "joueur": "Nico Gonzalez - Valencia CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "23",
+      "joueur": "Gerard Moreno - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "24",
+      "joueur": "Pau Torres - Villarreal CF",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "VISIONARY"
+    },
+    {
+      "numero": "1",
+      "joueur": "Antoine Griezmann/Joao Felix - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Koke/Marcos Llorente - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Andres Iniesta/Xavi Hernandez - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Jules Koundé/Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Gavi/Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Lionel Messi/Luis Suarez - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Rodrygo/Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Aurelien Tchouameni/Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Federico Valverde/Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "DUAL SWATCHES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alvaro Morata - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Diego Costa - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Andres Iniesta - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Cesc Fabregas - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Gerard Pique - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Neymar Jr - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Iago Aspas - Celta",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Andres Guardado - Real Betis",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Arjen Robben - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Iker Casillas - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Isco - Sevilla FC",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Ivan Rakitic - Sevilla FC",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "28",
+      "joueur": "David Villa - Valencia CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Juan Mata - Valencia CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Santi Cazorla - Villarreal CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "JUMBO SWATCHES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alvaro Morata - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "2",
+      "joueur": "Diego Costa - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "3",
+      "joueur": "Andres Iniesta - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "4",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "5",
+      "joueur": "Cesc Fabregas - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "6",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "7",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "8",
+      "joueur": "Gerard Pique - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "9",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "10",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "11",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "12",
+      "joueur": "Neymar Jr - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "13",
+      "joueur": "Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "14",
+      "joueur": "Iago Aspas - Celta",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "15",
+      "joueur": "Andres Guardado - Real Betis",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "16",
+      "joueur": "Arjen Robben - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "17",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "18",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "19",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "20",
+      "joueur": "Iker Casillas - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "21",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "22",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "23",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "24",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "25",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "26",
+      "joueur": "Isco - Sevilla FC",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "27",
+      "joueur": "Ivan Rakitic - Sevilla FC",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "28",
+      "joueur": "David Villa - Valencia CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "29",
+      "joueur": "Juan Mata - Valencia CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "30",
+      "joueur": "Santi Cazorla - Villarreal CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT MEMORABILIA"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alvaro Morata - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Diego Costa - Atletico de Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Andres Iniesta - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Cesc Fabregas - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Ferran Torres - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Frenkie de Jong - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Gerard Pique - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Jules Koundé - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Marc-André ter Stegen - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Neymar Jr - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Ronald Araujo - FC Barcelona",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Iago Aspas - Celta",
+      "mention": "RC",
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Andres Guardado - Real Betis",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Arjen Robben - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Aurelien Tchouameni - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Eder Militao - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Iker Casillas - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Karim Benzema - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Luka Modric - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "23",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Toni Kroos - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Isco - Sevilla FC",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Ivan Rakitic - Sevilla FC",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "28",
+      "joueur": "David Villa - Valencia CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Juan Mata - Valencia CF",
+      "mention": null,
+      "subset": "MEMORABILIA",
+      "section": "SELECT SWATCHES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "2",
+      "joueur": "Mikel Oyarzabal - Real Sociedad",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "3",
+      "joueur": "Javier Mascherano - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "4",
+      "joueur": "Lionel Messi - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "5",
+      "joueur": "Radamel Falcao - Rayo Vallecano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "6",
+      "joueur": "Renato Tapia - Celta",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "7",
+      "joueur": "Antonio Rudiger - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "8",
+      "joueur": "Mikel Merino - Real Sociedad",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "9",
+      "joueur": "Luciano Vietto - Villarreal CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "10",
+      "joueur": "Pau Torres - Villarreal CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPHED MEMORABILIA"
+    },
+    {
+      "numero": "1",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Angel Correa - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Bernd Schuster - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Rodrigo de Paul - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Tiago - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Yannick Carrasco - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Sergio Herrera - CA Osasuna",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Arturo Vidal - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Marc Overmars - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Pierre-Emerick Aubameyang - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Rafael Marquez - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Thiago Motta - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Xavi Hernandez - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Ansu Fati - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Stole Dimitrievski - Rayo Vallecano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Javi Galan - Celta",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Ronaldo - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Luiz Felipe - Real Betis",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Cristiano Ronaldo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Danilo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "23",
+      "joueur": "David Beckham - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "24",
+      "joueur": "David Silva - Real Sociedad",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Fernando Torres - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Pedri - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Jorge Cuenca - Villarreal CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PITCHSIDE SIGNATURES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Gareth Bale - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Gerard Pique - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Rodrigo de Paul - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Tiago - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Yannick Carrasco - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Sergio Herrera - CA Osasuna",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Roberto Ayala - Valencia CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Rodrigo Riquelme - Girona FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Pierre-Emerick Aubameyang - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Philippe Coutinho - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Thiago Motta - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Xavi Hernandez - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Diego Forlan - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Stole Dimitrievski - Rayo Vallecano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Javi Galan - Celta",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Cesar Azpilicueta - CA Osasuna",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Giorgi Mamardashvili - Valencia CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Cristiano Ronaldo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "22",
+      "joueur": "David de Gea - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "23",
+      "joueur": "David Beckham - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Mohamed-Ali Cho - Real Sociedad",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Michael Laudrup - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Jorge Cuenca - Villarreal CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "30",
+      "joueur": "Ricardo Carvalho - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SELECT SIGNATURES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Iker Muniain - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Unai Simon - Athletic Club",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Zinedine Zidane - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Rivaldo - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Rodrigo de Paul - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Tiago - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Yannick Carrasco - Atletico de Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Sergio Herrera - CA Osasuna",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Gonzalo Plata - R. Valladolid CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Ronald Koeman - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Pierre-Emerick Aubameyang - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Diego Carlos - Sevilla FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Thiago Motta - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Xavi Hernandez - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Hector Bellerin - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Stole Dimitrievski - Rayo Vallecano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Javi Galan - Celta",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Yaya Toure - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Pablo Aimar - Valencia CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "21",
+      "joueur": "Cristiano Ronaldo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "22",
+      "joueur": "Gavi - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "23",
+      "joueur": "David Beckham - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "24",
+      "joueur": "Eduardo Camavinga - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "25",
+      "joueur": "Rodrygo - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "26",
+      "joueur": "Vinicius Jr. - Real Madrid",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "27",
+      "joueur": "Yeremy Pino - Villarreal CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "28",
+      "joueur": "Hristo Stoichkov - FC Barcelona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    },
+    {
+      "numero": "29",
+      "joueur": "Jorge Cuenca - Villarreal CF",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SIGNATURES"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/23_select_sc_laliga_c3116_hobby_box.png",
+    "images/bandeau-liga-adrenalyn-2020-2021.png",
+    "images/bandeau-liga-adrenalyn-2021-2022.png",
+    "images/bandeau-panini-score-laliga-2022-23.png",
+    "images/base-field-lewandowski_copy.png",
+    "images/base-mezzanine_cho_copy.png",
+    "images/base-terrace_riquelme_copy.png",
+    "images/equalizers_aspas_copy.png",
+    "images/select_future_plata_copy.png",
+    "images/select_swatches_guardado_copy.png",
+    "images/signatures_camavinga_copy.png",
+    "images/stained_glass_pino_copy.png"
+  ],
+  "stats": {
+    "total_cartes": 631,
+    "total_autographes": 96,
+    "total_inserts": 188,
+    "total_images": 12,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "INSERT",
+      "MEMORABILIA"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI SELECT / LA LIGA, édité par PANINI en 2023 (avril) pour le marché U.S.A.. Il contient 250 cartes de base + 200 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, BASE, INSERT, MEMORABILIA. La checklist compte 631 cartes au total, dont 96 autographes et 188 inserts."
+}

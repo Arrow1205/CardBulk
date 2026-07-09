@@ -1,0 +1,2878 @@
+{
+  "collection_id": "topps-pristine-road-to-uefa-euro-2024",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2024 (avril)",
+    "pays": "U.S.A. Distribué notamment en France",
+    "editeur": "TOPPS",
+    "serie": "PRISTINE / UEFA EURO",
+    "support": "Cartes chromées",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "200 cartes de base + 95 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte HOBBY BOX de :6 cartes parallèles REFRACTOR11 cartes spéciales par insertion+ 3 cartes AUTOGRAPH ou AUTOGRAPH RELIC sous étui"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "FRESH FAC",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "ICONIC",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "INEVITAB",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "MARVELOUS MOMENT",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PAIR DUA",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH RELIC",
+      "section": "PRISTINE BORDER",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH RELIC",
+      "section": "PRISTINE NATIONS PATC",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "David Alaba",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Yusuf Demir",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Patrick Wimmer",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Marcel Sabitzer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Muhammed Cham",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Nicolas Seiwald",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Romelu Lukaku",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Kevin De Bruyne",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Charles De Ketelaere",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Zeno Debast",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Youri Tielemans",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Yannick Carrasco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Leandro Trossard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Loïs Openda",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Mateo Kovačić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Josip Šutalo",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Luka Modrić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Luka Sučić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Lovro Majer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Joško Gvardiol",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Mojmír Chytil",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Tomáš Souček",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Pavel Nedvěd",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Vladimír Coufal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Christian Eriksen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Pierre-Emile Højbjerg",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Mikkel Damsgaard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Peter Schmeichel",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Jack Grealish",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Harry Kane",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Alan Shearer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Michael Owen",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "36",
+      "joueur": "Jonas Wind",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "37",
+      "joueur": "Phil Foden",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Micah Richards",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Sandi Lovrić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Wayne Rooney",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Bariş Alper Yilmaz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Adam Hložek",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "43",
+      "joueur": "Mason Mount",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Trent Alexander-Arnold",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "45",
+      "joueur": "Philip Billing",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Luke Shaw",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Eduardo Camavinga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Robert Pires",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Theo Hernández",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Jules Koundé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Petar Stojanović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "52",
+      "joueur": "Dominik Szoboszlai",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Ousmane Dembélé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Zinédine Zidane",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "57",
+      "joueur": "Karim Benzema",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Moussa Diaby",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "59",
+      "joueur": "Randal Kolo Muani",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Giorgi Mamardashvili",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "61",
+      "joueur": "Khvicha Kvaratskhelia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Zuriko Davitashvili",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "63",
+      "joueur": "Giorgi Tsitaishvili",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Matthias Sammer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "65",
+      "joueur": "Youssoufa Moukoko",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "66",
+      "joueur": "Sepp Maier",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "67",
+      "joueur": "Timo Werner",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Thomas Müller",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Petar Musa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "71",
+      "joueur": "Willi Orbán",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "72",
+      "joueur": "Konrad Laimer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Mario Pašalić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Luka Ivanušec",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Jamal Musiala",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Anthony Elanga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "79",
+      "joueur": "Eidur Gudjohnsen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Andri Gudjohnsen",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Oscar Gloukh",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Omri Glazer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Liel Abada",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Eden Karzev",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "86",
+      "joueur": "Manor Solomon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Gianluigi Buffon",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Giorgio Chiellini",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Filippo Inzaghi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Nicolò Fagioli",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Benjamin Šeško",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Sandro Tonali",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Marco Verratti",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Gareth Bale",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Gianluigi Donnarumma",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Wilfried Gnonto",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Rasmus Højlund",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "99",
+      "joueur": "Johan Bakayoko",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Elias Jelert",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "101",
+      "joueur": "Jan Oblak",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Orkun Kökçü",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "103",
+      "joueur": "Francesco Totti",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Samuele Ricci",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Cody Gakpo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Xavi Simons",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Frenkie de Jong",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Memphis Depay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Denzel Dumfries",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Matthijs de Ligt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "111",
+      "joueur": "Virgil van Dijk",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Dennis Bergkamp",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Patrick Kluivert",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Tyrell Malacia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Wout Weghorst",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Ronald De Boer",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "117",
+      "joueur": "Leo Østigård",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Erling Haaland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "119",
+      "joueur": "Martin Ødegaard",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Hugo Vetlesen",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Ola Brynhildsen",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "122",
+      "joueur": "Sivert Mannsverk",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Wojciech Szczęsny",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Nicola Zalewski",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "126",
+      "joueur": "Piotr Zieliński",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Jakub Kiwior",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Arkadiusz Milik",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "129",
+      "joueur": "Sebastian Szymański",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "130",
+      "joueur": "Bernardo Silva",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "131",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Vitinha",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Bruno Fernandes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "134",
+      "joueur": "João Cancelo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Luís Figo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "137",
+      "joueur": "João Félix",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "138",
+      "joueur": "António Silva",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Raphaël Guerreiro",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Matheus Nunes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Gonçalo Ramos",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Rafael Leão",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Roy Keane",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Gavin Bazunu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Matt Doherty",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Chiedozie Ogbene",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "148",
+      "joueur": "Seamus Coleman",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Andy Robertson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Jack Hendry",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "151",
+      "joueur": "Billy Gilmour",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "152",
+      "joueur": "Ryan Porteous",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "153",
+      "joueur": "Scott McTominay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "154",
+      "joueur": "John McGinn",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "155",
+      "joueur": "Aleksandar Mitrović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "156",
+      "joueur": "Dušan Vlahović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "157",
+      "joueur": "Lazar Samardžić",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "158",
+      "joueur": "Luka Jović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "159",
+      "joueur": "Dušan Tadić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "160",
+      "joueur": "Sergej Milinković-Savić",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "161",
+      "joueur": "Nico Williams",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "162",
+      "joueur": "Ansu Fati",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "163",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "164",
+      "joueur": "Sergio Busquets",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "165",
+      "joueur": "Jordan James",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "166",
+      "joueur": "Alejandro Balde",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "167",
+      "joueur": "Rodri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "168",
+      "joueur": "Aymeric Laporte",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "169",
+      "joueur": "Xabi Alonso",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "170",
+      "joueur": "Andrés Iniesta",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "171",
+      "joueur": "Xavi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "172",
+      "joueur": "Pau Torres",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "173",
+      "joueur": "Fernando Torres",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "174",
+      "joueur": "Alexander Isak",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "175",
+      "joueur": "Joe Mendes",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "176",
+      "joueur": "Bilal Hussein",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "177",
+      "joueur": "Yasin Ayari",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "178",
+      "joueur": "Dejan Kulusevski",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "179",
+      "joueur": "Hugo Larsson",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "180",
+      "joueur": "Omar Faraj",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "181",
+      "joueur": "Henrik Larsson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "182",
+      "joueur": "Granit Xhaka",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "183",
+      "joueur": "Ardon Jashari",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "184",
+      "joueur": "Noah Okafor",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "185",
+      "joueur": "Denis Zakaria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "186",
+      "joueur": "Xherdan Shaqiri",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "187",
+      "joueur": "Fabian Rieder",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "188",
+      "joueur": "Manuel Akanji",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "189",
+      "joueur": "Hakan Çalhanoğlu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "190",
+      "joueur": "Arda Güler",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "191",
+      "joueur": "Salİh Özcan",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "192",
+      "joueur": "Emİrhan İlkhan",
+      "mention": "National Debut",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "193",
+      "joueur": "Enes Ünal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "194",
+      "joueur": "Cengiz Ünder",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "195",
+      "joueur": "Ethan Ampadu",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "196",
+      "joueur": "Dylan Levitt",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "197",
+      "joueur": "Rubin Colwill",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "198",
+      "joueur": "Aaron Ramsey",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "199",
+      "joueur": "Brennan Johnson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "200",
+      "joueur": "Ian Rush",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "ESFF-AG",
+      "joueur": "Arda Güler",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-AS",
+      "joueur": "António Silva",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-BH",
+      "joueur": "Bilal Hussein",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-EF",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-FR",
+      "joueur": "Fabian Rieder",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-GR",
+      "joueur": "Gonçalo Ramos",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-HL",
+      "joueur": "Hugo Larsson",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-JJ",
+      "joueur": "Jordan James",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-NF",
+      "joueur": "Nicolò Fagioli",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-NW",
+      "joueur": "Nico Williams",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-OB",
+      "joueur": "Ola Brynhildsen",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-OG",
+      "joueur": "Oscar Gloukh",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-RK",
+      "joueur": "Randal Kolo Muani",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-SM",
+      "joueur": "Sivert Mannsverk",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "FF-WG",
+      "joueur": "Wilfried Gnonto",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "FRESH FAC"
+    },
+    {
+      "numero": "XIIC-CR",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-FB",
+      "joueur": "Franz Beckenbauer",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-FC",
+      "joueur": "Fabio Cannavaro",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-GB",
+      "joueur": "Gianluigi Buffon",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-LM",
+      "joueur": "Luka Modrić",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-MD",
+      "joueur": "Marcel Desailly",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-MVB",
+      "joueur": "Marco van Basten",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-RK",
+      "joueur": "Roy Keane",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-RKO",
+      "joueur": "Ronald Koeman",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-WR",
+      "joueur": "Wayne Rooney",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "IC-ZZ",
+      "joueur": "Zinédine Zidane",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ICONIC"
+    },
+    {
+      "numero": "LEIV-AM",
+      "joueur": "Aleksandar Mitrović",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-AS",
+      "joueur": "Alan Shearer",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-BJ",
+      "joueur": "Brennan Johnson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-CR",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-EG",
+      "joueur": "Eidur Gudjohnsen",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-EH",
+      "joueur": "Erling Haaland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-FT",
+      "joueur": "Fernando Torres",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-FTO",
+      "joueur": "Francesco Totti",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-GR",
+      "joueur": "Gonçalo Ramos",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-HK",
+      "joueur": "Harry Kane",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-HL",
+      "joueur": "Henrik Larsson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-NO",
+      "joueur": "Noah Okafor",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-PK",
+      "joueur": "Patrick Kluivert",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-RH",
+      "joueur": "Rasmus Højlund",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-RK",
+      "joueur": "Randal Kolo Muani",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-RL",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-RLE",
+      "joueur": "Rafael Leão",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-RLU",
+      "joueur": "Romelu Lukaku",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-WR",
+      "joueur": "Wayne Rooney",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "IV-YM",
+      "joueur": "Youssoufa Moukoko",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "INEVITAB"
+    },
+    {
+      "numero": "TSMM-AC",
+      "joueur": "Andreas Christensen",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-AI",
+      "joueur": "Andrés Iniesta",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-CR",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-FT",
+      "joueur": "Fernando Torres",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-MVB",
+      "joueur": "Marco van Basten",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-PE",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-PK",
+      "joueur": "Patrick Kluivert",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-PS",
+      "joueur": "Peter Schmeichel",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-PSC",
+      "joueur": "Patrik Schick",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "MM-RS",
+      "joueur": "Renato Sanches",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MARVELOUS MOMEN"
+    },
+    {
+      "numero": "RSPB-AG",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-AGU",
+      "joueur": "Arda Güler",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-AI",
+      "joueur": "Alexander Isak",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-AO",
+      "joueur": "Amadou Onana",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-AR",
+      "joueur": "Andy Robertson",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-BF",
+      "joueur": "Bruno Fernandes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-BS",
+      "joueur": "Benjamin Šeško",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-DD",
+      "joueur": "Denzel Dumfries",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-DS",
+      "joueur": "Dominik Szoboszlai",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-DT",
+      "joueur": "Dušan Tadić",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-EF",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-GA",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-GX",
+      "joueur": "Granit Xhaka",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-HV",
+      "joueur": "Hugo Vetlesen",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-JG",
+      "joueur": "Joško Gvardiol",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-KK",
+      "joueur": "Khvicha Kvaratskhelia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-LM",
+      "joueur": "Luka Modrić",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-MO",
+      "joueur": "Martin Ødegaard",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-MS",
+      "joueur": "Marcel Sabitzer",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-PM",
+      "joueur": "Petar Musa",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-RH",
+      "joueur": "Rasmus Højlund",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-RL",
+      "joueur": "Rafael Leão",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-SM",
+      "joueur": "Sergej Milinković-Savić",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-TC",
+      "joueur": "Thibaut Courtois",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-TM",
+      "joueur": "Thomas Müller",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-WS",
+      "joueur": "Wojciech Szczęsny",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-XS",
+      "joueur": "Xavi Simons",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "PB-YD",
+      "joueur": "Yusuf Demir",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE BORDE"
+    },
+    {
+      "numero": "ESPP-AS",
+      "joueur": "António Silva",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-EF",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-GA",
+      "joueur": "Gavi",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-JM",
+      "joueur": "Jamal Musiala",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-NW",
+      "joueur": "Nico Williams",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-NZ",
+      "joueur": "Nicola Zalewski",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-OG",
+      "joueur": "Oscar Gloukh",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-RK",
+      "joueur": "Randal Kolo Muani",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "PP-WG",
+      "joueur": "Wilfried Gnonto",
+      "mention": "National Debut",
+      "subset": "INSERT",
+      "section": "PRISTINE PRODIGI"
+    },
+    {
+      "numero": "SMMA-FT",
+      "joueur": "Fernando Torres",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MARVELOUS MOMENT"
+    },
+    {
+      "numero": "MMA-MVB",
+      "joueur": "Marco van Basten",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MARVELOUS MOMENT"
+    },
+    {
+      "numero": "MMA-PE",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MARVELOUS MOMENT"
+    },
+    {
+      "numero": "MMA-PS",
+      "joueur": "Peter Schmeichel",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MARVELOUS MOMENT"
+    },
+    {
+      "numero": "MMA-RS",
+      "joueur": "Renato Sanches",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MARVELOUS MOMENT"
+    },
+    {
+      "numero": "NEPA-AE",
+      "joueur": "Anthony Elanga",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-AF",
+      "joueur": "Ansu Fati",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-AI",
+      "joueur": "Alexander Isak",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-AO",
+      "joueur": "Amadou Onana",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-AS",
+      "joueur": "Alan Shearer",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-CD",
+      "joueur": "Charles De Ketelaere",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-CG",
+      "joueur": "Cody Gakpo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-CR",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-DA",
+      "joueur": "David Alaba",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-DO",
+      "joueur": "Dani Olmo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-DZ",
+      "joueur": "Denis Zakaria",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-EC",
+      "joueur": "Eric Cantona",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-EF",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-EH",
+      "joueur": "Erling Haaland",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-EV",
+      "joueur": "Edwin van der Sar",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-FR",
+      "joueur": "Frank Rijkaard",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-FRA",
+      "joueur": "Fabrizio Ravanelli",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-GB",
+      "joueur": "Gianluigi Buffon",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-GR",
+      "joueur": "Gonçalo Ramos",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-HK",
+      "joueur": "Harry Kane",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-HL",
+      "joueur": "Henrik Larsson",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-HLA",
+      "joueur": "Hugo Larsson",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-IC",
+      "joueur": "Iker Casillas",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-IW",
+      "joueur": "Ian Wright",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-JG",
+      "joueur": "Joško Gvardiol",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-JM",
+      "joueur": "Jamal Musiala",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-JMC",
+      "joueur": "James McFadden",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-JO",
+      "joueur": "Jorginho",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-KB",
+      "joueur": "Karim Benzema",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-LA",
+      "joueur": "Liel Abada",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-LE",
+      "joueur": "Luis Enrique",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-LF",
+      "joueur": "Luís Figo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-LM",
+      "joueur": "Luka Modrić",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-LO",
+      "joueur": "Loïs Openda",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-LS",
+      "joueur": "Luke Shaw",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MC",
+      "joueur": "Muhammed Cham",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MD",
+      "joueur": "Memphis Depay",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MK",
+      "joueur": "Mateo Kovačić",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MO",
+      "joueur": "Michael Owen",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MR",
+      "joueur": "Micah Richards",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MV",
+      "joueur": "Marco Verratti",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-MVB",
+      "joueur": "Marco van Basten",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-NA",
+      "joueur": "Nathan Aké",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-NO",
+      "joueur": "Noah Okafor",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-NV",
+      "joueur": "Nemanja Vidić",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-OG",
+      "joueur": "Oscar Gloukh",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-OK",
+      "joueur": "Oliver Kahn",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-PE",
+      "joueur": "Pedri",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-PG",
+      "joueur": "Paul Gascoigne",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-PN",
+      "joueur": "Pavel Nedvěd",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-RD",
+      "joueur": "Ronald De Boer",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-RK",
+      "joueur": "Robbie Keane",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-RL",
+      "joueur": "Robert Lewandowski",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-RO",
+      "joueur": "Rodri",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-RP",
+      "joueur": "Ray Parlour",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-SM",
+      "joueur": "Sivert Mannsverk",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-ST",
+      "joueur": "Sandro Tonali",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-TM",
+      "joueur": "Thomas Müller",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-TW",
+      "joueur": "Timo Werner",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-XA",
+      "joueur": "Xabi Alonso",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-YA",
+      "joueur": "Yasin Ayari",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-YM",
+      "joueur": "Youssoufa Moukoko",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-ZB",
+      "joueur": "Zvonimir Boban",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "PA-ZZ",
+      "joueur": "Zinédine Zidane",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTI"
+    },
+    {
+      "numero": "SPBA-AG",
+      "joueur": "Antoine Griezmann",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-AI",
+      "joueur": "Alexander Isak",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-AO",
+      "joueur": "Amadou Onana",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-AR",
+      "joueur": "Andy Robertson",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-BA",
+      "joueur": "Johan Bakayoko",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-BF",
+      "joueur": "Bruno Fernandes",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-EF",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-GX",
+      "joueur": "Granit Xhaka",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-JG",
+      "joueur": "Joško Gvardiol",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-JK",
+      "joueur": "Joshua Kimmich",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-JO",
+      "joueur": "Jorginho",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-LM",
+      "joueur": "Luka Modrić",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-MO",
+      "joueur": "Martin Ødegaard",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-MS",
+      "joueur": "Marcel Sabitzer",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-NF",
+      "joueur": "Nicolò Fagioli",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-RH",
+      "joueur": "Rasmus Højlund",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-RL",
+      "joueur": "Rafael Leão",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-ST",
+      "joueur": "Sandro Tonali",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-TM",
+      "joueur": "Thomas Müller",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBA-YD",
+      "joueur": "Yusuf Demir",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "LPDA-AI",
+      "joueur": "Tony Adams / Paul Ince",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PAIR DUA"
+    },
+    {
+      "numero": "PDA-LL",
+      "joueur": "Brian Laudrup / Michael Laudrup",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PAIR DUA"
+    },
+    {
+      "numero": "PDA-RH",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PAIR DUA"
+    },
+    {
+      "numero": "PDA-RK",
+      "joueur": "Micah Richards",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PAIR DUA"
+    },
+    {
+      "numero": "PDA-TI",
+      "joueur": "Francesco Totti / Filippo Inzaghi",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PAIR DUA"
+    },
+    {
+      "numero": "SPPA-EF",
+      "joueur": "Evan Ferguson",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE"
+    },
+    {
+      "numero": "PPA-JM",
+      "joueur": "Jamal Musiala",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE"
+    },
+    {
+      "numero": "PPA-NW",
+      "joueur": "Nico Williams",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE"
+    },
+    {
+      "numero": "PPA-OG",
+      "joueur": "Oscar Gloukh",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE"
+    },
+    {
+      "numero": "PPA-RK",
+      "joueur": "Randal Kolo Muani",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE"
+    },
+    {
+      "numero": "PPA-WG",
+      "joueur": "Wilfried Gnonto",
+      "mention": "National Debut",
+      "subset": "AUTOGRAPH",
+      "section": "PRISTINE PRODIGIE"
+    },
+    {
+      "numero": "DPDR-BF",
+      "joueur": "Bruno Fernandes",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN"
+    },
+    {
+      "numero": "PDR-CR",
+      "joueur": "Cristiano Ronaldo",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN"
+    },
+    {
+      "numero": "PDR-DS",
+      "joueur": "David Seaman",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN"
+    },
+    {
+      "numero": "PDR-JB",
+      "joueur": "John Barnes",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN"
+    },
+    {
+      "numero": "PDR-KDB",
+      "joueur": "Kevin De Bruyne",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN"
+    },
+    {
+      "numero": "PDR-MD",
+      "joueur": "Memphis Depay",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "POPULAR DEMAN"
+    },
+    {
+      "numero": "SPBR-BF",
+      "joueur": "Bruno Fernandes",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "PBR-MD",
+      "joueur": "Memphis Depay",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "PRISTINE BORDER"
+    },
+    {
+      "numero": "HPNP-BF",
+      "joueur": "Bruno Fernandes",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "PRISTINE NATIONS PATC"
+    },
+    {
+      "numero": "PNP-MD",
+      "joueur": "Memphis Depay",
+      "mention": null,
+      "subset": "AUTOGRAPH RELIC",
+      "section": "PRISTINE NATIONS PATC"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/23tpre_6003_pristineprodigiessuperfractor_gloukh.jpg",
+    "images/23tpre_6007_basepristinered_debruyne.jpg",
+    "images/23tpre_6008_inevitable_larsson.jpg",
+    "images/23tpre_6012_pristinenationspatchauto_fernandes.jpg",
+    "images/23tpre_6013_basepristine_modric.jpg",
+    "images/23tpre_6014_marvelousmoments_vanbasten.jpg",
+    "images/23tpre_6015_pristineautographssuperfractor_ronaldo.jpg",
+    "images/23tpre_box.png",
+    "images/bandeau-topps-living-set-uefa-2024-01.png",
+    "images/bandeau-topps-now-euro-2024-finale.png",
+    "images/bandeau-topps-now-euro-2024-vierge.png"
+  ],
+  "stats": {
+    "total_cartes": 394,
+    "total_autographes": 110,
+    "total_inserts": 103,
+    "total_images": 11,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "AUTOGRAPH RELIC",
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le TOPPS PRISTINE / UEFA EURO, édité par TOPPS en 2024 (avril) pour le marché U.S.A. Distribué notamment en France. Il contient 200 cartes de base + 95 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, AUTOGRAPH RELIC, BASE, INSERT. La checklist compte 394 cartes au total, dont 110 autographes et 103 inserts."
+}

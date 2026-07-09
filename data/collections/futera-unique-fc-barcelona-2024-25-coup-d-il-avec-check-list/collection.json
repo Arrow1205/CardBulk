@@ -1,0 +1,98 @@
+{
+  "collection_id": "futera-unique-fc-barcelona-2024-25-coup-d-il-avec-check-list",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2025 (septembre)",
+    "pays": "France Sortie mondiale",
+    "editeur": "FUTERA",
+    "serie": "UNIQUE",
+    "support": "Cartes",
+    "version": null,
+    "contenu_global": null,
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par coffret de :3 cartes de base parallèles numérotées3 cartes HERITAGE numérotées2 cartes MEMORABILIA+ 1 carte MEMORABILIA ou 1 carte OR ou 1 carte AUTOGRAPH"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "DYNASTY ON CARDFCBDNA01.",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS ON CARDFCBLGA01.",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "TRIUMPH ON CARDFCBTRA01.",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "BASE #/19 #/9 #/7 #/4 1/1FCB01. Marc",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "André ter StegenFCB02. Iñaki PeñaFCB03. Wojciech SzczęsnyFCB04. Alejandro BaldeFCB05. Ronald AraújoFCB06. Iñigo MartínezFCB07. Andreas ChristensenFCB08. Jules KoundéFCB09. Pau CubarsíFCB10. Gerard MartínFCB11. Eric GarcíaFCB12. Sergi DomínguezFCB13. Héctor FortFCB14. GaviFCB15. PedriFCB16. Fermín LópezFCB17. Frenkie de JongFCB18. Dani OlmoFCB19. Marc CasadóFCB20. Pablo TorreFCB21. Marc BernalFCB22. Ferran TorresFCB23. Robert LewandowskiFCB24. RaphinhaFCB25. Lamine YamalFCB26. Pau VíctorFCB27. Ansu FatiHERITAGE #/16 #/9 #/7 #/4 #/3 1/1BHT01. Marc",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "André ter StegenBHT02. Iñaki PeñaBHT03. Wojciech SzczęsnyBHT04. Alejandro BaldeBHT05. Ronald AraújoBHT06. Iñigo MartínezBHT07. Andreas ChristensenBHT08. Jules KoundéBHT09. Pau CubarsíBHT10. Gerard MartínBHT11. Eric GarcíaBHT12. Sergi DomínguezBHT13. Héctor FortBHT14. GaviBHT15. PedriBHT16. Fermín LópezBHT17. Frenkie de JongBHT18. Dani OlmoBHT19. Marc CasadóBHT20. Pablo TorreBHT21. Marc BernalBHT22. Ferran TorresBHT23. Robert LewandowskiBHT24. RaphinhaBHT25. Lamine YamalBHT26. Pau VíctorBHT27. Ansu FatiMEMORABILIA / CONQUERORS #/9 #/7 #/6 #/5 #/4 1/1BCQ01. GaviBCQ02. Jules KoundéBCQ03. Lamine YamalBCQ04. Pau CubarsíBCQ05. Ansu FatiBCQ06. Alejandro BaldeBCQ07. XaviMEMORABILIA / SUPERSTARS #/9 #/7 #/6 #/5 #/4 1/1BSS01. GaviBSS02. Jules KoundéBSS03. Lamine YamalBSS04. Pau CubarsíBSS05. Ansu FatiBSS06. Alejandro BaldeBSS07. XaviMEMORABILIA / TITANS #/9 #/7 #/6 #/5 #/4 1/1BTT01. GaviBTT02. Jules KoundéBTT03. Lamine YamalBTT04. Pau CubarsíBTT05. Ansu FatiBTT06. Alejandro BaldeBTT07. XaviOR / CHAMPIONS #/2 1/1BCH01. GaviBCH02. Jules KoundéBCH03. Lamine YamalBCH04. Frenkie de JongBCH05. RaphinhaBCH06. Pau CubarsíBCH07. Ansu FatiBCH08. Alejandro BaldeBCH09. Robert LewandowskiBCH10. Ferran TorresBCH11. PedriBCH12. XaviOR / MASTERS #/5 1/1BMS01. GaviBMS02. Jules KoundéBMS03. Lamine YamalBMS04. Frenkie de JongBMS05. RaphinhaBMS06. Pau CubarsíBMS07. Ansu FatiBMS08. Alejandro BaldeBMS09. Robert LewandowskiBMS10. Ferran TorresBMS11. PedriBMS12. Xavi",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Javier SaviolaFCBDNA02. EdmílsonFCBDNA03. Juliano BellettiFCBDNA04. GiovanniFCBDNA05. Ludovic GiulyFCBDNA06. Phillip CocuFCBDNA07. Emmanuel PetitFCBDNA08. Gaizka Mendieta",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "DYNASTY ON CARDFCBDNA01."
+    },
+    {
+      "numero": null,
+      "joueur": "Javier SaviolaFCBLGA02. EdmílsonFCBLGA03. Juliano BellettiFCBLGA04. GiovanniFCBLGA05. Ludovic GiulyFCBLGA06. Phillip CocuFCBLGA07. Emmanuel PetitFCBLGA08. Gaizka MendietaFCBLGA09. Yaya TouréFCBLGA10. Javier Mascherano",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "LEGENDS ON CARDFCBLGA01."
+    },
+    {
+      "numero": null,
+      "joueur": "RivaldoFCBTRA02. XaviFCBTRA03. David VillaFCBTRA04. Lamine Yamal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "TRIUMPH ON CARDFCBTRA01."
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-futera-fans-selection-wolverhampton-2025-26.png",
+    "images/bandeau-futera-unique-arsenal-2024-25.png",
+    "images/bandeau-futera-unique-liverpool-2024-25-1.png",
+    "images/salesheetfcbunique_page-0001.jpg"
+  ],
+  "stats": {
+    "total_cartes": 6,
+    "total_autographes": 3,
+    "total_inserts": 0,
+    "total_images": 4,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE"
+    ]
+  },
+  "gemini_context": "Ce set est le FUTERA UNIQUE, édité par FUTERA en 2025 (septembre) pour le marché France Sortie mondiale. Les subsets détectés sont : AUTOGRAPH, BASE. La checklist compte 6 cartes au total, dont 3 autographes et 0 inserts."
+}

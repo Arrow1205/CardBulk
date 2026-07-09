@@ -1,0 +1,41 @@
+{
+  "collection_id": "panini-score-la-liga-santander-2022-23-soccer-cards-espagne",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2023 (mars)",
+    "pays": "Espagne",
+    "editeur": "PANINI",
+    "serie": "SCORE / LA LIGA",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "200 cartes de base + 200 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte RETAIL BOX de : 3 cartes parallèles avec effet SWIRL numérotées 5 cartes parallèles avec effet SWIRL supplémentaires non numérotées 12 cartes spéciales par insertion + 1 carte AUTOGRAPH dans 1 boîte sur 5"
+  },
+  "subsets": [],
+  "checklist": [],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-liga-2019-20-stickers.png",
+    "images/bandeau-liga-adrenalyn-2020-2021.png",
+    "images/bandeau-liga-adrenalyn-2021-2022.png",
+    "images/panini-score-la-liga-2022-23-soccer-annonce.jpg",
+    "images/panini-score-la-liga-2022-23-soccer-boite-fatpack.webp",
+    "images/panini-score-la-liga-2022-23-soccer-boite-retail.webp",
+    "images/panini-score-la-liga-2022-23-soccer-fatpack.webp",
+    "images/panini-score-la-liga-2022-23-soccer-pochette-de-10-cartes.webp",
+    "images/panini-score-la-liga-2022-23-soccer-visuel-des-cartes.png",
+    "images/score-checklist-esp-ok_pages-to-jpg-0001.jpg",
+    "images/score-checklist-esp-ok_pages-to-jpg-0002.jpg",
+    "images/score-checklist-esp-ok_pages-to-jpg-0003.jpg",
+    "images/score-checklist-esp-ok_pages-to-jpg-0004.jpg",
+    "images/score-checklist-esp-ok_pages-to-jpg-0005.jpg"
+  ],
+  "stats": {
+    "total_cartes": 0,
+    "total_autographes": 0,
+    "total_inserts": 0,
+    "total_images": 14,
+    "subsets_detectes": []
+  },
+  "gemini_context": "Ce set est le PANINI SCORE / LA LIGA, édité par PANINI en 2023 (mars) pour le marché Espagne. Il contient 200 cartes de base + 200 cartes spéciales par insertion. La checklist compte 0 cartes au total, dont 0 autographes et 0 inserts."
+}

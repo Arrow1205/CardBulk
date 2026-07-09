@@ -1,0 +1,4409 @@
+{
+  "collection_id": "panini-mosaic-road-to-fifa-world-cup-qatar-2022-soccer-cards",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2022 (octobre)",
+    "pays": "U.S.A.",
+    "editeur": "PANINI",
+    "serie": "MOSAIC / FIFA WORLD CUP",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "200 cartes de base + 300 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte BLASTER BOX de : 1 carte BASE argentée 4 cartes MOSAIC parallèles x cartes parallèles ORANGE FLUORESCENT exclusives"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "BREAKAWAY",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "GIVE AND GO",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "MONTAGE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "OVERDRIVE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PITCH MASTERS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PLAYMAKERS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "STAINED GLASS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "WILL TO WIN",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "1. Antoine Griezmann - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Karim Benzema - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Golo Kante - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Presnel Kimpembe - France",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Hugo Lloris - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Kylian Mbappe - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Jules Kounde - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Paul Pogba - France",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Gonzalo Montiel - Argentina",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Emiliano Martinez - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Leandro Paredes - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Cristian Romero - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Lucas Martinez Quarta - Argentina",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Rodrigo de Paul - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Lautaro Martinez - Argentina",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Jose Macias - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Diego Lainez - Mexico",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Orbelin Pineda - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Roberto Alvarado - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Gerardo Arteaga - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Uriel Antuna - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Luis Romo - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Carlos Rodriguez - Mexico",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Gianluigi Donnarumma - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Marco Verratti - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Lorenzo Insigne - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Giacomo Raspadori - Italy",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Ciro Immobile - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Nicolo Barella - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Giovanni Di Lorenzo - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Federico Chiesa - Italy",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Jack Grealish - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Luke Shaw - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Harry Kane - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Kalvin Phillips - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Mason Mount - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Harry Maguire - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Phil Foden - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Bukayo Saka - England",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Miguel Trauco - Peru",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Pedro Gallese - Peru",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Luis Abram - Peru",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Sergio Pena - Peru",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Renato Tapia - Peru",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Marcos Lopez - Peru",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Piotr Zielinski - Poland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Jakub Moder - Poland",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Wojciech Szczesny - Poland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Kamil Piatkowski - Poland",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "51. Robert Lewandowski - Poland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "52. Kacper Kozlowski - Poland",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "53. Tymoteusz Puchacz - Poland",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "54. Karol Swiderski - Poland",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "55. Kristoffer Ajer - Norway",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "56. Erling Haaland - Norway",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "57. Morten Thorsby - Norway",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "58. Kristian Thorstvedt - Norway",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "59. Martin Odegaard - Norway",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "60. Fredrik Midtsjo - Norway",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "61. Joshua Kimmich - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "62. Leon Goretzka - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "63. David Raum - Germany",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "64. Kai Havertz - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "65. Timo Werner - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "66. Karim Adeyemi - Germany",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "67. Florian Wirtz - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "68. Robin Gosens - Germany",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "69. Hasan Al",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Haydos - Qatar",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "70. Akram Hassan Afif - Qatar",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "71. Pedro Miguel - Qatar",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "72. Almoez Ali - Qatar",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "73. Saad Al Sheeb - Qatar",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "74. Abdulkarim Hassan - Qatar",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "75. Pervis Estupinan - Ecuador",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "76. Gonzalo Plata - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "77. Piero Hincapie - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "78. Moises Caicedo - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "79. Alan Franco - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "80. Nicolas Seiwald - Austria",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "81. Danny Ward - Wales",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "82. Gareth Bale - Wales",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "83. Daniel James - Wales",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "84. Ethan Ampadu - Wales",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "85. Joe Rodon - Wales",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "86. Aaron Ramsey - Wales",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "87. Alexander Isak - Sweden",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "88. Mattias Svanberg - Sweden",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "89. Dejan Kulusevski - Sweden",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "90. Zlatan Ibrahimovic - Sweden",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "91. Jens",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Lys Cajuste - Sweden",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "92. Jesper Karlsson - Sweden",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "93. Romulo Otero - Venezuela",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "94. Salomon Rondon - Venezuela",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "95. Yangel Herrera - Venezuela",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "96. Wuilker Farinez - Venezuela",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "97. Yeferson Soteldo - Venezuela",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "98. Junior Moreno - Venezuela",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "99. Ricardo Pepi - United States",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "100. Christian Pulisic - United States",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "101. Bryan Reynolds - United States",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "102. Brenden Aaronson - United States",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "103. Matthew Hoppe - United States",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "104. Giovanni Reyna - United States",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "105. George Bello - United States",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "106. Sergino Dest - United States",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "107. Bernardo Silva - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "108. Ruben Dias - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "109. Raphael Guerreiro - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "110. Joao Felix - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "111. Nuno Mendes - Portugal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "112. Joao Palhinha - Portugal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "113. Diogo Jota - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "114. Cristiano Ronaldo - Portugal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "115. Rodrigo Bentancur - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "116. Matias Vina - Uruguay",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "117. Fernando Muslera - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "118. Facundo Torres - Uruguay",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "119. Nahitan Nandez - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "120. Giorgian de Arrascaeta - Uruguay",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "121. Edinson Cavani - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "122. Federico Valverde - Uruguay",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "123. Marcos Llorente - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "124. Ansu Fati - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "125. Dani Olmo - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "126. Unai Simon - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "127. Mikel Oyarzabal - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "128. Ferran Torres - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "129. Aymeric Laporte - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "130. Pedri - Spain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "131. Xaver Schlager - Austria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "132. David Alaba - Austria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "133. Sasa Kalajdzic - Austria",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "134. Konrad Laimer - Austria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "135. Daniel Bachmann - Austria",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "136. Marcel Sabitzer - Austria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "137. Christoph Baumgartner - Austria",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "138. Philipp Lienhart - Austria",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "139. Granit Xhaka - Switzerland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "140. Yann Sommer - Switzerland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "141. Manuel Akanji - Switzerland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "142. Breel Embolo - Switzerland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "143. Xherdan Shaqiri - Switzerland",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "144. Jordan Lotomba - Switzerland",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "145. Harry Souttar - Australia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "146. Martin Boyle - Australia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "147. Jackson Irvine - Australia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "148. Adam Taggart - Australia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "149. Ajdin Hrustic - Australia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "150. Rhyan Grant - Australia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "151. Kasper Schmeichel - Denmark",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "152. Joachim Andersen - Denmark",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "153. Pierre Emile Hojbjerg - Denmark",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "154. Mikkel Damsgaard - Denmark",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "155. Joakim Maehle - Denmark",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "156. Kasper Dolberg - Denmark",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "157. Casemiro - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "158. Neymar Jr - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "159. Marquinhos - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "160. Gabriel Jesus - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "161. Ederson - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "162. Richarlison - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "163. Vinicius Jr. - Brazil",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "164. Gabriel Barbosa - Brazil",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "165. Arturo Vidal - Chile",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "166. Alexis Sanchez - Chile",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "167. Guillermo Maripan - Chile",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "168. Eugenio Mena - Chile",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "169. Ben Brereton Diaz - Chile",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "170. Charles Aranguiz - Chile",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "171. Denzel Dumfries - Netherlands",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "172. Frenkie de Jong - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "173. Donyell Malen - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "174. Ryan Gravenberch - Netherlands",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "175. Calvin Stengs - Netherlands",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "176. Owen Wijndal - Netherlands",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "177. Cody Gakpo - Netherlands",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "178. Jurrien Timber - Netherlands",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "179. Duvan Zapata - Colombia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "180. Luis Diaz - Colombia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "181. David Ospina - Colombia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "182. Rafael Santos Borre - Colombia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "183. Yerry Mina - Colombia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "184. Wilmar Barrios - Colombia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "185. Gustavo Cuellar - Colombia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "186. Daniel Munoz - Colombia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "187. Romelu Lukaku - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "188. Thibaut Courtois - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "189. Youri Tielemans - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "190. Eden Hazard - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "191. Jeremy Doku - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "192. Albert Sambi Lokonga - Belgium",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "193. Thorgan Hazard - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "194. Kevin De Bruyne - Belgium",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "195. Luka Modric - Croatia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "196. Borna Sosa - Croatia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "197. Luka Ivanusec - Croatia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "198. Josko Gvardiol - Croatia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "199. Mateo Kovacic - Croatia",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "200. Josip Juranovic - Croatia",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Nestor Araujo - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Yunus Musah - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Tyler Adams - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Bukayo Saka - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Donny van de Beek - Netherlands",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Cristiano Ronaldo - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Aymeric Laporte - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Bruno Fernandes - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Everton - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Nathan Ake - Netherlands",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Joao Cancelo - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Gabriel Jesus - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Ferran Torres - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Ederson - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Bernardo Silva - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Thiago Motta - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Diogo Jota - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Antonee Robinson - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Thibaut Courtois - Belgium",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Sandro Tonali - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Sergio Busquets - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Marc",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Andre ter Stegen - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Henry Martin - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Ansu Fati - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Rodrigo de Paul - Argentina",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Emiliano Martinez - Argentina",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Lorenzo Pellegrini - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Mason Mount - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Luis Hernandez - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Juan Camilo Zuniga - Colombia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Cuauhtemoc Blanco - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Xabi Alonso - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Bacary Sagna - France",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Franca - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Dennis Bergkamp - Netherlands",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "37. De",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Andre Yedlin - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Carlos Vela - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Thierry Henry - France",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Jean Beausejour - Chile",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Ciro Immobile - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Carles Puyol - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Kaka - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Jurgen Klinsmann - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "45. David Beckham - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Landon Donovan - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Cesar Sampaio - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Marco Asensio - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Gianluca Busio - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Diego Maradona - Argentina",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Chris Richards - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Ricardo Pepi - United States",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Marco Van Basten - Netherlands",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Neymar Jr - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Kevin De Bruyne - Belgium",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Harry Kane - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Kasper Schmeichel - Denmark",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Mats Hummels - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Serge Gnabry - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Cesc Fabregas - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "11. David Trezeguet - France",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Kyle Walker - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Ruben Dias - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Timothy Weah - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Eden Hazard - Belgium",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Pedri - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Christian Pulisic - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Thiago Silva - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Federico Valverde - Uruguay",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Josh Sargent - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Sepp Maier - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Raphael Varane - France",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Lucas Martinez Quarta - Argentina",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Thiago Alcantara - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Renato Tapia - Peru",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Andres Guardado - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Dani Alves - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Robin Gosens - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Ivan Perisic - Croatia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Jack Grealish - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Filippo Inzaghi - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Luis Figo - Portugal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Javier Mascherano - Argentina",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Nicolo Zaniolo - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Ruud van Nistelrooy - Netherlands",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Jens Lehmann - Germany",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Francesco Totti - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Marc Janko - Austria",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Cobi Jones - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Gabriel Batistuta - Argentina",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Carlos Valderrama - Colombia",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Yeremy Pino - Spain",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Pau Torres - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Roberto Baggio - Italy",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Wayne Rooney - England",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Jorge Campos - Mexico",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Raul - Spain",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Pele - Brazil",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Clint Dempsey - United States",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Jude Bellingham - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Daryl Dike - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Tom Rogic - Australia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Robert Lewandowski - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Everton - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Timo Werner - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Josip Brekalo - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Memphis Depay - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Gonzalo Plata - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Haris Seferovic - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Ansu Fati - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Antoine Griezmann - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Almoez Ali - Qatar",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Alexander Isak - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Romelu Lukaku - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Ciro Immobile - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Kasper Dolberg - Denmark",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Lucas Hernandez - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Nahitan Nandez - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Darwin Machis - Venezuela",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Sebastian Cordova - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Ridle Baku - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Santiago Ormeno - Peru",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Neco Williams - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Duvan Zapata - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Marko Arnautovic - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Cristiano Ronaldo - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Erling Haaland - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Eduardo Vargas - Chile",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Edson Alvarez - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Denis Zakaria - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Kingsley Coman - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Arturo Vidal - Chile",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Carlos Gruezo - Ecuador",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Lautaro Martinez - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Luis Muriel - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Matthias Ginter - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Gianluca Busio - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Pedri - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Declan Rice - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Tomas Rincon - Venezuela",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Abdulaziz Hatem - Qatar",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Frenkie de Jong - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Marcelo Brozovic - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Domenico Berardi - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Joao Felix - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Mohamed Elyounoussi - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Daniel James - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Piotr Zielinski - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Lucas Paqueta - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Marcus Thuram - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Yussuf Poulsen - Denmark",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Florian Grillitsch - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Dejan Kulusevski - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Luis Suarez - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Jackson Irvine - Australia",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Kevin De Bruyne - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Thilo Kehrer - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Christian Cueva - Peru",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Gianluigi Donnarumma - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Florian Neuhaus - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Weston Mc",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "Kennie - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Nicolas Gonzalez - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Alexis Sanchez - Chile",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Emil Forsberg - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Karim Boudiaf - Qatar",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Hirving Lozano - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Ruben Vargas - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Matthijs de Ligt - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Gianluca Lapadula - Peru",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Rodri - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Mateo Kovacic - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Alexander Sorloth - Norway",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Thorgan Hazard - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Danilo - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Ilkay Gundogan - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Yangel Herrera - Venezuela",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "Golo Kante - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Danilo Pereira - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Harry Wilson - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Stefan Lainer - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Bartosz Bereszynski - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Luis Diaz - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Angelo Preciado - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Unai Simon - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Leandro Paredes - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Manuel Locatelli - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Yoshimar Yotun - Peru",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Ousmane Dembele - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Akram Hassan Afif - Qatar",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Yerry Mina - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Thomas Meunier - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Matteo Pessina - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Fabian Ruiz - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Luis Suarez - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Robin Gosens - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Trent Sainsbury - Australia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Marcus Rashford - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Marcelo Brozovic - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Alvaro Morata - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Hasan Al",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "Haydos - Qatar",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Pedro Gallese - Peru",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Renato Sanches - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Kieffer Moore - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Nico Elvedi - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Harry Souttar - Australia",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Jorginho - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Victor Nilsson Lindelof - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Enner Valencia - Ecuador",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Mateusz Klich - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Roberto Firmino - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Stefan de Vrij - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Adrien Rabiot - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Martin Odegaard - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Leroy Sane - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Rodrigo Bentancur - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Zack Steffen - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Jordan Pickford - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Jeremy Doku - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Wuilker Farinez - Venezuela",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Mario Pasalic - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Nicolo Barella - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Simon Kjaer - Denmark",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Claudio Bravo - Chile",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Karim Adeyemi - Germany",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Juan Cuadrado - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Carlos Salcedo - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Xaver Schlager - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Manuel Neuer - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Cristiano Ronaldo - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Giovanni Reyna - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Karim Benzema - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Neymar Jr - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Kai Havertz - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Pau Torres - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Rodrigo de Paul - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Martin Odegaard - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Granit Xhaka - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Alexander Isak - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Frenkie de Jong - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Jude Bellingham - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Florian Neuhaus - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Youri Tielemans - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Diego Lainez - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Richarlison - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Kingsley Coman - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Ruben Dias - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Duvan Zapata - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Piotr Zielinski - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Florian Wirtz - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Federico Chiesa - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Yunus Musah - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Emiliano Martinez - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Dani Olmo - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Jadon Sancho - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Ederson - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "30. David Alaba - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Erling Haaland - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Xherdan Shaqiri - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Jeremy Doku - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Jamal Musiala - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Joao Felix - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Lautaro Martinez - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Nicolo Barella - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Mikel Oyarzabal - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Phil Foden - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Julian Brandt - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Pedri - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Jesus Manuel Corona - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Landon Donovan - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Alan Shearer - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Raul - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Marco Van Basten - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Thierry Henry - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Jurgen Klinsmann - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Frank Lampard - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Dennis Bergkamp - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Robert Lewandowski - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Cristian Casseres Jr. - Venezuela",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Andreas Christensen - Denmark",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Erling Haaland - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Jose Maria Gimenez - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Benjamin Pavard - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Davinson Sanchez - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Gareth Bale - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Romelu Lukaku - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Thilo Kehrer - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Rui Patricio - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Alessandro Bastoni - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Zlatan Ibrahimovic - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Raheem Sterling - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Guillermo Ochoa - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Kevin Mbabu - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Koke - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Marcel Sabitzer - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Matthias Ginter - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Giacomo Raspadori - Italy",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Luka Modric - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Mathew Ryan - Australia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Alisson - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Angel Di Maria - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Georginio Wijnaldum - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Axel Witsel - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Erick Pulgar - Chile",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Pervis Estupinan - Ecuador",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Gyasi Zardes - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Manuel Locatelli - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Youri Tielemans - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Douglas Costa - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Roberto Carlos - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Harry Kane - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Manuel Neuer - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Javier Hernandez - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Christian Pulisic - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PLAYMAKERS"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Kylian Mbappe - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Federico Valverde - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Harry Kane - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Erling Haaland - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Gianluigi Donnarumma - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Marquinhos - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Cristiano Ronaldo - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Manuel Akanji - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Robert Lewandowski - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Lionel Messi - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Marcos Llorente - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Marcel Sabitzer - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Dejan Kulusevski - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Kevin De Bruyne - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Hirving Lozano - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Paul Pogba - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Bruno Fernandes - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Sergino Dest - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Luka Modric - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Bukayo Saka - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Angel Di Maria - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Lorenzo Insigne - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Luis Suarez - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Vinicius Jr. - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Gareth Bale - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Pedri - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Romelu Lukaku - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Diogo Jota - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Edinson Cavani - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Matthijs de Ligt - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Guillermo Ochoa - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Ansu Fati - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Mason Mount - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Yann Sommer - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Christian Pulisic - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Ferran Torres - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Raphael Varane - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Thibaut Courtois - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Aaron Ramsey - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Zlatan Ibrahimovic - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Javier Mascherano - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Clint Dempsey - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Ruud van Nistelrooy - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Pele - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Luis Figo - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Gabriel Batistuta - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Francesco Totti - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Robin van Persie - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Kaka - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "50. David Beckham - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Mathias Normann - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Boualem Khoukhi - Qatar",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Bryan Cristante - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Andre Carrillo - Peru",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Tyler Roberts - Wales",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "6. John Brooks - United States",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Thomas Delaney - Denmark",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Exequiel Palacios - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Thibaut Courtois - Belgium",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Juan Cuadrado - Colombia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Marc",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Andre ter Stegen - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Jefferson Savarino - Venezuela",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Corentin Tolisso - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Remo Freuler - Switzerland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Thiago Silva - Brazil",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Marco Verratti - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Emile Smith Rowe - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Matthijs de Ligt - Netherlands",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Raul Jimenez - Mexico",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Thiago Alcantara - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "21. John Stones - England",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "22. David Alaba - Austria",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Hugo Lloris - France",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Jens Petter Hauge - Norway",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Awer Mabil - Australia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Angel Correa - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Ilkay Gundogan - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Claudio Bravo - Chile",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Federico Chiesa - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Andre Silva - Portugal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Piero Hincapie - Ecuador",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Andrea Belotti - Italy",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Nikola Vlasic - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Jan Bednarek - Poland",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Giovani Lo Celso - Argentina",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Duje Caleta",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Car - Croatia",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Diego Godin - Uruguay",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Gerard Moreno - Spain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Lukas Klostermann - Germany",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Robin Olsen - Sweden",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "source cardboardconnection.com",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-panini-instant-qatar-2022.png",
+    "images/bandeau-qatar-2022-axl-belgique.png",
+    "images/base_modric.jpg",
+    "images/fifa_base_rc_mosaic_black_pepi.jpg",
+    "images/fifa_base_ronaldo.jpg",
+    "images/fifa_mosaic_autos_beckham.jpg",
+    "images/mail.webp",
+    "images/montage_betancur.jpg",
+    "images/panini-mosaic-road-to-fifa-world-cup-qatar-2022-soccer-cards-boite-mega-box.png",
+    "images/panini-mosaic-road-to-fifa-world-cup-qatar-2022-soccer-cards-hobby-box.png",
+    "images/stained_glass_debruyne.jpg"
+  ],
+  "stats": {
+    "total_cartes": 615,
+    "total_autographes": 100,
+    "total_inserts": 313,
+    "total_images": 11,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI MOSAIC / FIFA WORLD CUP, édité par PANINI en 2022 (octobre) pour le marché U.S.A.. Il contient 200 cartes de base + 300 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, BASE, INSERT. La checklist compte 615 cartes au total, dont 100 autographes et 313 inserts."
+}

@@ -1,0 +1,2829 @@
+{
+  "collection_id": "panini-score-ligue-1-uber-eats-2022-23-soccer-cards-france",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2023 (mars)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "SCORE / LIGUE 1",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "200 cartes de base + 200 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte RETAIL BOX de : 3 cartes parallèles avec effet SWIRL numérotées 5 cartes parallèles avec effet SWIRL supplémentaires non numérotées 12 cartes spéciales par insertion + 1 carte AUTOGRAPH dans 1 boîte sur 5"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "CAPTAIN",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "HOT ROOKIES",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "SCORE TEAM",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": "1",
+      "joueur": "Benjamin Leroy - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Clément Vidal - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Vincent Marchetti - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Ismaël Diallo - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Qazim Laci - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Riad Nouri - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Romain Hamouma - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Yanis Cimignani - AC Ajaccio",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Abdallah Sima - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Adrien Hunou - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Azzedine Ounahi - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Cédric Hountondji - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Nabil Bentaleb - Angers SCO",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Paul Bernardoni - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Sada Thioub - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Sofiane Boufal - Angers SCO",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Souleyman Doumbia - Angers SCO",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "21",
+      "joueur": "Benoit Costil - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Birama Toure - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "23",
+      "joueur": "Gaëtan Charbonnier - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Gauthier Hein - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "25",
+      "joueur": "Hamza Sakhi - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "26",
+      "joueur": "Jubal - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "27",
+      "joueur": "Paul Joly - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "28",
+      "joueur": "Lassine Sinayoko - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "29",
+      "joueur": "Mathias Autret - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "30",
+      "joueur": "Youssouf M'Changama - AJ Auxerre",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "31",
+      "joueur": "Brendan Chardonnet - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "32",
+      "joueur": "Franck Honorat - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "33",
+      "joueur": "Haris Belkebla - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "34",
+      "joueur": "Irvin Cardona - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "35",
+      "joueur": "Jeremy Le Douaron - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "36",
+      "joueur": "Lilian Brassier - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "37",
+      "joueur": "Marco Bizot - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "38",
+      "joueur": "Mathias Pereira Lage - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "39",
+      "joueur": "Pierre Lees-Melou - Stade Brestois 29",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "40",
+      "joueur": "Romain Del Castillo - Stade Brestois 29",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "41",
+      "joueur": "Alidu Seidu - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "42",
+      "joueur": "Elbasan Rashani - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "43",
+      "joueur": "Florent Ogier - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "44",
+      "joueur": "Jeremie Bela - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "45",
+      "joueur": "Jim Allevinah - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "46",
+      "joueur": "Komnen Andric - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "47",
+      "joueur": "Mateusz Wieteska - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "48",
+      "joueur": "Maxime Gonalons - Clermont Foot 63",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "49",
+      "joueur": "Muhammed Cham - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "50",
+      "joueur": "Yohann Magnin - Clermont Foot 63",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "51",
+      "joueur": "Brice Samba - Lens Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "52",
+      "joueur": "David Costa - Lens Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "53",
+      "joueur": "Florian Sotoca - Lens Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "54",
+      "joueur": "Ignatius Ganago - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "55",
+      "joueur": "Jimmy Cabot - Lens Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "56",
+      "joueur": "Kevin Danso - Lens",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "57",
+      "joueur": "Lois Openda - Lens Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "58",
+      "joueur": "Przemyslaw Frankowski - Lens",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "59",
+      "joueur": "Salis Abdul Samed - Lens Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "60",
+      "joueur": "Seko Fofana - Lens",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "61",
+      "joueur": "Angel Gomes - LOSC Lille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "62",
+      "joueur": "Benjamin André - LOSC Lille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "63",
+      "joueur": "Jonathan Bamba - LOSC Lille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "64",
+      "joueur": "Jonathan David - LOSC Lille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "66",
+      "joueur": "Léo Jardim - LOSC Lille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "68",
+      "joueur": "Rémy Cabella - LOSC Lille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "69",
+      "joueur": "Tiago Djalo - LOSC Lille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "70",
+      "joueur": "Timothy Weah - LOSC Lille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "71",
+      "joueur": "Adil Aouchiche - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "72",
+      "joueur": "Dango Ouattara - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "73",
+      "joueur": "Enzo Le Fée - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "74",
+      "joueur": "Gedeon Kalulu - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "75",
+      "joueur": "Ibrahima Koné - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "76",
+      "joueur": "Julien Laporte - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "77",
+      "joueur": "Laurent Abergel - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "78",
+      "joueur": "Terem Moffi - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "79",
+      "joueur": "Montassar Talbi - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "80",
+      "joueur": "Yvon Mvogo - FC Lorient",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "81",
+      "joueur": "Alexandre Lacazette - Olympique Lyonnais",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "82",
+      "joueur": "Castello Lukeba - Olympique Lyonnais",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "83",
+      "joueur": "Corentin Tolisso - Olympique Lyonnais",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "84",
+      "joueur": "Houssem Aouar - Olympique Lyonnais",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "85",
+      "joueur": "Karl Toko Ekambi - Olympique Lyonnais",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "86",
+      "joueur": "Johann Lepenant - Olympique Lyonnais",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "87",
+      "joueur": "Malo Gusto - Olympique Lyonnais",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "88",
+      "joueur": "Maxence Caqueret - Olympique Lyonnais",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "89",
+      "joueur": "Rayan Cherki - Olympique Lyonnais",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "90",
+      "joueur": "Tetê - Olympique Lyonnais",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "91",
+      "joueur": "Matthis Abline - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "92",
+      "joueur": "Cengiz Under - Olympique de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "93",
+      "joueur": "Chancel Mbemba - Olympique de Marseille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "94",
+      "joueur": "Dimitri Payet - Olympique de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "95",
+      "joueur": "Gerson - Olympique de Marseille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "96",
+      "joueur": "Jonathan Clauss - Olympique de Marseille",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "97",
+      "joueur": "Jordan Veretout - Olympique de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "98",
+      "joueur": "Mattéo Guendouzi - Olympique de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "99",
+      "joueur": "Nuno Tavares - Olympique de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "100",
+      "joueur": "Pau Lopez - Olympique de Marseille",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "101",
+      "joueur": "Aleksandr Golovin - AS Monaco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "102",
+      "joueur": "Benoit Badiashile - AS Monaco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "103",
+      "joueur": "Caio Henrique - AS Monaco",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "104",
+      "joueur": "Axel Disasi - AS Monaco",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "105",
+      "joueur": "Mohamed Camara - AS Monaco",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "106",
+      "joueur": "Sofiane Diop - OGC Nice",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "107",
+      "joueur": "Takumi Minamino - AS Monaco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "108",
+      "joueur": "Vanderson - AS Monaco",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "109",
+      "joueur": "Wissam Ben Yedder - AS Monaco",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "110",
+      "joueur": "Youssouf Fofana - AS Monaco",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "111",
+      "joueur": "Elye Wahi - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "112",
+      "joueur": "Enzo Tchato - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "113",
+      "joueur": "Jonas Omlin - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "114",
+      "joueur": "Jordan Ferri - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "115",
+      "joueur": "Joris Chotard - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "116",
+      "joueur": "Maxime Esteve - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "117",
+      "joueur": "Nicolas Cozza - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "118",
+      "joueur": "Stephy Mavididi - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "119",
+      "joueur": "Teji Savanier - Montpellier Hérault SC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "120",
+      "joueur": "Wahbi Khazri - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "121",
+      "joueur": "Alban Lafont - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "122",
+      "joueur": "Andrei Girotto - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "123",
+      "joueur": "Evann Guessand - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "124",
+      "joueur": "Jean-Charles Castelletto - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "125",
+      "joueur": "Ludovic Blas - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "126",
+      "joueur": "Moses Simon - FC Nantes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "127",
+      "joueur": "Mostafa Mohamed - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "128",
+      "joueur": "Moussa Sissoko - FC Nantes",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "129",
+      "joueur": "Pedro Chirivella - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "130",
+      "joueur": "Quentin Merlin - FC Nantes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "131",
+      "joueur": "Alexis Beka Beka - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "132",
+      "joueur": "Amine Gouiri - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "133",
+      "joueur": "Andy Delort - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "134",
+      "joueur": "Dogan Alemdar - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "135",
+      "joueur": "Rares Ilie - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "136",
+      "joueur": "Jean-Clair Todibo - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "137",
+      "joueur": "Nicolas Pépé - OGC Nice",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "138",
+      "joueur": "Khephren Thuram - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "139",
+      "joueur": "Melvin Bard - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "140",
+      "joueur": "Pablo Rosario - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "141",
+      "joueur": "Achraf Hakimi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "142",
+      "joueur": "Arnaud Kalimuendo - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "143",
+      "joueur": "Gianluigi Donnarumma - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "144",
+      "joueur": "Hugo Ekitike - Paris Saint-Germain",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "145",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "146",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "147",
+      "joueur": "Marco Verratti - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "148",
+      "joueur": "Marquinhos - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "149",
+      "joueur": "Neymar Jr - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "150",
+      "joueur": "Nuno Mendes - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "151",
+      "joueur": "Andreaw Gravillon - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "152",
+      "joueur": "Azor Matusiwa - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "153",
+      "joueur": "Kamory Doumbia - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "154",
+      "joueur": "Emmanuel Agbadou - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "155",
+      "joueur": "Folarin Balogun - Stade de Reims",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "156",
+      "joueur": "Junya Ito - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "157",
+      "joueur": "Marshall Munetsi - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "158",
+      "joueur": "Mitchell van Bergen - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "159",
+      "joueur": "Maxime Busi - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "160",
+      "joueur": "Bradley Locko - Stade de Reims",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "161",
+      "joueur": "Adrien Truffert - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "162",
+      "joueur": "Arthur Theate - Stade Rennais FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "163",
+      "joueur": "Baptiste Santamaria - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "164",
+      "joueur": "Benjamin Bourigeaud - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "165",
+      "joueur": "Gaëtan Laborde - OGC Nice",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "166",
+      "joueur": "Vitinha - Paris Saint-Germain",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "167",
+      "joueur": "Kamaldeen Sulemana - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "168",
+      "joueur": "Lovro Majer - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "169",
+      "joueur": "Martin Terrier - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "170",
+      "joueur": "Steve Mandanda - Stade Rennais FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "171",
+      "joueur": "Adrien Thomasson - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "172",
+      "joueur": "Alexander Djiku - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "173",
+      "joueur": "Dimitri Lienard - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "174",
+      "joueur": "Gerzino Nyamsi - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "175",
+      "joueur": "Habib Diallo - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "176",
+      "joueur": "Habib Diarra - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "177",
+      "joueur": "Jean-Ricner Bellegarde - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "178",
+      "joueur": "Lucas Perrin - Strasbourg Alsace",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "179",
+      "joueur": "Ludovic Ajorque - Strasbourg Alsace Rookie Card",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "180",
+      "joueur": "Matz Sels - Strasbourg Alsace",
+      "mention": "RC",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "181",
+      "joueur": "Anthony Rouault - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "182",
+      "joueur": "Branco van den Boomen - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "183",
+      "joueur": "Brecht Dejaegere - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "184",
+      "joueur": "Maxime Dupe - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "185",
+      "joueur": "Mikkel Desler - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "186",
+      "joueur": "Desiré Doué - Stade Rennais FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "187",
+      "joueur": "Rhys Healey - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "188",
+      "joueur": "Stijn Spierings - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "189",
+      "joueur": "Thijs Dallinga - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "190",
+      "joueur": "Zakaria Aboukhlal - Toulouse FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "191",
+      "joueur": "Florian Tardieu - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "192",
+      "joueur": "Gauthier Gallon - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "193",
+      "joueur": "Ike Ugbo - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "194",
+      "joueur": "Jackson Porozo - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "195",
+      "joueur": "Mama Baldé - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "196",
+      "joueur": "Renaud Ripart - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "197",
+      "joueur": "Rominigue Kouame - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "198",
+      "joueur": "Thierno Baldé - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "199",
+      "joueur": "Xavier Chavalerin - ESTAC Troyes",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Léo Jardim - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "3",
+      "joueur": "Anthony Lopes - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "4",
+      "joueur": "Pau Lopez - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "5",
+      "joueur": "Alexander Nübel - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "6",
+      "joueur": "Jonas Omlin - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "7",
+      "joueur": "Alban Lafont - FC Nantes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "8",
+      "joueur": "Kasper Schmeichel - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "9",
+      "joueur": "Steve Mandanda - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "10",
+      "joueur": "Matz Sels - Strasbourg Alsace",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "ALL HANDS TEAM"
+    },
+    {
+      "numero": "1",
+      "joueur": "Paul Bernardoni - Angers SCO",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "2",
+      "joueur": "Lassine Sinayoko - AJ Auxerre",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "3",
+      "joueur": "Loïs Openda - Lens",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "4",
+      "joueur": "Edon Zhegrova - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "5",
+      "joueur": "Jonathan David - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "6",
+      "joueur": "Matthis Abline - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "7",
+      "joueur": "Johann Lepenant - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "8",
+      "joueur": "Romain Faivre - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "9",
+      "joueur": "Pape Gueye - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "10",
+      "joueur": "Luis Suarez - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "11",
+      "joueur": "Benoit Badiashile - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "12",
+      "joueur": "Caio Henrique - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "13",
+      "joueur": "Takumi Minamino - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "14",
+      "joueur": "Beni Makouana - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "15",
+      "joueur": "Maxime Esteve - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "16",
+      "joueur": "Nicolas Cozza - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "17",
+      "joueur": "Ludovic Blas - FC Nantes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "18",
+      "joueur": "Jordan Lotomba - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "19",
+      "joueur": "Khéphren Thuram - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "20",
+      "joueur": "Mattia Viti - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "21",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "22",
+      "joueur": "Nuno Mendes - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "23",
+      "joueur": "Vitinha - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "24",
+      "joueur": "Folarin Balogun - Stade de Reims",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "25",
+      "joueur": "Junya Ito - Stade de Reims",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "26",
+      "joueur": "Kamaldeen Sulemana - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "27",
+      "joueur": "Colin Dagba - Strasbourg Alsace",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "28",
+      "joueur": "Anthony Rouault - Toulouse FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "29",
+      "joueur": "Jackson Porozo - ESTAC Troyes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "30",
+      "joueur": "Yasser Larouci - ESTAC Troyes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKTHROUGH"
+    },
+    {
+      "numero": "1",
+      "joueur": "Alexandre Lacazette - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "2",
+      "joueur": "José Fonte - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "3",
+      "joueur": "Wissam Ben Yedder - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "4",
+      "joueur": "Teji Savanier - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "5",
+      "joueur": "Dante - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "6",
+      "joueur": "Marquinhos - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "7",
+      "joueur": "Hamari Traoré - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "8",
+      "joueur": "Dimitri Liénard - Strasbourg Alsace",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "9",
+      "joueur": "Adil Rami - ESTAC Troyes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "10",
+      "joueur": "Brendan Chardonnet - Stade Brestois 29",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "CAPTAIN"
+    },
+    {
+      "numero": "1",
+      "joueur": "Jonathan David - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Timothy Weah - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Alexandre Lacazette - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Adil Aouchiche - FC Lorient",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Dimitri Payet - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Aleksandr Golovin - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Takumi Minamino - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Desiré Doué - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Khephren Thuram - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Hugo Ekitike - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Marco Verratti - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Marquinhos - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Neymar Jr - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Nuno Mendes - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Sergio Ramos - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Arthur Theate - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Jürgen Klinsmann - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GAME FACE HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Abdallah Sima - Angers SCO",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "2",
+      "joueur": "Facundo Medina - Lens",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "3",
+      "joueur": "Tiago Djalo - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "4",
+      "joueur": "Castello Lukeba - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "5",
+      "joueur": "Maxence Caqueret - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "6",
+      "joueur": "Rayan Cherki - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "7",
+      "joueur": "Eliot Matazo - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "8",
+      "joueur": "Maghnes Akliouche - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "9",
+      "joueur": "Quentin Merlin - FC Nantes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "10",
+      "joueur": "Elye Wahi - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "11",
+      "joueur": "Joris Chotard - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "12",
+      "joueur": "Amine Gouiri - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "13",
+      "joueur": "Marcin Bulka - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "14",
+      "joueur": "Rares Ilie - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "15",
+      "joueur": "Isaak Touré - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "16",
+      "joueur": "Arnaud Kalimuendo - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "17",
+      "joueur": "Hugo Ekitike - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "18",
+      "joueur": "Adil Aouchiche - FC Lorient",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "19",
+      "joueur": "Maxime Busi - Stade de Reims",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "20",
+      "joueur": "Desiré Doué - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "HOT ROOKIES"
+    },
+    {
+      "numero": "1",
+      "joueur": "Jonathan David - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Corentin Tolisso - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Houssem Aouar - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Matthis Abline - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Jordan Veretout - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Mattéo Guendouzi - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Elye Wahi - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Amine Gouiri - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Kasper Schmeichel - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Achraf Hakimi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Arnaud Kalimuendo - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Gianluigi Donnarumma - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Neymar Jr - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Presnel Kimpembe - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Renato Sanches - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Vitinha - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Edinson Cavani - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Thierry Henry - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERGALACTIC HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Timothy Weah - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "2",
+      "joueur": "Castello Lukeba - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Maxence Caqueret - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Rayan Cherki - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Mattéo Guendouzi - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Nuno Tavares - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Benoît Badiashile - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Mohamed Camara - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Sofiane Diop - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Elye Wahi - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Alban Lafont - FC Nantes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Amine Gouiri - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Jean-Clair Todibo - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Khéphren Thuram - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "15",
+      "joueur": "Arnaud Kalimuendo - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Hugo Ekitike - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Nuno Mendes - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Folarin Balogun - Stade de Reims",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Eliot Matazo - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Kamaldeen Sulemana - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "NEXT UP HIT RARE"
+    },
+    {
+      "numero": "1",
+      "joueur": "Oumar Gonzalez - AC Ajaccio",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "2",
+      "joueur": "Sofiane Boufal - Angers SCO",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "3",
+      "joueur": "Maxime Gonalons - Clermont Foot 63",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "4",
+      "joueur": "Seko Fofana - Lens",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "5",
+      "joueur": "Jonathan Bamba - LOSC Lille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "6",
+      "joueur": "Corentin Tolisso - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "7",
+      "joueur": "Nicolas Tagliafico - Olympique Lyonnais",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "8",
+      "joueur": "Cengiz Ünder - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "9",
+      "joueur": "Dimitri Payet - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "10",
+      "joueur": "Jordan Veretout - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "11",
+      "joueur": "Mattéo Guendouzi - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "12",
+      "joueur": "Aleksandr Golovin - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "13",
+      "joueur": "Alexander Nübel - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "14",
+      "joueur": "Breel Embolo - AS Monaco",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "15",
+      "joueur": "Mamadou Sakho - Montpellier Hérault SC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "16",
+      "joueur": "Moussa Sissoko - FC Nantes",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "17",
+      "joueur": "Aaron Ramsey - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "18",
+      "joueur": "Andy Delort - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "19",
+      "joueur": "Kasper Schmeichel - OGC Nice",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "20",
+      "joueur": "Gianluigi Donnarumma - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "21",
+      "joueur": "Lionel Messi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "22",
+      "joueur": "Neymar Jr - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "23",
+      "joueur": "Presnel Kimpembe - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "24",
+      "joueur": "Achraf Hakimi - Paris Saint-Germain",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "25",
+      "joueur": "Folarin Balogun - Stade de Reims",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "26",
+      "joueur": "Alexis Sanchez - Olympique de Marseille",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "27",
+      "joueur": "Lovro Majer - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "28",
+      "joueur": "Martin Terrier - Stade Rennais FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "29",
+      "joueur": "Ludovic Ajorque - Strasbourg Alsace",
+      "mention": "RC",
+      "subset": "INSERT",
+      "section": "SCORE TEAM"
+    },
+    {
+      "numero": "S-BSG",
+      "joueur": "Bacary Sagna - AJ Auxerre #/1",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-NIM",
+      "joueur": "Neal Maupay - Stade Brestois 29 #/39",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RV",
+      "joueur": "Raphaël Varane - Lens #/19",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-BP",
+      "joueur": "Benjamin Pavard - LOSC Lille #/25",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-EHZ",
+      "joueur": "Eden Hazard - LOSC Lille #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-GMS",
+      "joueur": "Gabriel - LOSC Lille #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-JOE",
+      "joueur": "Joe Cole - LOSC Lille #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-CM",
+      "joueur": "Claude Makélélé - FC Nantes #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-CW",
+      "joueur": "Chris Waddle - Olympique de Marseille #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-HL",
+      "joueur": "Hugo Lloris - Olympique Lyonnais #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-JAN",
+      "joueur": "Joachim Andersen - Olympique Lyonnais #/14",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MES",
+      "joueur": "Michael Essien - Olympique Lyonnais #/89",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-TGO",
+      "joueur": "Tiago - Olympique Lyonnais #/25",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-DD",
+      "joueur": "Didier Drogba - Olympique de Marseille #/184",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PLZ",
+      "joueur": "Pau Lopez - Olympique de Marseille #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-WG",
+      "joueur": "William Gallas - Olympique de Marseille #/3",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-AM",
+      "joueur": "Anthony Martial - AS Monaco #/2",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-BSI",
+      "joueur": "Bernardo Silva - AS Monaco #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MD",
+      "joueur": "Moussa Diaby - Paris Saint-Germain #/1",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PEV",
+      "joueur": "Patrice Evra - AS Monaco #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RF",
+      "joueur": "Radamel Falcao - AS Monaco #/89",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RM",
+      "joueur": "Rafael Marquez - AS Monaco #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-TMI",
+      "joueur": "Takumi Minamino - AS Monaco #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-YC",
+      "joueur": "Yannick Carrasco - AS Monaco #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RL",
+      "joueur": "Rafael Leao - LOSC Lille #/1",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-ADM",
+      "joueur": "Angel Di Maria - Paris Saint-Germain #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-EC",
+      "joueur": "Edinson Cavani - Paris Saint-Germain #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-KM",
+      "joueur": "Kylian Mbappé - Paris Saint-Germain #/9",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-LEO",
+      "joueur": "Lionel Messi - Paris Saint-Germain #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-LDI",
+      "joueur": "Lucas Digne - Paris Saint-Germain #/139",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MV",
+      "joueur": "Marco Verratti - Paris Saint-Germain #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-PKB",
+      "joueur": "Presnel Kimpembe - Paris Saint-Germain #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-MOT",
+      "joueur": "Thiago Motta - Paris Saint-Germain #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-TS",
+      "joueur": "Thiago Silva - Paris Saint-Germain #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-CHO",
+      "joueur": "Mohamed-Ali Cho - Angers SCO #/199",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-ECM",
+      "joueur": "Eduardo Camavinga - Stade Rennais FC #/6",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-JRO",
+      "joueur": "Joe Rodon - Stade Rennais FC #/14",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-RHA",
+      "joueur": "Raphinha - Stade Rennais FC #/19",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    },
+    {
+      "numero": "S-FLB",
+      "joueur": "Franck Leboeuf - Strasbourg Alsace #/6",
+      "mention": "RC",
+      "subset": "AUTOGRAPH",
+      "section": "AUTOGRAPH"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-ligue-1-cartes-2023-24.png",
+    "images/bandeau-panini-fc-ligue1-2022-02.png",
+    "images/bandeau-panini-score-laliga-2022-23.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-cards-annonce.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-cards-boite-fat-pack.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-cards-boite-retail.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-cards-fat-pack.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-all-hands-team-schmeichel.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-base-messi.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-captain-savanier-1.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-hot-rookies-wahi.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-intergalactic-veretout.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-score-team-sanchez.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-signature-drogba.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-signature-essien.png",
+    "images/panini-score-ligue-1-uber-eats-2022-23-soccer-carte-signature-mbappe-2.png"
+  ],
+  "stats": {
+    "total_cartes": 390,
+    "total_autographes": 39,
+    "total_inserts": 157,
+    "total_images": 16,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI SCORE / LIGUE 1, édité par PANINI en 2023 (mars) pour le marché France. Il contient 200 cartes de base + 200 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, BASE, INSERT. La checklist compte 390 cartes au total, dont 39 autographes et 157 inserts."
+}

@@ -1,0 +1,4553 @@
+{
+  "collection_id": "panini-mosaic-premier-league-2021-22-soccer-cards",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2022 (mai)",
+    "pays": "U.S.A.",
+    "editeur": "PANINI",
+    "serie": "MOSAIC / PREMIER LEAGUE",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "200 cartes de base + 300 cartes spéciales par insertion",
+    "dotation_boite": "L'éditeur annonce une dotation moyenne par boîte BLASTER BOX de : 1 carte BASE argentée 4 cartes MOSAIC parallèles 3 cartes spéciales par insertion"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC",
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "BREAKAWAY",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "GIVE AND GO",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "MONTAGE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "OVERDRIVE",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "PITCH MASTERS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "STAINED GLASS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": "WILL TO WIN",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "1. Ben Chilwell - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Christian Pulisic - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Edouard Mendy - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Kai Havertz - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Mason Mount - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Golo Kante - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Reece James - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Romelu Lukaku - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Timo Werner - Chelsea FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Trevoh Chalobah - Chelsea FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Bernardo Silva - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Ederson - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Cole Palmer - Manchester City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Gabriel Jesus - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Phil Foden - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Raheem Sterling - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Rodri - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Ruben Dias - Manchester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Boubakary Soumare - Leicester City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Harvey Barnes - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "23. James Maddison - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Jamie Vardy - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Kasper Schmeichel - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Kelechi Iheanacho - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Patson Daka - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Timothy Castagne - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Wilfred Ndidi - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Youri Tielemans - Leicester City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Ashley Barnes - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Ashley Westwood - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Maxwel Cornet - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Dwight Mc",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Neil - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "35. James Tarkowski - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Johann Berg Gudmundsson - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Josh Brownhill - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Matej Vydra - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Nathan Collins - Burnley",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Nick Pope - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Daniel Bachmann - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Emmanuel Dennis - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Imran Louza - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Ismaila Sarr - Watford",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Jeremy Ngakia - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Joao Pedro - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Joshua King - Watford",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Ken Sema - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Peter Etebo - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "50. William Troost",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Ekong - Watford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "51. Conor Coady - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "52. Daniel Podence - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "53. Fabio Silva - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "54. Jose Sa - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "55. Ki",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Jana Hoever - Wolverhampton Wanderers",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "56. Leander Dendoncker - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "57. Raul Jimenez - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "58. Ruben Neves - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "59. Trincao - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "60. Hee-chan Hwang - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "61. Albert Sambi Lokonga - Arsenal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "62. Bukayo Saka - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "63. Emile Smith Rowe - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "64. Alexandre Lacazette - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "65. Gabriel Martinelli - Arsenal",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "66. Kieran Tierney - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "67. Martin Odegaard - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "68. Aaron Ramsdale - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "69. Thomas Partey - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "70. Takehiro Tomiyasu - Arsenal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "71. Bryan Mbeumo - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "72. David Raya - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "73. Frank Onyeka - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "74. Ivan Toney - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "75. Christian Norgaard - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "76. Kristoffer Ajer - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "77. Rico Henry - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "78. Sergi Canos - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "79. Vitaly Janelt - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "80. Yoane Wissa - Brentford",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "81. Aaron Cresswell - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "82. Declan Rice - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "83. Jarrod Bowen - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "84. Lukasz Fabianski - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "85. Michail Antonio - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "86. Nikola Vlasic - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "87. Pablo Fornals - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "88. Said Benrahma - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "89. Tomas Soucek - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "90. Vladimir Coufal - West Ham United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "91. Adam Idah - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "92. Billy Gilmour - Norwich City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "93. Brandon Williams - Norwich City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "94. Christos Tzolis - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "95. Josh Sargent - Norwich City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "96. Mathias Normann - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "97. Max Aarons - Norwich City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "98. Milot Rashica - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "99. Teemu Pukki - Norwich City",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "100. Pierre Lees",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Melou - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "101. Charlie Taylor - Burnley",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "102. Moussa Sissoko - Watford",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "103. Harry Kane - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "104. Heung",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "105. Hugo Lloris - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "106. Emerson Royal - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "107. Joe Rodon - Tottenham Hotspur",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "108. Oliver Skipp - Tottenham Hotspur",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "109. Pierre Emile Hojbjerg - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "110. Sergio Reguilon - Tottenham Hotspur",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "111. Adam Webster - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "112. Alexis Mac Allister - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "113. Enock Mwepu - Brighton & Hove Albion",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "114. Jakub Moder - Brighton & Hove Albion",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "115. Leandro Trossard - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "116. Lewis Dunk - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "117. Neal Maupay - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "118. Robert Sanchez - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "119. Tariq Lamptey - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "120. Yves Bissouma - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "121. Carney Chukwuemeka - Aston Villa",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "122. Danny Ings - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "123. Douglas Luiz - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "124. Emiliano Buendia - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "125. Emiliano Martinez - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "126. Jacob Ramsey - Aston Villa",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "127. John Mc",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Ginn - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "128. Matty Cash - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "129. Ollie Watkins - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "130. Tyrone Mings - Aston Villa",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "131. Conor Gallagher - Crystal Palace",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "132. Eberechi Eze - Crystal Palace",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "133. Joachim Andersen - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "134. Jordan Ayew - Crystal Palace",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "135. Marc Guehi - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "136. Michael Olise - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "137. Odsonne Edouard - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "138. Tyrick Mitchell - Crystal Palace",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "139. Vicente Guaita - Crystal Palace",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "140. Wilfried Zaha - Crystal Palace",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "141. Bruno Fernandes - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "142. Cristiano Ronaldo - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "143. David de Gea - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "144. Edinson Cavani - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "145. Anthony Elanga - Manchester United",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "146. Jadon Sancho - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "147. Marcus Rashford - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "148. Harry Maguire - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "149. Paul Pogba - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "150. Raphael Varane - Manchester United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "151. Adam Armstrong - Southampton",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "152. Armando Broja - Southampton",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "153. Che Adams - Southampton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "154. Ibrahima Diallo - Southampton",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "155. James Ward",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Prowse - Southampton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "156. Kyle Walker",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Peters - Southampton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "157. Moussa Djenepo - Southampton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "158. Nathan Redmond - Southampton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "159. Romain Perraud - Southampton",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "160. Tino Livramento - Southampton",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "161. Abdoulaye Doucoure - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "162. Alex Iwobi - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "163. Demarai Gray - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "164. Dominic Calvert",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Lewin - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "165. Jarrad Branthwaite - Everton",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "166. Jordan Pickford - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "167. Andros Townsend - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "168. Mason Holgate - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "169. Richarlison - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "170. Tom Davies - Everton",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "171. Alisson - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "172. Andy Robertson - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "173. Harvey Elliott - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "174. Ibrahima Konate - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "175. Kostas Tsimikas - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "176. Mohamed Salah - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "177. Roberto Firmino - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "178. Sadio Mane - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "179. Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "180. Virgil van Dijk - Liverpool FC",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "181. Allan Saint",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "Maximin - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "182. Callum Wilson - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "183. Martin Dubravka - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "184. Jamaal Lascelles - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "185. Jamal Lewis - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "186. Joe Willock - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "187. Joelinton - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "188. Jonjo Shelvey - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "189. Miguel Almiron - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "190. Sean Longstaff - Newcastle United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "191. Daniel James - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "192. Illan Meslier - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "193. Jack Harrison - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "194. Joe Gelhardt - Leeds United",
+      "mention": "Rookie Card",
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "195. Kalvin Phillips - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "196. Luke Ayling - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "197. Mateusz Klich - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "198. Patrick Bamford - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "199. Raphinha - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "200. Stuart Dallas - Leeds United",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Christian Pulisic - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Ederson - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Gabriel Jesus - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Lucas Digne - Aston Villa",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Mason Mount - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Gary Neville - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Bernardo Silva - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Edouard Mendy - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Emiliano Martinez - Aston Villa",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Ki",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Jana Hoever - Wolverhampton Wanderers",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Trincao - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Reece James - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Thiago Silva - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Callum Hudson",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Odoi - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Billy Sharp - Leeds United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Cesc Fabregas - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Jordan Pickford - Everton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Aymeric Laporte - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Joe Rodon - Tottenham Hotspur",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Emile Smith Rowe - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Kalvin Phillips - Leeds United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Gianluca Vialli - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Matt Targett - Newcastle United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Pedro Neto - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Rodri - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Wesley Fofana - Leicester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Thomas Partey - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Tomas Soucek - West Ham United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Robert Pires - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Nathan Ake - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Jan Bednarek - Southampton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Josh Sargent - Norwich City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Adam Webster - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Brandon Williams - Norwich City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Gabriel Martinelli - Arsenal",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Martin Dubravka - Newcastle United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Wilfried Zaha - Crystal Palace",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Gary Lineker - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Eden Hazard - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Marc Guehi - Crystal Palace",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Eduardo - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Alan Shearer - Newcastle United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Ruud van Nistelrooy - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Hernan Crespo - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Clint Dempsey - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Thierry Henry - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Jurgen Klinsmann - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "49. David Beckham - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Andriy Shevchenko - Chelsea",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Heung",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Paul Scholes - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Didier Drogba - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Timo Werner - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Oliver Skipp - Tottenham Hotspur",
+      "mention": "Rookie Card",
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Ozan Kabak - Norwich City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Raphinha - Leeds United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Raul Jimenez - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Richarlison - Everton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "13. James Ward",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Prowse - Southampton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Alexis Mac Allister - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Allan Saint",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Maximin - Newcastle United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Danny Ings - Aston Villa",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Illan Meslier - Leeds United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Esteban Cambiasso - Leicester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Kyle Walker - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Harry Kane - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Ruben Dias - Manchester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Scott Mc",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "Tominay - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Stuart Dallas - Leeds United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Nicky Butt - Newcastle United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Vladimir Coufal - West Ham United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Kelechi Iheanacho - Leicester City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "29. John Terry - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Gilberto Silva - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Karl Darlow - Newcastle United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Asmir Begovic - Everton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Ben Mee - Burnley",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Billy Gilmour - Norwich City",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Donny van de Beek - Everton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Aaron Ramsdale - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Tariq Lamptey - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Jorginho - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Deco - Chelsea FC",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Carlos Vela - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Jens Lehmann - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Edwin van der Sar - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Bacary Sagna - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Luka Modric - Tottenham Hotspur",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Landon Donovan - Everton",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Wayne Rooney - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Robin van Persie - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Nemanja Vidic - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Dennis Bergkamp - Arsenal",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Cristiano Ronaldo - Manchester United",
+      "mention": null,
+      "subset": "AUTOGRAPH",
+      "section": "SCRIPT MOSAIC"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Christian Pulisic - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Patson Daka - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Jay Rodriguez - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Ismaila Sarr - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Nelson Semedo - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Emile Smith Rowe - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Ivan Toney - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Nikola Vlasic - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Josh Sargent - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Harry Kane - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Enock Mwepu - Brighton & Hove Albion",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Emiliano Buendia - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Wilfried Zaha - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Cristiano Ronaldo - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Nathan Redmond - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Dominic Calvert",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "Lewin - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Mohamed Salah - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Ryan Fraser - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Raphinha - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Granit Xhaka - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Alexandre Lacazette - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "23. John Mc",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "Ginn - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Mason Mount - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Jairo Riedewald - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Ricardo Pereira - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Sadio Mane - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Edinson Cavani - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Che Adams - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Raul Jimenez - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "BREAKAWAY"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Romelu Lukaku - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Phil Foden - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Jamie Vardy - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Dwight Mc",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "Neil - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Moussa Sissoko - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Ruben Neves - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Takehiro Tomiyasu - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Mathias Jensen - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Pablo Fornals - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Billy Gilmour - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Heung",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Marc Cucurella - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Ollie Watkins - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Jean",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "Philippe Mateta - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Luke Shaw - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "16. James Ward",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "Prowse - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Mason Holgate - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Jordan Henderson - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Allan Saint",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "Maximin - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Junior Firpo - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Bukayo Saka - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Solly March - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Cesar Azpilicueta - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Abdoulaye Doucoure - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Patrick Bamford - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Naby Keita - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Ilkay Gundogan - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Marcus Rashford - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Moussa Djenepo - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Tomas Soucek - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "GIVE AND GO"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Saul - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Caglar Soyuncu - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Ashley Westwood - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Ben Foster - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Conor Coady - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Aaron Ramsdale - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Pontus Jansson - Brentford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Alphonse Areola - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Josh Sargent - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Lucas Moura - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Danny Welbeck - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Leon Bailey - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Christian Benteke - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Cristiano Ronaldo - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Stuart Armstrong - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Seamus Coleman - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Mohamed Salah - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Callum Wilson - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Rodrigo Moreno - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Douglas Luiz - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Sergi Canos - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Jakub Moder - Brighton & Hove Albion",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Kai Havertz - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Richarlison - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Ayoze Perez - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Fabinho - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Diogo Jota - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "29. John Stones - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Edinson Cavani - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Fabian Schar - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Teemu Pukki - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Ozan Kabak - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Che Adams - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Steven Bergwijn - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Hugo Lloris - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Cucho Hernandez - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Alex Kral - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Leander Dendoncker - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Joao Moutinho - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "INTERNATIONAL MEN OF MASTERY"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Hakim Ziyech - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Riyad Mahrez - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "3. James Maddison - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Maxwel Cornet - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Juraj Kucka - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Rayan Ait",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "Nouri - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Gabriel - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Ethan Pinnock - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Lukasz Fabianski - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Milot Rashica - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Harry Kane - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Leandro Trossard - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Ezri Konsa - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Luka Milivojevic - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Scott Mc",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "Tominay - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Theo Walcott - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Dominic Calvert",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "Lewin - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Thiago Alcantara - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Miguel Almiron - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Jack Harrison - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Nuno Tavares - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Ashley Young - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "23. David Raya - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Pascal Gross - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Tyler Roberts - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Virgil van Dijk - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Aymeric Laporte - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Aaron Wan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "Bissaka - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Kurt Zouma - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Fabio Silva - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "MONTAGE"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Mason Mount - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Gabriel Jesus - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Patson Daka - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "4. James Tarkowski - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Joao Pedro - Watford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Daniel Podence - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Kieran Tierney - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Bryan Mbeumo - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Michail Antonio - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Teemu Pukki - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Pierre Emile Hojbjerg - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Yves Bissouma - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Danny Ings - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Michael Olise - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Marcus Rashford - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Adam Armstrong - Southampton",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Alex Iwobi - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Diogo Jota - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Callum Wilson - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Kalvin Phillips - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "21. James Maddison - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Emile Smith Rowe - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Joao Cancelo - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Alexandre Lacazette - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Paul Pogba - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Jarrod Bowen - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Raheem Sterling - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Ruben Neves - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Ilkay Gundogan - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Demarai Gray - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Jack Harrison - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "Golo Kante - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Said Benrahma - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Harvey Barnes - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Reece James - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Jacob Ramsey - Aston Villa",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Kasper Schmeichel - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Cristian Romero - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Philippe Coutinho - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Raphael Varane - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Andy Robertson - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Alisson - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Gabriel - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Rodri - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Xabi Alonso - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Gianfranco Zola - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Edwin van der Sar - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Javier Mascherano - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Robin van Persie - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Odsonne Edouard - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "OVERDRIVE"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Romelu Lukaku - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Jamie Vardy - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Nick Pope - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Ismaila Sarr - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Jose Sa - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Martin Odegaard - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Ivan Toney - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Declan Rice - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Billy Gilmour - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Heung",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Robert Sanchez - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Danny Ings - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Wilfried Zaha - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Harry Maguire - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "16. James Ward",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "Prowse - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Michael Keane - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Alisson - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Allan Saint",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "Maximin - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Illan Meslier - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Ben White - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Tyrone Mings - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Mason Mount - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Vicente Guaita - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Allan - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Daniel James - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Youri Tielemans - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Joe Willock - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Jan Bednarek - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Hee-chan Hwang - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "PITCH MASTERS"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Romelu Lukaku - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Jack Grealish - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Jamie Vardy - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Dwight Mc",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "Neil - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Ismaila Sarr - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Raul Jimenez - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Gabriel Martinelli - Arsenal",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Ivan Toney - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Declan Rice - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Billy Gilmour - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Heung",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "Min Son - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Neal Maupay - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Ollie Watkins - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Wilfried Zaha - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Bruno Fernandes - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "16. James Ward",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "Prowse - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Dominic Calvert",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "Lewin - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Sadio Mane - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Allan Saint",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "Maximin - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Patrick Bamford - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Kelechi Iheanacho - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Harry Kane - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Trincao - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Youri Tielemans - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Christian Pulisic - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Richarlison - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Martin Odegaard - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Kai Havertz - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Bukayo Saka - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Jadon Sancho - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Roberto Firmino - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Ederson - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Mohamed Salah - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Trent Alexander",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Phil Foden - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Virgil van Dijk - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Ruud van Nistelrooy - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Bernardo Silva - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Harry Maguire - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "41. Cristiano Ronaldo - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "42. Tomas Soucek - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "43. Emiliano Martinez - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "44. Raphinha - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "45. Aaron Ramsdale - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "46. Gary Lineker - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "47. Alan Shearer - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "48. Hernan Crespo - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "49. Thierry Henry - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "50. Frank Lampard - Chelsea",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "STAINED GLASS"
+    },
+    {
+      "numero": null,
+      "joueur": "1. Mateo Kovacic - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "2. Kevin De Bruyne - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "3. Youri Tielemans - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "4. Josh Brownhill - Burnley",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "5. Cucho Hernandez - Watford",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "6. Trincao - Wolverhampton Wanderers",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "7. Thomas Partey - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "8. Mads Bech Sorensen - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "9. Declan Rice - West Ham United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "10. Milot Rashica - Norwich City",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "11. Sergio Reguilon - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "12. Neal Maupay - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "13. Danny Ings - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "14. Conor Gallagher - Crystal Palace",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "15. Aaron Wan",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Bissaka - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "16. Kyle Walker",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "Peters - Southampton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "17. Richarlison - Everton",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "18. Curtis Jones - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "19. Callum Wilson - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "20. Kalvin Phillips - Leeds United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "21. Martin Odegaard - Arsenal",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "22. Philippe Coutinho - Aston Villa",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "23. Christian Norgaard - Brentford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "24. Adam Lallana - Brighton & Hove Albion",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "25. Kai Havertz - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "26. Jorginho - Chelsea FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "27. Marc Guehi - Crystal Palace",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "28. Wilfred Ndidi - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "29. Luke Thomas - Leicester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "30. Diogo Jota - Liverpool FC",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "31. Harvey Elliott - Liverpool FC",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "32. Joao Cancelo - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "33. Raheem Sterling - Manchester City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "34. Bruno Fernandes - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "35. Paul Pogba - Manchester United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "36. Matt Ritchie - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "37. Isaac Hayden - Newcastle United",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "38. Max Aarons - Norwich City",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "39. Eric Dier - Tottenham Hotspur",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "40. Emmanuel Dennis - Watford",
+      "mention": "Rookie Card",
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    },
+    {
+      "numero": null,
+      "joueur": "source cardboardconnection.com",
+      "mention": null,
+      "subset": "INSERT",
+      "section": "WILL TO WIN"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/1302_mosaic-sc_pl_hobby.png",
+    "images/bandeau-hall-of-fame-2022-1.png",
+    "images/bandeau-panini-fc-ligue1-2022-02.png",
+    "images/bandeau-panini-mosaic-euro-2020.png",
+    "images/panini-mosaic-premier-league-2021-22-soccer-cards-blaster-box.jpg",
+    "images/panini-mosaic-premier-league-2021-22-soccer-cards-mega-box.jpg",
+    "images/panini-mosaic-premier-league.webp",
+    "images/pitch_masters_pl_heung-min_son.jpg",
+    "images/pl-base_black_mosaic_ronaldo.jpg",
+    "images/pl-base_ings.jpg",
+    "images/pl-base_silver_guehi.jpg",
+    "images/pl_auto_mosaic_pulisic.jpg",
+    "images/stained_glass_foden.jpg"
+  ],
+  "stats": {
+    "total_cartes": 636,
+    "total_autographes": 102,
+    "total_inserts": 323,
+    "total_images": 13,
+    "subsets_detectes": [
+      "AUTOGRAPH",
+      "BASE",
+      "INSERT"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI MOSAIC / PREMIER LEAGUE, édité par PANINI en 2022 (mai) pour le marché U.S.A.. Il contient 200 cartes de base + 300 cartes spéciales par insertion. Les subsets détectés sont : AUTOGRAPH, BASE, INSERT. La checklist compte 636 cartes au total, dont 102 autographes et 323 inserts."
+}

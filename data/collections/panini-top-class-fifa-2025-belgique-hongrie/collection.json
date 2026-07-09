@@ -1,0 +1,534 @@
+{
+  "collection_id": "panini-top-class-fifa-2025-belgique-hongrie",
+  "source_html": "page.html",
+  "fiche": {
+    "annee": "2025 (mars)",
+    "pays": "Belgique / Hongrie",
+    "editeur": "PANINI",
+    "serie": "TOP CLASS",
+    "support": "Cartes",
+    "version": "V.I. (version internationale) en anglais",
+    "contenu_global": "270 cartes",
+    "dotation_boite": "La petite boîte en métal contient 1 carte HOLO GIANT aléatoire"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": "GOALKEEPER1.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "CENTRE-BACK10.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "RIGHT-BACK28.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "LEFT-BACK37.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "CENTRAL MIDFIELD46.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "ATTACKING MIDFIELD62.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "RIGHT-WING82.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "LEFT-WING100.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118.",
+      "description": null
+    },
+    {
+      "subset": "UNBEATABLE",
+      "section": "PURE FOOTBALL262.",
+      "description": null
+    },
+    {
+      "subset": "BASE",
+      "section": "BASE",
+      "description": null
+    }
+  ],
+  "checklist": [
+    {
+      "numero": null,
+      "joueur": "Alisson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPER1."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)5. Emiliano Martínez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "GOALKEEPER1."
+    },
+    {
+      "numero": null,
+      "joueur": "Virgil van Dijk",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-BACK10."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)17. Mohamed Simakan",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-BACK10."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)18. Éder Militão",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-BACK10."
+    },
+    {
+      "numero": null,
+      "joueur": "Trent Alexander",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-BACK28."
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-BACK28."
+    },
+    {
+      "numero": null,
+      "joueur": "Ghannam",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-BACK28."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)32. Lucas Vázquez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-BACK28."
+    },
+    {
+      "numero": null,
+      "joueur": "Andrew Robertson",
+      "mention": null,
+      "subset": "BASE",
+      "section": "LEFT-BACK37."
+    },
+    {
+      "numero": null,
+      "joueur": "Ryan Gravenberch",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRAL MIDFIELD46."
+    },
+    {
+      "numero": null,
+      "joueur": "Khaibari",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRAL MIDFIELD46."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)52. Marcelo Brozović",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRAL MIDFIELD46."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)53. Eduardo Camavinga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRAL MIDFIELD46."
+    },
+    {
+      "numero": null,
+      "joueur": "Sandro Tonali",
+      "mention": null,
+      "subset": "BASE",
+      "section": "ATTACKING MIDFIELD62."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)70. Talisca",
+      "mention": null,
+      "subset": "BASE",
+      "section": "ATTACKING MIDFIELD62."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)71. Arda Güler",
+      "mention": null,
+      "subset": "BASE",
+      "section": "ATTACKING MIDFIELD62."
+    },
+    {
+      "numero": null,
+      "joueur": "Mohamed Salah",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-WING82."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)88. Ayman Yahya",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-WING82."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)89. Rodrygo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "RIGHT-WING82."
+    },
+    {
+      "numero": null,
+      "joueur": "Luis Díaz",
+      "mention": null,
+      "subset": "BASE",
+      "section": "LEFT-WING100."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)107. Sadio Mané",
+      "mention": null,
+      "subset": "BASE",
+      "section": "LEFT-WING100."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)108. Vinicius Jr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "LEFT-WING100."
+    },
+    {
+      "numero": null,
+      "joueur": "Darwin Núñez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)124. Endrick",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)147. Antonio Rüdiger",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Emery",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)171. Thibaut Courtois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)188. Daniel Carvajal",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "André ter Stegen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Arnold",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)207. Cristiano Ronaldo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)208. Vinicius Jr",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)224. Otávio",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)225. Aurélien Tchouaméni",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)242. Cristiano Ronaldo",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)243. Thibaut Courtois",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Emery",
+      "mention": null,
+      "subset": "BASE",
+      "section": "CENTRE-FORWARD118."
+    },
+    {
+      "numero": null,
+      "joueur": "Erling Haaland",
+      "mention": null,
+      "subset": "UNBEATABLE",
+      "section": "PURE FOOTBALL262."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC)265. Vinicius Jr",
+      "mention": null,
+      "subset": "UNBEATABLE",
+      "section": "PURE FOOTBALL262."
+    },
+    {
+      "numero": null,
+      "joueur": "Nassr FC) Pure Football266. Vinicius Jr",
+      "mention": null,
+      "subset": "UNBEATABLE",
+      "section": "PURE FOOTBALL262."
+    },
+    {
+      "numero": "2",
+      "joueur": "Ibrahim Cissé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "3",
+      "joueur": "Stefan Gartenmann",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "4",
+      "joueur": "Cristian Ramírez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "5",
+      "joueur": "Mohammed Abu Fani",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "6",
+      "joueur": "Philippe Rommens",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "7",
+      "joueur": "Habib Maïga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "8",
+      "joueur": "Kristoffer Zachariassen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "9",
+      "joueur": "Adama Traoré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "10",
+      "joueur": "Kady Borges",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "11",
+      "joueur": "Matheus Saldanha",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "12",
+      "joueur": "Barnabás Varga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "13",
+      "joueur": "Ibrahim Cissé",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "14",
+      "joueur": "Stefan Gartenmann",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "16",
+      "joueur": "Mohammed Abu Fani",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "17",
+      "joueur": "Matheus Saldanha",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "18",
+      "joueur": "Adama Traoré",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "19",
+      "joueur": "Cristian Ramírez",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Kristoffer Zachariassen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "20",
+      "joueur": "Barnabás Varga",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "22",
+      "joueur": "Kristoffer Zachariassen",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    },
+    {
+      "numero": "24",
+      "joueur": "Zsombor Gruber",
+      "mention": null,
+      "subset": "BASE",
+      "section": "BASE"
+    }
+  ],
+  "cartes_rares": [],
+  "images": [
+    "images/bandeau-fifa-365-adrenalyn-2022-02.png",
+    "images/bandeau-panini-belgique-red-devils-2026.png",
+    "images/bandeau-panini-instant-euro-2020.png",
+    "images/holocards1_hun.webp",
+    "images/holocards3_hun.webp",
+    "images/mail-11.jpg",
+    "images/panini-top-class-fifa-2025-trading-cards-boite-de-24-pochettes.webp",
+    "images/panini-top-class-fifa-2025-trading-cards-grande-boite-en-metal.webp",
+    "images/panini-top-class-fifa-2025-trading-cards-petite-boite-en-metal.webp",
+    "images/panini-top-class-fifa-2025-trading-cards-pochette-de-8-cartes.webp",
+    "images/panini-top-class-fifa-2025-trading-cards-pochette-fat-pack-de-24-cartes.webp",
+    "images/panini-top-class-fifa-2025-trading-cards-pure-passion-box-set.webp",
+    "images/panini-top-class-fifa-2025-trading-cards-starter-pack-de-demarrage.webp"
+  ],
+  "stats": {
+    "total_cartes": 62,
+    "total_autographes": 0,
+    "total_inserts": 3,
+    "total_images": 13,
+    "subsets_detectes": [
+      "BASE",
+      "UNBEATABLE"
+    ]
+  },
+  "gemini_context": "Ce set est le PANINI TOP CLASS, édité par PANINI en 2025 (mars) pour le marché Belgique / Hongrie. Il contient 270 cartes. Les subsets détectés sont : BASE, UNBEATABLE. La checklist compte 62 cartes au total, dont 0 autographes et 3 inserts."
+}
