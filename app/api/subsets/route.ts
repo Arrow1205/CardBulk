@@ -10,66 +10,40 @@ export async function GET(req: Request) {
   const player = searchParams.get('player') || '';
 
   try {
-    const dataDir = path.join(process.cwd(), 'data', 'collections');
-    const indexRaw = fs.readFileSync(path.join(dataDir, 'index.json'), 'utf-8');
-    const index = JSON.parse(indexRaw);
+    const indexPath = path.join(process.cwd(), 'data', 'subsets-index.json');
+    const raw = fs.readFileSync(indexPath, 'utf-8');
+    const index: Record<string, any> = JSON.parse(raw);
 
-    // Filter collections by year and brand
-    let filtered = index.collections.filter((c: any) => {
-      const yearMatch = !year || (c.annee || '').startsWith(year);
-      const brandMatch = !brand || (c.editeur || '').toLowerCase() === brand.toLowerCase();
-      const seriesMatch = !series || (c.serie || '').toLowerCase().includes(series.split('/')[0].trim().toLowerCase());
-      return yearMatch && brandMatch && seriesMatch;
-    });
+    const subsetMap = new Map<string, { value: string, label: string }>();
+    const seriesKey = series.split('/')[0].trim().toLowerCase();
 
-    // Load subsets from each collection
-    const subsetMap = new Map<string, {value: string, label: string}>();
+    for (const col of Object.values(index)) {
+      const yearMatch = !year || (col.annee || '') === year;
+      const brandMatch = !brand || (col.editeur || '').toLowerCase() === brand.toLowerCase();
+      const seriesMatch = !series || (col.serie || '').toLowerCase().includes(seriesKey);
+      if (!yearMatch || !brandMatch || !seriesMatch) continue;
 
-    for (const col of filtered.slice(0, 10)) { // limit to 10 collections max
-      const colPath = path.join(dataDir, col.path);
-      try {
-        const colRaw = fs.readFileSync(colPath, 'utf-8');
-        const colData = JSON.parse(colRaw);
+      let subsetsToUse: any[] = col.subsets || [];
 
-        let subsetsToUse = colData.subsets || [];
-
-        // If player provided, filter by player presence in checklist
-        if (player && colData.checklist?.length > 0) {
-          const playerLower = player.toLowerCase();
-          const playerSubsets = new Set(
-            (colData.checklist || [])
-              .filter((c: any) => (c.joueur || '').toLowerCase().includes(playerLower))
-              .map((c: any) => `${c.subset} / ${c.section}`)
-          );
-          if (playerSubsets.size > 0) {
-            subsetsToUse = subsetsToUse.filter((s: any) => playerSubsets.has(`${s.subset} / ${s.section}`));
-          }
+      // Filter by player if provided
+      if (player && col.players) {
+        const playerLower = player.toLowerCase();
+        const matchedKey = Object.keys(col.players).find(k => k.includes(playerLower) || playerLower.includes(k));
+        if (matchedKey) {
+          const playerSubsetValues = new Set(col.players[matchedKey]);
+          subsetsToUse = subsetsToUse.filter((s: any) => playerSubsetValues.has(s.value));
         }
+      }
 
-        for (const s of subsetsToUse) {
-          const subset = (s.subset || '').trim();
-          const section = (s.section || '').trim();
-          if (!subset) continue;
-
-          let value: string;
-          if (section && section !== subset) {
-            value = `${subset} / ${section}`;
-          } else {
-            value = subset;
-          }
-
-          if (!subsetMap.has(value)) {
-            // Title case for label
-            const label = value.split('/').map((p: string) =>
-              p.trim().charAt(0).toUpperCase() + p.trim().slice(1).toLowerCase()
-            ).join(' / ');
-            subsetMap.set(value, { value, label });
-          }
-        }
-      } catch { continue; }
+      for (const s of subsetsToUse) {
+        if (!s.value || subsetMap.has(s.value)) continue;
+        const label = s.value.split('/').map((p: string) =>
+          p.trim().charAt(0).toUpperCase() + p.trim().slice(1).toLowerCase()
+        ).join(' / ');
+        subsetMap.set(s.value, { value: s.value, label });
+      }
     }
 
-    // Sort: BASE first, then INSERT, then AUTOGRAPH, then rest
     const ORDER = ['BASE', 'INSERT', 'AUTOGRAPH', 'AUTOGRAPHED MEMORABILIA', 'MEMORABILIA'];
     const result = Array.from(subsetMap.values()).sort((a, b) => {
       const ai = ORDER.findIndex(o => a.value.startsWith(o));
