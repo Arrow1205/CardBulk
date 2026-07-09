@@ -41,9 +41,12 @@ export async function POST(req: Request) {
     await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', cardId);
 
     const query = encodeURIComponent(keywords);
+    console.log('[price-update] keywords:', keywords);
+    console.log('[price-update] query encoded:', query);
 
     // Recherche uniquement sur eBay.fr (siteid=71)
     const allItems = await fetchSoldItems(query, appId, 71);
+    console.log('[price-update] allItems count:', allItems.length);
 
     if (allItems.length === 0) {
       return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
