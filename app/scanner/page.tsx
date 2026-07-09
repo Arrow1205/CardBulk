@@ -1162,19 +1162,23 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       }
 
       if (!editId && hasBasicInfo && formData.variation && finalImageUrl && !isWishlistMode) {
-        supabase.from('scan_examples').insert([{
-          user_id: user.id,
-          image_url: finalImageUrl,
-          brand: formData.brand,
-          series: formData.series,
-          variation: formData.variation,
-          sport: formData.sport,
-          year: formData.year,
-          is_auto: formData.is_auto,
-          is_patch: formData.is_patch,
-          is_rookie: formData.is_rookie,
-          is_numbered: formData.is_numbered,
-        }]).catch(() => {});
+        void (async () => {
+          try {
+            await supabase.from('scan_examples').insert([{
+              user_id: user.id,
+              image_url: finalImageUrl,
+              brand: formData.brand,
+              series: formData.series,
+              variation: formData.variation,
+              sport: formData.sport,
+              year: formData.year,
+              is_auto: formData.is_auto,
+              is_patch: formData.is_patch,
+              is_rookie: formData.is_rookie,
+              is_numbered: formData.is_numbered,
+            }]);
+          } catch {}
+        })();
       }
 
       if (isVerifyingBulk) {
