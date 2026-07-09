@@ -42,24 +42,8 @@ export async function POST(req: Request) {
 
     const query = encodeURIComponent(keywords);
 
-    // Recherche en parallèle sur FR (71), US (0), DE (77), UK (3)
-    const [itemsFR, itemsUS, itemsDE, itemsUK] = await Promise.all([
-      fetchSoldItems(query, appId, 71),
-      fetchSoldItems(query, appId, 0),
-      fetchSoldItems(query, appId, 77),
-      fetchSoldItems(query, appId, 3),
-    ]);
-
-    // Fusion sans doublons (par itemId)
-    const seenIds = new Set<string>();
-    const allItems: any[] = [];
-    for (const item of [...itemsFR, ...itemsUS, ...itemsDE, ...itemsUK]) {
-      const id = item.itemId?.[0];
-      if (id && !seenIds.has(id)) {
-        seenIds.add(id);
-        allItems.push(item);
-      }
-    }
+    // Recherche uniquement sur eBay.fr (siteid=71)
+    const allItems = await fetchSoldItems(query, appId, 71);
 
     if (allItems.length === 0) {
       return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
