@@ -1,6 +1,29 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// Finding API — findCompletedItems sur un site eBay donné (siteid: 0=US, 71=FR, 77=DE, 3=UK)
+async function fetchSoldItems(query: string, appId: string, siteid: number): Promise<any[]> {
+  const url =
+    `https://svcs.ebay.com/services/search/FindingService/v1` +
+    `?OPERATION-NAME=findCompletedItems` +
+    `&SERVICE-VERSION=1.0.0` +
+    `&SECURITY-APPNAME=${appId}` +
+    `&RESPONSE-DATA-FORMAT=JSON` +
+    `&siteid=${siteid}` +
+    `&keywords=${query}` +
+    `&itemFilter%280%29.name=SoldItemsOnly` +
+    `&itemFilter%280%29.value=true` +
+    `&paginationInput.entriesPerPage=20`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || [];
+  } catch {
+    return [];
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const { cardId, keywords } = await req.json();
@@ -10,7 +33,6 @@ export async function POST(req: Request) {
     }
 
     const appId = process.env.EBAY_APP_ID;
-
     if (!appId) {
       return NextResponse.json({ success: false, error: 'Configuration Vercel manquante' }, { status: 500 });
     }
@@ -18,32 +40,33 @@ export async function POST(req: Request) {
     // Actualise la date dès le début, même si aucun prix n'est trouvé
     await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', cardId);
 
-    // Finding API — findCompletedItems : ventes réussies (équivalent LH_Sold=1&LH_Complete=1)
-    // Pas besoin de token OAuth, l'App ID suffit
     const query = encodeURIComponent(keywords);
-    const searchUrl =
-      `https://svcs.ebay.com/services/search/FindingService/v1` +
-      `?OPERATION-NAME=findCompletedItems` +
-      `&SERVICE-VERSION=1.0.0` +
-      `&SECURITY-APPNAME=${appId}` +
-      `&RESPONSE-DATA-FORMAT=JSON` +
-      `&keywords=${query}` +
-      `&itemFilter%280%29.name=SoldItemsOnly` +
-      `&itemFilter%280%29.value=true` +
-      `&paginationInput.entriesPerPage=20`;
 
-    const searchResponse = await fetch(searchUrl);
-    const searchData = await searchResponse.json();
+    // Recherche en parallèle sur FR (71), US (0), DE (77), UK (3)
+    const [itemsFR, itemsUS, itemsDE, itemsUK] = await Promise.all([
+      fetchSoldItems(query, appId, 71),
+      fetchSoldItems(query, appId, 0),
+      fetchSoldItems(query, appId, 77),
+      fetchSoldItems(query, appId, 3),
+    ]);
 
-    const items: any[] =
-      searchData?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || [];
+    // Fusion sans doublons (par itemId)
+    const seenIds = new Set<string>();
+    const allItems: any[] = [];
+    for (const item of [...itemsFR, ...itemsUS, ...itemsDE, ...itemsUK]) {
+      const id = item.itemId?.[0];
+      if (id && !seenIds.has(id)) {
+        seenIds.add(id);
+        allItems.push(item);
+      }
+    }
 
-    if (items.length === 0) {
+    if (allItems.length === 0) {
       return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
     }
 
     let prices: number[] = [];
-    items.forEach((item: any) => {
+    allItems.forEach((item: any) => {
       const title = (item.title?.[0] || '').toUpperCase();
       const isGradedOrLot =
         title.includes('PSA') || title.includes('PCA') ||
