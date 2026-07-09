@@ -115,7 +115,8 @@ export default function CardDetailsPage() {
   };
 
   // 🧠 Le cerveau centralisé pour construire la recherche eBay
-  // Structure : [Année] [Marque] [Collection] [Joueur] [Subset] [Auto] [Patch] [/Numérotation] [Équipe] [Grade]
+  // Structure : [Année] [Marque] [Collection] [Joueur] [Subset] [Auto] [Patch] [/Numérotation] [Grade]
+  // Note : le club est intentionnellement exclu — trop d'écriture possibles (PSG / Paris SG / Paris Saint-Germain)
   const buildEbaySearchQuery = (currentCard: any) => {
     let formattedYear = currentCard.year;
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(currentCard.sport) && currentCard.year && /^\d{4}$/.test(currentCard.year.toString())) {
@@ -132,10 +133,9 @@ export default function CardDetailsPage() {
     const auto       = currentCard.is_auto ? 'Auto' : '';
     const patch      = currentCard.is_patch ? 'Patch' : '';
     const numero     = currentCard.is_numbered && currentCard.numbering_max ? `/${cleanData(currentCard.numbering_max)}` : '';
-    const equipe     = cleanData(currentCard.club_name);
     const grade      = currentCard.is_graded && currentCard.grading_grade ? cleanData(currentCard.grading_grade) : '';
 
-    return [annee, brand, series, prenom, nom, auto, patch, variation, numero, equipe, grade]
+    return [annee, brand, series, prenom, nom, auto, patch, variation, numero, grade]
       .filter(Boolean)
       .join(' ');
   };

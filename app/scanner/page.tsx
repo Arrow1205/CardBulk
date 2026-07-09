@@ -393,11 +393,35 @@ function ScannerContent() {
     if (playerStr) params.set('player', playerStr);
 
     setLoadingSubsets(true);
-    fetch(`/api/subsets?${params}`)
-      .then(r => r.json())
-      .then(data => setDynamicSubsets(data.subsets || []))
-      .catch(() => setDynamicSubsets([]))
-      .finally(() => setLoadingSubsets(false));
+
+    const fetchAll = async () => {
+      const [apiRes, userRes] = await Promise.allSettled([
+        fetch(`/api/subsets?${params}`).then(r => r.json()),
+        supabase
+          .from('custom_subsets')
+          .select('variation')
+          .eq('brand', formData.brand)
+          .eq('series', formData.series || '')
+      ]);
+
+      const apiSubsets: {value: string, label: string}[] =
+        apiRes.status === 'fulfilled' ? (apiRes.value.subsets || []) : [];
+
+      const userSubsets: {value: string, label: string}[] = [];
+      if (userRes.status === 'fulfilled' && userRes.value.data) {
+        const existingValues = new Set(apiSubsets.map(s => s.value));
+        for (const row of userRes.value.data) {
+          if (!existingValues.has(row.variation)) {
+            userSubsets.push({ value: row.variation, label: row.variation });
+          }
+        }
+      }
+
+      setDynamicSubsets([...apiSubsets, ...userSubsets]);
+      setLoadingSubsets(false);
+    };
+
+    fetchAll().catch(() => { setDynamicSubsets([]); setLoadingSubsets(false); });
   }, [formData.brand, formData.year, formData.series, formData.firstname, formData.lastname]);
 
   const getLocalImageUrl = async (url: string | null, file: File | null) => {
@@ -1181,6 +1205,26 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
         })();
       }
 
+      // Sauvegarder la variation dans custom_subsets si elle n'est pas dans les listes connues
+      if (formData.variation && formData.brand && formData.series && !isWishlistMode) {
+        const knownValues = new Set([
+          ...dynamicSubsets.map(s => s.value),
+          ...availableVariations,
+        ]);
+        if (!knownValues.has(formData.variation)) {
+          void (async () => {
+            try {
+              await supabase.from('custom_subsets').upsert([{
+                user_id: user.id,
+                brand: formData.brand,
+                series: formData.series,
+                variation: formData.variation,
+              }], { onConflict: 'user_id,brand,series,variation', ignoreDuplicates: true });
+            } catch {}
+          })();
+        }
+      }
+
       if (isVerifyingBulk) {
         if (currentVerifyIndex < pendingCards.length - 1) {
           setLoading(false); setCurrentVerifyIndex(prev => prev + 1); window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1638,7 +1682,14 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                     className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"
                   >
                     <option value="">{loadingSubsets ? 'Chargement...' : 'Variation / Subset'}</option>
-                    {(dynamicSubsets.length > 0 ? dynamicSubsets : availableVariations.map((v: string) => ({value: v, label: v}))).map((s: {value: string, label: string}) => (
+                    {(() => {
+                      // Fusion : dynamic (subsets-index) + common (sets.json), sans doublons
+                      const dynamicVals = new Set(dynamicSubsets.map(s => s.value));
+                      const fromSetsJson = availableVariations
+                        .filter(v => !dynamicVals.has(v))
+                        .map(v => ({ value: v, label: v }));
+                      return [...dynamicSubsets, ...fromSetsJson];
+                    })().map((s: {value: string, label: string}) => (
                       <option key={s.value} value={s.value}>{s.label.replace(/\s*\/\s*/g, ' - ')}</option>
                     ))}
                     {!showCustomVariation && formData.variation && ![...dynamicSubsets, ...availableVariations].some((s: any) => (typeof s === 'string' ? s : s.value) === formData.variation) && (
