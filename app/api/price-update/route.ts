@@ -17,9 +17,14 @@ async function fetchSoldItems(query: string, appId: string, siteid: number): Pro
 
   try {
     const res = await fetch(url);
-    const data = await res.json();
-    return data?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || [];
-  } catch {
+    const text = await res.text();
+    console.log('[price-update] eBay status:', res.status);
+    console.log('[price-update] eBay raw (first 500):', text.slice(0, 500));
+    const data = JSON.parse(text);
+    const items = data?.findCompletedItemsResponse?.[0]?.searchResult?.[0]?.item || [];
+    return items;
+  } catch (err) {
+    console.log('[price-update] eBay fetch error:', err);
     return [];
   }
 }
