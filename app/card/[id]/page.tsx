@@ -103,8 +103,19 @@ export default function CardDetailsPage() {
     }
   };
 
+  // Extrait le nom du subset en retirant le préfixe de type (BASE, INSERT, AUTOGRAPH, etc.)
+  // "BASE / Color Blast" → "Color Blast" | "INSERT - KABOOM" → "KABOOM" | "BASE" → ""
+  const extractSubsetName = (v: string) => {
+    if (!v) return '';
+    const match = v.match(/^(?:BASE|INSERT|AUTOGRAPH(?:ED MEMORABILIA)?|MEMORABILIA|PARALLEL|RELIC|CASE HIT|SP|SSP)\s*[\/\-]\s*(.+)$/i);
+    if (match) return match[1].trim();
+    // Si c'est un type seul sans suffixe (ex: "BASE", "INSERT") → inutile pour eBay
+    if (/^(?:BASE|INSERT|AUTOGRAPH|MEMORABILIA|PARALLEL|RELIC|CASE HIT)$/i.test(v.trim())) return '';
+    return v;
+  };
+
   // 🧠 Le cerveau centralisé pour construire la recherche eBay
-  // Structure : [Année] [Marque] [Collection] [Joueur] [Type] [Parallel] [/Numérotation] [Équipe] [Grade]
+  // Structure : [Année] [Marque] [Collection] [Joueur] [Subset] [Auto] [Patch] [/Numérotation] [Équipe] [Grade]
   const buildEbaySearchQuery = (currentCard: any) => {
     let formattedYear = currentCard.year;
     if (!['TENNIS', 'BASEBALL', 'F1'].includes(currentCard.sport) && currentCard.year && /^\d{4}$/.test(currentCard.year.toString())) {
@@ -117,7 +128,7 @@ export default function CardDetailsPage() {
     const series     = cleanData(currentCard.series);
     const prenom     = cleanData(currentCard.firstname);
     const nom        = cleanData(currentCard.lastname);
-    const variation  = cleanData(currentCard.variation);
+    const variation  = extractSubsetName(cleanData(currentCard.variation));
     const auto       = currentCard.is_auto ? 'Auto' : '';
     const patch      = currentCard.is_patch ? 'Patch' : '';
     const numero     = currentCard.is_numbered && currentCard.numbering_max ? `/${cleanData(currentCard.numbering_max)}` : '';
@@ -459,7 +470,7 @@ export default function CardDetailsPage() {
         <div className="grid grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-y-6 gap-x-3 pt-6 border-t border-white/10">
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Brand</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.brand || "-"}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Collection</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.series || "-"}</div></div>
-          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Variation</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.variation || "-"}</div></div>
+          <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Variation</div><div className="text-sm sm:text-base font-bold text-white capitalize truncate">{card.variation ? card.variation.replace(/\s*\/\s*/g, ' - ') : '-'}</div></div>
           <div><div className="text-[10px] text-[#AFFF25] font-bold tracking-widest uppercase mb-1">Année</div><div className="text-sm sm:text-base font-bold text-white">{card.year || "-"}</div></div>
           
           <div>

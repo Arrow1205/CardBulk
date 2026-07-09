@@ -1639,16 +1639,16 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                   >
                     <option value="">{loadingSubsets ? 'Chargement...' : 'Variation / Subset'}</option>
                     {(dynamicSubsets.length > 0 ? dynamicSubsets : availableVariations.map((v: string) => ({value: v, label: v}))).map((s: {value: string, label: string}) => (
-                      <option key={s.value} value={s.value}>{s.label}</option>
+                      <option key={s.value} value={s.value}>{s.label.replace(/\s*\/\s*/g, ' - ')}</option>
                     ))}
                     {!showCustomVariation && formData.variation && ![...dynamicSubsets, ...availableVariations].some((s: any) => (typeof s === 'string' ? s : s.value) === formData.variation) && (
-                      <option value={formData.variation}>{formData.variation}</option>
+                      <option value={formData.variation}>{formData.variation.replace(/\s*\/\s*/g, ' - ')}</option>
                     )}
                     <option value="__autre__">— Autre (saisie libre) —</option>
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                   {!showCustomVariation && formData.variation && (
-                    <p className="text-[10px] text-white/40 mt-1.5 px-4">{formData.variation}</p>
+                    <p className="text-[10px] text-white/40 mt-1.5 px-4">{formData.variation.replace(/\s*\/\s*/g, ' - ')}</p>
                   )}
                 </div>
                 {showCustomVariation && (
