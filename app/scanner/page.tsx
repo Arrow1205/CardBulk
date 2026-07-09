@@ -14,6 +14,7 @@ import TENNIS_PLAYERS from '@/data/tennis-player.json';
 
 import SET_DATA from '@/data/sets.json';
 import TYPE_CARTE from '@/data/type-carte.json';
+import COLLECTION_INDEX from '@/data/collections/index.json';
 
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
   'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
@@ -56,6 +57,17 @@ let ALL_SETS: string[] = [];
   }
 });
 ALL_SETS = Array.from(new Set(ALL_SETS));
+
+// Map: year -> Set<brandName lowercase>
+const YEAR_BRAND_MAP: Record<string, Set<string>> = {};
+for (const col of (COLLECTION_INDEX as any).collections) {
+  const year = ((col.annee as string) || '').slice(0, 4);
+  const brand = ((col.editeur as string) || '').trim().toLowerCase();
+  if (year && brand) {
+    if (!YEAR_BRAND_MAP[year]) YEAR_BRAND_MAP[year] = new Set();
+    YEAR_BRAND_MAP[year].add(brand);
+  }
+}
 
 const DEFAULT_FORM = { sport: '', firstname: '', lastname: '', club: '', brand: '', series: '', variation: '', year: new Date().getFullYear().toString(), is_auto: false, is_patch: false, is_rookie: false, is_numbered: false, num_low: '', num_high: '', price: '', website_url: '', is_graded: false, grading_company: '', grading_grade: '' };
 
@@ -133,6 +145,9 @@ function ScannerContent() {
 
   const [formData, setFormData] = useState(DEFAULT_FORM);
   const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
+
+  const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
+  const [loadingSubsets, setLoadingSubsets] = useState(false);
 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
@@ -348,6 +363,24 @@ function ScannerContent() {
     }
   }, [draggingCorner]);
 
+  useEffect(() => {
+    if (!formData.brand || !formData.year) {
+      setDynamicSubsets([]);
+      return;
+    }
+    const params = new URLSearchParams({ brand: formData.brand, year: formData.year });
+    if (formData.series) params.set('series', formData.series);
+    const playerStr = `${formData.firstname} ${formData.lastname}`.trim();
+    if (playerStr) params.set('player', playerStr);
+
+    setLoadingSubsets(true);
+    fetch(`/api/subsets?${params}`)
+      .then(r => r.json())
+      .then(data => setDynamicSubsets(data.subsets || []))
+      .catch(() => setDynamicSubsets([]))
+      .finally(() => setLoadingSubsets(false));
+  }, [formData.brand, formData.year, formData.series, formData.firstname, formData.lastname]);
+
   const getLocalImageUrl = async (url: string | null, file: File | null) => {
       if (!url) return null;
       if (!file && url.startsWith('http')) {
@@ -419,7 +452,13 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
-  const availableBrands = SET_DATA.brands || [];
+  const allBrands = SET_DATA.brands || [];
+  const availableBrands = formData.year
+    ? allBrands.filter((b: any) => {
+        const yearSet = YEAR_BRAND_MAP[formData.year];
+        return !yearSet || yearSet.has(b.name.toLowerCase());
+      })
+    : allBrands;
   let availableSetObjects: any[] = [];
   let availableSets: string[] = [];
   let availableVariations: string[] = [];
@@ -1509,6 +1548,17 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
             </div>
             {isCarteOpen && (
               <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
+
+                {/* ANNÉE en premier */}
+                <div className="relative">
+                  <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                    <option value="">Année</option>
+                    {yearsList.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                </div>
+
+                {/* FABRICANT */}
                 <div className="relative">
                   {formData.brand && <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 top-3.5 w-6 h-6 object-contain z-10" alt="Brand" />}
                   <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors ${formData.brand ? 'pl-[44px]' : 'pl-4'}`}>
@@ -1517,24 +1567,31 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
-                
-                <div className="relative">
-                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Collection / Set</option>{availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}</select>
-                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
-                </div>
 
+                {/* COLLECTION / SET */}
                 <div className="relative">
-                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
-                    <option value="">Variation / Subset</option>
-                    {availableVariations.map((v: string) => <option key={v} value={v}>{v}</option>)}
-                    {formData.variation && !availableVariations.includes(formData.variation) && <option value={formData.variation}>{formData.variation}</option>}
+                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                    <option value="">Collection / Set</option>
+                    {availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
+                {/* VARIATION / SUBSET */}
                 <div className="relative">
-                  <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"><option value="">Année</option>{yearsList.map(y => <option key={y} value={y}>{y}</option>)}</select>
+                  <select value={formData.variation} onChange={e => setFormData({...formData, variation: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                    <option value="">{loadingSubsets ? 'Chargement...' : 'Variation / Subset'}</option>
+                    {(dynamicSubsets.length > 0 ? dynamicSubsets : availableVariations.map((v: string) => ({value: v, label: v}))).map((s: {value: string, label: string}) => (
+                      <option key={s.value} value={s.value}>{s.label}</option>
+                    ))}
+                    {formData.variation && ![...dynamicSubsets, ...availableVariations].some((s: any) => (typeof s === 'string' ? s : s.value) === formData.variation) && (
+                      <option value={formData.variation}>{formData.variation}</option>
+                    )}
+                  </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                  {formData.variation && (
+                    <p className="text-[10px] text-white/40 mt-1.5 px-4">{formData.variation}</p>
+                  )}
                 </div>
                 
                 <div className="bg-white/5 rounded-2xl p-4 space-y-3 border border-white/10 mt-2">

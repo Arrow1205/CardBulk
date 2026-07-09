@@ -73,12 +73,13 @@ export async function POST(req: Request) {
     ${JSON.stringify(setsReference)}
 
     RÈGLES ABSOLUES POUR LE CHAMP "variation" :
-    1. Le champ "variation" représente le SUBSET de la carte (BASE, AUTOGRAPH, INSERT, MEMORABILIA, etc.).
-    2. Identifie d'abord la marque (brand) et la série (series).
-    3. Consulte le Dictionnaire 2 pour trouver les "common_subsets" de cette série — renvoie l'un d'eux si applicable.
-    4. Utilise le Dictionnaire 1 pour affiner via les indices visuels.
-    5. ⚠️ Si la variation trouvée est un PARALLEL (Refractor, Gold, couleur), NE RENVOIE PAS ce nom générique comme variation. Renvoie la couleur et la numérotation (ex: 'Gold /10', 'Red /299') dans le champ "variation".
-    6. LA RÈGLE DU DOUTE : Si rien de spécial, renvoie "Base".
+    1. Le champ "variation" représente le SUBSET + SECTION de la carte au format "SUBSET / SECTION".
+    2. Exemples : "BASE / COMMON", "BASE / UNCOMMON", "BASE / RARE", "INSERT / 90'S MADNESS", "INSERT / AURA", "AUTOGRAPH / BASE".
+    3. Identifie d'abord la marque (brand) et la série (series) — cherche dans le Dictionnaire 2 les common_subsets.
+    4. Utilise le Dictionnaire 1 pour les indices visuels.
+    5. Si le subset est simplement "BASE" sans section spécifique visible, retourne "BASE".
+    6. Si c'est un parallèle (Refractor, Gold, couleur + numéro), retourne "PARALLEL / [couleur] [numérotation]" ex: "PARALLEL / Gold /10".
+    7. LA RÈGLE DU DOUTE : Si rien de spécial, retourne "BASE".
 
     Renvoie UNIQUEMENT un JSON strict avec ces clés exactes :
     {

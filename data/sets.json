@@ -214,6 +214,15 @@
             "notes": "Set très limité haut de gamme"
           },
           {
+            "name": "Showtime",
+            "full_name": "Topps Showtime Soccer",
+            "visual_hints": "design coloré et dynamique, style entertainment, holographique, typographie expressive",
+            "common_subsets": ["Base", "Autograph", "Insert", "Numbered Parallel"],
+            "ebay_keywords": ["Topps Showtime Soccer", "Topps Showtime Football"],
+            "ebay_template": "{joueur} Topps Showtime {saison}",
+            "notes": "Set Topps au design spectaculaire orienté entertainment"
+          },
+          {
             "name": "Stadium Club",
             "full_name": "Topps Stadium Club Soccer",
             "visual_hints": "logo Stadium Club, grande photo action pleine carte sans bordure, finition brillante photo-réaliste",
@@ -967,6 +976,15 @@
             "notes": "Set premium axé reliques et autos"
           },
           {
+            "name": "Iconz",
+            "full_name": "Panini Iconz Soccer",
+            "visual_hints": "design premium artistique stylisé, portraits iconiques, finition mat et brillant, typographie bold",
+            "common_subsets": ["Base", "Autograph", "Insert", "Memorabilia"],
+            "ebay_keywords": ["Panini Iconz Soccer", "Panini Iconz Football"],
+            "ebay_template": "{joueur} Panini Iconz {saison}",
+            "notes": "Set premium Panini au design très distinctif orienté icônes du sport"
+          },
+          {
             "name": "Mosaic",
             "full_name": "Panini Mosaic Soccer",
             "visual_hints": "logo Mosaic, design mosaïque/carreaux colorés en arrière-plan, finition brillante, parallèles holographiques",
@@ -983,6 +1001,15 @@
             "ebay_keywords": ["National Treasures Soccer", "NT Soccer"],
             "ebay_template": "{joueur} National Treasures Soccer {saison} {numero}",
             "notes": "Set ultra-premium, patches et autos haute valeur"
+          },
+          {
+            "name": "Noir",
+            "full_name": "Panini Noir Soccer",
+            "visual_hints": "fond noir dominant, design luxueux, dorures, numérotation très basse, logo Noir en or",
+            "common_subsets": ["Base", "Autograph", "Autographed Patch", "Dual Autograph"],
+            "ebay_keywords": ["Panini Noir Soccer", "Panini Noir Football"],
+            "ebay_template": "{joueur} Panini Noir {saison}",
+            "notes": "Set ultra-premium Panini, tirages très limités, fond noir signature"
           },
           {
             "name": "Obsidian",
