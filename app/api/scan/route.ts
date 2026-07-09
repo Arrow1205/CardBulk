@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur.
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
     MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts...).
-    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION (SUBSET).
+    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION (SUBSET) — PRIORITÉ ABSOLUE AU DICTIONNAIRE.
 
     Dictionnaire 1 — Règles visuelles de variation par marque (TYPE_CARTE) :
     ${JSON.stringify(aiVariationsRules)}
@@ -72,14 +72,32 @@ export async function POST(req: Request) {
     Dictionnaire 2 — Références visuelles et subsets officiels par série (SETS) :
     ${JSON.stringify(setsReference)}
 
-    RÈGLES ABSOLUES POUR LE CHAMP "variation" :
-    1. Le champ "variation" représente le SUBSET + SECTION de la carte au format "SUBSET / SECTION".
-    2. Exemples : "BASE / COMMON", "BASE / UNCOMMON", "BASE / RARE", "INSERT / 90'S MADNESS", "INSERT / AURA", "AUTOGRAPH / BASE".
-    3. Identifie d'abord la marque (brand) et la série (series) — cherche dans le Dictionnaire 2 les common_subsets.
-    4. Utilise le Dictionnaire 1 pour les indices visuels.
-    5. Si le subset est simplement "BASE" sans section spécifique visible, retourne "BASE".
-    6. Si c'est un parallèle (Refractor, Gold, couleur + numéro), retourne "PARALLEL / [couleur] [numérotation]" ex: "PARALLEL / Gold /10".
-    7. LA RÈGLE DU DOUTE : Si rien de spécial, retourne "BASE".
+    PROCESSUS OBLIGATOIRE POUR LE CHAMP "variation" — SUIS CES ÉTAPES DANS L'ORDRE :
+
+    ÉTAPE 1 — Identifie la marque (brand) et la série (series) visibles sur la carte.
+
+    ÉTAPE 2 — Cherche IMMÉDIATEMENT cette combinaison marque+série dans le Dictionnaire 2.
+      Essaie toutes les variantes de casse (ex : "Panini", "PANINI", "panini" → c'est la même chose).
+      Cherche aussi par correspondance partielle si le nom exact n'est pas trouvé (ex : "Chrome UCL" → cherche "Chrome").
+
+    ÉTAPE 3 — SI la marque+série EST trouvée dans le Dictionnaire 2 :
+      → Examine la liste common_subsets disponible pour cette série.
+      → Analyse visuellement la carte (texte imprimé, design, badge, position dans le set, style graphique).
+      → Retourne EXACTEMENT l'une des valeurs de common_subsets — celle qui correspond le mieux visuellement.
+      → INTERDIT d'inventer une valeur absente de common_subsets dans ce cas.
+
+    ÉTAPE 4 — SI la marque+série N'EST PAS dans le Dictionnaire 2 :
+      → Utilise le Dictionnaire 1 (indices visuels par marque) pour déduire le subset.
+      → Utilise aussi tes connaissances générales sur les cartes sportives.
+      → Retourne librement le subset au format "CATÉGORIE / SECTION" en MAJUSCULES.
+
+    ÉTAPE 5 — CAS PARTICULIER PARALLÈLES (prioritaire sur les étapes 3 et 4) :
+      → Si la carte porte une couleur distinctive (Gold, Silver, Red, Blue, Green, Black, etc.) avec ou sans numérotation visible, c'est un parallèle.
+      → Retourne "PARALLEL / [Couleur] [/Numérotation si visible]" ex : "PARALLEL / Gold /10", "PARALLEL / Red /25".
+      → Cette règle s'applique MÊME si la marque+série est dans le Dictionnaire 2.
+
+    ÉTAPE 6 — RÈGLE DU DOUTE ABSOLU :
+      → Si aucun indice distinctif n'est visible ET que la série est absente du Dictionnaire 2, retourne "BASE".
 
     Renvoie UNIQUEMENT un JSON strict avec ces clés exactes :
     {
