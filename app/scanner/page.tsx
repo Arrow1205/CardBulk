@@ -15,6 +15,7 @@ import TENNIS_PLAYERS from '@/data/tennis-player.json';
 import SET_DATA from '@/data/sets.json';
 import TYPE_CARTE from '@/data/type-carte.json';
 import COLLECTION_INDEX from '@/data/collections/index.json';
+import { formatYearForEbay } from '@/lib/ebay-utils';
 
 const SPORT_CONFIG: Record<string, { image: string, jsonKey: string, label: string }> = {
   'SOCCER': { image: 'Soccer', jsonKey: 'football_soccer', label: 'Football (Soccer)' },
@@ -1161,13 +1162,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
             return str;
          };
 
-         let formattedYear = formData.year;
-         if (!['TENNIS', 'BASEBALL', 'F1'].includes(formData.sport) && formData.year && /^\d{4}$/.test(formData.year.toString())) {
-           const yearNum = parseInt(formData.year, 10);
-           const prevYear = yearNum - 1;
-           const shortYear = formData.year.toString().slice(-2);
-           formattedYear = `${prevYear}-${shortYear}`;
-         }
+         const formattedYear = formatYearForEbay(formData.year, formData.sport, formData.brand);
 
          const keywordsArray = [
            formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
@@ -1243,13 +1238,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       return str;
     };
 
-    let formattedYear = formData.year;
-    if (!['TENNIS', 'BASEBALL', 'F1'].includes(formData.sport) && formData.year && /^\d{4}$/.test(formData.year.toString())) {
-      const yearNum = parseInt(formData.year, 10);
-      const prevYear = yearNum - 1;
-      const shortYear = formData.year.toString().slice(-2);
-      formattedYear = `${prevYear}-${shortYear}`;
-    }
+    const formattedYear = formatYearForEbay(formData.year, formData.sport, formData.brand);
 
     const keywordsArray = [
       formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 

@@ -7,6 +7,7 @@ import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown,
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
+import { formatYearForEbay } from '@/lib/ebay-utils';
 
 const SPORT_CONFIG: Record<string, { image: string, label: string }> = {
   'SOCCER': { image: 'Soccer', label: 'Football' },
@@ -118,13 +119,7 @@ export default function CardDetailsPage() {
   // Structure : [Année] [Marque] [Collection] [Joueur] [Subset] [Auto] [Patch] [/Numérotation] [Grade]
   // Note : le club est intentionnellement exclu — trop d'écriture possibles (PSG / Paris SG / Paris Saint-Germain)
   const buildEbaySearchQuery = (currentCard: any) => {
-    let formattedYear = currentCard.year;
-    if (!['TENNIS', 'BASEBALL', 'F1'].includes(currentCard.sport) && currentCard.year && /^\d{4}$/.test(currentCard.year.toString())) {
-      const yearNum = parseInt(currentCard.year, 10);
-      formattedYear = `${yearNum - 1}-${currentCard.year.toString().slice(-2)}`;
-    }
-
-    const annee      = cleanData(formattedYear);
+    const annee      = formatYearForEbay(cleanData(currentCard.year), cleanData(currentCard.sport), cleanData(currentCard.brand));
     const brand      = cleanData(currentCard.brand);
     const series     = cleanData(currentCard.series);
     const prenom     = cleanData(currentCard.firstname);
