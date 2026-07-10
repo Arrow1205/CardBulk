@@ -69,18 +69,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
     }
 
-    // Filtre IQR : élimine les valeurs aberrantes (articles liés eBay hors sujet)
     const sorted = [...prices].sort((a, b) => a - b);
-    const q1 = sorted[Math.floor(sorted.length * 0.25)];
-    const q3 = sorted[Math.floor(sorted.length * 0.75)];
-    const iqr = q3 - q1;
-    const filtered = sorted.filter(p => p >= q1 - 1.5 * iqr && p <= q3 + 1.5 * iqr);
 
-    if (filtered.length === 0) {
-      return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
-    }
-
-    const average = Math.round((filtered.reduce((a, b) => a + b, 0) / filtered.length) * 100) / 100;
+    // Médiane : insensible aux outliers (une carte rare à 524€ n'affecte pas le résultat)
+    const mid = Math.floor(sorted.length / 2);
+    const average = sorted.length % 2 !== 0
+      ? Math.round(sorted[mid] * 100) / 100
+      : Math.round(((sorted[mid - 1] + sorted[mid]) / 2) * 100) / 100;
 
     await supabase.from('card_prices').insert([{ card_id: cardId, price: average }]);
 
