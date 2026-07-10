@@ -20,51 +20,72 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
   const html = await res.text();
   console.log('[price-update] status:', res.status, '| length:', html.length);
 
-  // Diagnostic — log extrait HTML autour de la première occurrence de prix
-  const diagIdx = html.search(/s-item__price|POSITIVE|itemprop="price"/);
-  if (diagIdx !== -1) {
-    console.log('[price-update] price HTML sample:', html.slice(diagIdx, diagIdx + 400));
-  } else {
-    // Log les 500 premiers chars pour voir ce qu'on reçoit
-    console.log('[price-update] no price pattern found. HTML start:', html.slice(0, 500));
+  // Détecte les pages sans résultats eBay
+  const noResults =
+    html.includes('0 résultat') ||
+    html.includes('0 article') ||
+    html.includes('srp-save-null-search') ||
+    html.includes('"totalEntries":0') ||
+    html.includes('"itemsCount":0');
+  if (noResults) {
+    console.log('[price-update] eBay: 0 résultats');
+    return [];
   }
 
   const prices: number[] = [];
 
-  // --- Méthode 1 : blocs s-item__info (structure eBay classique) ---
-  const itemBlocks = html.split('s-item__info');
-  if (itemBlocks.length > 1) {
+  // --- Méthode 1 : JSON embarqué eBay (le plus fiable) ---
+  // eBay injecte les données de listing dans window.__PRELOADED_STATE__ ou des balises JSON-LD
+  const jsonPriceMatches = Array.from(
+    html.matchAll(/"soldPrice"\s*:\s*\{[^}]*?"value"\s*:\s*"([\d.]+)"/g)
+  );
+  for (const m of jsonPriceMatches) {
+    const p = parseFloat(m[1]);
+    if (p > 0.5 && p < 100000) prices.push(p);
+  }
+
+  // --- Méthode 2 : balises <span> contenant le prix vendu ---
+  // eBay.fr peut utiliser BOLD, s-item__price, g-b, POSITIVE selon la version du template
+  if (prices.length === 0) {
+    // Découpe par article (chaque résultat eBay est dans un bloc s-item)
+    const itemBlocks = html.split(/s-item[^_]|s-item__wrapper/);
     for (const block of itemBlocks.slice(1)) {
-      const titleMatch = block.match(/class="s-item__title[^"]*"[^>]*>\s*<span[^>]*>([^<]{0,200})</);
-      const title = (titleMatch?.[1] || '').toUpperCase();
+      const title = (block.match(/class="(?:s-item__title|ITEM-TITLE)[^"]*"[^>]*>([^<]{0,200})/)?.[1] || '').toUpperCase();
       const isGradedOrLot =
         title.includes('PSA') || title.includes('BGS') || title.includes('CGC') ||
         title.includes('PCA') || title.includes('LOT ') || title.includes(' LOT');
       if (isGradedOrLot) continue;
 
-      // Prix dans le bloc — eBay.fr format: "12,50 EUR" ou "12.50 EUR" ou "12 EUR"
-      const priceMatch = block.match(/s-item__price[^>]*>[\s\S]{0,50}?([\d\s]{1,8}[,.][\d]{2})\s*(?:EUR|€)/i);
-      if (!priceMatch) continue;
-      const priceNum = parseFloat(priceMatch[1].replace(/\s/g, '').replace(',', '.'));
-      if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+      // Cherche le prix dans le bloc — plusieurs formats possibles
+      const pm =
+        block.match(/class="(?:s-item__price|BOLD|g-b|POSITIVE)[^"]*"[^>]*>\s*(?:<[^>]+>)?([\d\s]+[,.][\d]{2})\s*(?:EUR|€)/i) ||
+        block.match(/"displayPrice"\s*:\s*"EUR\s*([\d,.]+)"/i);
+      if (!pm) continue;
+
+      const p = parseFloat(pm[1].replace(/\s/g, '').replace(',', '.'));
+      if (p > 0.5 && p < 100000) prices.push(p);
     }
   }
 
-  // --- Méthode 2 fallback : toutes les occurrences EUR dans la page ---
+  // --- Méthode 3 : prix dans le JSON structuré de la page ---
   if (prices.length === 0) {
-    const allPrices = Array.from(html.matchAll(/"POSITIVE"[^>]*>([\d\s,.']+)\s*EUR/g));
-    for (const m of allPrices) {
-      const priceNum = parseFloat(m[1].replace(/\s/g, '').replace(',', '.'));
-      if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+    const structPrices = Array.from(
+      html.matchAll(/"currentPrice"\s*:\s*\{[^}]*?"value"\s*:\s*([\d.]+)/g)
+    );
+    for (const m of structPrices) {
+      const p = parseFloat(m[1]);
+      if (p > 0.5 && p < 100000) prices.push(p);
     }
   }
 
-  // --- Méthode 3 fallback large : toutes valeurs EUR de la page ---
+  // --- Diagnostic si toujours rien ---
   if (prices.length === 0) {
-    const allEur = Array.from(html.matchAll(/([\d]{1,6}[,.][\d]{2})\s*EUR/g));
-    for (const m of allEur) {
-      const priceNum = parseFloat(m[1].replace(',', '.'));
-      if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+    // Cherche le contexte autour du premier montant EUR pour adapter le parser
+    const eurIdx = html.search(/\d[,.]\d{2}\s*EUR/);
+    if (eurIdx !== -1) {
+      console.log('[price-update] EUR sample (no match):', html.slice(Math.max(0, eurIdx - 100), eurIdx + 150));
+    } else {
+      console.log('[price-update] no EUR found at all');
     }
   }
 

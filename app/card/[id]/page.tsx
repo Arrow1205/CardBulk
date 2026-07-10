@@ -121,7 +121,12 @@ export default function CardDetailsPage() {
   const buildEbaySearchQuery = (currentCard: any) => {
     const annee      = formatYearForEbay(cleanData(currentCard.year), cleanData(currentCard.sport), cleanData(currentCard.brand));
     const brand      = cleanData(currentCard.brand);
-    const series     = cleanData(currentCard.series);
+    // Si la série commence déjà par le nom de la marque (ex: brand="Topps" series="Topps NOW"),
+    // on évite le doublon dans la requête eBay en retirant le brand de la série
+    const rawSeries  = cleanData(currentCard.series);
+    const series     = rawSeries.toUpperCase().startsWith(brand.toUpperCase() + ' ')
+      ? rawSeries.slice(brand.length + 1).trim()
+      : rawSeries;
     const prenom     = cleanData(currentCard.firstname);
     const nom        = cleanData(currentCard.lastname);
     const variation  = extractSubsetName(cleanData(currentCard.variation));

@@ -1163,9 +1163,13 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
          };
 
          const formattedYear = formatYearForEbay(formData.year, formData.sport, formData.brand);
+         const rawSeriesSave = formatStr(formData.series);
+         const brandStrSave  = formatStr(formData.brand);
+         const seriesForKwSave = rawSeriesSave.toUpperCase().startsWith(brandStrSave.toUpperCase() + ' ')
+           ? rawSeriesSave.slice(brandStrSave.length + 1).trim() : rawSeriesSave;
 
          const keywordsArray = [
-           formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
+           formatStr(formattedYear), brandStrSave, seriesForKwSave,
            formatStr(formData.firstname), formatStr(formData.lastname), 
            formData.is_auto ? 'Auto' : '', formData.is_patch ? 'Patch' : '', 
            formData.is_numbered && formData.num_high ? formatStr(formData.num_high) : ''
@@ -1239,9 +1243,13 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
     };
 
     const formattedYear = formatYearForEbay(formData.year, formData.sport, formData.brand);
+    const rawSeriesQs  = formatStr(formData.series);
+    const brandStrQs   = formatStr(formData.brand);
+    const seriesForKwQs = rawSeriesQs.toUpperCase().startsWith(brandStrQs.toUpperCase() + ' ')
+      ? rawSeriesQs.slice(brandStrQs.length + 1).trim() : rawSeriesQs;
 
     const keywordsArray = [
-      formatStr(formattedYear), formatStr(formData.brand), formatStr(formData.series), 
+      formatStr(formattedYear), brandStrQs, seriesForKwQs,
       formatStr(formData.firstname), formatStr(formData.lastname), 
       formData.is_auto ? 'Auto' : '', formData.is_patch ? 'Patch' : '', 
       formData.is_numbered && formData.num_high ? formatStr(formData.num_high) : ''
