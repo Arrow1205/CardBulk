@@ -40,31 +40,19 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
 
   const prices: number[] = [];
 
-  // --- Méthode 1 : JSON embarqué eBay (le plus fiable) ---
-  // eBay injecte les données de listing dans window.__PRELOADED_STATE__ ou des balises JSON-LD
-  const jsonPriceMatches = Array.from(
-    html.matchAll(/"soldPrice"\s*:\s*\{[^}]*?"value"\s*:\s*"([\d.]+)"/g)
-  );
-  for (const m of jsonPriceMatches) {
-    const p = parseFloat(m[1]);
-    if (p > 0.5 && p < 100000) prices.push(p);
-  }
-
-  // --- Méthode 2 : classe s-card__price (structure eBay.fr actuelle) ---
+  // --- Méthode principale : classe s-card__price (structure eBay.fr actuelle) ---
   // Structure réelle : <span class="su-styled-text positive bold large-1 s-card__price">21,00 EUR</span>
-  if (prices.length === 0) {
-    const cardBlocks = html.split('s-card__attribute-row');
+  const cardBlocks = html.split('s-card__attribute-row');
+  if (cardBlocks.length > 1) {
     for (const block of cardBlocks.slice(1)) {
-      // Titre dans le bloc parent (remonte un peu pour trouver le titre)
       const priceMatch = block.match(/s-card__price[^>]*>([\d\s]+[,.][\d]{2})\s*EUR/);
       if (!priceMatch) continue;
-
       const p = parseFloat(priceMatch[1].replace(/\s/g, '').replace(',', '.'));
       if (p > 0.5 && p < 100000) prices.push(p);
     }
   }
 
-  // --- Méthode 2b : fallback — toutes les occurrences s-card__price dans la page ---
+  // --- Fallback : toutes les occurrences s-card__price dans la page ---
   if (prices.length === 0) {
     const allCardPrices = Array.from(html.matchAll(/s-card__price[^>]*>([\d\s]+[,.][\d]{2})\s*EUR/g));
     for (const m of allCardPrices) {
@@ -73,7 +61,7 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
     }
   }
 
-  // --- Méthode 3 : prix dans le JSON structuré de la page ---
+  // --- Fallback JSON : currentPrice dans les données structurées ---
   if (prices.length === 0) {
     const structPrices = Array.from(
       html.matchAll(/"currentPrice"\s*:\s*\{[^}]*?"value"\s*:\s*([\d.]+)/g)
