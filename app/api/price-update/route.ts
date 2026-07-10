@@ -118,9 +118,12 @@ export async function POST(req: Request) {
     }
 
     const sorted = [...prices].sort((a, b) => a - b);
+    console.log('[price-update] sorted before trim:', sorted);
     if (sorted.length >= 4) { sorted.pop(); sorted.shift(); }
+    console.log('[price-update] after trim:', sorted);
 
     const average = Math.round((sorted.reduce((a, b) => a + b, 0) / sorted.length) * 100) / 100;
+    console.log('[price-update] average:', average);
 
     await supabase.from('card_prices').insert([{ card_id: cardId, price: average }]);
 
