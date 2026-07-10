@@ -50,25 +50,25 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
     if (p > 0.5 && p < 100000) prices.push(p);
   }
 
-  // --- Méthode 2 : balises <span> contenant le prix vendu ---
-  // eBay.fr peut utiliser BOLD, s-item__price, g-b, POSITIVE selon la version du template
+  // --- Méthode 2 : classe s-card__price (structure eBay.fr actuelle) ---
+  // Structure réelle : <span class="su-styled-text positive bold large-1 s-card__price">21,00 EUR</span>
   if (prices.length === 0) {
-    // Découpe par article (chaque résultat eBay est dans un bloc s-item)
-    const itemBlocks = html.split(/s-item[^_]|s-item__wrapper/);
-    for (const block of itemBlocks.slice(1)) {
-      const title = (block.match(/class="(?:s-item__title|ITEM-TITLE)[^"]*"[^>]*>([^<]{0,200})/)?.[1] || '').toUpperCase();
-      const isGradedOrLot =
-        title.includes('PSA') || title.includes('BGS') || title.includes('CGC') ||
-        title.includes('PCA') || title.includes('LOT ') || title.includes(' LOT');
-      if (isGradedOrLot) continue;
+    const cardBlocks = html.split('s-card__attribute-row');
+    for (const block of cardBlocks.slice(1)) {
+      // Titre dans le bloc parent (remonte un peu pour trouver le titre)
+      const priceMatch = block.match(/s-card__price[^>]*>([\d\s]+[,.][\d]{2})\s*EUR/);
+      if (!priceMatch) continue;
 
-      // Cherche le prix dans le bloc — plusieurs formats possibles
-      const pm =
-        block.match(/class="(?:s-item__price|BOLD|g-b|POSITIVE)[^"]*"[^>]*>\s*(?:<[^>]+>)?([\d\s]+[,.][\d]{2})\s*(?:EUR|€)/i) ||
-        block.match(/"displayPrice"\s*:\s*"EUR\s*([\d,.]+)"/i);
-      if (!pm) continue;
+      const p = parseFloat(priceMatch[1].replace(/\s/g, '').replace(',', '.'));
+      if (p > 0.5 && p < 100000) prices.push(p);
+    }
+  }
 
-      const p = parseFloat(pm[1].replace(/\s/g, '').replace(',', '.'));
+  // --- Méthode 2b : fallback — toutes les occurrences s-card__price dans la page ---
+  if (prices.length === 0) {
+    const allCardPrices = Array.from(html.matchAll(/s-card__price[^>]*>([\d\s]+[,.][\d]{2})\s*EUR/g));
+    for (const m of allCardPrices) {
+      const p = parseFloat(m[1].replace(/\s/g, '').replace(',', '.'));
       if (p > 0.5 && p < 100000) prices.push(p);
     }
   }
@@ -86,12 +86,24 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
 
   // --- Diagnostic si toujours rien ---
   if (prices.length === 0) {
-    // Cherche le contexte autour du premier montant EUR pour adapter le parser
-    const eurIdx = html.search(/\d[,.]\d{2}\s*EUR/);
-    if (eurIdx !== -1) {
-      console.log('[price-update] EUR sample (no match):', html.slice(Math.max(0, eurIdx - 100), eurIdx + 150));
+    // Cherche le premier bloc s-item pour voir la structure réelle
+    const sItemIdx = html.indexOf('s-item__price');
+    const sItemIdx2 = html.indexOf('s-item');
+    if (sItemIdx !== -1) {
+      console.log('[price-update] s-item__price found at:', sItemIdx, html.slice(sItemIdx, sItemIdx + 300));
+    } else if (sItemIdx2 !== -1) {
+      console.log('[price-update] s-item found (no __price):', html.slice(sItemIdx2, sItemIdx2 + 500));
     } else {
-      console.log('[price-update] no EUR found at all');
+      console.log('[price-update] no s-item at all. Searching JSON price...');
+      const jsonPriceIdx = html.search(/"(?:price|currentPrice|soldPrice|displayPrice)"\s*:/);
+      if (jsonPriceIdx !== -1) {
+        console.log('[price-update] JSON price sample:', html.slice(jsonPriceIdx, jsonPriceIdx + 300));
+      } else {
+        // Cherche le 5ème EUR pour passer les filtres sidebar
+        let count = 0; let pos = 0;
+        while (count < 5) { pos = html.indexOf('EUR', pos + 1); if (pos === -1) break; count++; }
+        if (pos !== -1) console.log('[price-update] 5th EUR context:', html.slice(Math.max(0, pos - 150), pos + 100));
+      }
     }
   }
 
