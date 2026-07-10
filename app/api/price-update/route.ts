@@ -20,6 +20,14 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
   const html = await res.text();
   console.log('[price-update] eBay scrape status:', res.status, '| html length:', html.length);
 
+  // Log un extrait autour du premier prix pour diagnostiquer la structure HTML
+  const priceIdx = html.indexOf('s-item__price');
+  if (priceIdx !== -1) {
+    console.log('[price-update] HTML around first price:', html.slice(priceIdx, priceIdx + 300));
+  } else {
+    console.log('[price-update] s-item__price NOT FOUND in HTML');
+  }
+
   // Extrait les prix depuis les blocs .s-item
   // Chaque vente a : <span class="s-item__price">X,XX EUR</span>
   // On utilise une regex pour parser rapidement sans DOM
