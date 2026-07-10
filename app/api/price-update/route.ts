@@ -20,6 +20,12 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
   const html = await res.text();
   console.log('[price-update] status:', res.status, '| length:', html.length);
 
+  // Page suspecte (trop petite) — probablement une erreur ScraperAPI ou CAPTCHA
+  if (html.length < 50000) {
+    console.log('[price-update] small page content:', html.slice(0, 600));
+    return [];
+  }
+
   // Détecte les pages sans résultats eBay
   const noResults =
     html.includes('0 résultat') ||
