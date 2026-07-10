@@ -52,7 +52,7 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
 
   // --- Méthode 2 fallback : toutes les occurrences EUR dans la page ---
   if (prices.length === 0) {
-    const allPrices = [...html.matchAll(/"POSITIVE"[^>]*>([\d\s,.']+)\s*EUR/g)];
+    const allPrices = Array.from(html.matchAll(/"POSITIVE"[^>]*>([\d\s,.']+)\s*EUR/g));
     for (const m of allPrices) {
       const priceNum = parseFloat(m[1].replace(/\s/g, '').replace(',', '.'));
       if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
@@ -61,7 +61,7 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
 
   // --- Méthode 3 fallback large : toutes valeurs EUR de la page ---
   if (prices.length === 0) {
-    const allEur = [...html.matchAll(/([\d]{1,6}[,.][\d]{2})\s*EUR/g)];
+    const allEur = Array.from(html.matchAll(/([\d]{1,6}[,.][\d]{2})\s*EUR/g));
     for (const m of allEur) {
       const priceNum = parseFloat(m[1].replace(',', '.'));
       if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
