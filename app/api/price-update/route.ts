@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-// Scrape les ventes réussies eBay.fr — même URL que le bouton "Ventes réussies"
+// Scrape les ventes réussies eBay.fr via ScraperAPI (contourne le blocage IP de Vercel)
 async function fetchSoldPrices(keywords: string): Promise<number[]> {
-  const encoded = encodeURIComponent(keywords);
-  const url = `https://www.ebay.fr/sch/i.html?_nkw=${encoded}&LH_Sold=1&LH_Complete=1&_ipg=20`;
+  const scraperApiKey = process.env.SCRAPER_API_KEY;
+  const ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=${encodeURIComponent(keywords)}&LH_Sold=1&LH_Complete=1&_ipg=20`;
 
-  const res = await fetch(url, {
+  const fetchUrl = scraperApiKey
+    ? `http://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(ebayUrl)}&country_code=fr`
+    : ebayUrl;
+
+  const res = await fetch(fetchUrl, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.8',
     },
   });
