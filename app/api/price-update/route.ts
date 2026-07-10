@@ -118,11 +118,16 @@ export async function POST(req: Request) {
     }
 
     const sorted = [...prices].sort((a, b) => a - b);
-    console.log('[price-update] sorted before trim:', sorted);
-    if (sorted.length >= 4) { sorted.pop(); sorted.shift(); }
-    console.log('[price-update] after trim:', sorted);
 
-    const average = Math.round((sorted.reduce((a, b) => a + b, 0) / sorted.length) * 100) / 100;
+    // Filtre IQR : supprime les valeurs aberrantes (faux résultats eBay comme 1010€, 1500€)
+    const q1 = sorted[Math.floor(sorted.length * 0.25)];
+    const q3 = sorted[Math.floor(sorted.length * 0.75)];
+    const iqr = q3 - q1;
+    const filtered = sorted.filter(p => p >= q1 - 1.5 * iqr && p <= q3 + 1.5 * iqr);
+
+    console.log('[price-update] filtered (IQR):', filtered);
+
+    const average = Math.round((filtered.reduce((a, b) => a + b, 0) / filtered.length) * 100) / 100;
     console.log('[price-update] average:', average);
 
     await supabase.from('card_prices').insert([{ card_id: cardId, price: average }]);
