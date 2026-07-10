@@ -18,46 +18,57 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
   });
 
   const html = await res.text();
-  console.log('[price-update] eBay scrape status:', res.status, '| html length:', html.length);
+  console.log('[price-update] status:', res.status, '| length:', html.length);
 
-  // Log un extrait autour du premier prix pour diagnostiquer la structure HTML
-  const priceIdx = html.indexOf('s-item__price');
-  if (priceIdx !== -1) {
-    console.log('[price-update] HTML around first price:', html.slice(priceIdx, priceIdx + 300));
+  // Diagnostic — log extrait HTML autour de la première occurrence de prix
+  const diagIdx = html.search(/s-item__price|POSITIVE|itemprop="price"/);
+  if (diagIdx !== -1) {
+    console.log('[price-update] price HTML sample:', html.slice(diagIdx, diagIdx + 400));
   } else {
-    console.log('[price-update] s-item__price NOT FOUND in HTML');
+    // Log les 500 premiers chars pour voir ce qu'on reçoit
+    console.log('[price-update] no price pattern found. HTML start:', html.slice(0, 500));
   }
 
-  // Extrait les prix depuis les blocs .s-item
-  // Chaque vente a : <span class="s-item__price">X,XX EUR</span>
-  // On utilise une regex pour parser rapidement sans DOM
   const prices: number[] = [];
 
-  // Repère les blocs article pour exclure les lots et gradées
+  // --- Méthode 1 : blocs s-item__info (structure eBay classique) ---
   const itemBlocks = html.split('s-item__info');
-  for (const block of itemBlocks.slice(1)) {
-    // Titre de l'annonce
-    const titleMatch = block.match(/class="s-item__title[^"]*"[^>]*>([^<]{0,200})</);
-    const title = (titleMatch?.[1] || '').toUpperCase();
+  if (itemBlocks.length > 1) {
+    for (const block of itemBlocks.slice(1)) {
+      const titleMatch = block.match(/class="s-item__title[^"]*"[^>]*>\s*<span[^>]*>([^<]{0,200})</);
+      const title = (titleMatch?.[1] || '').toUpperCase();
+      const isGradedOrLot =
+        title.includes('PSA') || title.includes('BGS') || title.includes('CGC') ||
+        title.includes('PCA') || title.includes('LOT ') || title.includes(' LOT');
+      if (isGradedOrLot) continue;
 
-    const isGradedOrLot =
-      title.includes('PSA') || title.includes('BGS') || title.includes('CGC') ||
-      title.includes('PCA') || title.includes('LOT ') || title.includes(' LOT');
-
-    if (isGradedOrLot) continue;
-
-    // Prix — format eBay.fr : "12,50 EUR" ou "12.50 EUR"
-    const priceMatch = block.match(/s-item__price[^>]*>[^<]*?([\d\s]+[,.][\d]+)\s*(?:EUR|€)/);
-    if (!priceMatch) continue;
-
-    const rawPrice = priceMatch[1].replace(/\s/g, '').replace(',', '.');
-    const priceNum = parseFloat(rawPrice);
-    if (priceNum > 0.5 && priceNum < 100000) {
-      prices.push(priceNum);
+      // Prix dans le bloc — eBay.fr format: "12,50 EUR" ou "12.50 EUR" ou "12 EUR"
+      const priceMatch = block.match(/s-item__price[^>]*>[\s\S]{0,50}?([\d\s]{1,8}[,.][\d]{2})\s*(?:EUR|€)/i);
+      if (!priceMatch) continue;
+      const priceNum = parseFloat(priceMatch[1].replace(/\s/g, '').replace(',', '.'));
+      if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
     }
   }
 
-  console.log('[price-update] parsed prices:', prices);
+  // --- Méthode 2 fallback : toutes les occurrences EUR dans la page ---
+  if (prices.length === 0) {
+    const allPrices = [...html.matchAll(/"POSITIVE"[^>]*>([\d\s,.']+)\s*EUR/g)];
+    for (const m of allPrices) {
+      const priceNum = parseFloat(m[1].replace(/\s/g, '').replace(',', '.'));
+      if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+    }
+  }
+
+  // --- Méthode 3 fallback large : toutes valeurs EUR de la page ---
+  if (prices.length === 0) {
+    const allEur = [...html.matchAll(/([\d]{1,6}[,.][\d]{2})\s*EUR/g)];
+    for (const m of allEur) {
+      const priceNum = parseFloat(m[1].replace(',', '.'));
+      if (priceNum > 0.5 && priceNum < 100000) prices.push(priceNum);
+    }
+  }
+
+  console.log('[price-update] parsed prices:', prices.slice(0, 20));
   return prices;
 }
 
@@ -69,22 +80,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Données manquantes' }, { status: 400 });
     }
 
-    // Actualise la date dès le début, même si aucun prix n'est trouvé
     await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', cardId);
 
     console.log('[price-update] keywords:', keywords);
 
-    let prices = await fetchSoldPrices(keywords);
+    const prices = await fetchSoldPrices(keywords);
 
     if (prices.length === 0) {
       return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
     }
 
-    prices.sort((a, b) => a - b);
-    if (prices.length >= 4) { prices.pop(); prices.shift(); }
+    const sorted = [...prices].sort((a, b) => a - b);
+    if (sorted.length >= 4) { sorted.pop(); sorted.shift(); }
 
-    const sum = prices.reduce((a, b) => a + b, 0);
-    const average = Math.round((sum / prices.length) * 100) / 100;
+    const average = Math.round((sorted.reduce((a, b) => a + b, 0) / sorted.length) * 100) / 100;
 
     await supabase.from('card_prices').insert([{ card_id: cardId, price: average }]);
 
