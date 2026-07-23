@@ -63,7 +63,9 @@ export async function POST(req: Request) {
 
     await supabase.from('cards').update({ updated_at: new Date().toISOString() }).eq('id', cardId);
 
+    console.log('[price-update] keywords:', keywords);
     const prices = await fetchSoldPrices(keywords);
+    console.log('[price-update] prices found:', prices.length, '| sample:', prices.slice(0, 5));
 
     if (prices.length === 0) {
       return NextResponse.json({ success: false, error: 'Aucune vente trouvée.' });
