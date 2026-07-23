@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import sharp from "sharp";
 import TYPE_CARTE from '@/data/type-carte.json';
 import SET_DATA from '@/data/sets.json';
+import COLLECTIONS_CATALOG from '@/data/collections/collections_catalog.json';
 
 export async function POST(req: Request) {
   try {
@@ -73,40 +74,52 @@ export async function POST(req: Request) {
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur.
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
     MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts...).
-    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION (SUBSET) — PRIORITÉ ABSOLUE AU DICTIONNAIRE.
+    MISSION 3 : DÉTECTION EXPERTE DE LA VARIATION (SUBSET) — PRIORITÉ ABSOLUE AU CATALOGUE OFFICIEL.
 
-    Dictionnaire 1 — Règles visuelles de variation par marque (TYPE_CARTE) :
-    ${JSON.stringify(aiVariationsRules)}
+    ═══════════════════════════════════════════
+    CATALOGUE OFFICIEL DES COLLECTIONS (PRIORITÉ 1 — SOURCE LA PLUS FIABLE ET LA PLUS À JOUR)
+    ═══════════════════════════════════════════
+    Ce catalogue recense toutes les collections connues avec leurs types de cartes exacts.
+    Chaque entrée contient : publisher (éditeur), serie, year (année), card_types (liste exhaustive des variations officielles).
+    ${JSON.stringify(COLLECTIONS_CATALOG)}
 
-    Dictionnaire 2 — Références visuelles et subsets officiels par série (SETS) :
+    ═══════════════════════════════════════════
+    DICTIONNAIRE 2 — Indices visuels par série (SETS) — utilisé si collection absente du catalogue
+    ═══════════════════════════════════════════
     ${JSON.stringify(setsReference)}
+
+    ═══════════════════════════════════════════
+    DICTIONNAIRE 3 — Règles visuelles génériques par marque (TYPE_CARTE) — dernier recours
+    ═══════════════════════════════════════════
+    ${JSON.stringify(aiVariationsRules)}
     ${fewShotSection}
     PROCESSUS OBLIGATOIRE POUR LE CHAMP "variation" — SUIS CES ÉTAPES DANS L'ORDRE :
 
-    ÉTAPE 1 — Identifie la marque (brand) et la série (series) visibles sur la carte.
+    ÉTAPE 1 — Identifie visuellement la marque (brand), la série (series) et l'année (year).
 
-    ÉTAPE 2 — Cherche IMMÉDIATEMENT cette combinaison marque+série dans le Dictionnaire 2.
-      Essaie toutes les variantes de casse (ex : "Panini", "PANINI", "panini" → c'est la même chose).
-      Cherche aussi par correspondance partielle si le nom exact n'est pas trouvé (ex : "Chrome UCL" → cherche "Chrome").
+    ÉTAPE 2 — Cherche dans le CATALOGUE OFFICIEL (Priorité 1) une entrée dont le publisher, la serie ET l'année correspondent.
+      Utilise une correspondance souple sur la casse et les accents.
+      Ex: "Futera" = "FUTERA", "Incredible" = "INCREDIBLE".
 
-    ÉTAPE 3 — SI la marque+série EST trouvée dans le Dictionnaire 2 :
-      → Examine la liste common_subsets disponible pour cette série.
-      → Analyse visuellement la carte (texte imprimé, design, badge, position dans le set, style graphique).
-      → Retourne EXACTEMENT l'une des valeurs de common_subsets — celle qui correspond le mieux visuellement.
-      → INTERDIT d'inventer une valeur absente de common_subsets dans ce cas.
+    ÉTAPE 3 — SI la collection EST trouvée dans le Catalogue Officiel :
+      → Examine la liste card_types de cette collection.
+      → Analyse visuellement la carte : texte imprimé, design, badge, logo de subset, style graphique, couleur, numérotation.
+      → Retourne EXACTEMENT l'une des valeurs de card_types — celle qui correspond le mieux.
+      → INTERDIT d'inventer une valeur absente de card_types.
 
-    ÉTAPE 4 — SI la marque+série N'EST PAS dans le Dictionnaire 2 :
-      → Utilise le Dictionnaire 1 (indices visuels par marque) pour déduire le subset.
-      → Utilise aussi tes connaissances générales sur les cartes sportives.
-      → Retourne librement le subset au format "CATÉGORIE / SECTION" en MAJUSCULES.
+    ÉTAPE 4 — SI la collection N'EST PAS dans le Catalogue Officiel :
+      → Cherche dans le Dictionnaire 2 (SETS) par marque+série.
+      → SI trouvé : retourne une valeur de common_subsets.
+      → SI non trouvé : utilise le Dictionnaire 3 (TYPE_CARTE) et tes connaissances générales.
+      → Retourne le subset au format "CATÉGORIE / SECTION" en MAJUSCULES.
 
     ÉTAPE 5 — CAS PARTICULIER PARALLÈLES (prioritaire sur les étapes 3 et 4) :
       → Si la carte porte une couleur distinctive (Gold, Silver, Red, Blue, Green, Black, etc.) avec ou sans numérotation visible, c'est un parallèle.
       → Retourne "PARALLEL / [Couleur] [/Numérotation si visible]" ex : "PARALLEL / Gold /10", "PARALLEL / Red /25".
-      → Cette règle s'applique MÊME si la marque+série est dans le Dictionnaire 2.
+      → Cette règle s'applique MÊME si la collection est dans le Catalogue Officiel.
 
     ÉTAPE 6 — RÈGLE DU DOUTE ABSOLU :
-      → Si aucun indice distinctif n'est visible ET que la série est absente du Dictionnaire 2, retourne "BASE".
+      → Si aucun indice distinctif n'est visible ET que la collection est absente du Catalogue, retourne "BASE".
 
     Renvoie UNIQUEMENT un JSON strict avec ces clés exactes :
     {
