@@ -763,26 +763,35 @@ export default function CollectionPage() {
       const norm = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
       const isOwned = (playerName: string): boolean => {
         const normPlayer = norm(playerName);
-        if (!normPlayer) return false;
+        if (normPlayer.length < 2) return false;
         return cards.some(card => {
           const cardFull = norm(`${card.firstname || ''} ${card.lastname || ''}`);
           const cardRev  = norm(`${card.lastname || ''} ${card.firstname || ''}`);
+          // Both sides must be non-empty to avoid empty-string false positives
+          if (cardFull.length < 2) return false;
           const nameMatch = cardFull === normPlayer || cardRev === normPlayer
-            || cardFull.includes(normPlayer) || normPlayer.includes(cardFull);
+            || (cardFull.length >= 4 && normPlayer.includes(cardFull))
+            || (normPlayer.length >= 4 && cardFull.includes(normPlayer));
           if (!nameMatch) return false;
 
           const colYear = String(clSelected.year || '');
           const cardYear = String(card.year || '');
+          // Year: exact match or one contains the other as a 4-digit substring
           const yearMatch = !colYear || cardYear === colYear
-            || cardYear.includes(colYear.slice(-2)) // "2026" matches "2025-26"
-            || colYear.includes(cardYear.slice(-2));
+            || (colYear.length === 4 && cardYear.includes(colYear))
+            || (cardYear.length === 4 && colYear.includes(cardYear));
 
-          const colPub  = norm(clSelected.publisher || '');
+          const colPub   = norm(clSelected.publisher || '');
           const colSerie = norm(clSelected.serie || '');
-          const brandMatch = !colPub || norm(card.brand || '').includes(colPub) || colPub.includes(norm(card.brand || ''));
-          const serieMatch = !colSerie || norm(card.series || '').includes(colSerie.slice(0, 6)) || colSerie.includes(norm(card.series || '').slice(0, 6));
+          const cardBrand = norm(card.brand || '');
+          const cardSerie = norm(card.series || '');
+          // Both brand and serie must match (not just one of the two)
+          const brandMatch = colPub.length > 0 && cardBrand.length > 0
+            && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
+          const serieMatch = colSerie.length > 0 && cardSerie.length > 0
+            && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
 
-          return yearMatch && (brandMatch || serieMatch);
+          return yearMatch && brandMatch && serieMatch;
         });
       };
 
