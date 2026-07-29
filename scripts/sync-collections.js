@@ -465,15 +465,19 @@ async function main() {
     let empty   = false;
     const MAX_PAGES = 30; // sécurité
 
+    const globalSeen = new Set();
     while (!empty && page <= MAX_PAGES) {
       const url = page === 1 ? BECKETT_LIST : `${BECKETT_LIST}page/${page}/`;
       console.log(`   Page ${page} : ${url}`);
       try {
         const html  = await fetchPage(url);
         const items = parseCategoryPage(html);
-        if (items.length === 0) { empty = true; break; }
-        allItems.push(...items);
-        console.log(`   → ${items.length} articles (total : ${allItems.length})`);
+        // Dédupliquer les slugs entre pages (featured articles répétés)
+        const newItems = items.filter(i => !globalSeen.has(i.slug));
+        if (newItems.length === 0) { empty = true; break; }
+        newItems.forEach(i => globalSeen.add(i.slug));
+        allItems.push(...newItems);
+        console.log(`   → ${newItems.length} nouveaux articles (total : ${allItems.length})`);
         page++;
         await sleep(1500);
       } catch (e) {
