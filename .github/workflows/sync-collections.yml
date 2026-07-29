@@ -49,7 +49,7 @@ jobs:
           if [ "$MODE" = "init" ]; then
             echo "📋 Mode init manuel"
             node scripts/sync-collections.js --init
-          elif [ "$SIZE" -lt 10 ]; then
+          elif [ "$SIZE" -lt 10 ] && [ "$MODE" != "all" ]; then
             echo "📋 Premier lancement — init des slugs Beckett"
             node scripts/sync-collections.js --init
           else

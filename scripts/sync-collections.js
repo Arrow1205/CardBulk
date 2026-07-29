@@ -491,7 +491,7 @@ async function main() {
 
   // ── 2. Filtrer ───────────────────────────────────────────────────────────
   const toProcess = allItems.filter(item => {
-    if (seenSet.has(item.slug)) return false;
+    if (!ALL_MODE && seenSet.has(item.slug)) return false;
     if (!isCollectionArticle(item.title)) return false;
     if (!ALL_MODE && !isRecentEnough(item.date, DAYS_LOOKBACK)) return false;
     return true;
