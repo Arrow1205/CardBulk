@@ -21,148 +21,6 @@ const SPORT_FOLDERS: Record<string, string> = {
   SOCCER: 'foot', BASKETBALL: 'NBA', BASEBALL: 'MLB', NFL: 'NFL', NHL: 'NHL',
 };
 
-// ── SofaScore client-side fetch (works from browser, blocked server-side) ──
-const SOFA_PROXY = 'https://scan-hobby.hdauvois.workers.dev';
-const SOFA_IMG = 'https://api.sofascore.app/api/v1';
-const CURRENT_YEAR = new Date().getFullYear();
-
-async function sofaGet(path: string) {
-  const r = await fetch(`${SOFA_PROXY}?path=${encodeURIComponent(path)}`);
-  if (!r.ok) throw new Error(`SofaScore ${r.status} ${path}`);
-  return r.json();
-}
-
-function sofaSeasonYear(yearStr: string): number {
-  const m = (yearStr || '').match(/(\d{2,4})/);
-  if (!m) return 0;
-  const y = parseInt(m[1]);
-  return y < 100 ? 2000 + y : y;
-}
-
-function sofaBestPlayer(players: any[], query: string) {
-  if (!players.length) return null;
-  const q = norm(query);
-  for (const p of players) {
-    if (norm(p.name || '') === q || norm(p.shortName || '') === q) return p;
-  }
-  for (const p of players) {
-    const n = norm(p.name || '');
-    if (n.length >= 3 && (q.includes(n) || n.includes(q))) return p;
-  }
-  return players[0];
-}
-
-async function fetchSofaScore(name: string) {
-  // 1. Search
-  let searchData = await sofaGet(`/search/all?q=${encodeURIComponent(name)}`);
-  let players = (searchData.results || []).filter((r: any) => r.type === 'player').map((r: any) => r.entity);
-  if (!players.length) {
-    const last = name.split(' ').pop() || name;
-    searchData = await sofaGet(`/search/all?q=${encodeURIComponent(last)}`);
-    players = (searchData.results || []).filter((r: any) => r.type === 'player').map((r: any) => r.entity);
-  }
-  if (!players.length) return { player: null, stats: [], trophies: [] };
-
-  const match = sofaBestPlayer(players, name);
-  const pid = match.id;
-
-  // 2. Player details + available seasons (parallel)
-  const [detailData, seasonsData] = await Promise.all([
-    sofaGet(`/player/${pid}`),
-    sofaGet(`/player/${pid}/statistics/seasons`).catch(() => ({ uniqueTournamentSeasons: [] })),
-  ]);
-
-  const pd = detailData.player || match;
-  const birth = pd.dateOfBirthTimestamp ? new Date(pd.dateOfBirthTimestamp * 1000) : null;
-  const age = birth ? Math.floor((Date.now() - birth.getTime()) / (365.25 * 24 * 3600 * 1000)) : null;
-
-  const player = {
-    id: pid,
-    firstname:       (pd.name || '').split(' ').slice(0, -1).join(' '),
-    lastname:        (pd.name || '').split(' ').slice(-1)[0] || pd.name || '',
-    name:            pd.name || match.name,
-    photo:           `${SOFA_IMG}/player/${pid}/image`,
-    nationality:     pd.country?.name || null,
-    age,
-    currentTeam:     pd.team?.name || null,
-    currentTeamLogo: pd.team?.id ? `${SOFA_IMG}/team/${pd.team.id}/image` : null,
-  };
-
-  // 3. Build tournament/season pairs — last 5 years only
-  const pairs: Array<{ utId: number; utName: string; utLogo: string; country: string; sId: number; sYear: string }> = [];
-  for (const tEntry of (seasonsData.uniqueTournamentSeasons || [])) {
-    const ut = tEntry.uniqueTournament;
-    for (const season of (tEntry.seasons || [])) {
-      if (sofaSeasonYear(season.year) < CURRENT_YEAR - 5) continue;
-      pairs.push({
-        utId: ut.id,
-        utName: ut.name,
-        utLogo: `${SOFA_IMG}/unique-tournament/${ut.id}/image`,
-        country: ut.category?.country?.name || ut.category?.name || '',
-        sId: season.id,
-        sYear: season.year,
-      });
-    }
-  }
-
-  // 4. Fetch all stats in parallel (chunks of 15)
-  const CHUNK = 15;
-  const statsRows: any[] = [];
-  for (let i = 0; i < pairs.length; i += CHUNK) {
-    const chunk = pairs.slice(i, i + CHUNK);
-    const results = await Promise.allSettled(
-      chunk.map(p =>
-        sofaGet(`/player/${pid}/unique-tournament/${p.utId}/season/${p.sId}/statistics/overall`)
-          .then(d => ({ pair: p, data: d }))
-      )
-    );
-    for (const r of results) {
-      if (r.status !== 'fulfilled') continue;
-      const { pair, data } = r.value;
-      const s = data.statistics;
-      if (!s) continue;
-      const apps = s.appearances ?? s.matchesStarted ?? 0;
-      if (apps === 0 && (s.goals ?? 0) === 0) continue;
-      statsRows.push({
-        season:      pair.sYear,
-        seasonSort:  sofaSeasonYear(pair.sYear),
-        seasonLabel: pair.sYear,
-        team:        s.team?.name || player.currentTeam || '',
-        teamLogo:    s.team?.id ? `${SOFA_IMG}/team/${s.team.id}/image` : player.currentTeamLogo || '',
-        league:      pair.utName,
-        leagueLogo:  pair.utLogo,
-        country:     pair.country,
-        appearances: apps,
-        minutes:     s.minutesPlayed ?? null,
-        rating:      s.rating ? parseFloat(s.rating).toFixed(1) : null,
-        goals:       s.goals ?? null,
-        assists:     s.assists ?? null,
-        yellowCards: s.yellowCards ?? null,
-        redCards:    s.redCards ?? null,
-        shots:       s.shots ?? null,
-        shotsOn:     s.shotsOnTarget ?? null,
-      });
-    }
-  }
-
-  statsRows.sort((a, b) => b.seasonSort - a.seasonSort);
-
-  // 5. Trophies
-  let trophies: any[] = [];
-  try {
-    const honorsData = await sofaGet(`/player/${pid}/honors`);
-    trophies = (honorsData.honors || []).flatMap((h: any) =>
-      (h.items || []).map((item: any) => ({
-        league:  h.competition?.name || h.name || '',
-        country: h.competition?.country?.name || '',
-        season:  item.season?.year || item.year || '',
-      }))
-    );
-  } catch {}
-
-  return { player, stats: statsRows, trophies };
-}
-
 function sumStats(rows: any[]) {
   return rows.reduce((acc, s) => ({
     appearances: (acc.appearances ?? 0) + (s.appearances ?? 0),
@@ -244,7 +102,8 @@ export default function JoueurPage() {
     setStatsLoading(true);
     setStatsFetched(true);
     try {
-      setStatsData(await fetchSofaScore(playerName));
+      const res = await fetch(`/api/player-stats?name=${encodeURIComponent(playerName)}`);
+      setStatsData(await res.json());
     } catch (e) {
       console.error('fetchStats error:', e);
     }
