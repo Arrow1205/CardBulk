@@ -531,7 +531,7 @@ export default function CollectionPage() {
       return 'BASE / INSERT';
     };
 
-    const allBrands = [...new Set(cards.map(c => c.brand).filter(Boolean))].sort();
+    const allBrands = Array.from(new Set(cards.map(c => c.brand).filter(Boolean))).sort();
     const availableSports = SPORT_ORDER.filter(s => cards.some(c => c.sport === s));
 
     const filtered = cards.filter(card => {
