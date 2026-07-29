@@ -121,6 +121,9 @@ export default function CollectionPage() {
   const [clDetailLoading, setClDetailLoading] = useState(false);
   const [xlsxUploading, setXlsxUploading] = useState(false);
   const xlsxInputRef = useRef<HTMLInputElement>(null);
+  const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
+  const [expandedSubsets, setExpandedSubsets] = useState<Set<string>>(new Set());
+  const [detailSearch, setDetailSearch] = useState('');
 
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -526,17 +529,29 @@ export default function CollectionPage() {
     setClView('detail');
     setClDetail(null);
     setClDetailLoading(true);
+    setDetailSearch('');
+    setExpandedSubsets(new Set());
+    // All cats open by default — will be set once data loads
+    setExpandedCats(new Set(['BASE', 'INSERT', 'PARALLEL', 'AUTOGRAPH', 'RELIC', 'MEMORABILIA', 'OR', 'SPECIAL']));
     try {
-      // Check localStorage for manually uploaded data
       const localKey = `checklist_override_${col.folder}`;
       const localData = typeof window !== 'undefined' ? localStorage.getItem(localKey) : null;
       if (localData) {
-        setClDetail(JSON.parse(localData));
+        const parsed = JSON.parse(localData);
+        setClDetail(parsed);
+        // Open all subset keys by default
+        const allKeys = new Set((parsed.subsets || []).map((s: any) => `${s.subset}-${s.section}`));
+        setExpandedSubsets(allKeys as Set<string>);
         setClDetailLoading(false);
         return;
       }
       const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}`);
-      if (res.ok) setClDetail(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setClDetail(data);
+        const allKeys = new Set((data.subsets || []).map((s: any) => `${s.subset}-${s.section}`));
+        setExpandedSubsets(allKeys as Set<string>);
+      }
     } catch {}
     setClDetailLoading(false);
   };
@@ -652,10 +667,39 @@ export default function CollectionPage() {
 
       const publisherSlug = (clSelected.publisher || '').toLowerCase().replace(/\s+/g, '-');
 
+      const searchTerm = detailSearch.toLowerCase().trim();
+
+      // Filter subsets by search
+      const filteredSubsets = searchTerm
+        ? subsets.map((s: any) => ({
+            ...s,
+            players: (s.players || []).filter((p: any) =>
+              p.name?.toLowerCase().includes(searchTerm) || p.club?.toLowerCase().includes(searchTerm)
+            ),
+          })).filter((s: any) => s.players.length > 0)
+        : subsets;
+
+      const filteredSubsetCats = Array.from(new Set(filteredSubsets.map((s: any) => s.subset)));
+
+      const toggleCat = (cat: string) => {
+        setExpandedCats(prev => {
+          const next = new Set(prev);
+          if (next.has(cat)) next.delete(cat); else next.add(cat);
+          return next;
+        });
+      };
+      const toggleSubset = (key: string) => {
+        setExpandedSubsets(prev => {
+          const next = new Set(prev);
+          if (next.has(key)) next.delete(key); else next.add(key);
+          return next;
+        });
+      };
+
       return (
         <div className="w-full animate-in fade-in duration-300 pb-[180px]">
           {/* Header */}
-          <div className="px-6 lg:px-[80px] flex items-center gap-4 mb-6">
+          <div className="px-6 lg:px-[80px] flex items-center gap-4 mb-4">
             <button onClick={() => { setClView('list'); setClSelected(null); setClDetail(null); }} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0">
               <ChevronLeft size={20} />
             </button>
@@ -695,9 +739,46 @@ export default function CollectionPage() {
             )}
           </div>
 
+          {/* Search bar */}
+          <div className="px-6 lg:px-[80px] mb-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Rechercher un joueur ou un club..."
+                value={detailSearch}
+                onChange={e => setDetailSearch(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-5 pr-10 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-all"
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                {detailSearch ? <button onClick={() => setDetailSearch('')} className="text-red-500"><X size={15} /></button> : <Search size={15} className="text-white/30" />}
+              </div>
+            </div>
+          </div>
+
+          {/* Category anchors */}
+          {filteredSubsetCats.length > 1 && (
+            <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
+                {filteredSubsetCats.map(cat => {
+                  const color = CAT_COLORS[cat as string] || '#ffffff';
+                  return (
+                    <button
+                      key={cat as string}
+                      onClick={() => document.getElementById(`cat-anchor-${cat}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                      className="px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:opacity-100 opacity-70"
+                      style={{ borderColor: color + '40', color, backgroundColor: color + '10' }}
+                    >
+                      {cat as string}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Fiche technique */}
-          {fiche && (
-            <div className="mx-6 lg:mx-[80px] mb-6 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1.5">
+          {fiche && !searchTerm && (
+            <div className="mx-6 lg:mx-[80px] mb-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1.5">
               {fiche.contenu_global && <p className="text-xs text-white/60 leading-relaxed">{fiche.contenu_global}</p>}
               {fiche.dotation_boite && <p className="text-xs text-white/40 leading-relaxed italic">{fiche.dotation_boite}</p>}
             </div>
@@ -707,7 +788,7 @@ export default function CollectionPage() {
             <div className="flex justify-center py-8"><Loader2 className="animate-spin text-[#AFFF25]" size={28} /></div>
           )}
 
-          {/* Subsets avec joueurs */}
+          {/* No checklist warning */}
           {!clDetail?.xlsx_parsed && !clDetailLoading && (
             <div className="mx-6 lg:mx-[80px] mb-4 px-4 py-3 rounded-xl bg-[#f59e0b]/10 border border-[#f59e0b]/20 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 min-w-0">
@@ -717,79 +798,103 @@ export default function CollectionPage() {
               <button onClick={() => xlsxInputRef.current?.click()} className="shrink-0 text-xs font-bold text-[#AFFF25] hover:underline whitespace-nowrap">+ Importer</button>
             </div>
           )}
-          {subsets.length > 0 ? (
-            <div className="px-6 lg:px-[80px] space-y-8">
-              {subsetCats.map(cat => {
-                const color = CAT_COLORS[cat] || '#ffffff';
-                const items = subsets.filter((s: any) => s.subset === cat);
+
+          {/* Search empty state */}
+          {searchTerm && filteredSubsets.length === 0 && (
+            <div className="text-center py-16 text-white/30 italic text-sm">Aucun joueur trouvé pour "{detailSearch}"</div>
+          )}
+
+          {filteredSubsets.length > 0 ? (
+            <div className="px-6 lg:px-[80px] space-y-4">
+              {filteredSubsetCats.map(cat => {
+                const color = CAT_COLORS[cat as string] || '#ffffff';
+                const items = filteredSubsets.filter((s: any) => s.subset === cat);
                 const totalPlayers = items.reduce((acc: number, s: any) => acc + (s.players?.length || 0), 0);
+                const isCatOpen = expandedCats.has(cat as string);
                 return (
-                  <div key={cat}>
-                    {/* Header catégorie */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
-                      <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat}</span>
+                  <div key={cat as string} id={`cat-anchor-${cat}`}>
+                    {/* Category accordion header */}
+                    <button
+                      onClick={() => toggleCat(cat as string)}
+                      className="w-full flex items-center gap-3 mb-3 group"
+                    >
+                      <div className="h-[2px] flex-1 rounded-full transition-opacity" style={{ backgroundColor: color + '30' }} />
+                      <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat as string}</span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>
                         {totalPlayers > 0 ? `${totalPlayers} joueurs` : `${items.length} sets`}
                       </span>
+                      <ChevronDown size={14} style={{ color }} className={`transition-transform ${isCatOpen ? '' : '-rotate-90'}`} />
                       <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
-                    </div>
+                    </button>
 
-                    <div className="space-y-4">
-                      {items.map((s: any, idx: number) => {
-                        const hasPlayers = s.players && s.players.length > 0;
-                        const hasContent = hasPlayers || (s.parallels && s.parallels.length > 0) || s.description;
-                        if (!hasContent) return null;
-                        return (
-                          <div key={idx} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
-                            {/* Header section */}
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]" style={{ backgroundColor: color + '08' }}>
-                              <span className="text-sm font-black text-white italic uppercase tracking-tight">{s.section}</span>
-                              <div className="flex items-center gap-2">
-                                {s.card_count && <span className="text-[10px] text-white/40">{s.card_count} cartes</span>}
-                                {hasPlayers && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{s.players.length}</span>}
-                              </div>
+                    {isCatOpen && (
+                      <div className="space-y-2">
+                        {items.map((s: any, idx: number) => {
+                          const hasPlayers = s.players && s.players.length > 0;
+                          const hasContent = hasPlayers || (s.parallels && s.parallels.length > 0) || s.description;
+                          if (!hasContent) return null;
+                          const subKey = `${cat}-${s.section || idx}`;
+                          const isSubOpen = expandedSubsets.has(subKey);
+                          return (
+                            <div key={idx} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
+                              {/* Subset accordion header */}
+                              <button
+                                onClick={() => toggleSubset(subKey)}
+                                className="w-full flex items-center justify-between px-4 py-3 border-b border-white/[0.05] transition-colors hover:bg-white/[0.02]"
+                                style={{ backgroundColor: color + '08' }}
+                              >
+                                <span className="text-sm font-black text-white italic uppercase tracking-tight text-left">{s.section}</span>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  {s.card_count && <span className="text-[10px] text-white/40">{s.card_count} cartes</span>}
+                                  {hasPlayers && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{s.players.length}</span>}
+                                  <ChevronDown size={13} className={`transition-transform text-white/30 ${isSubOpen ? '' : '-rotate-90'}`} />
+                                </div>
+                              </button>
+
+                              {isSubOpen && (
+                                <>
+                                  {/* Parallels */}
+                                  {s.parallels && s.parallels.length > 0 && (
+                                    <div className="px-4 py-2 flex flex-wrap gap-1.5 border-b border-white/[0.04]">
+                                      {s.parallels.map((p: string, pi: number) => (
+                                        <span key={pi} className="text-[9px] px-2 py-0.5 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">{p}</span>
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  {/* Players */}
+                                  {hasPlayers && (
+                                    <div className="divide-y divide-white/[0.04]">
+                                      {s.players.map((p: any, pi: number) => (
+                                        <div key={pi} className="flex items-center justify-between px-4 py-2.5 hover:bg-white/[0.03] transition-colors">
+                                          <div className="flex items-center gap-3">
+                                            <span className="text-[9px] text-white/20 font-mono w-5 shrink-0 text-right">{pi + 1}</span>
+                                            <span className="text-sm font-bold text-white">{p.name}</span>
+                                          </div>
+                                          <div className="flex items-center gap-2 shrink-0 ml-3">
+                                            <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
+                                            <img
+                                              src={`/asset/logo-club/foot/${slugify(p.club)}.svg`}
+                                              alt={p.club}
+                                              className="h-5 w-5 object-contain opacity-60"
+                                              onError={e => (e.currentTarget.style.display = 'none')}
+                                            />
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  {!hasPlayers && s.description && (
+                                    <p className="px-4 py-3 text-xs text-white/40 italic">{s.description}</p>
+                                  )}
+                                </>
+                              )}
                             </div>
-
-                            {/* Parallels */}
-                            {s.parallels && s.parallels.length > 0 && (
-                              <div className="px-4 py-2 flex flex-wrap gap-1.5 border-b border-white/[0.04]">
-                                {s.parallels.map((p: string, pi: number) => (
-                                  <span key={pi} className="text-[9px] px-2 py-0.5 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">{p}</span>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Players */}
-                            {hasPlayers && (
-                              <div className="divide-y divide-white/[0.04]">
-                                {s.players.map((p: any, pi: number) => (
-                                  <div key={pi} className="flex items-center justify-between px-4 py-2.5 hover:bg-white/[0.03] transition-colors">
-                                    <div className="flex items-center gap-3">
-                                      <span className="text-[9px] text-white/20 font-mono w-5 shrink-0 text-right">{pi + 1}</span>
-                                      <span className="text-sm font-bold text-white">{p.name}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 shrink-0 ml-3">
-                                      <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
-                                      <img
-                                        src={`/asset/logo-club/foot/${slugify(p.club)}.svg`}
-                                        alt={p.club}
-                                        className="h-5 w-5 object-contain opacity-60"
-                                        onError={e => (e.currentTarget.style.display = 'none')}
-                                      />
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-
-                            {!hasPlayers && s.description && (
-                              <p className="px-4 py-3 text-xs text-white/40 italic">{s.description}</p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -830,13 +935,17 @@ export default function CollectionPage() {
     }
 
     // ── Vue liste ───────────────────────────────────────────────────────────
-    const publishers = Array.from(new Set(catalog.map(c => c.publisher).filter(Boolean))).sort() as string[];
+    // Donruss is a Panini brand — merge under Panini in the filter
+    const PUB_ALIASES: Record<string, string> = { 'DONRUSS': 'PANINI' };
+    const normPub = (p: string) => PUB_ALIASES[(p || '').toUpperCase()] || p;
+
+    const publishers = Array.from(new Set(catalog.map(c => normPub(c.publisher)).filter(Boolean))).sort() as string[];
     const years = Array.from(new Set(catalog.map(c => c.year).filter(Boolean))).sort((a: any, b: any) => b - a) as number[];
 
     const filtered = (catalog as any[]).filter(col => {
       const term = checklistSearch.toLowerCase().trim();
       const searchMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
-      const pubMatch = !checklistBrand || col.publisher === checklistBrand;
+      const pubMatch = !checklistBrand || normPub(col.publisher) === checklistBrand;
       const yearMatch = !checklistType || String(col.year) === checklistType;
       return searchMatch && pubMatch && yearMatch;
     }).sort((a: any, b: any) => (b.year || 0) - (a.year || 0));
@@ -879,8 +988,8 @@ export default function CollectionPage() {
         <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
             <button onClick={() => setChecklistType(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistType ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>Toutes années</button>
-            {years.slice(0, 6).map(y => (
-              <button key={y} onClick={() => setChecklistType(checklistType === String(y) ? null : String(y))} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistType === String(y) ? 'bg-white/15 border-white/30 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>{y}</button>
+            {years.slice(0, 8).map(y => (
+              <button key={y} onClick={() => setChecklistType(checklistType === String(y) ? null : String(y))} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistType === String(y) ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/40'}`}>{y}</button>
             ))}
           </div>
         </div>
