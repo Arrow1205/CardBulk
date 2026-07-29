@@ -122,11 +122,13 @@ export default function JoueurPage() {
 
   const apiPlayer = statsData?.player;
   const firstCard = cards[0];
-  const displayFirstname = apiPlayer?.firstname || firstCard?.firstname || '';
-  const displayLastname  = apiPlayer?.lastname  || firstCard?.lastname  || playerName;
-  const playerPhoto      = apiPlayer?.photo || null;
+  const displayFirstname  = apiPlayer?.firstname || firstCard?.firstname || '';
+  const displayLastname   = apiPlayer?.lastname  || firstCard?.lastname  || playerName;
+  const playerPhoto       = apiPlayer?.photo || null;
   const playerNationality = apiPlayer?.nationality || null;
-  const playerAge        = apiPlayer?.age || null;
+  const playerAge         = apiPlayer?.age || null;
+  const currentTeam       = apiPlayer?.currentTeam || null;
+  const currentTeamLogo   = apiPlayer?.currentTeamLogo || null;
 
   const uniqueClubs = Array.from(new Set(cards.map(c => c.club_name).filter(Boolean))).sort() as string[];
   const filteredCards = selectedClub ? cards.filter(c => c.club_name === selectedClub) : cards;
@@ -135,10 +137,11 @@ export default function JoueurPage() {
   const allStats: any[] = statsData?.stats || [];
   const trophies: any[] = statsData?.trophies || [];
 
-  // Saison en cours = la plus récente dans les données
-  const sortedAllSeasons = Array.from(new Set(allStats.map(s => Number(s.season)))).sort((a, b) => b - a);
-  const currentSeason = sortedAllSeasons[0] ?? null;
-  const currentSeasonRows = allStats.filter(s => Number(s.season) === currentSeason);
+  // Saison en cours = la plus récente dans les données (tri sur seasonSort ou saison string)
+  const sortedAllSeasons = Array.from(new Set(allStats.map(s => s.seasonSort ?? Number(s.season)))).sort((a, b) => b - a);
+  const currentSeasonSort = sortedAllSeasons[0] ?? null;
+  const currentSeasonLabel = allStats.find(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort)?.season ?? null;
+  const currentSeasonRows = allStats.filter(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort);
 
   // Compétitions internationales (sélection)
   const INTL_KEYWORDS = ['world cup', 'euro', 'nations league', 'copa america', 'afcon', 'gold cup', 'friendlies', 'olympic', 'u21', 'u23'];
@@ -192,9 +195,19 @@ export default function JoueurPage() {
             }
           </div>
           <div className="min-w-0">
-            {playerNationality && (
-              <div className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1">
-                {playerNationality}{playerAge ? ` · ${playerAge} ans` : ''}
+            {(playerNationality || currentTeam) && (
+              <div className="flex items-center gap-2 mb-1">
+                {playerNationality && (
+                  <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
+                    {playerNationality}{playerAge ? ` · ${playerAge} ans` : ''}
+                  </span>
+                )}
+                {currentTeam && (
+                  <span className="flex items-center gap-1 text-[10px] text-white/30 uppercase tracking-widest">
+                    {currentTeamLogo && <img src={currentTeamLogo} alt={currentTeam} className="h-3.5 w-3.5 object-contain" onError={e => e.currentTarget.style.display='none'} />}
+                    {currentTeam}
+                  </span>
+                )}
               </div>
             )}
             <div className="text-sm text-white/50 uppercase tracking-widest">{displayFirstname}</div>
@@ -296,7 +309,7 @@ export default function JoueurPage() {
                 <div className="mb-7">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Saison en cours</span>
-                    <span className="text-[10px] text-white/30">{currentSeason}/{String(Number(currentSeason) + 1).slice(-2)}</span>
+                    <span className="text-[10px] text-white/30">{currentSeasonLabel}</span>
                   </div>
                   <div className="rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden divide-y divide-white/[0.05]">
                     {currentSeasonRows.map((s: any, i: number) => (
