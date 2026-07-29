@@ -1,11 +1,18 @@
 #!/usr/bin/env node
 /**
  * sync-collections.js
- * Scrape collectosk.com/soccer-cards-and-stickers/ chaque semaine,
- * détecte les nouvelles collections et les ajoute aux fichiers JSON.
+ * Source : beckett.com/news/category/beckett-soccer/
  *
- * Utilisation : node scripts/sync-collections.js
- * Variables d'env : GEMINI_API_KEY, SCRAPER_API_KEY (optionnel)
+ * Chaque semaine (vendredi 9h UTC via GitHub Actions) :
+ *   1. Lit la page catégorie Beckett → récupère les articles < 8 jours
+ *   2. Filtre les articles "collection" (titre commençant par une année)
+ *   3. Fetche chaque article → parse les tabs HTML (Base/Inserts/Autos/Memorabilia)
+ *   4. Appelle Gemini une seule fois par article pour extraire publisher/serie/year/folder_id
+ *   5. Met à jour index.json, collections_catalog.json, sets.json et crée collection.json
+ *
+ * Usage : node scripts/sync-collections.js [--init] [--all]
+ *   --init  : marquer tous les articles actuels comme vus (1re utilisation)
+ *   --all   : traiter sans limite de date (re-traitement complet)
  */
 
 const fs   = require('fs');
@@ -20,397 +27,573 @@ const SETS_PATH    = path.join(ROOT, 'data', 'sets.json');
 const TRACKED_PATH = path.join(COL_DIR, '_tracked_slugs.json');
 
 // ─── Config ──────────────────────────────────────────────────────────────────
-const LIST_URL    = 'https://www.collectosk.com/soccer-cards-and-stickers/';
-const BASE_URL    = 'https://www.collectosk.com';
-const GEMINI_KEY  = process.env.GEMINI_API_KEY;
-const SCRAPER_KEY = process.env.SCRAPER_API_KEY;
-
-// Rate-limit : pause entre chaque collection (ms)
-const DELAY_MS = 2500;
+const BECKETT_LIST  = 'https://www.beckett.com/news/category/beckett-soccer/';
+const BECKETT_BASE  = 'https://www.beckett.com';
+const GEMINI_KEY    = process.env.GEMINI_API_KEY;
+const SCRAPER_KEY   = process.env.SCRAPER_API_KEY;
+const DAYS_LOOKBACK = 8;  // articles des X derniers jours
+const DELAY_MS      = 3000;
 
 // ─── Utils ───────────────────────────────────────────────────────────────────
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+const sleep   = ms => new Promise(r => setTimeout(r, ms));
+const loadJson = p  => JSON.parse(fs.readFileSync(p, 'utf8'));
+const saveJson = (p, d) => fs.writeFileSync(p, JSON.stringify(d, null, 2) + '\n', 'utf8');
 
-function loadJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-}
-
-function saveJson(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf8');
-}
-
-// ─── HTTP fetch (direct + ScraperAPI fallback) ────────────────────────────────
-async function fetchPage(url) {
-  const candidates = [];
-
-  // On essaie d'abord directement
-  candidates.push(url);
-
-  // Puis via ScraperAPI si disponible
+// ─── HTTP fetch (direct puis ScraperAPI) ─────────────────────────────────────
+async function fetchPage(url, { retry = true } = {}) {
+  const candidates = [url];
   if (SCRAPER_KEY) {
-    candidates.push(
-      `http://api.scraperapi.com?api_key=${SCRAPER_KEY}&url=${encodeURIComponent(url)}`
-    );
+    candidates.push(`http://api.scraperapi.com?api_key=${SCRAPER_KEY}&url=${encodeURIComponent(url)}`);
   }
 
-  let lastErr;
   for (const u of candidates) {
     try {
       const res = await fetch(u, {
         headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9',
-          Accept: 'text/html,application/xhtml+xml',
+          'Referer': 'https://www.beckett.com/',
         },
         signal: AbortSignal.timeout(25000),
       });
       if (res.ok) {
         const text = await res.text();
-        if (text.length > 3000) return text; // page valide
+        if (text.length > 3000) return text;
       }
     } catch (e) {
-      lastErr = e;
+      // essaie le suivant
     }
   }
-  throw new Error(`Impossible de récupérer ${url} : ${lastErr?.message}`);
+  throw new Error(`Impossible de récupérer : ${url}`);
 }
 
-// ─── Parse la page liste de collectosk ───────────────────────────────────────
-function parseListPage(html) {
+// ─── Parse la page catégorie Beckett ─────────────────────────────────────────
+// Retourne : [{ slug, url, title, date }]
+function parseCategoryPage(html) {
   const results = [];
   const seen    = new Set();
 
-  // Collectosk : URLs du type /2025-26-topps-chrome-premier-league-soccer-cards/
-  // Elles commencent par un pattern d'année (4 chiffres ou "dddd-dd")
-  const re = /href="(\/(20\d\d[^"]*?(?:soccer|football|baseball|basketball|hockey|tennis|nfl|rugby)[^"]*?-cards?)[^"]*)"/gi;
-  let m;
-  while ((m = re.exec(html)) !== null) {
-    const href = m[1];
-    const slug = href.replace(/^\/|\/$/g, '').split('/')[0]; // premier segment
-    if (slug.length > 10 && !seen.has(slug) && !slug.includes('?') && !slug.includes('#')) {
-      seen.add(slug);
-      results.push({ slug, url: `${BASE_URL}/${slug}/` });
+  // Chaque article : <h4 class="title ..."><a href="...">{title}</a></h4>
+  // Date : "By Author - July 27, 2026"  ou  div.day + div.month
+  const itemRe = /<h4[^>]*class="[^"]*title[^"]*"[^>]*>\s*<a\s+href="([^"]+)"[^>]*>([^<]+)<\/a>/gi;
+  // Date depuis post-author : "- Month DD, YYYY"
+  const dateRe = /-\s+([A-Za-z]+ \d{1,2},\s*\d{4})/;
+
+  // On cherche par bloc d'article
+  const blocks = html.split('<div class="post-wrapper-inner">');
+
+  for (const block of blocks.slice(1)) {
+    const linkMatch = /<a\s+href="(https:\/\/www\.beckett\.com\/news\/([^"/]+)\/)"[^>]*>([^<]{5,120})<\/a>/.exec(block);
+    if (!linkMatch) continue;
+
+    const url   = linkMatch[1];
+    const slug  = linkMatch[2];
+    const title = linkMatch[3].trim();
+
+    if (seen.has(slug)) continue;
+    seen.add(slug);
+
+    // Date
+    const dateBlock = block.slice(0, 600);
+    const dayM   = /<div class="day">(\w+ \d+)<\/div>/.exec(dateBlock);
+    const monthM = /<div class="month">(\d{4})<\/div>/.exec(dateBlock);
+    const altM   = dateRe.exec(dateBlock);
+
+    let date = null;
+    if (dayM && monthM) {
+      date = new Date(`${dayM[1]}, ${monthM[1]}`);
+    } else if (altM) {
+      date = new Date(altM[1]);
     }
+
+    results.push({ slug, url, title, date });
   }
 
   return results;
 }
 
-// ─── Appel Gemini pour analyser une page collection ──────────────────────────
-async function parseWithGemini(html, pageUrl) {
+// ─── Filtre les articles "collection" récents ─────────────────────────────────
+function isCollectionArticle(title) {
+  // Doit commencer par une année ex. "2025-26 Topps..." ou "2026 Panini..."
+  return /^20\d{2}(-\d{2})?\s+\w/.test(title.trim());
+}
+
+function isRecentEnough(date, daysBack) {
+  if (!date || isNaN(date.getTime())) return true; // date inconnue → inclure par sécurité
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - daysBack);
+  return date >= cutoff;
+}
+
+// ─── Parse le HTML d'un article Beckett → card_types ─────────────────────────
+// Structure Beckett : tabs advgb avec boutons Base / Autographs / Inserts / Memorabilia
+// Le contenu de chaque tab est dans une div avec class "advgb-tab-{uid}-{index} advgb-tab-body"
+// Les sections à l'intérieur sont en <strong> gras (titres) puis listes de joueurs
+function parseChecklistHtml(html) {
+  const cardTypes = [];
+
+  // ─ 1. Extraire les noms de tabs dans l'ordre
+  const tabButtonRe = /<button[^>]+class="advgb-tab-button"[^>]*>[\s\S]*?<strong>(.*?)<\/strong>/gi;
+  const tabNames    = [];
+  let m;
+  while ((m = tabButtonRe.exec(html)) !== null) {
+    tabNames.push(m[1].trim().toUpperCase());
+  }
+
+  if (tabNames.length === 0) {
+    // Pas de tabs → essayer de parser sections <strong> directement
+    return parseSimpleChecklist(html);
+  }
+
+  // ─ 2. Extraire les corps de tabs dans l'ordre
+  // Chaque tab body : class="advgb-tab-{uid}-{idx} advgb-tab-body"
+  const tabBodyRe = /class="[^"]*advgb-tab-body[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?=<div[^>]*advgb-tab-body|<\/div>)/gi;
+  const tabBodies = [];
+  while ((m = tabBodyRe.exec(html)) !== null) {
+    tabBodies.push(m[1]);
+  }
+
+  // ─ 3. Pour chaque tab, extraire les noms de sections
+  const tabMap = {
+    'BASE':        'BASE',
+    'AUTOGRAPHS':  'AUTOGRAPH',
+    'AUTOGRAPH':   'AUTOGRAPH',
+    'MEMORABILIA': 'RELIC',
+    'RELICS':      'RELIC',
+    'RELIC':       'RELIC',
+    'INSERTS':     'INSERT',
+    'INSERT':      'INSERT',
+  };
+
+  tabNames.forEach((tabName, idx) => {
+    const category = tabMap[tabName];
+    if (!category || !tabBodies[idx]) return;
+
+    const body = tabBodies[idx];
+
+    // Sections = textes en <strong> qui ne ressemblent pas à un nom de joueur
+    // (longueur 3-60 chars, pas de virgule au milieu, pas de numéro de carte type "BS-1")
+    const strongRe = /<strong>(.*?)<\/strong>/gi;
+    const sections = [];
+
+    while ((m = strongRe.exec(body)) !== null) {
+      const txt = m[1].replace(/<[^>]+>/g, '').trim();
+      // Filtrer : nom de section plausible
+      if (
+        txt.length >= 3 &&
+        txt.length <= 80 &&
+        !/^\d+$/.test(txt) &&               // pas uniquement un chiffre
+        !/^[A-Z]{2}-\d/.test(txt) &&         // pas un code de carte comme "BS-1"
+        !txt.includes('Checklist') &&         // pas "Base Set Checklist"
+        !txt.includes('checklist') &&
+        !txt.includes('download') &&
+        !txt.includes('Download')
+      ) {
+        sections.push(txt.toUpperCase().replace(/\s+/g, ' '));
+      }
+    }
+
+    // Si aucune section strong trouvée, le tab lui-même est une carte de base
+    if (sections.length === 0) {
+      cardTypes.push(category);
+    } else {
+      for (const sec of sections) {
+        // Éviter les duplications
+        const ct = sec === category ? category : `${category} / ${sec}`;
+        if (!cardTypes.includes(ct)) cardTypes.push(ct);
+      }
+    }
+
+    // Ajouter aussi BASE si le tab est BASE et qu'on a des sections
+    if (category === 'BASE' && sections.length > 0 && !cardTypes.includes('BASE')) {
+      cardTypes.unshift('BASE');
+    }
+  });
+
+  // ─ 4. Détecter les parallèles depuis le HTML (patterns courants)
+  extractParallels(html, cardTypes);
+
+  return cardTypes;
+}
+
+// ─── Parser de secours si pas de tabs advgb ───────────────────────────────────
+function parseSimpleChecklist(html) {
+  const cardTypes = [];
+  const CAT_KEYWORDS = {
+    'BASE': /\bbase\s+set\b|\bbase\s+cards?\b/i,
+    'INSERT': /\binserts?\b|\bshort\s+prints?\b|\bsp\b/i,
+    'AUTOGRAPH': /\bautographs?\b|\bautos?\b/i,
+    'RELIC': /\brelics?\b|\bmemorabilia\b|\bpatch\b/i,
+  };
+
+  for (const [cat, re] of Object.entries(CAT_KEYWORDS)) {
+    if (re.test(html)) cardTypes.push(cat);
+  }
+
+  return cardTypes.length > 0 ? cardTypes : ['BASE'];
+}
+
+// ─── Extrait les parallèles typiques depuis le HTML ───────────────────────────
+function extractParallels(html, cardTypes) {
+  // Parallèles courants dans le texte Beckett (numérotations, couleurs)
+  const parallelRe = /(?:Parallel|parallel|PARALLEL)[^\n<]{0,200}/g;
+  const numberRe   = /\/(\d{1,4})\b/g;
+  const colorRe    = /\b(Gold|Silver|Red|Blue|Green|Orange|Purple|Black|White|Aqua|Pink|Bronze|Platinum|Rainbow|Holo|Refractor|Chrome|Prizm|Superfractor)\b/gi;
+
+  const parallelMatches = html.match(parallelRe) || [];
+  const colors = new Set();
+  const numbers = new Set();
+
+  for (const block of parallelMatches) {
+    let cm;
+    while ((cm = colorRe.exec(block)) !== null) colors.add(cm[1].toUpperCase());
+    while ((cm = numberRe.exec(block)) !== null) numbers.add(cm[1]);
+  }
+
+  // Chercher aussi les numérotations dans tout le texte
+  const allNumbered = html.match(/\/(\d{1,4})\b/g) || [];
+  const uniqueNums = [...new Set(allNumbered.map(n => n.replace('/', '')))].filter(n => parseInt(n) <= 500);
+
+  if (colors.size > 0 || uniqueNums.length > 0) {
+    // Ajouter quelques parallèles représentatifs s'ils ne sont pas déjà là
+    for (const color of [...colors].slice(0, 6)) {
+      const ct = `PARALLEL / ${color}`;
+      if (!cardTypes.includes(ct)) cardTypes.push(ct);
+    }
+    for (const num of uniqueNums.slice(0, 5)) {
+      const ct = `PARALLEL / /${num}`;
+      if (!cardTypes.includes(ct)) cardTypes.push(ct);
+    }
+  }
+}
+
+// ─── Extraire le lien XLSX depuis la page ────────────────────────────────────
+function extractXlsxUrl(html) {
+  const m = /href="(https:\/\/img\.beckett\.com\/[^"]+\.xlsx)"/.exec(html);
+  return m ? m[1] : null;
+}
+
+// ─── Appel Gemini pour parser le titre de l'article → métadonnées ─────────────
+// Plus simple et moins coûteux que parser tout le HTML
+async function parseTitleWithGemini(title, pageUrl) {
   if (!GEMINI_KEY) throw new Error('GEMINI_API_KEY manquant');
 
-  // On tronque à 50 Ko pour ne pas dépasser les limites Gemini
-  const htmlSample = html.slice(0, 50000);
+  const prompt = `Tu es un expert en cartes de sport (trading cards).
 
-  const prompt = `Tu es un expert en cartes de sport (trading cards). Analyse cette page HTML de collectosk.com et extrais les informations de la collection.
+Extrait les métadonnées de ce titre d'article Beckett :
+"${title}"
+URL : ${pageUrl}
 
-URL analysée : ${pageUrl}
+Règles :
+- "publisher"       : éditeur EN MAJUSCULES (TOPPS, PANINI, FUTERA, UPPER DECK, LEAF, SP, DONRUSS...)
+- "serie"           : nom court de la série EN MAJUSCULES, sans le publisher ni la ligue
+                      Ex : "CHROME", "FINEST", "FLAGSHIP", "PRIZM", "SELECT", "OBSIDIAN", "WINNERS COLLECTION"
+- "full_serie_name" : avec ligue/compétition si présent en MAJUSCULES
+                      Ex : "CHROME / PREMIER LEAGUE", "FINEST / UEFA CLUB COMPETITIONS"
+- "year"            : entier — "2025-26" → 2026, "2026-27" → 2027, "2026" → 2026
+- "sport"           : "SOCCER", "BASKETBALL", "BASEBALL", "NHL", "NFL", "TENNIS"
+- "folder_id"       : kebab-case unique, format {publisher}-{serie}-{ligue?}-{year}-{sport}-cards
+                      Ex : "topps-premier-league-2027-soccer-cards"
+                           "panini-obsidian-2026-soccer-cards"
+- "visual_hints"    : description visuelle courte (2 phrases) pour reconnaître les cartes
 
-RÈGLES D'EXTRACTION :
-- "publisher"       : éditeur en MAJUSCULES (ex: "TOPPS", "PANINI", "FUTERA", "UPPER DECK")
-- "serie"           : nom court de la série EN MAJUSCULES, sans répéter le publisher ni la ligue
-                      (ex: "CHROME", "FINEST", "SIMPLICIDAD", "FLAGSHIP", "DECO", "BOWMAN")
-- "full_serie_name" : nom complet incluant compétition/ligue si présent, en MAJUSCULES
-                      (ex: "CHROME / UEFA CHAMPIONS LEAGUE / UEFA EUROPA LEAGUE",
-                           "FINEST / PREMIER LEAGUE",
-                           "FLAGSHIP / PREMIER LEAGUE")
-- "year"            : année de sortie (entier). Pour "2025-26" → 2026. Pour "2026-27" → 2027.
-- "sport"           : "SOCCER" pour football, "BASKETBALL", "BASEBALL", "NHL", "NFL", "TENNIS"
-- "folder_id"       : slug kebab-case unique pour le dossier local
-                      Format : {publisher}-{serie}-{ligue?}-{year}-{sport}-cards
-                      Ex: "topps-chrome-premier-league-2026-soccer-cards"
-                          "topps-simplicidad-uefa-club-competitions-2026-soccer-cards"
-- "visual_hints"    : courte description visuelle des cartes pour reconnaître la collection (2-3 phrases max)
-- "card_types"      : liste COMPLÈTE de TOUS les types de cartes de la page
-                      Format obligatoire : "CATÉGORIE / NOM EXACT" en MAJUSCULES
-                      Catégories : BASE, PARALLEL, INSERT, AUTOGRAPH, AUTOGRAPH PARALLEL,
-                                   RELIC, RELIC AUTOGRAPH, MEMORABILIA
-                      Exemples :
-                        "BASE"
-                        "PARALLEL / BLUE /99"
-                        "PARALLEL / GOLD 1/1"
-                        "INSERT / CHROME CLASSICS"
-                        "AUTOGRAPH / BASE"
-                        "AUTOGRAPH / DUAL"
-                        "RELIC / JERSEY"
-                        "RELIC AUTOGRAPH / PATCH AUTO /25"
-                      ⚠ Inclure TOUS les éléments des sections "Base Set", "Inserts",
-                        "Autographs", "Relics", "Parallels" trouvés sur la page.
-
-HTML À ANALYSER :
-${htmlSample}
-
-Réponds UNIQUEMENT avec un JSON valide, sans markdown :
+Réponds UNIQUEMENT avec un JSON valide :
 {
   "publisher": "TOPPS",
-  "serie": "CHROME",
-  "full_serie_name": "CHROME / PREMIER LEAGUE",
-  "year": 2026,
+  "serie": "PREMIER LEAGUE",
+  "full_serie_name": "PREMIER LEAGUE",
+  "year": 2027,
   "sport": "SOCCER",
-  "folder_id": "topps-chrome-premier-league-2026-soccer-cards",
-  "visual_hints": "Finition chromée brillante, refractors arc-en-ciel, logo Premier League...",
-  "card_types": ["BASE", "PARALLEL / BLUE /99", "INSERT / CHROME CLASSICS"]
+  "folder_id": "topps-premier-league-2027-soccer-cards",
+  "visual_hints": "Design classique Topps, logo Premier League..."
 }`;
 
-  const apiRes = await fetch(
+  const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.1 },
+        generationConfig: { temperature: 0 },
       }),
-      signal: AbortSignal.timeout(40000),
+      signal: AbortSignal.timeout(30000),
     }
   );
 
-  const apiData = await apiRes.json();
-  if (apiData.error) throw new Error(`Gemini: ${apiData.error.message}`);
+  const data = await res.json();
+  if (data.error) throw new Error(`Gemini: ${data.error.message}`);
 
-  const raw = apiData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   const jsonStr = raw.replace(/```json/g, '').replace(/```/g, '').trim();
   const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Gemini n\'a pas retourné de JSON valide');
+  if (!jsonMatch) throw new Error('Réponse Gemini invalide');
 
   return JSON.parse(jsonMatch[0]);
 }
 
-// ─── Vérifie si le folder_id existe déjà ─────────────────────────────────────
-function alreadyExists(folderId, index, catalog) {
-  return (
-    index.collections.some(c => c.id === folderId) ||
-    catalog.some(c => c.folder === folderId)
-  );
-}
-
 // ─── Ajoute la collection dans les 4 fichiers JSON ───────────────────────────
-function addToAllFiles(parsed, collectoskSlug, collectoskUrl, index, catalog, sets) {
-  const { folder_id, publisher, serie, full_serie_name, year, sport, visual_hints, card_types } = parsed;
+function addToAllFiles(meta, cardTypes, beckettUrl, index, catalog, sets) {
+  const { folder_id, publisher, serie, full_serie_name, year, sport, visual_hints } = meta;
 
-  // 1. Créer le dossier + collection.json
+  // 1. Dossier + collection.json
   const folderPath = path.join(COL_DIR, folder_id);
   if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
 
-  const subsets = card_types.map(ct => {
-    const sep   = ct.indexOf(' / ');
-    const cat   = sep >= 0 ? ct.slice(0, sep) : ct;
-    const sec   = sep >= 0 ? ct.slice(sep + 3) : null;
-    return { subset: cat, section: sec, description: null };
+  const subsets = cardTypes.map(ct => {
+    const sep = ct.indexOf(' / ');
+    return {
+      subset:      sep >= 0 ? ct.slice(0, sep) : ct,
+      section:     sep >= 0 ? ct.slice(sep + 3) : null,
+      description: null,
+    };
   });
 
-  const collectionJson = {
+  saveJson(path.join(folderPath, 'collection.json'), {
     collection_id: folder_id,
-    source_url:    collectoskUrl,
-    fiche: {
-      annee:    String(year),
-      editeur:  publisher,
-      serie:    full_serie_name || serie,
-      sport,
-    },
+    source_url:    beckettUrl,
+    fiche: { annee: String(year), editeur: publisher, serie: full_serie_name || serie, sport },
     subsets,
-  };
-  saveJson(path.join(folderPath, 'collection.json'), collectionJson);
+  });
 
-  // 2. Ajouter à index.json
+  // 2. index.json
   if (!index.collections.find(c => c.id === folder_id)) {
     index.collections.push({
-      id:            folder_id,
-      editeur:       publisher,
-      serie:         full_serie_name || serie,
-      annee:         String(year),
-      total_cartes:  0,
-      total_images:  0,
-      path:          `${folder_id}/collection.json`,
-      collectosk_url: collectoskUrl,
+      id:           folder_id,
+      editeur:      publisher,
+      serie:        full_serie_name || serie,
+      annee:        String(year),
+      total_cartes: 0,
+      total_images: 0,
+      path:         `${folder_id}/collection.json`,
+      beckett_url:  beckettUrl,
     });
   }
 
-  // 3. Ajouter à collections_catalog.json
+  // 3. collections_catalog.json
   if (!catalog.find(c => c.folder === folder_id)) {
     catalog.push({
-      folder:         folder_id,
+      folder:       folder_id,
       year,
       publisher,
       serie,
-      card_types,
-      collectosk_url: collectoskUrl,
+      card_types:   cardTypes,
+      beckett_url:  beckettUrl,
     });
   }
 
-  // 4. Ajouter à sets.json si la série est nouvelle pour ce publisher + sport
-  const sportKey = {
-    SOCCER:     'football_soccer',
-    BASKETBALL: 'basketball',
-    BASEBALL:   'baseball',
-    NFL:        'nfl',
-    NHL:        'nhl',
-    TENNIS:     'tennis',
-    F1:         'f1',
-  }[sport] || 'football_soccer';
-
-  const brand = sets.brands.find(b => b.name.toUpperCase() === publisher);
+  // 4. sets.json — ajouter la série si nouvelle
+  const sportKey = { SOCCER:'football_soccer', BASKETBALL:'basketball', BASEBALL:'baseball',
+                     NFL:'nfl', NHL:'nhl', TENNIS:'tennis', F1:'f1' }[sport] || 'football_soccer';
+  const brand    = sets.brands.find(b => b.name.toUpperCase() === publisher);
   if (brand) {
-    if (!brand.sports) brand.sports = {};
+    if (!brand.sports)           brand.sports           = {};
     if (!brand.sports[sportKey]) brand.sports[sportKey] = [];
-    const existing = brand.sports[sportKey].find(
-      s => s.name.toUpperCase() === serie.toUpperCase()
-    );
-    if (!existing) {
-      const serieKw = serie.charAt(0).toUpperCase() + serie.slice(1).toLowerCase();
+    const exists = brand.sports[sportKey].find(s => s.name.toUpperCase() === serie.toUpperCase());
+    if (!exists) {
+      const cap = w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+      const serieCap = serie.split(' ').map(cap).join(' ');
       brand.sports[sportKey].push({
-        name:           serieKw,
-        full_name:      `${publisher.charAt(0) + publisher.slice(1).toLowerCase()} ${serieKw}`,
+        name:           serieCap,
+        full_name:      `${cap(publisher)} ${serieCap}`,
         visual_hints:   visual_hints || '',
-        common_subsets: card_types.filter(ct => !ct.startsWith('PARALLEL') && !ct.startsWith('AUTOGRAPH PARALLEL')),
-        ebay_keywords:  [`Topps ${serieKw}`],
-        ebay_template:  `{joueur} ${publisher.charAt(0) + publisher.slice(1).toLowerCase()} ${serieKw} {saison} {numero}`,
-        notes:          `Ajouté automatiquement depuis ${collectoskUrl}`,
+        common_subsets: cardTypes.filter(ct => !ct.startsWith('PARALLEL')),
+        ebay_keywords:  [`${cap(publisher)} ${serieCap}`],
+        ebay_template:  `{joueur} ${cap(publisher)} ${serieCap} {saison} {numero}`,
+        notes:          `Ajouté automatiquement depuis ${beckettUrl}`,
       });
     }
   }
 
-  console.log(`  ✓ ${folder_id} — ${card_types.length} card_types`);
+  console.log(`     ✓ ${folder_id} (${cardTypes.length} types)`);
+  if (cardTypes.length > 0) {
+    console.log(`       ${cardTypes.slice(0, 5).join(', ')}${cardTypes.length > 5 ? '...' : ''}`);
+  }
 }
 
-// ─── Mode --init : marquer toutes les collections collectosk actuelles comme vues ─
+// ─── Mode --init : marquer tous les articles actuels comme vus ────────────────
 async function initTracked() {
-  console.log('╔══════════════════════════════════════════════════════╗');
-  console.log('║  INIT — Marquage de toutes les collections actuelles  ║');
-  console.log('╚══════════════════════════════════════════════════════╝\n');
-  console.log(`📋 Récupération de ${LIST_URL}...`);
+  console.log('╔═══════════════════════════════════════════════════╗');
+  console.log('║  INIT — Indexation des articles Beckett existants  ║');
+  console.log('╚═══════════════════════════════════════════════════╝\n');
+  console.log(`📋 Fetch ${BECKETT_LIST}...`);
 
-  const listHtml = await fetchPage(LIST_URL);
-  const allItems = parseListPage(listHtml);
-  const slugs    = allItems.map(i => i.slug);
+  const html  = await fetchPage(BECKETT_LIST);
+  const items = parseCategoryPage(html);
+  const slugs = items.map(i => i.slug);
 
-  saveJson(TRACKED_PATH, slugs);
-  console.log(`\n✅ ${slugs.length} slugs marqués comme "déjà vus" dans _tracked_slugs.json`);
-  console.log('   La prochaine exécution normale ne traitera que les nouvelles collections.');
+  // Pages 2 et 3 aussi pour être complet
+  for (let page = 2; page <= 3; page++) {
+    try {
+      const pageHtml = await fetchPage(`${BECKETT_LIST}page/${page}/`);
+      const more     = parseCategoryPage(pageHtml);
+      slugs.push(...more.map(i => i.slug));
+      await sleep(1500);
+    } catch {}
+  }
+
+  const unique = [...new Set(slugs)];
+  saveJson(TRACKED_PATH, unique);
+  console.log(`✅ ${unique.length} slugs sauvegardés dans _tracked_slugs.json`);
+  console.log('   Le prochain run ne traitera que les nouveaux articles.');
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
-  // Mode initialisation : node scripts/sync-collections.js --init
-  if (process.argv.includes('--init')) {
-    await initTracked();
-    return;
-  }
+  if (process.argv.includes('--init')) { await initTracked(); return; }
 
-  console.log('╔════════════════════════════════════════════════╗');
-  console.log('║     Sync collections depuis collectosk.com     ║');
-  console.log('╚════════════════════════════════════════════════╝\n');
+  const ALL_MODE = process.argv.includes('--all');
 
-  // Charger les données existantes
+  console.log('╔══════════════════════════════════════════════════╗');
+  console.log('║   Sync collections depuis Beckett Soccer         ║');
+  console.log(`║   Mode : ${ALL_MODE ? 'COMPLET (--all)           ' : `Derniers ${DAYS_LOOKBACK} jours              `}║`);
+  console.log('╚══════════════════════════════════════════════════╝\n');
+
   const index   = loadJson(INDEX_PATH);
   const catalog = loadJson(CAT_PATH);
   const sets    = loadJson(SETS_PATH);
+  let   tracked = fs.existsSync(TRACKED_PATH) ? loadJson(TRACKED_PATH) : [];
+  const seenSet = new Set(tracked);
 
-  // Charger les slugs déjà traités
-  let tracked = fs.existsSync(TRACKED_PATH) ? loadJson(TRACKED_PATH) : [];
-  const trackedSet = new Set(tracked);
+  // ── 1. Catégorie Beckett (avec pagination en mode --all) ─────────────────
+  const allItems = [];
 
-  // ── Étape 1 : Récupérer la liste collectosk ───────────────────────────────
-  console.log(`📋 Récupération de ${LIST_URL}...`);
-  let listHtml;
-  try {
-    listHtml = await fetchPage(LIST_URL);
-  } catch (e) {
-    console.error(`✗ Impossible d'accéder à la liste collectosk : ${e.message}`);
-    process.exit(1);
+  if (ALL_MODE) {
+    console.log('📋 Mode --all : récupération de toutes les pages Beckett...\n');
+    let page    = 1;
+    let empty   = false;
+    const MAX_PAGES = 30; // sécurité
+
+    while (!empty && page <= MAX_PAGES) {
+      const url = page === 1 ? BECKETT_LIST : `${BECKETT_LIST}page/${page}/`;
+      console.log(`   Page ${page} : ${url}`);
+      try {
+        const html  = await fetchPage(url);
+        const items = parseCategoryPage(html);
+        if (items.length === 0) { empty = true; break; }
+        allItems.push(...items);
+        console.log(`   → ${items.length} articles (total : ${allItems.length})`);
+        page++;
+        await sleep(1500);
+      } catch (e) {
+        console.warn(`   ⚠ Page ${page} inaccessible : ${e.message}`);
+        break;
+      }
+    }
+    console.log(`\n   ✓ ${allItems.length} articles collectés sur ${page - 1} page(s)\n`);
+  } else {
+    console.log(`📋 Fetch ${BECKETT_LIST}...`);
+    const listHtml = await fetchPage(BECKETT_LIST);
+    allItems.push(...parseCategoryPage(listHtml));
+    console.log(`   ${allItems.length} articles trouvés\n`);
   }
 
-  const allItems = parseListPage(listHtml);
-  console.log(`   ${allItems.length} collections détectées sur la page`);
+  // ── 2. Filtrer ───────────────────────────────────────────────────────────
+  const toProcess = allItems.filter(item => {
+    if (seenSet.has(item.slug)) return false;
+    if (!isCollectionArticle(item.title)) return false;
+    if (!ALL_MODE && !isRecentEnough(item.date, DAYS_LOOKBACK)) return false;
+    return true;
+  });
 
-  // ── Étape 2 : Filtrer les nouvelles ──────────────────────────────────────
-  const newItems = allItems.filter(i => !trackedSet.has(i.slug));
-  console.log(`   ${newItems.length} nouvelles (non encore traitées)\n`);
+  console.log(`   → ${toProcess.length} nouvelles collections à traiter\n`);
 
-  if (newItems.length === 0) {
-    console.log('✅ Aucune nouvelle collection. Base de données à jour.');
+  if (toProcess.length === 0) {
+    console.log('✅ Aucune nouvelle collection cette semaine.');
+    saveJson(TRACKED_PATH, [...seenSet, ...allItems.map(i => i.slug)]);
     return;
   }
 
-  // ── Étape 3 : Traiter chaque nouvelle collection ──────────────────────────
-  let added  = 0;
-  let skipped = 0;
-  let errors = 0;
+  let added = 0, skipped = 0, errors = 0;
 
-  for (const item of newItems) {
-    console.log(`📦 ${item.slug}`);
+  // ── 3. Traiter chaque collection ─────────────────────────────────────────
+  for (const item of toProcess) {
+    console.log(`📦 "${item.title}"`);
+    console.log(`   ${item.url}`);
+    item.date && console.log(`   Date : ${item.date.toLocaleDateString('fr-FR')}`);
+
     try {
+      // a. Fetch l'article
       const html = await fetchPage(item.url);
 
-      if (html.length < 4000) {
-        console.log(`   ⚠ Page trop courte (${html.length} chars) — skip`);
-        trackedSet.add(item.slug); // ne pas re-tenter
+      if (html.length < 5000) {
+        console.log('   ⚠ Page trop courte — skip\n');
+        seenSet.add(item.slug);
         skipped++;
         continue;
       }
 
-      const parsed = await parseWithGemini(html, item.url);
+      // b. Lien XLSX (informatif)
+      const xlsxUrl = extractXlsxUrl(html);
+      if (xlsxUrl) console.log(`   📥 XLSX dispo : ${xlsxUrl.split('/').pop()}`);
 
-      // Validation minimale
-      const required = ['publisher', 'serie', 'year', 'folder_id', 'card_types'];
-      const missing  = required.filter(k => !parsed[k]);
-      if (missing.length) {
-        console.log(`   ⚠ Champs manquants: ${missing.join(', ')} — skip`);
+      // c. Parser checklist HTML → card_types (pas de Gemini ici)
+      const cardTypes = parseChecklistHtml(html);
+      console.log(`   📋 ${cardTypes.length} card_types extraits`);
+
+      if (cardTypes.length === 0) {
+        console.log('   ⚠ Aucun card_type trouvé — skip\n');
         skipped++;
         continue;
       }
 
-      if (!Array.isArray(parsed.card_types) || parsed.card_types.length === 0) {
-        console.log(`   ⚠ Aucun card_type extrait — skip`);
+      // d. Gemini pour les métadonnées (titre court → publisher/serie/year)
+      console.log('   🤖 Gemini → métadonnées...');
+      const meta = await parseTitleWithGemini(item.title, item.url);
+
+      if (!meta.publisher || !meta.serie || !meta.year || !meta.folder_id) {
+        console.log(`   ⚠ Métadonnées incomplètes : ${JSON.stringify(meta)} — skip\n`);
         skipped++;
         continue;
       }
 
-      // Vérifier si le folder_id est déjà dans nos fichiers
-      if (alreadyExists(parsed.folder_id, index, catalog)) {
-        console.log(`   ℹ Déjà présent sous ${parsed.folder_id} — marque comme traité`);
-        trackedSet.add(item.slug);
+      // e. Vérifier doublon par folder_id
+      const alreadyIn = index.collections.some(c => c.id === meta.folder_id)
+                     || catalog.some(c => c.folder === meta.folder_id);
+      if (alreadyIn) {
+        console.log(`   ℹ Déjà dans la BDD sous "${meta.folder_id}" — marqé comme vu\n`);
+        seenSet.add(item.slug);
         continue;
       }
 
-      addToAllFiles(parsed, item.slug, item.url, index, catalog, sets);
-      trackedSet.add(item.slug);
+      // f. Ajouter dans les fichiers
+      addToAllFiles(meta, cardTypes, item.url, index, catalog, sets);
+      seenSet.add(item.slug);
       added++;
 
     } catch (e) {
-      console.error(`   ✗ Erreur : ${e.message}`);
+      console.error(`   ✗ Erreur : ${e.message}\n`);
       errors++;
     }
 
+    console.log('');
     await sleep(DELAY_MS);
   }
 
-  // ── Étape 4 : Sauvegarder tous les fichiers ───────────────────────────────
+  // ── 4. Sauvegarder ───────────────────────────────────────────────────────
+  // Marquer aussi les anciens articles vus (pour ne pas les retraiter)
+  for (const item of allItems) seenSet.add(item.slug);
+
   if (added > 0) {
-    console.log('\n💾 Sauvegarde des fichiers JSON...');
+    console.log('💾 Sauvegarde JSON...');
     saveJson(INDEX_PATH, index);
     saveJson(CAT_PATH,   catalog);
     saveJson(SETS_PATH,  sets);
-    saveJson(TRACKED_PATH, [...trackedSet]);
-    console.log('   ✓ index.json, collections_catalog.json, sets.json mis à jour');
-  } else {
-    // Sauvegarder quand même les slugs trackés
-    saveJson(TRACKED_PATH, [...trackedSet]);
+    console.log('   ✓ index.json, collections_catalog.json, sets.json');
   }
+  saveJson(TRACKED_PATH, [...seenSet]);
 
-  console.log(`\n╔═══════════════════════════════╗`);
-  console.log(`║ Résultat                      ║`);
-  console.log(`║  Ajoutées   : ${String(added).padEnd(15)}║`);
-  console.log(`║  Ignorées   : ${String(skipped).padEnd(15)}║`);
-  console.log(`║  Erreurs    : ${String(errors).padEnd(15)}║`);
-  console.log(`╚═══════════════════════════════╝`);
+  console.log('\n╔══════════════════════════════╗');
+  console.log(`║ Ajoutées  : ${String(added).padEnd(18)}║`);
+  console.log(`║ Ignorées  : ${String(skipped).padEnd(18)}║`);
+  console.log(`║ Erreurs   : ${String(errors).padEnd(18)}║`);
+  console.log('╚══════════════════════════════╝');
 
   if (errors > 0) process.exit(1);
 }
 
 main().catch(e => {
-  console.error('\n💥 Erreur fatale :', e.message);
+  console.error('\n💥', e.message);
   process.exit(1);
 });

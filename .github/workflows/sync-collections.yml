@@ -1,4 +1,4 @@
-name: Sync Collections depuis Collectosk
+name: Sync Collections depuis Beckett Soccer
 
 on:
   schedule:
@@ -8,11 +8,15 @@ on:
   # Déclenchement manuel depuis GitHub Actions
   workflow_dispatch:
     inputs:
-      force:
-        description: 'Forcer le re-traitement même des slugs déjà vus'
+      mode:
+        description: 'Mode de lancement'
         required: false
-        default: 'false'
-        type: boolean
+        default: 'normal'
+        type: choice
+        options:
+          - normal   # nouvelles collections cette semaine seulement
+          - all      # retraiter toutes les collections Beckett (--all)
+          - init     # juste initialiser les slugs existants sans traiter (--init)
 
 jobs:
   sync:
@@ -20,7 +24,7 @@ jobs:
     timeout-minutes: 30
 
     permissions:
-      contents: write  # Nécessaire pour le git push
+      contents: write  # Nécessaire pour git push
 
     steps:
       - name: Checkout
@@ -33,32 +37,38 @@ jobs:
         with:
           node-version: '20'
 
-      # Si "force=true", on remet à zéro les slugs trackés
-      - name: Reset tracked slugs (si force)
-        if: ${{ github.event.inputs.force == 'true' }}
-        run: |
-          echo "[]" > data/collections/_tracked_slugs.json
-          echo "⚠ Mode forcé : _tracked_slugs.json réinitialisé"
-
-      # 1re exécution uniquement : si _tracked_slugs.json est vide, on init d'abord
-      - name: Initialisation si première exécution
+      # Init automatique si c'est la 1re exécution, ou si mode=init
+      - name: Init / Premier lancement
         env:
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
         run: |
           TRACKED="data/collections/_tracked_slugs.json"
           SIZE=$(wc -c < "$TRACKED" 2>/dev/null || echo 0)
-          if [ "$SIZE" -lt 10 ]; then
-            echo "📋 Premier lancement — initialisation des slugs existants"
+          MODE="${{ github.event.inputs.mode }}"
+
+          if [ "$MODE" = "init" ]; then
+            echo "📋 Mode init manuel"
+            node scripts/sync-collections.js --init
+          elif [ "$SIZE" -lt 10 ]; then
+            echo "📋 Premier lancement — init des slugs Beckett"
             node scripts/sync-collections.js --init
           else
-            echo "✓ _tracked_slugs.json déjà initialisé ($SIZE octets)"
+            echo "✓ Déjà initialisé ($SIZE octets)"
           fi
 
-      - name: Lancer la synchronisation
+      - name: Synchronisation
+        if: ${{ github.event.inputs.mode != 'init' }}
         env:
           GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
-        run: node scripts/sync-collections.js
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ "$MODE" = "all" ]; then
+            echo "🔁 Mode --all : retraitement complet"
+            node scripts/sync-collections.js --all
+          else
+            node scripts/sync-collections.js
+          fi
 
       - name: Vérifier les changements
         id: check_changes
@@ -67,17 +77,17 @@ jobs:
             && echo "changed=false" >> $GITHUB_OUTPUT \
             || echo "changed=true"  >> $GITHUB_OUTPUT
 
-      - name: Commit et push les nouvelles collections
+      - name: Commit et push
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name  "github-actions[bot]"
           git add data/collections/ data/sets.json
           git status --short
-          git commit -m "chore: sync nouvelles collections depuis collectosk [skip ci]"
+          git commit -m "chore: sync nouvelles collections depuis Beckett [skip ci]"
           git push
-          echo "✅ Nouvelles collections poussées sur le dépôt → Vercel redéploie automatiquement"
+          echo "✅ Collections poussées → Vercel redéploie automatiquement"
 
       - name: Aucun changement
         if: steps.check_changes.outputs.changed == 'false'
-        run: echo "✅ Aucune nouvelle collection détectée. Rien à committer."
+        run: echo "✅ Aucune nouvelle collection cette semaine."
