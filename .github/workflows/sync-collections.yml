@@ -1,0 +1,83 @@
+name: Sync Collections depuis Collectosk
+
+on:
+  schedule:
+    # Tous les vendredis à 9h00 UTC
+    - cron: '0 9 * * 5'
+
+  # Déclenchement manuel depuis GitHub Actions
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Forcer le re-traitement même des slugs déjà vus'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: write  # Nécessaire pour le git push
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Si "force=true", on remet à zéro les slugs trackés
+      - name: Reset tracked slugs (si force)
+        if: ${{ github.event.inputs.force == 'true' }}
+        run: |
+          echo "[]" > data/collections/_tracked_slugs.json
+          echo "⚠ Mode forcé : _tracked_slugs.json réinitialisé"
+
+      # 1re exécution uniquement : si _tracked_slugs.json est vide, on init d'abord
+      - name: Initialisation si première exécution
+        env:
+          SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+        run: |
+          TRACKED="data/collections/_tracked_slugs.json"
+          SIZE=$(wc -c < "$TRACKED" 2>/dev/null || echo 0)
+          if [ "$SIZE" -lt 10 ]; then
+            echo "📋 Premier lancement — initialisation des slugs existants"
+            node scripts/sync-collections.js --init
+          else
+            echo "✓ _tracked_slugs.json déjà initialisé ($SIZE octets)"
+          fi
+
+      - name: Lancer la synchronisation
+        env:
+          GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
+          SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+        run: node scripts/sync-collections.js
+
+      - name: Vérifier les changements
+        id: check_changes
+        run: |
+          git diff --quiet data/collections/ data/sets.json \
+            && echo "changed=false" >> $GITHUB_OUTPUT \
+            || echo "changed=true"  >> $GITHUB_OUTPUT
+
+      - name: Commit et push les nouvelles collections
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git add data/collections/ data/sets.json
+          git status --short
+          git commit -m "chore: sync nouvelles collections depuis collectosk [skip ci]"
+          git push
+          echo "✅ Nouvelles collections poussées sur le dépôt → Vercel redéploie automatiquement"
+
+      - name: Aucun changement
+        if: steps.check_changes.outputs.changed == 'false'
+        run: echo "✅ Aucune nouvelle collection détectée. Rien à committer."
