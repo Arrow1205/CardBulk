@@ -602,30 +602,77 @@ export default function CollectionPage() {
             <div className="flex justify-center py-8"><Loader2 className="animate-spin text-[#AFFF25]" size={28} /></div>
           )}
 
-          {/* Subsets (si collection.json chargé et a des subsets) */}
+          {/* Subsets avec joueurs */}
           {subsets.length > 0 ? (
-            <div className="px-6 lg:px-[80px] space-y-6">
+            <div className="px-6 lg:px-[80px] space-y-8">
               {subsetCats.map(cat => {
                 const color = CAT_COLORS[cat] || '#ffffff';
                 const items = subsets.filter((s: any) => s.subset === cat);
+                const totalPlayers = items.reduce((acc: number, s: any) => acc + (s.players?.length || 0), 0);
                 return (
                   <div key={cat}>
-                    <div className="flex items-center gap-3 mb-3">
+                    {/* Header catégorie */}
+                    <div className="flex items-center gap-3 mb-4">
                       <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
                       <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{items.length}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>
+                        {totalPlayers > 0 ? `${totalPlayers} joueurs` : `${items.length} sets`}
+                      </span>
                       <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
                     </div>
-                    <div className="space-y-1">
-                      {items.map((s: any, idx: number) => (
-                        <div key={idx} className="flex items-start justify-between px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                          <div>
-                            <span className="text-sm font-bold text-white">{s.section}</span>
-                            {s.description && <p className="text-xs text-white/40 mt-0.5">{s.description}</p>}
+
+                    <div className="space-y-4">
+                      {items.map((s: any, idx: number) => {
+                        const hasPlayers = s.players && s.players.length > 0;
+                        return (
+                          <div key={idx} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
+                            {/* Header section */}
+                            <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]" style={{ backgroundColor: color + '08' }}>
+                              <span className="text-sm font-black text-white italic uppercase tracking-tight">{s.section}</span>
+                              <div className="flex items-center gap-2">
+                                {s.card_count && <span className="text-[10px] text-white/40">{s.card_count} cartes</span>}
+                                {hasPlayers && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{s.players.length}</span>}
+                              </div>
+                            </div>
+
+                            {/* Parallels */}
+                            {s.parallels && s.parallels.length > 0 && (
+                              <div className="px-4 py-2 flex flex-wrap gap-1.5 border-b border-white/[0.04]">
+                                {s.parallels.map((p: string, pi: number) => (
+                                  <span key={pi} className="text-[9px] px-2 py-0.5 rounded-full bg-[#60a5fa]/10 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">{p}</span>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Players */}
+                            {hasPlayers && (
+                              <div className="divide-y divide-white/[0.04]">
+                                {s.players.map((p: any, pi: number) => (
+                                  <div key={pi} className="flex items-center justify-between px-4 py-2.5 hover:bg-white/[0.03] transition-colors">
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-[9px] text-white/20 font-mono w-5 shrink-0 text-right">{pi + 1}</span>
+                                      <span className="text-sm font-bold text-white">{p.name}</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 shrink-0 ml-3">
+                                      <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
+                                      <img
+                                        src={`/asset/logo-club/foot/${slugify(p.club)}.svg`}
+                                        alt={p.club}
+                                        className="h-5 w-5 object-contain opacity-60"
+                                        onError={e => (e.currentTarget.style.display = 'none')}
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {!hasPlayers && s.description && (
+                              <p className="px-4 py-3 text-xs text-white/40 italic">{s.description}</p>
+                            )}
                           </div>
-                          <span className="text-[10px] text-white/20 font-mono shrink-0 ml-3 mt-1">{idx + 1}</span>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -645,7 +692,7 @@ export default function CollectionPage() {
                       <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {grouped[cat].map((ct, idx) => {
+                      {grouped[cat].map((ct: string, idx: number) => {
                         const sub = ct.includes('/') ? ct.split('/').slice(1).join('/').trim() : ct;
                         return (
                           <span key={idx} className="text-xs px-3 py-1.5 rounded-full border font-medium" style={{ borderColor: color + '30', color: color + 'cc', backgroundColor: color + '08' }}>

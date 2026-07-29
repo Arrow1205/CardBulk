@@ -17,6 +17,8 @@
 
 const fs   = require('fs');
 const path = require('path');
+let XLSX = null;
+try { XLSX = require('xlsx'); } catch { /* xlsx optionnel */ }
 
 // ─── Chemins ─────────────────────────────────────────────────────────────────
 const ROOT         = path.join(__dirname, '..');
@@ -274,6 +276,63 @@ function extractXlsxUrl(html) {
   return m ? m[1] : null;
 }
 
+// ─── Télécharger et parser un XLSX Beckett → subsets avec joueurs ─────────────
+async function parseXlsxUrl(xlsxUrl) {
+  if (!XLSX) return null;
+  try {
+    const res = await fetch(xlsxUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://www.beckett.com/' },
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!res.ok) return null;
+
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const wb = XLSX.read(buffer, { type: 'buffer' });
+
+    const sheetCategoryMap = {
+      'Base':'BASE', 'Autographs':'AUTOGRAPH', 'Autograph':'AUTOGRAPH',
+      'Inserts':'INSERT', 'Insert':'INSERT',
+      'Memorabilia':'RELIC', 'Relics':'RELIC', 'Relic':'RELIC',
+    };
+
+    const subsets = [];
+
+    for (const sheetName of wb.SheetNames) {
+      const category = sheetCategoryMap[sheetName] || sheetName.toUpperCase();
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1 });
+
+      let currentSection = null, currentParallels = [], currentPlayers = [], inParallels = false, cardCount = null;
+
+      const flush = () => {
+        if (currentSection && currentPlayers.length > 0) {
+          subsets.push({ subset: category, section: currentSection, card_count: cardCount, parallels: [...currentParallels], players: [...currentPlayers] });
+        }
+        currentSection = null; currentParallels = []; currentPlayers = []; inParallels = false; cardCount = null;
+      };
+
+      for (const row of rows) {
+        if (!row || row.length === 0) continue;
+        const c0 = String(row[0] || '').trim();
+        const c1 = String(row[1] || '').trim();
+
+        if (row.length >= 2 && c1 && c0.endsWith(',')) {
+          if (!inParallels) currentPlayers.push({ name: c0.slice(0, -1).trim(), club: c1 });
+          continue;
+        }
+        if (/^\d+ cards?$/i.test(c0)) { cardCount = parseInt(c0); inParallels = false; continue; }
+        if (c0.toLowerCase() === 'parallels') { inParallels = true; continue; }
+        if (inParallels && /\/\d+/.test(c0)) { currentParallels.push(c0); continue; }
+        if (c0 && row.length === 1 && !/^\d/.test(c0)) { flush(); currentSection = c0; inParallels = false; }
+      }
+      flush();
+    }
+
+    return subsets.length > 0 ? subsets : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 // ─── Appel Gemini pour parser le titre de l'article → métadonnées ─────────────
 // Plus simple et moins coûteux que parser tout le HTML
 async function parseTitleWithGemini(title, pageUrl) {
@@ -334,25 +393,29 @@ Réponds UNIQUEMENT avec un JSON valide :
 }
 
 // ─── Ajoute la collection dans les 4 fichiers JSON ───────────────────────────
-function addToAllFiles(meta, cardTypes, beckettUrl, index, catalog, sets) {
+function addToAllFiles(meta, cardTypes, beckettUrl, index, catalog, sets, xlsxSubsets) {
   const { folder_id, publisher, serie, full_serie_name, year, sport, visual_hints } = meta;
 
   // 1. Dossier + collection.json
   const folderPath = path.join(COL_DIR, folder_id);
   if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
 
-  const subsets = cardTypes.map(ct => {
+  // Subsets : depuis XLSX si disponible, sinon depuis card_types HTML
+  const subsets = xlsxSubsets || cardTypes.map(ct => {
     const sep = ct.indexOf(' / ');
     return {
       subset:      sep >= 0 ? ct.slice(0, sep) : ct,
       section:     sep >= 0 ? ct.slice(sep + 3) : null,
       description: null,
+      players:     [],
+      parallels:   [],
     };
   });
 
   saveJson(path.join(folderPath, 'collection.json'), {
     collection_id: folder_id,
     source_url:    beckettUrl,
+    xlsx_parsed:   !!xlsxSubsets,
     fiche: { annee: String(year), editeur: publisher, serie: full_serie_name || serie, sport },
     subsets,
   });
@@ -528,16 +591,16 @@ async function main() {
         continue;
       }
 
-      // b. Lien XLSX (informatif)
+      // b. Lien XLSX
       const xlsxUrl = extractXlsxUrl(html);
-      if (xlsxUrl) console.log(`   📥 XLSX dispo : ${xlsxUrl.split('/').pop()}`);
+      if (xlsxUrl) console.log(`   📥 XLSX : ${xlsxUrl.split('/').pop()}`);
 
-      // c. Parser checklist HTML → card_types (pas de Gemini ici)
+      // c. Parser checklist HTML → card_types (fallback si pas de XLSX)
       const cardTypes = parseChecklistHtml(html);
-      console.log(`   📋 ${cardTypes.length} card_types extraits`);
+      console.log(`   📋 ${cardTypes.length} card_types HTML extraits`);
 
-      if (cardTypes.length === 0) {
-        console.log('   ⚠ Aucun card_type trouvé — skip\n');
+      if (cardTypes.length === 0 && !xlsxUrl) {
+        console.log('   ⚠ Aucune donnée trouvée — skip\n');
         skipped++;
         continue;
       }
@@ -556,13 +619,22 @@ async function main() {
       const alreadyIn = index.collections.some(c => c.id === meta.folder_id)
                      || catalog.some(c => c.folder === meta.folder_id);
       if (alreadyIn) {
-        console.log(`   ℹ Déjà dans la BDD sous "${meta.folder_id}" — marqé comme vu\n`);
+        console.log(`   ℹ Déjà dans la BDD sous "${meta.folder_id}" — marqué comme vu\n`);
         seenSet.add(item.slug);
         continue;
       }
 
-      // f. Ajouter dans les fichiers
-      addToAllFiles(meta, cardTypes, item.url, index, catalog, sets);
+      // f. Télécharger + parser le XLSX si disponible
+      let xlsxSubsets = null;
+      if (xlsxUrl) {
+        console.log('   📊 Parsing XLSX...');
+        xlsxSubsets = await parseXlsxUrl(xlsxUrl);
+        if (xlsxSubsets) console.log(`   ✓ ${xlsxSubsets.length} subsets avec joueurs`);
+        else console.log('   ⚠ XLSX non parsé — fallback HTML');
+      }
+
+      // g. Ajouter dans les fichiers
+      addToAllFiles(meta, cardTypes, item.url, index, catalog, sets, xlsxSubsets);
       seenSet.add(item.slug);
       added++;
 

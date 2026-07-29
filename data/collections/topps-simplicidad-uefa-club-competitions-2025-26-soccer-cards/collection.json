@@ -14,168 +14,1409 @@
   "subsets": [
     {
       "subset": "BASE",
-      "section": "ARTISTA",
-      "description": "Joueurs au style artistique"
+      "section": "Estrellas Espanolas",
+      "card_count": 30,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Gerard Martín",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Aleix García",
+          "club": "Bayer 04 Leverkusen"
+        },
+        {
+          "name": "Alejandro Grimaldo",
+          "club": "Bayer 04 Leverkusen"
+        },
+        {
+          "name": "Martín Zubimendi",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Athenea del Castillo",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Ferran Torres",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Joan Garcia",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Alejandro Balde",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Fermín López",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Mikel Merino",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Marc Casadó",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Pablo Fornals",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Marcos Llorente",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Pablo Barrios",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Marc Guiu",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Pedro Porro",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "David Raya",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Iñaki Williams",
+          "club": "Athletic Club"
+        },
+        {
+          "name": "Yeremy Pino",
+          "club": "Crystal Palace"
+        },
+        {
+          "name": "Fran García",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Raúl Asencio",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Dean Huijsen",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Ayoze Pérez",
+          "club": "Villarreal CF"
+        },
+        {
+          "name": "Cristhian Mosquera",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Rodrigo Riquelme",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Álvaro Carreras",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Álex Baena",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Marc Cucurella",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Gonzalo García",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Nico Williams",
+          "club": "Athletic Club"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "ESTRELLAS ESPAÑOLAS",
-      "description": "Stars espagnoles"
+      "section": "Estrellas Internacionales",
+      "card_count": 35,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Bradley Barcola",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Marc Guehi",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Alejandro Garnacho",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "João Pedro",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Eberechi Eze",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Omar Marmoush",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Evan Ferguson",
+          "club": "AS Roma"
+        },
+        {
+          "name": "Jeremie Frimpong",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Sandro Tonali",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Rasmus Hojlund",
+          "club": "SSC Napoli"
+        },
+        {
+          "name": "Arne Engels",
+          "club": "Celtic FC"
+        },
+        {
+          "name": "Cristian Romero",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Mohammed Kudus",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Alexander Isak",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Trent Alexander-Arnold",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Anthony Gordon",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Xavi Simons",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Leroy Sanè",
+          "club": "Galatasaray A.Ş."
+        },
+        {
+          "name": "Tijjani Reijnders",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Destiny Udogie",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Oscar Bobb",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Cher Ndour",
+          "club": "ACF Fiorentina"
+        },
+        {
+          "name": "João Palhinha",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Hugo Ekitike",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Harvey Barnes",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Federico Valverde",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Lautaro Martínez",
+          "club": "FC Internazionale Milano"
+        },
+        {
+          "name": "Bruno Guimarães",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Liam Delap",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Pierre Emerick Aubameyang",
+          "club": "Olympique Marseille"
+        },
+        {
+          "name": "Carlos Forbs",
+          "club": "Club Brugge"
+        },
+        {
+          "name": "Antony",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Morgan Rogers",
+          "club": "Aston Villa"
+        },
+        {
+          "name": "Kenan Yildiz",
+          "club": "Juventus"
+        },
+        {
+          "name": "Rodrigo Mora",
+          "club": "FC Porto"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "ESTRELLAS INTERNACIONALES",
-      "description": "Stars internationales"
+      "section": "Raices",
+      "card_count": 15,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Alexia Putellas",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Claudia Pina",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Xavi Hernández",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Alan Shearer",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Raúl González",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Paul Scholes",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Pau Cubarsí",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Bukayo Saka",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Dan Burn",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Reece James",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Francesco Totti",
+          "club": "AS Roma"
+        },
+        {
+          "name": "Phil Foden",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Philipp Lahm",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Gary Neville",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Aleksandar Pavlović",
+          "club": "FC Bayern München"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "EXALTACIÓN",
-      "description": null
+      "section": "Artista",
+      "card_count": 10,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Pedri",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Fabián Ruiz",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Kevin De Bruyne",
+          "club": "SSC Napoli"
+        },
+        {
+          "name": "Martin Ødegaard",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Arda Güler",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Aitana Bonmatí",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Jamal Musiala",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Florian Wirtz",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Cole Palmer",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Andrés Iniesta",
+          "club": "FC Barcelona"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "INFRANQUEABLES",
-      "description": "Défenseurs infranchissables"
+      "section": "Exaltacion",
+      "card_count": 10,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Gareth Bale",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Vitinha",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Cole Palmer",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Lamine Yamal",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Viktor Gyökeres",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Estêvão Willian",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Lennart Karl",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Kylian Mbappé",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Caroline Weir",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Luis Diaz",
+          "club": "FC Bayern München"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "JOYAS",
-      "description": "Joyaux / talents premium"
+      "section": "Joyas",
+      "card_count": 21,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Dro",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Jofre Torrents",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Quim Junyent",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Guille Fernández",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Pio Esposito",
+          "club": "FC Internazionale Milano"
+        },
+        {
+          "name": "Franco Mastantuono",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Victor Valdepenas",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Thiago Pitarch",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Estêvão Willian",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Reggie Walsh",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Pablo García",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Lennart Karl",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Jobe Bellingham",
+          "club": "Borussia Dortmund"
+        },
+        {
+          "name": "Divine Mukasa",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Wisdom Mike",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Rio Ngumoha",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Chema",
+          "club": "VfB Stuttgart"
+        },
+        {
+          "name": "Quentin Ndjantou",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Trent Kone-Doherty",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Kendry Páez",
+          "club": "RC Strasbourg Alsace"
+        },
+        {
+          "name": "Max Dowman",
+          "club": "Arsenal FC"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "RAÍCES",
-      "description": "Racines / héritage"
+      "section": "Retrato",
+      "card_count": 15,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Lamine Yamal",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Kylian Mbappé",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Erling Haaland",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Harry Kane",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Vitinha",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Ousmane Dembélé",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Mohamed Salah",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Raphinha",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Rodri",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Julián Alvarez",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "João Neves",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Bukayo Saka",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Antoine Griezmann",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Jude Bellingham",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Khvicha Kvaratskhelia",
+          "club": "Paris Saint-Germain"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "RETRATO",
-      "description": "Portrait artistique"
+      "section": "Infranqueables",
+      "card_count": 10,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Gianluigi Donnarumma",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Peter Schmeichel",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Lucas Chevalier",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Manuel Neuer",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Thibaut Courtois",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "William Saliba",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Virgil van Dijk",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Paolo Maldini",
+          "club": "AC Milan"
+        },
+        {
+          "name": "Marquinhos",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Gabriel Magalhães",
+          "club": "Arsenal FC"
+        }
+      ]
     },
     {
       "subset": "BASE",
-      "section": "VELOCIDAD",
-      "description": "Joueurs rapides"
+      "section": "Velocidad",
+      "card_count": 15,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Ousmane Dembélé",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Micky van de Ven",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Nuno Mendes",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Karim Adeyemi",
+          "club": "Borussia Dortmund"
+        },
+        {
+          "name": "Loïs Openda",
+          "club": "Juventus"
+        },
+        {
+          "name": "Michael Olise",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Vini Jr",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Pedro Neto",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Désiré Doué",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Aaron Lennon",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Marcus Rashford",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Giuliano Simeone",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Abde Ezzalzouli",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Gabriel Martinelli",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Anthony Elanga",
+          "club": "Newcastle United"
+        }
+      ]
     },
     {
-      "subset": "PARALLEL",
-      "section": "BLUE /99",
-      "description": null
-    },
-    {
-      "subset": "PARALLEL",
-      "section": "GREEN /75",
-      "description": null
-    },
-    {
-      "subset": "PARALLEL",
-      "section": "PURPLE /50",
-      "description": null
-    },
-    {
-      "subset": "PARALLEL",
-      "section": "ORANGE /25",
-      "description": null
-    },
-    {
-      "subset": "PARALLEL",
-      "section": "BLACK /10",
-      "description": null
-    },
-    {
-      "subset": "PARALLEL",
-      "section": "RED /5",
-      "description": null
-    },
-    {
-      "subset": "PARALLEL",
-      "section": "GOLD 1/1",
-      "description": null
+      "subset": "BASE",
+      "section": "Joyas - Image Variations",
+      "card_count": 8,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Franco Mastantuono",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Rio Ngumoha",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Guille Fernández",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Lennart Karl",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Divine Mukasa",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Reggie Walsh",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Trent Kone-Doherty",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Jofre Torrents",
+          "club": "FC Barcelona"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "ARTISTA",
-      "description": null
+      "section": "Estrellas Espanolas Autographs",
+      "card_count": 17,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Aleix García",
+          "club": "Bayer 04 Leverkusen"
+        },
+        {
+          "name": "Alejandro Grimaldo",
+          "club": "Bayer 04 Leverkusen"
+        },
+        {
+          "name": "Martín Zubimendi",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Athenea del Castillo",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Ferran Torres",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Alejandro Balde",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Fermín López",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Mikel Merino",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Marc Casadó",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Pablo Fornals",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Marcos Llorente",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Marc Guiu",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "David Raya",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Fran García",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Dean Huijsen",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Rodrigo Riquelme",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Nico Williams",
+          "club": "Athletic Club"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "ESTRELLAS ESPAÑOLAS",
-      "description": null
+      "section": "Estrellas Internacionales Autographs",
+      "card_count": 30,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Bradley Barcola",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Marc Guehi",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Alejandro Garnacho",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "João Pedro",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Eberechi Eze",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Evan Ferguson",
+          "club": "AS Roma"
+        },
+        {
+          "name": "Jeremie Frimpong",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Sandro Tonali",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Rasmus Hojlund",
+          "club": "SSC Napoli"
+        },
+        {
+          "name": "Arne Engels",
+          "club": "Celtic FC"
+        },
+        {
+          "name": "Cristian Romero",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Mohammed Kudus",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Alexander Isak",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Xavi Simons",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Leroy Sanè",
+          "club": "Galatasaray A.Ş."
+        },
+        {
+          "name": "Tijjani Reijnders",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Destiny Udogie",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Oscar Bobb",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Cher Ndour",
+          "club": "ACF Fiorentina"
+        },
+        {
+          "name": "João Palhinha",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Hugo Ekitike",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Federico Valverde",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Lautaro Martínez",
+          "club": "FC Internazionale Milano"
+        },
+        {
+          "name": "Bruno Guimarães",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Liam Delap",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Pierre Emerick Aubameyang",
+          "club": "Olympique Marseille"
+        },
+        {
+          "name": "Carlos Forbs",
+          "club": "Club Brugge"
+        },
+        {
+          "name": "Antony",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Morgan Rogers",
+          "club": "Aston Villa"
+        },
+        {
+          "name": "Kenan Yildiz",
+          "club": "Juventus"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "ESTRELLAS INTERNACIONALES",
-      "description": null
+      "section": "Raices Autographs",
+      "card_count": 12,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Alexia Putellas",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Claudia Pina",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Xavi Hernández",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Alan Shearer",
+          "club": "Newcastle United"
+        },
+        {
+          "name": "Raúl González",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Paul Scholes",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Reece James",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Francesco Totti",
+          "club": "AS Roma"
+        },
+        {
+          "name": "Phil Foden",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Philipp Lahm",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Gary Neville",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Aleksandar Pavlović",
+          "club": "FC Bayern München"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "EXALTACIÓN",
-      "description": null
+      "section": "Artista Autographs",
+      "card_count": 9,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Pedri",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Fabián Ruiz",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Kevin De Bruyne",
+          "club": "SSC Napoli"
+        },
+        {
+          "name": "Martin Ødegaard",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Arda Güler",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Aitana Bonmatí",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Jamal Musiala",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Cole Palmer",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Andrés Iniesta",
+          "club": "FC Barcelona"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "INFRANQUEABLES",
-      "description": null
+      "section": "Exaltacion Autographs",
+      "card_count": 5,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Gareth Bale",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Lamine Yamal",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Estêvão Willian",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Lennart Karl",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Caroline Weir",
+          "club": "Real Madrid C.F."
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "JOYAS",
-      "description": null
+      "section": "Joyas Autographs",
+      "card_count": 11,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Jofre Torrents",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Quim Junyent",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Franco Mastantuono",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Estêvão Willian",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Reggie Walsh",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Pablo García",
+          "club": "Real Betis Balompié"
+        },
+        {
+          "name": "Lennart Karl",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Jobe Bellingham",
+          "club": "Borussia Dortmund"
+        },
+        {
+          "name": "Divine Mukasa",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Trent Kone-Doherty",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Max Dowman",
+          "club": "Arsenal FC"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "RAÍCES",
-      "description": null
+      "section": "Retrato Autographs",
+      "card_count": 10,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Lamine Yamal",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Erling Haaland",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Harry Kane",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Ousmane Dembélé",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Rodri",
+          "club": "Manchester City"
+        },
+        {
+          "name": "João Neves",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Bukayo Saka",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Antoine Griezmann",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Jude Bellingham",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Khvicha Kvaratskhelia",
+          "club": "Paris Saint-Germain"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "RETRATO",
-      "description": null
+      "section": "Infranqueables Autographs",
+      "card_count": 9,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Gianluigi Donnarumma",
+          "club": "Manchester City"
+        },
+        {
+          "name": "Peter Schmeichel",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Lucas Chevalier",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Manuel Neuer",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Thibaut Courtois",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "William Saliba",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Virgil van Dijk",
+          "club": "Liverpool FC"
+        },
+        {
+          "name": "Paolo Maldini",
+          "club": "AC Milan"
+        },
+        {
+          "name": "Marquinhos",
+          "club": "Paris Saint-Germain"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "VELOCIDAD",
-      "description": null
+      "section": "Velocidad Autographs",
+      "card_count": 9,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Ousmane Dembélé",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Nuno Mendes",
+          "club": "Paris Saint-Germain"
+        },
+        {
+          "name": "Karim Adeyemi",
+          "club": "Borussia Dortmund"
+        },
+        {
+          "name": "Loïs Openda",
+          "club": "Juventus"
+        },
+        {
+          "name": "Vini Jr",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Aaron Lennon",
+          "club": "Tottenham Hotspur"
+        },
+        {
+          "name": "Giuliano Simeone",
+          "club": "Atlético de Madrid"
+        },
+        {
+          "name": "Gabriel Martinelli",
+          "club": "Arsenal FC"
+        },
+        {
+          "name": "Anthony Elanga",
+          "club": "Newcastle United"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "JOYAS IMAGE VARIATION",
-      "description": null
+      "section": "Dual Autographs",
+      "card_count": 4,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Lamine Yamal & Lionel Messi",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Martín Zubimendi & Mikel Merino",
+          "club": "Aresenl FC"
+        },
+        {
+          "name": "Vini Jr & Gareth Bale",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Giuliano Simeone & Diego Simeone",
+          "club": "Atlético de Madrid"
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "UCL SHORTPRINT",
-      "description": null
+      "section": "Triple Autographs",
+      "card_count": 1,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Raul, Ronaldo & Zinedine Zidane",
+          "club": "Real Madrid C.F."
+        }
+      ]
     },
     {
       "subset": "AUTOGRAPH",
-      "section": "DUAL",
-      "description": null
-    },
-    {
-      "subset": "AUTOGRAPH",
-      "section": "TRIPLE BOOK",
-      "description": null
-    },
-    {
-      "subset": "AUTOGRAPH",
-      "section": "ONLY1 1/1",
-      "description": null
-    },
-    {
-      "subset": "AUTOGRAPH PARALLEL",
-      "section": "BLACK /10",
-      "description": null
-    },
-    {
-      "subset": "AUTOGRAPH PARALLEL",
-      "section": "RED /5",
-      "description": null
-    },
-    {
-      "subset": "AUTOGRAPH PARALLEL",
-      "section": "GOLD 1/1",
-      "description": null
+      "section": "UEFA Champions League SP Autographs",
+      "card_count": 19,
+      "parallels": [],
+      "players": [
+        {
+          "name": "Thomas Müller",
+          "club": "FC Bayern München"
+        },
+        {
+          "name": "Lionel Messi",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Andrés Iniesta",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Sergio Busquets",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Raúl González",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Kaká",
+          "club": "AC Milan"
+        },
+        {
+          "name": "Wayne Rooney",
+          "club": "Manchester United"
+        },
+        {
+          "name": "Zinedine Zidane",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Fernando Torres",
+          "club": "Chelsea FC"
+        },
+        {
+          "name": "Samuel Eto’o",
+          "club": "FC Internazionale Milano"
+        },
+        {
+          "name": "Andrea Pirlo",
+          "club": "AC Milan"
+        },
+        {
+          "name": "Ronaldinho",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Clarence Seedorf",
+          "club": "AC Milan"
+        },
+        {
+          "name": "Alessandro Del Piero",
+          "club": "Juventus"
+        },
+        {
+          "name": "Luis Suárez",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Toni Kroos",
+          "club": "Real Madrid C.F."
+        },
+        {
+          "name": "Pedro",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Neymar Jr",
+          "club": "FC Barcelona"
+        },
+        {
+          "name": "Iker Casillas",
+          "club": "Real Madrid C.F."
+        }
+      ]
     }
-  ]
+  ],
+  "parallels_base": [
+    "Blue /99",
+    "Green /75",
+    "Purple /50",
+    "Orange /25",
+    "Black /10",
+    "Red /5",
+    "Gold /1"
+  ],
+  "xlsx_parsed": true
 }
