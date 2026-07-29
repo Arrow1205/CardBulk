@@ -73,6 +73,9 @@ export async function GET(req: Request) {
       if (profileData.response?.length) {
         afPlayer = afBestMatch(profileData.response, name);
         playerId = afPlayer?.id ?? null;
+        console.log(`[player-stats] found player: ${afPlayer?.firstname} ${afPlayer?.lastname} id=${playerId}`);
+      } else {
+        console.log(`[player-stats] no profile found for "${name}", errors:`, JSON.stringify(profileData.errors));
       }
     } catch (e) {
       console.warn('[player-stats] af profile error:', e);
@@ -93,7 +96,10 @@ export async function GET(req: Request) {
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
         const season = seasons[i];
-        if (!result?.response?.length) { console.log(`season ${season}: no data`); continue; }
+        if (!result?.response?.length) {
+          console.log(`season ${season}: no data — errors: ${JSON.stringify(result?.errors)}`);
+          continue;
+        }
         console.log(`season ${season}: ${result.response[0].statistics?.length} entries`);
         for (const s of result.response[0].statistics || []) {
           stats.push({
