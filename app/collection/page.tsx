@@ -119,6 +119,8 @@ export default function CollectionPage() {
   const [clSelected, setClSelected] = useState<any | null>(null);
   const [clDetail, setClDetail] = useState<any | null>(null);
   const [clDetailLoading, setClDetailLoading] = useState(false);
+  const [xlsxUploading, setXlsxUploading] = useState(false);
+  const xlsxInputRef = useRef<HTMLInputElement>(null);
 
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -525,10 +527,86 @@ export default function CollectionPage() {
     setClDetail(null);
     setClDetailLoading(true);
     try {
+      // Check localStorage for manually uploaded data
+      const localKey = `checklist_override_${col.folder}`;
+      const localData = typeof window !== 'undefined' ? localStorage.getItem(localKey) : null;
+      if (localData) {
+        setClDetail(JSON.parse(localData));
+        setClDetailLoading(false);
+        return;
+      }
       const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}`);
       if (res.ok) setClDetail(await res.json());
     } catch {}
     setClDetailLoading(false);
+  };
+
+  const handleXlsxUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !clSelected) return;
+    setXlsxUploading(true);
+    try {
+      const XLSX = await import('xlsx');
+      const buffer = await file.arrayBuffer();
+      const wb = XLSX.read(buffer, { type: 'array' });
+
+      const sheetCategoryMap: Record<string, string> = {
+        'Base': 'BASE', 'Autographs': 'AUTOGRAPH', 'Autograph': 'AUTOGRAPH',
+        'Inserts': 'INSERT', 'Insert': 'INSERT',
+        'Memorabilia': 'RELIC', 'Relics': 'RELIC', 'Relic': 'RELIC',
+      };
+
+      const subsets: any[] = [];
+      for (const sheetName of wb.SheetNames) {
+        const category = sheetCategoryMap[sheetName] || sheetName.toUpperCase();
+        const rows: any[][] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1 }) as any[][];
+
+        let currentSection: string | null = null;
+        let currentParallels: string[] = [];
+        let currentPlayers: { name: string; club: string }[] = [];
+        let inParallels = false;
+        let cardCount: number | null = null;
+
+        const flush = () => {
+          if (currentSection && currentPlayers.length > 0) {
+            subsets.push({ subset: category, section: currentSection, card_count: cardCount, parallels: [...currentParallels], players: [...currentPlayers] });
+          }
+          currentSection = null; currentParallels = []; currentPlayers = []; inParallels = false; cardCount = null;
+        };
+
+        for (const row of rows) {
+          if (!row || row.length === 0) continue;
+          const c0 = String(row[0] ?? '').trim();
+          const c1 = String(row[1] ?? '').trim();
+          if (row.length >= 2 && c1 && c0.endsWith(',')) {
+            if (!inParallels) currentPlayers.push({ name: c0.slice(0, -1).trim(), club: c1 });
+            continue;
+          }
+          if (/^\d+ cards?$/i.test(c0)) { cardCount = parseInt(c0); inParallels = false; continue; }
+          if (c0.toLowerCase() === 'parallels') { inParallels = true; continue; }
+          if (inParallels && /\/\d+/.test(c0)) { currentParallels.push(c0); continue; }
+          if (c0 && row.length === 1 && !/^\d/.test(c0)) { flush(); currentSection = c0; inParallels = false; }
+        }
+        flush();
+      }
+
+      if (subsets.length === 0) {
+        alert('Aucune donnée trouvée dans ce fichier. Vérifie que le format est correct (colonnes Nom, Club).');
+        return;
+      }
+
+      const existing = clDetail || {};
+      const updated = { ...existing, subsets, xlsx_parsed: true, xlsx_source: 'manual' };
+      const localKey = `checklist_override_${clSelected.folder}`;
+      localStorage.setItem(localKey, JSON.stringify(updated));
+      setClDetail(updated);
+    } catch (err) {
+      alert('Erreur lors du parsing du fichier XLSX.');
+      console.error(err);
+    } finally {
+      setXlsxUploading(false);
+      if (xlsxInputRef.current) xlsxInputRef.current.value = '';
+    }
   };
 
   const CAT_COLORS: Record<string, string> = {
@@ -585,9 +663,36 @@ export default function CollectionPage() {
               <div className="flex items-center gap-2 mb-1">
                 <img src={`/asset/logo-marque/${publisherSlug}.png`} alt={clSelected.publisher} className="h-4 object-contain mix-blend-screen" onError={e => e.currentTarget.style.display = 'none'} />
                 <span className="text-xs text-[#AFFF25] font-bold uppercase tracking-widest">{clSelected.publisher} · {clSelected.year}</span>
+                {clDetail?.xlsx_source === 'manual' && (
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#AFFF25]/10 text-[#AFFF25] border border-[#AFFF25]/20 font-bold">LOCAL</span>
+                )}
               </div>
               <h2 className="text-xl font-black italic uppercase tracking-tight text-white leading-tight truncate">{clSelected.serie}</h2>
             </div>
+            {/* Upload XLSX button */}
+            <input ref={xlsxInputRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleXlsxUpload} />
+            <button
+              onClick={() => xlsxInputRef.current?.click()}
+              disabled={xlsxUploading}
+              className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/5 transition-all active:scale-95 disabled:opacity-50"
+              title="Importer un fichier XLSX"
+            >
+              {xlsxUploading ? <Loader2 size={15} className="animate-spin text-[#AFFF25]" /> : <Plus size={15} className="text-[#AFFF25]" />}
+              <span className="text-xs font-bold text-white/70">XLSX</span>
+            </button>
+            {clDetail?.xlsx_source === 'manual' && (
+              <button
+                onClick={() => {
+                  if (!clSelected) return;
+                  localStorage.removeItem(`checklist_override_${clSelected.folder}`);
+                  openCollection(clSelected);
+                }}
+                className="shrink-0 w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:border-red-500/40 hover:bg-red-500/5 transition-all active:scale-95"
+                title="Supprimer les données locales"
+              >
+                <Trash2 size={13} className="text-red-400" />
+              </button>
+            )}
           </div>
 
           {/* Fiche technique */}
@@ -603,10 +708,13 @@ export default function CollectionPage() {
           )}
 
           {/* Subsets avec joueurs */}
-          {subsets.length > 0 && !clDetail?.xlsx_parsed && (
-            <div className="mx-6 lg:mx-[80px] mb-4 px-4 py-3 rounded-xl bg-[#f59e0b]/10 border border-[#f59e0b]/20 flex items-center gap-2">
-              <span className="text-[#f59e0b] text-xs font-bold">⚠ Données partielles</span>
-              <span className="text-white/40 text-xs">Les joueurs ne sont pas encore disponibles pour cette collection. Relance le sync en mode "all" une fois GEMINI_API_KEY configuré.</span>
+          {!clDetail?.xlsx_parsed && !clDetailLoading && (
+            <div className="mx-6 lg:mx-[80px] mb-4 px-4 py-3 rounded-xl bg-[#f59e0b]/10 border border-[#f59e0b]/20 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-[#f59e0b] text-xs font-bold shrink-0">⚠ Pas de checklist</span>
+                <span className="text-white/40 text-xs truncate">Dépose un fichier XLSX Beckett pour voir les joueurs.</span>
+              </div>
+              <button onClick={() => xlsxInputRef.current?.click()} className="shrink-0 text-xs font-bold text-[#AFFF25] hover:underline whitespace-nowrap">+ Importer</button>
             </div>
           )}
           {subsets.length > 0 ? (

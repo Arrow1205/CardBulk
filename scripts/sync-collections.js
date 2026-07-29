@@ -529,6 +529,8 @@ async function main() {
     const MAX_PAGES = 30; // sécurité
 
     const globalSeen = new Set();
+    let consecutiveFails = 0;
+    const MAX_CONSECUTIVE_FAILS = 3;
     while (!empty && page <= MAX_PAGES) {
       const url = page === 1 ? BECKETT_LIST : `${BECKETT_LIST}page/${page}/`;
       console.log(`   Page ${page} : ${url}`);
@@ -537,15 +539,19 @@ async function main() {
         const items = parseCategoryPage(html);
         // Dédupliquer les slugs entre pages (featured articles répétés)
         const newItems = items.filter(i => !globalSeen.has(i.slug));
-        if (newItems.length === 0) { empty = true; break; }
+        if (newItems.length === 0 && items.length === 0) { empty = true; break; }
         newItems.forEach(i => globalSeen.add(i.slug));
         allItems.push(...newItems);
+        consecutiveFails = 0;
         console.log(`   → ${newItems.length} nouveaux articles (total : ${allItems.length})`);
         page++;
-        await sleep(1500);
+        await sleep(2000);
       } catch (e) {
-        console.warn(`   ⚠ Page ${page} inaccessible : ${e.message}`);
-        break;
+        consecutiveFails++;
+        console.warn(`   ⚠ Page ${page} inaccessible (${consecutiveFails}/${MAX_CONSECUTIVE_FAILS}) : ${e.message}`);
+        if (consecutiveFails >= MAX_CONSECUTIVE_FAILS) { break; }
+        page++;
+        await sleep(5000); // attente plus longue avant de retenter
       }
     }
     console.log(`\n   ✓ ${allItems.length} articles collectés sur ${page - 1} page(s)\n`);
