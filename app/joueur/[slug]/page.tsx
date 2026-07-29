@@ -135,27 +135,41 @@ export default function JoueurPage() {
   const allStats: any[] = statsData?.stats || [];
   const trophies: any[] = statsData?.trophies || [];
 
-  const currentYear = new Date().getFullYear();
   // Saison en cours = la plus récente dans les données
   const sortedAllSeasons = Array.from(new Set(allStats.map(s => Number(s.season)))).sort((a, b) => b - a);
   const currentSeason = sortedAllSeasons[0] ?? null;
-
   const currentSeasonRows = allStats.filter(s => Number(s.season) === currentSeason);
+
+  // Compétitions internationales (sélection)
+  const INTL_KEYWORDS = ['world cup', 'euro', 'nations league', 'copa america', 'afcon', 'gold cup', 'friendlies', 'olympic', 'u21', 'u23'];
+  const isIntl = (row: any) => INTL_KEYWORDS.some(k => (row.league || '').toLowerCase().includes(k));
+
+  // Stats des saisons passées uniquement
   const pastRows = allStats.filter(s => Number(s.season) !== currentSeason);
 
-  // Cumul toutes saisons passées
-  const cumul = pastRows.length > 0 ? sumStats(pastRows) : null;
-
-  // Détail par saison passée
-  const pastSeasons = sortedAllSeasons.filter(s => s !== currentSeason);
-  const pastBySeason: Record<number, any[]> = {};
+  // Agrégat par club (past seasons — club only, not intl)
+  const clubMap: Record<string, { logo: string; rows: any[] }> = {};
   for (const s of pastRows) {
-    const k = Number(s.season);
-    if (!pastBySeason[k]) pastBySeason[k] = [];
-    pastBySeason[k].push(s);
+    if (isIntl(s)) continue;
+    if (!s.team) continue;
+    if (!clubMap[s.team]) clubMap[s.team] = { logo: s.teamLogo || '', rows: [] };
+    clubMap[s.team].rows.push(s);
   }
+  const clubCareer = Object.entries(clubMap)
+    .map(([team, { logo, rows }]) => ({ team, logo, ...sumStats(rows) }))
+    .sort((a, b) => (b.appearances ?? 0) - (a.appearances ?? 0));
 
-  const statsHeader = ['Matchs', 'Min', 'Buts', 'Passes', 'Tirs', 'Tirs C.', 'J', 'R'];
+  // Agrégat sélection (all seasons)
+  const intlMap: Record<string, { logo: string; rows: any[] }> = {};
+  for (const s of allStats) {
+    if (!isIntl(s)) continue;
+    if (!s.team) continue;
+    if (!intlMap[s.team]) intlMap[s.team] = { logo: s.teamLogo || '', rows: [] };
+    intlMap[s.team].rows.push(s);
+  }
+  const intlCareer = Object.entries(intlMap)
+    .map(([team, { logo, rows }]) => ({ team, logo, ...sumStats(rows) }))
+    .sort((a, b) => (b.appearances ?? 0) - (a.appearances ?? 0));
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans">
@@ -277,87 +291,84 @@ export default function JoueurPage() {
 
           {!statsLoading && statsData?.player && (
             <>
-              {/* ── SAISON EN COURS ── */}
+              {/* ── SAISON EN COURS : détail par compétition ── */}
               {currentSeasonRows.length > 0 && (
-                <div className="mb-6">
+                <div className="mb-7">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Saison en cours</span>
                     <span className="text-[10px] text-white/30">{currentSeason}/{String(Number(currentSeason) + 1).slice(-2)}</span>
                   </div>
-                  {currentSeasonRows.map((s: any, i: number) => (
-                    <div key={i} className={`rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden ${i > 0 ? 'mt-2' : ''}`}>
-                      <div className="flex items-center gap-3 px-4 py-3 bg-white/[0.02]">
-                        {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-6 w-6 object-contain" />}
-                        <div className="text-xs font-bold text-white">{s.team}</div>
-                        {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-4 w-4 object-contain ml-auto opacity-60" />}
-                        <div className="text-[10px] text-white/30 truncate max-w-[120px]">{s.league}</div>
-                        {s.rating && <div className="ml-2 text-[#AFFF25] font-black text-sm">{s.rating}</div>}
+                  <div className="rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden divide-y divide-white/[0.05]">
+                    {currentSeasonRows.map((s: any, i: number) => (
+                      <div key={i}>
+                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02]">
+                          {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-5 w-5 object-contain" />}
+                          <span className="text-xs font-bold text-white flex-1 truncate">{s.team}</span>
+                          {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-4 w-4 object-contain opacity-50" />}
+                          <span className="text-[10px] text-white/30 truncate max-w-[110px]">{s.league}</span>
+                          {s.rating && <span className="ml-2 text-[#AFFF25] font-black text-sm shrink-0">{s.rating}</span>}
+                        </div>
+                        <div className="grid grid-cols-4 gap-px bg-white/[0.04]">
+                          <StatCell label="Matchs"  value={s.appearances} />
+                          <StatCell label="Min"     value={s.minutes ? `${s.minutes}'` : null} />
+                          <StatCell label="Buts"    value={s.goals}   highlight={(s.goals ?? 0) > 0} />
+                          <StatCell label="Passes"  value={s.assists} highlight={(s.assists ?? 0) > 0} />
+                        </div>
                       </div>
-                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-px bg-white/[0.04]">
-                        <StatCell label="Matchs"  value={s.appearances} />
-                        <StatCell label="Min"     value={s.minutes ? `${s.minutes}'` : null} />
-                        <StatCell label="Buts"    value={s.goals}       highlight={(s.goals ?? 0) > 0} />
-                        <StatCell label="Passes"  value={s.assists}     highlight={(s.assists ?? 0) > 0} />
-                        <StatCell label="Tirs"    value={s.shots} />
-                        <StatCell label="Tirs C." value={s.shotsOn} />
-                        <StatCell label="J"       value={s.yellowCards} warn={(s.yellowCards ?? 0) > 0} />
-                        <StatCell label="R"       value={s.redCards}    danger={(s.redCards ?? 0) > 0} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* ── CUMUL CARRIÈRE ── */}
-              {cumul && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Cumul carrière</span>
-                    <span className="text-[10px] text-white/20">{pastSeasons.length} saison{pastSeasons.length > 1 ? 's' : ''}</span>
-                  </div>
-                  <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
-                    <div className="grid grid-cols-4 sm:grid-cols-8 gap-px bg-white/[0.04]">
-                      <StatCell label="Matchs"  value={cumul.appearances || '—'} />
-                      <StatCell label="Min"     value={cumul.minutes ? `${cumul.minutes}'` : '—'} />
-                      <StatCell label="Buts"    value={cumul.goals || '—'}       highlight={(cumul.goals ?? 0) > 0} />
-                      <StatCell label="Passes"  value={cumul.assists || '—'}     highlight={(cumul.assists ?? 0) > 0} />
-                      <StatCell label="Tirs"    value={cumul.shots || '—'} />
-                      <StatCell label="Tirs C." value={cumul.shotsOn || '—'} />
-                      <StatCell label="J"       value={cumul.yellowCards || '—'} warn={(cumul.yellowCards ?? 0) > 0} />
-                      <StatCell label="R"       value={cumul.redCards || '—'}    danger={(cumul.redCards ?? 0) > 0} />
-                    </div>
+                    ))}
                   </div>
                 </div>
               )}
 
-              {/* ── DÉTAIL PAR SAISON PASSÉE ── */}
-              {pastSeasons.length > 0 && (
-                <div className="mb-8">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Détail par saison</div>
-                  <div className="space-y-2">
-                    {pastSeasons.map(season => (
-                      <div key={season} className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
-                        {pastBySeason[season].map((s: any, i: number) => (
-                          <div key={i} className={i > 0 ? 'border-t border-white/[0.05]' : ''}>
-                            <div className="flex items-center gap-3 px-4 py-2.5 bg-white/[0.02]">
-                              <div className="text-[10px] font-black text-white/60 w-12 shrink-0">{season}/{String(season + 1).slice(-2)}</div>
-                              {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-4 w-4 object-contain" />}
-                              <div className="text-[11px] font-bold text-white/80 flex-1 truncate">{s.team}</div>
-                              {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-3 w-3 object-contain opacity-50" />}
-                              <div className="text-[9px] text-white/20 truncate max-w-[100px]">{s.league}</div>
-                            </div>
-                            <div className="grid grid-cols-4 sm:grid-cols-8 gap-px bg-white/[0.04]">
-                              <StatCell label="Matchs"  value={s.appearances} />
-                              <StatCell label="Min"     value={s.minutes ? `${s.minutes}'` : null} />
-                              <StatCell label="Buts"    value={s.goals}       highlight={(s.goals ?? 0) > 0} />
-                              <StatCell label="Passes"  value={s.assists}     highlight={(s.assists ?? 0) > 0} />
-                              <StatCell label="Tirs"    value={s.shots} />
-                              <StatCell label="Tirs C." value={s.shotsOn} />
-                              <StatCell label="J"       value={s.yellowCards} warn={(s.yellowCards ?? 0) > 0} />
-                              <StatCell label="R"       value={s.redCards}    danger={(s.redCards ?? 0) > 0} />
-                            </div>
-                          </div>
-                        ))}
+              {/* ── CARRIÈRE PAR CLUB ── */}
+              {clubCareer.length > 0 && (
+                <div className="mb-7">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Carrière · Clubs</div>
+                  <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden divide-y divide-white/[0.05]">
+                    {/* Header */}
+                    <div className="grid grid-cols-[1fr_auto_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
+                      <span className="text-[9px] text-white/25 uppercase tracking-widest">Club</span>
+                      {['M', 'Min', 'Buts', 'Passes'].map(h => (
+                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-10">{h}</span>
+                      ))}
+                    </div>
+                    {clubCareer.map((c, i) => (
+                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center px-4 py-2.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {c.logo && <img src={c.logo} alt={c.team} className="h-5 w-5 object-contain shrink-0" onError={e => e.currentTarget.style.display='none'} />}
+                          <span className="text-xs font-bold text-white truncate">{c.team}</span>
+                        </div>
+                        <span className="text-xs font-black text-white text-center w-10">{c.appearances ?? '—'}</span>
+                        <span className="text-xs text-white/50 text-center w-10">{c.minutes ? `${c.minutes}'` : '—'}</span>
+                        <span className={`text-xs font-black text-center w-10 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-10 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── SÉLECTION NATIONALE ── */}
+              {intlCareer.length > 0 && (
+                <div className="mb-7">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Sélection nationale</div>
+                  <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden divide-y divide-white/[0.05]">
+                    <div className="grid grid-cols-[1fr_auto_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
+                      <span className="text-[9px] text-white/25 uppercase tracking-widest">Équipe</span>
+                      {['M', 'Min', 'Buts', 'Passes'].map(h => (
+                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-10">{h}</span>
+                      ))}
+                    </div>
+                    {intlCareer.map((c, i) => (
+                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center px-4 py-2.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {c.logo && <img src={c.logo} alt={c.team} className="h-5 w-5 object-contain shrink-0" onError={e => e.currentTarget.style.display='none'} />}
+                          <span className="text-xs font-bold text-white truncate">{c.team}</span>
+                        </div>
+                        <span className="text-xs font-black text-white text-center w-10">{c.appearances ?? '—'}</span>
+                        <span className="text-xs text-white/50 text-center w-10">{c.minutes ? `${c.minutes}'` : '—'}</span>
+                        <span className={`text-xs font-black text-center w-10 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-10 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
                       </div>
                     ))}
                   </div>

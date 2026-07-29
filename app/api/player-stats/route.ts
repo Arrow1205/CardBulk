@@ -66,9 +66,13 @@ export async function GET(req: Request) {
     const player = bestMatch(profileData.response, name);
     const playerId = player.id;
 
-    // 2. Stats for last 5 seasons
-    const currentYear = new Date().getFullYear();
-    const seasons = Array.from({ length: 5 }, (_, i) => currentYear - i);
+    // 2. Stats for last 8 seasons
+    // Football seasons run Aug→May, so season "2025" = 2025/26.
+    // In summer (Jun-Aug), current season may not exist yet → start from currentYear-1 to be safe.
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const startYear = now.getMonth() < 7 ? currentYear - 1 : currentYear; // before August → use prev year
+    const seasons = Array.from({ length: 8 }, (_, i) => startYear - i);
 
     const statsResults = await Promise.all(
       seasons.map(season =>
