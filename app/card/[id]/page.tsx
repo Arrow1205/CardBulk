@@ -429,7 +429,7 @@ export default function CardDetailsPage() {
       <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto mt-[calc(32.5rem+env(safe-area-inset-top))] lg:mt-0 bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-12 min-h-screen shadow-[0_-10px_40px_rgba(0,0,0,0.8)] lg:shadow-[-10px_0_40px_rgba(0,0,0,0.8)] border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
         
         <div className="flex justify-between items-start mb-6">
-          <div onClick={() => router.push(`/collection?search=${encodeURIComponent(card.firstname + ' ' + card.lastname)}`)} className="cursor-pointer active:opacity-50 flex-1">
+          <div onClick={() => router.push(`/joueur/${(card.firstname + ' ' + card.lastname).toString().toLowerCase().trim().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '-').replace(/[^\w-]+/g, '').replace(/--+/g, '-')}`)} className="cursor-pointer active:opacity-50 flex-1">
             <div className="text-xl text-white uppercase tracking-wider font-light">{card.firstname || "Prénom"}</div>
             <div className="text-5xl lg:text-6xl font-black italic text-[#AFFF25] uppercase leading-none tracking-tighter break-words">{card.lastname || "Nom"}</div>
           </div>
