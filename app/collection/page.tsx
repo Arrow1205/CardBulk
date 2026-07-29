@@ -125,7 +125,22 @@ export default function CollectionPage() {
   const [expandedSubsets, setExpandedSubsets] = useState<Set<string>>(new Set());
   const [detailSearch, setDetailSearch] = useState('');
 
+  // Manual collection add
+  const [manualCollections, setManualCollections] = useState<any[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addForm, setAddForm] = useState({ name: '', year: '', publisher: '' });
+  const [addFile, setAddFile] = useState<File | null>(null);
+  const [addLoading, setAddLoading] = useState(false);
+  const addFileRef = useRef<HTMLInputElement>(null);
+
   // const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('manual_collections');
+      if (saved) try { setManualCollections(JSON.parse(saved)); } catch {}
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -624,6 +639,83 @@ export default function CollectionPage() {
     }
   };
 
+  const handleAddCollection = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!addForm.name.trim() || !addForm.year.trim()) return;
+    setAddLoading(true);
+    try {
+      const folder = slugify(`${addForm.publisher || 'custom'}-${addForm.name}-${addForm.year}`);
+      let subsets: any[] = [];
+      let cardTypes: string[] = [];
+
+      if (addFile) {
+        const XLSX = await import('xlsx');
+        const buffer = await addFile.arrayBuffer();
+        const wb = XLSX.read(buffer, { type: 'array' });
+        const sheetCategoryMap: Record<string, string> = {
+          'Base': 'BASE', 'Autographs': 'AUTOGRAPH', 'Autograph': 'AUTOGRAPH',
+          'Inserts': 'INSERT', 'Insert': 'INSERT',
+          'Memorabilia': 'RELIC', 'Relics': 'RELIC', 'Relic': 'RELIC',
+        };
+        for (const sheetName of wb.SheetNames) {
+          const category = sheetCategoryMap[sheetName] || sheetName.toUpperCase();
+          if (!cardTypes.includes(category)) cardTypes.push(category);
+          const rows: any[][] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1 }) as any[][];
+          let currentSection: string | null = null;
+          let currentParallels: string[] = [];
+          let currentPlayers: { name: string; club: string }[] = [];
+          let inParallels = false;
+          let cardCount: number | null = null;
+          const flush = () => {
+            if (currentSection && currentPlayers.length > 0)
+              subsets.push({ subset: category, section: currentSection, card_count: cardCount, parallels: [...currentParallels], players: [...currentPlayers] });
+            currentSection = null; currentParallels = []; currentPlayers = []; inParallels = false; cardCount = null;
+          };
+          for (const row of rows) {
+            if (!row || row.length === 0) continue;
+            const c0 = String(row[0] ?? '').trim();
+            const c1 = String(row[1] ?? '').trim();
+            if (row.length >= 2 && c1 && c0.endsWith(',')) { if (!inParallels) currentPlayers.push({ name: c0.slice(0, -1).trim(), club: c1 }); continue; }
+            if (/^\d+ cards?$/i.test(c0)) { cardCount = parseInt(c0); inParallels = false; continue; }
+            if (c0.toLowerCase() === 'parallels') { inParallels = true; continue; }
+            if (inParallels && /\/\d+/.test(c0)) { currentParallels.push(c0); continue; }
+            if (c0 && row.length === 1 && !/^\d/.test(c0)) { flush(); currentSection = c0; inParallels = false; }
+          }
+          flush();
+        }
+      }
+
+      const newCol = {
+        folder,
+        year: parseInt(addForm.year),
+        publisher: (addForm.publisher || 'CUSTOM').toUpperCase(),
+        serie: addForm.name.trim(),
+        card_types: cardTypes,
+        beckett_url: '',
+        is_manual: true,
+      };
+
+      const updated = [...manualCollections, newCol];
+      setManualCollections(updated);
+      localStorage.setItem('manual_collections', JSON.stringify(updated));
+
+      if (subsets.length > 0) {
+        const colData = { collection_id: folder, xlsx_parsed: true, xlsx_source: 'manual', fiche: null, subsets };
+        localStorage.setItem(`checklist_override_${folder}`, JSON.stringify(colData));
+      }
+
+      setShowAddModal(false);
+      setAddForm({ name: '', year: '', publisher: '' });
+      setAddFile(null);
+      if (addFileRef.current) addFileRef.current.value = '';
+    } catch (err) {
+      alert('Erreur lors de la création de la collection.');
+      console.error(err);
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
   const CAT_COLORS: Record<string, string> = {
     'BASE':        '#AFFF25',
     'INSERT':      '#34d399',
@@ -939,10 +1031,11 @@ export default function CollectionPage() {
     const PUB_ALIASES: Record<string, string> = { 'DONRUSS': 'PANINI' };
     const normPub = (p: string) => PUB_ALIASES[(p || '').toUpperCase()] || p;
 
-    const publishers = Array.from(new Set(catalog.map(c => normPub(c.publisher)).filter(Boolean))).sort() as string[];
-    const years = Array.from(new Set(catalog.map(c => c.year).filter(Boolean))).sort((a: any, b: any) => b - a) as number[];
+    const allCatalog = [...catalog, ...manualCollections];
+    const publishers = Array.from(new Set(allCatalog.map(c => normPub(c.publisher)).filter(Boolean))).sort() as string[];
+    const years = Array.from(new Set(allCatalog.map(c => c.year).filter(Boolean))).sort((a: any, b: any) => b - a) as number[];
 
-    const filtered = (catalog as any[]).filter(col => {
+    const filtered = allCatalog.filter(col => {
       const term = checklistSearch.toLowerCase().trim();
       const searchMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
       const pubMatch = !checklistBrand || normPub(col.publisher) === checklistBrand;
@@ -975,8 +1068,8 @@ export default function CollectionPage() {
             {publishers.map(pub => {
               const slug = pub.toLowerCase().replace(/\s+/g, '-');
               return (
-                <button key={pub} onClick={() => setChecklistBrand(checklistBrand === pub ? null : pub)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all flex items-center gap-2 ${checklistBrand === pub ? 'bg-white/15 border-white/30 text-white' : 'bg-white/5 border-white/10 text-white/60'}`}>
-                  <img src={`/asset/logo-marque/${slug}.png`} alt={pub} className="h-3.5 object-contain mix-blend-screen" onError={e => e.currentTarget.style.display = 'none'} />
+                <button key={pub} onClick={() => setChecklistBrand(checklistBrand === pub ? null : pub)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all flex items-center gap-2 ${checklistBrand === pub ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/60'}`}>
+                  <img src={`/asset/logo-marque/${slug}.png`} alt={pub} className={`h-3.5 object-contain ${checklistBrand === pub ? '' : 'mix-blend-screen'}`} onError={e => e.currentTarget.style.display = 'none'} />
                   {pub}
                 </button>
               );
@@ -994,9 +1087,16 @@ export default function CollectionPage() {
           </div>
         </div>
 
-        {/* Compteur */}
-        <div className="px-6 lg:px-[80px] mb-3">
+        {/* Compteur + bouton ajout */}
+        <div className="px-6 lg:px-[80px] mb-3 flex items-center justify-between">
           <span className="text-xs text-white/30">{filtered.length} collection{filtered.length > 1 ? 's' : ''}</span>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/5 transition-all active:scale-95 text-xs font-bold text-white/60 hover:text-[#AFFF25]"
+          >
+            <Plus size={13} />
+            Ajouter
+          </button>
         </div>
 
         {/* Liste collections */}
@@ -1030,6 +1130,89 @@ export default function CollectionPage() {
             <div className="text-center py-20 text-white/30 italic text-sm">Aucune collection trouvée.</div>
           )}
         </div>
+
+        {/* Add collection modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowAddModal(false)}>
+            <div className="w-full max-w-md bg-[#0c0b2e] border border-white/10 rounded-3xl p-6 space-y-5 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-black italic uppercase tracking-tight text-white">Nouvelle collection</h3>
+                <button onClick={() => setShowAddModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors"><X size={16} /></button>
+              </div>
+
+              <form onSubmit={handleAddCollection} className="space-y-4">
+                {/* Nom */}
+                <div>
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1.5">Nom de la collection *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ex : Topps Chrome Premier League"
+                    value={addForm.name}
+                    onChange={e => setAddForm(f => ({ ...f, name: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#AFFF25] transition-all"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  {/* Année */}
+                  <div className="flex-1">
+                    <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1.5">Année *</label>
+                    <input
+                      type="number"
+                      required
+                      placeholder="2026"
+                      min="2000"
+                      max="2030"
+                      value={addForm.year}
+                      onChange={e => setAddForm(f => ({ ...f, year: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#AFFF25] transition-all"
+                    />
+                  </div>
+                  {/* Publisher */}
+                  <div className="flex-1">
+                    <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1.5">Éditeur</label>
+                    <input
+                      type="text"
+                      placeholder="TOPPS / PANINI…"
+                      value={addForm.publisher}
+                      onChange={e => setAddForm(f => ({ ...f, publisher: e.target.value }))}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#AFFF25] transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* XLSX */}
+                <div>
+                  <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1.5">Fichier XLSX (optionnel)</label>
+                  <input ref={addFileRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={e => setAddFile(e.target.files?.[0] || null)} />
+                  <button
+                    type="button"
+                    onClick={() => addFileRef.current?.click()}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-white/15 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/3 transition-all text-sm text-white/40 hover:text-[#AFFF25]"
+                  >
+                    {addFile ? (
+                      <><Check size={15} className="text-[#AFFF25]" /><span className="text-[#AFFF25] font-bold truncate max-w-[240px]">{addFile.name}</span></>
+                    ) : (
+                      <><Plus size={15} /><span>Déposer un fichier Excel</span></>
+                    )}
+                  </button>
+                  {addFile && (
+                    <button type="button" onClick={() => { setAddFile(null); if (addFileRef.current) addFileRef.current.value = ''; }} className="text-[10px] text-red-400 hover:text-red-300 mt-1 ml-1">Supprimer le fichier</button>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={addLoading || !addForm.name || !addForm.year}
+                  className="w-full py-3 rounded-2xl bg-[#AFFF25] text-[#040221] font-black text-sm uppercase tracking-widest disabled:opacity-40 active:scale-[0.98] transition-all"
+                >
+                  {addLoading ? 'Création...' : 'Créer la collection'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
