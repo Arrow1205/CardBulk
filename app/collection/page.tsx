@@ -1229,68 +1229,6 @@ export default function CollectionPage() {
           )}
         </div>
 
-        {/* Owned card preview modal */}
-        {ownedCardPreview && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setOwnedCardPreview(null)}>
-            <div className="w-full max-w-xs bg-[#0c0b2e] border border-white/10 rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-              {/* Card image */}
-              <div className="relative bg-black/40 flex items-center justify-center" style={{ minHeight: 220 }}>
-                {ownedCardPreview.image_url ? (
-                  <img src={ownedCardPreview.image_url} alt={ownedCardPreview.lastname} className="w-full object-contain max-h-64" />
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-white/20 gap-2">
-                    <span className="text-4xl">🃏</span>
-                    <span className="text-xs">Pas d'image</span>
-                  </div>
-                )}
-                <button onClick={() => setOwnedCardPreview(null)} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-black/50 text-white/60 hover:text-white transition-colors"><X size={14} /></button>
-              </div>
-
-              {/* Card info */}
-              <div className="p-5 space-y-3">
-                <div>
-                  <div className="text-xs text-white/40 uppercase tracking-widest mb-0.5">{ownedCardPreview.firstname}</div>
-                  <div className="text-2xl font-black italic uppercase text-[#AFFF25] leading-tight">{ownedCardPreview.lastname}</div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {ownedCardPreview.brand && (
-                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
-                      <div className="text-white/30 mb-0.5">Marque</div>
-                      <div className="text-white font-bold">{ownedCardPreview.brand}</div>
-                    </div>
-                  )}
-                  {ownedCardPreview.series && (
-                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
-                      <div className="text-white/30 mb-0.5">Série</div>
-                      <div className="text-white font-bold truncate">{ownedCardPreview.series}</div>
-                    </div>
-                  )}
-                  {ownedCardPreview.year && (
-                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
-                      <div className="text-white/30 mb-0.5">Année</div>
-                      <div className="text-white font-bold">{ownedCardPreview.year}</div>
-                    </div>
-                  )}
-                  {ownedCardPreview.club_name && (
-                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
-                      <div className="text-white/30 mb-0.5">Club</div>
-                      <div className="text-white font-bold truncate">{ownedCardPreview.club_name}</div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {ownedCardPreview.is_auto && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20 font-bold">AUTO</span>}
-                  {ownedCardPreview.is_patch && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/20 font-bold">PATCH</span>}
-                  {ownedCardPreview.is_numbered && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#60a5fa]/15 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">/{ownedCardPreview.numbering_max}</span>}
-                  {ownedCardPreview.is_rc && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#34d399]/15 text-[#34d399] border border-[#34d399]/20 font-bold">RC</span>}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Add collection modal */}
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowAddModal(false)}>
@@ -1628,6 +1566,62 @@ export default function CollectionPage() {
 
       {activeTab === 'cartes' && !targetFolderId && (
         <FloatingSearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      )}
+
+      {ownedCardPreview && (
+        <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setOwnedCardPreview(null)}>
+          <div className="w-full max-w-xs bg-[#0c0b2e] border border-white/10 rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <div className="relative bg-black/40 flex items-center justify-center" style={{ minHeight: 220 }}>
+              {ownedCardPreview.image_url ? (
+                <img src={ownedCardPreview.image_url} alt={ownedCardPreview.lastname} className="w-full object-contain max-h-64" />
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-white/20 gap-2">
+                  <span className="text-4xl">🃏</span>
+                  <span className="text-xs">Pas d'image</span>
+                </div>
+              )}
+              <button onClick={() => setOwnedCardPreview(null)} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-black/50 text-white/60 hover:text-white transition-colors"><X size={14} /></button>
+            </div>
+            <div className="p-5 space-y-3">
+              <div>
+                <div className="text-xs text-white/40 uppercase tracking-widest mb-0.5">{ownedCardPreview.firstname}</div>
+                <div className="text-2xl font-black italic uppercase text-[#AFFF25] leading-tight">{ownedCardPreview.lastname}</div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {ownedCardPreview.brand && (
+                  <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                    <div className="text-white/30 mb-0.5">Marque</div>
+                    <div className="text-white font-bold">{ownedCardPreview.brand}</div>
+                  </div>
+                )}
+                {ownedCardPreview.series && (
+                  <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                    <div className="text-white/30 mb-0.5">Série</div>
+                    <div className="text-white font-bold truncate">{ownedCardPreview.series}</div>
+                  </div>
+                )}
+                {ownedCardPreview.year && (
+                  <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                    <div className="text-white/30 mb-0.5">Année</div>
+                    <div className="text-white font-bold">{ownedCardPreview.year}</div>
+                  </div>
+                )}
+                {ownedCardPreview.club_name && (
+                  <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                    <div className="text-white/30 mb-0.5">Club</div>
+                    <div className="text-white font-bold truncate">{ownedCardPreview.club_name}</div>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {ownedCardPreview.is_auto && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20 font-bold">AUTO</span>}
+                {ownedCardPreview.is_patch && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/20 font-bold">PATCH</span>}
+                {ownedCardPreview.is_numbered && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#60a5fa]/15 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">/{ownedCardPreview.numbering_max}</span>}
+                {ownedCardPreview.is_rc && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#34d399]/15 text-[#34d399] border border-[#34d399]/20 font-bold">RC</span>}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
