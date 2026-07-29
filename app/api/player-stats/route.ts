@@ -10,6 +10,31 @@ async function apiFetch(path: string, key: string) {
   return res.json();
 }
 
+// Normalize: strip accents + lowercase + alnum only — matches the same logic on the client
+const normName = (s: string) =>
+  (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
+// Pick the result whose full name best matches the query
+function bestMatch(results: any[], query: string): any | null {
+  if (!results.length) return null;
+  const q = normName(query);
+  // Exact match first
+  for (const r of results) {
+    const p = r.player;
+    const full = normName(`${p.firstname || ''} ${p.lastname || ''}`);
+    const rev  = normName(`${p.lastname || ''} ${p.firstname || ''}`);
+    if (full === q || rev === q) return p;
+  }
+  // Partial match
+  for (const r of results) {
+    const p = r.player;
+    const full = normName(`${p.firstname || ''} ${p.lastname || ''}`);
+    if (q.includes(full) || full.includes(q)) return p;
+  }
+  // Fallback: first result
+  return results[0].player;
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const name = searchParams.get('name');
@@ -19,17 +44,26 @@ export async function GET(req: Request) {
   if (!API_KEY) return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
 
   try {
-    // 1. Search player profile
-    const profileData = await apiFetch(
+    // 1. Search player profile — try full name, fallback to last word only
+    let profileData = await apiFetch(
       `/players/profiles?search=${encodeURIComponent(name)}`,
       API_KEY
     );
+
+    // If no result, retry with just the last name token (handles "Desire Doue" → "Doue")
+    if (!profileData.response?.length) {
+      const lastName = name.split(' ').pop() || name;
+      profileData = await apiFetch(
+        `/players/profiles?search=${encodeURIComponent(lastName)}`,
+        API_KEY
+      );
+    }
 
     if (!profileData.response?.length) {
       return NextResponse.json({ player: null, stats: [], trophies: [] });
     }
 
-    const player = profileData.response[0].player;
+    const player = bestMatch(profileData.response, name);
     const playerId = player.id;
 
     // 2. Stats for last 5 seasons

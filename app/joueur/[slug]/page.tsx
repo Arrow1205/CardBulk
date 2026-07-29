@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Trophy, Star } from 'lucide-react';
+import { ChevronLeft, Loader2, Trophy } from 'lucide-react';
 
 const slugify = (text: string) =>
   text.toString().toLowerCase().trim()
@@ -13,15 +13,43 @@ const slugify = (text: string) =>
 const unslugify = (slug: string) =>
   slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
+// Normalize for fuzzy matching: strip accents + lowercase + alnum only
+const norm = (s: string) =>
+  (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
 const SPORT_FOLDERS: Record<string, string> = {
   SOCCER: 'foot', BASKETBALL: 'NBA', BASEBALL: 'MLB', NFL: 'NFL', NHL: 'NHL',
 };
+
+function sumStats(rows: any[]) {
+  return rows.reduce((acc, s) => ({
+    appearances: (acc.appearances ?? 0) + (s.appearances ?? 0),
+    minutes:     (acc.minutes ?? 0)     + (s.minutes ?? 0),
+    goals:       (acc.goals ?? 0)       + (s.goals ?? 0),
+    assists:     (acc.assists ?? 0)      + (s.assists ?? 0),
+    shots:       (acc.shots ?? 0)       + (s.shots ?? 0),
+    shotsOn:     (acc.shotsOn ?? 0)     + (s.shotsOn ?? 0),
+    yellowCards: (acc.yellowCards ?? 0) + (s.yellowCards ?? 0),
+    redCards:    (acc.redCards ?? 0)    + (s.redCards ?? 0),
+  }), {} as any);
+}
+
+function StatCell({ label, value, highlight, warn, danger }: { label: string; value: any; highlight?: boolean; warn?: boolean; danger?: boolean }) {
+  return (
+    <div className="bg-[#040221] px-2 py-3 text-center">
+      <div className="text-[9px] text-white/30 uppercase tracking-widest mb-1">{label}</div>
+      <div className={`text-sm font-black ${highlight ? 'text-[#AFFF25]' : warn ? 'text-yellow-400' : danger ? 'text-red-500' : 'text-white'}`}>
+        {value ?? '—'}
+      </div>
+    </div>
+  );
+}
 
 export default function JoueurPage() {
   const router = useRouter();
   const params = useParams();
   const slug = params.slug as string;
-  const playerName = unslugify(slug);
+  const playerName = unslugify(slug); // e.g. "Desire Doue" (no accents, that's OK)
 
   const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,29 +57,34 @@ export default function JoueurPage() {
   const [horizontalCards, setHorizontalCards] = useState<Record<string, boolean>>({});
   const [selectedClub, setSelectedClub] = useState<string | null>(null);
 
-  // API stats
   const [statsData, setStatsData] = useState<any | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsFetched, setStatsFetched] = useState(false);
 
-  useEffect(() => {
-    loadCards();
-  }, [slug]);
+  useEffect(() => { loadCards(); }, [slug]);
+  useEffect(() => { if (activeTab === 'stats' && !statsFetched) fetchStats(); }, [activeTab]);
 
-  useEffect(() => {
-    if (activeTab === 'stats' && !statsFetched) fetchStats();
-  }, [activeTab]);
+  const filterByPlayer = (all: any[]) => {
+    const termNorm = norm(playerName);
+    if (termNorm.length < 2) return [];
+    return all.filter((c: any) => {
+      const cardFull = norm(`${c.firstname || ''} ${c.lastname || ''}`);
+      if (cardFull.length < 2) return false; // guard: empty card name matches nothing
+      const cardRev = norm(`${c.lastname || ''} ${c.firstname || ''}`);
+      return cardFull === termNorm || cardRev === termNorm
+        || (cardFull.length >= 4 && termNorm.includes(cardFull))
+        || (termNorm.length >= 4 && cardFull.includes(termNorm));
+    });
+  };
 
   const loadCards = async () => {
     setLoading(true);
-    // Offline cache first
     const saved = typeof window !== 'undefined' ? localStorage.getItem('cardbulk_offline_cards') : null;
     if (saved) {
       const all = JSON.parse(saved);
-      setCards(filterByPlayer(all));
+      setCards(filterByPlayer(all.filter((c: any) => !c.is_wishlist)));
       setLoading(false);
     }
-    // Supabase
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/login'); return; }
@@ -63,15 +96,6 @@ export default function JoueurPage() {
       }
     } catch {}
     setLoading(false);
-  };
-
-  const filterByPlayer = (all: any[]) => {
-    const term = playerName.toLowerCase();
-    return all.filter((c: any) => {
-      const full = `${c.firstname || ''} ${c.lastname || ''}`.toLowerCase().trim();
-      const rev = `${c.lastname || ''} ${c.firstname || ''}`.toLowerCase().trim();
-      return full === term || rev === term || full.includes(term) || term.includes(full.replace(/\s+/g, ' '));
-    });
   };
 
   const fetchStats = async () => {
@@ -96,124 +120,108 @@ export default function JoueurPage() {
     </div>
   );
 
-  // Player info — from API if available, else from cards
   const apiPlayer = statsData?.player;
   const firstCard = cards[0];
   const displayFirstname = apiPlayer?.firstname || firstCard?.firstname || '';
-  const displayLastname = apiPlayer?.lastname || firstCard?.lastname || playerName;
-  const playerPhoto = apiPlayer?.photo || null;
+  const displayLastname  = apiPlayer?.lastname  || firstCard?.lastname  || playerName;
+  const playerPhoto      = apiPlayer?.photo || null;
   const playerNationality = apiPlayer?.nationality || null;
-  const playerAge = apiPlayer?.age || null;
+  const playerAge        = apiPlayer?.age || null;
 
-  // Clubs from cards
-  const uniqueClubs = Array.from(new Set(
-    cards.map(c => c.club_name).filter(Boolean)
-  )).sort() as string[];
+  const uniqueClubs = Array.from(new Set(cards.map(c => c.club_name).filter(Boolean))).sort() as string[];
+  const filteredCards = selectedClub ? cards.filter(c => c.club_name === selectedClub) : cards;
 
-  const filteredCards = selectedClub
-    ? cards.filter(c => c.club_name === selectedClub)
-    : cards;
-
-  // Stats grouped by season desc
-  const stats: any[] = statsData?.stats || [];
+  // ── Stats ──
+  const allStats: any[] = statsData?.stats || [];
   const trophies: any[] = statsData?.trophies || [];
-  const statsBySeason = stats.reduce((acc: Record<string, any[]>, s: any) => {
-    const key = String(s.season);
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(s);
-    return acc;
-  }, {});
-  const sortedSeasons = Object.keys(statsBySeason).sort((a, b) => Number(b) - Number(a));
+
+  const currentYear = new Date().getFullYear();
+  // Saison en cours = la plus récente dans les données
+  const sortedAllSeasons = Array.from(new Set(allStats.map(s => Number(s.season)))).sort((a, b) => b - a);
+  const currentSeason = sortedAllSeasons[0] ?? null;
+
+  const currentSeasonRows = allStats.filter(s => Number(s.season) === currentSeason);
+  const pastRows = allStats.filter(s => Number(s.season) !== currentSeason);
+
+  // Cumul toutes saisons passées
+  const cumul = pastRows.length > 0 ? sumStats(pastRows) : null;
+
+  // Détail par saison passée
+  const pastSeasons = sortedAllSeasons.filter(s => s !== currentSeason);
+  const pastBySeason: Record<number, any[]> = {};
+  for (const s of pastRows) {
+    const k = Number(s.season);
+    if (!pastBySeason[k]) pastBySeason[k] = [];
+    pastBySeason[k].push(s);
+  }
+
+  const statsHeader = ['Matchs', 'Min', 'Buts', 'Passes', 'Tirs', 'Tirs C.', 'J', 'R'];
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans">
-      {/* Background blur from photo */}
+      {/* Background */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        {playerPhoto && (
-          <img src={playerPhoto} alt="" className="w-full h-64 object-cover object-top opacity-10 blur-2xl scale-110" />
-        )}
+        {playerPhoto && <img src={playerPhoto} alt="" className="w-full h-64 object-cover object-top opacity-10 blur-2xl scale-110" />}
         <div className="absolute inset-0 bg-gradient-to-b from-[#040221]/60 via-[#040221]/90 to-[#040221]" />
       </div>
 
       {/* Header */}
       <div className="relative z-10 pt-[calc(1.5rem+env(safe-area-inset-top))] px-6 lg:px-[80px] flex items-start gap-4">
-        <button
-          onClick={() => router.back()}
-          className="mt-1 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0"
-        >
+        <button onClick={() => router.back()} className="mt-1 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0">
           <ChevronLeft size={20} />
         </button>
-
         <div className="flex items-center gap-5 flex-1 min-w-0">
-          {/* Photo */}
           <div className="shrink-0 w-20 h-20 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
-            {playerPhoto ? (
-              <img src={playerPhoto} alt={displayLastname} className="w-full h-full object-cover object-top" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-white/20 text-3xl font-black italic uppercase">
-                {displayLastname.charAt(0)}
-              </div>
-            )}
+            {playerPhoto
+              ? <img src={playerPhoto} alt={displayLastname} className="w-full h-full object-cover object-top" />
+              : <div className="w-full h-full flex items-center justify-center text-white/20 text-3xl font-black italic uppercase">{displayLastname.charAt(0)}</div>
+            }
           </div>
-
-          {/* Name */}
           <div className="min-w-0">
             {playerNationality && (
-              <div className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1">{playerNationality}{playerAge ? ` · ${playerAge} ans` : ''}</div>
+              <div className="text-[10px] text-white/40 font-bold uppercase tracking-widest mb-1">
+                {playerNationality}{playerAge ? ` · ${playerAge} ans` : ''}
+              </div>
             )}
             <div className="text-sm text-white/50 uppercase tracking-widest">{displayFirstname}</div>
             <h1 className="text-3xl font-black italic uppercase tracking-tighter leading-none text-[#AFFF25] truncate">{displayLastname}</h1>
-            <div className="text-xs text-white/30 mt-1">{cards.length} carte{cards.length > 1 ? 's' : ''} dans ta collection</div>
+            <div className="text-xs text-white/30 mt-1">{cards.length} carte{cards.length !== 1 ? 's' : ''} dans ta collection</div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="relative z-10 px-6 lg:px-[80px] mt-6 flex gap-6 border-b border-white/[0.08]">
-        <button
-          onClick={() => setActiveTab('cartes')}
-          className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
-        >
-          Cartes
-          {activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25]" />}
-        </button>
-        <button
-          onClick={() => setActiveTab('stats')}
-          className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'stats' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}
-        >
-          Stats
-          {activeTab === 'stats' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25]" />}
-        </button>
+        {(['cartes', 'stats'] as const).map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)}
+            className={`pb-3 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === tab ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
+            {tab === 'cartes' ? `Cartes (${cards.length})` : 'Stats'}
+            {activeTab === tab && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25]" />}
+          </button>
+        ))}
       </div>
 
       {/* ── TAB CARTES ── */}
       {activeTab === 'cartes' && (
         <div className="relative z-10 px-6 lg:px-[80px] pt-5 pb-32">
-          {/* Club filter */}
+          {cards.length === 0 && (
+            <div className="text-center py-20 text-white/30 italic text-sm">Aucune carte de ce joueur dans ta collection.</div>
+          )}
+
           {uniqueClubs.length > 1 && (
             <div className="overflow-x-auto mb-5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="flex gap-2 w-max">
-                <button
-                  onClick={() => setSelectedClub(null)}
-                  className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!selectedClub ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/60'}`}
-                >
+                <button onClick={() => setSelectedClub(null)}
+                  className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!selectedClub ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/60'}`}>
                   Tous les clubs
                 </button>
                 {uniqueClubs.map(club => {
                   const sport = cards.find(c => c.club_name === club)?.sport || 'SOCCER';
                   const sportFolder = SPORT_FOLDERS[sport] || 'foot';
                   return (
-                    <button
-                      key={club}
-                      onClick={() => setSelectedClub(selectedClub === club ? null : club)}
-                      className={`flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${selectedClub === club ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/60'}`}
-                    >
-                      <img
-                        src={`/asset/logo-club/${sportFolder}/${slugify(club)}.svg`}
-                        alt={club}
-                        className={`h-4 w-4 object-contain ${selectedClub === club ? '' : 'opacity-60'}`}
-                        onError={e => e.currentTarget.style.display = 'none'}
-                      />
+                    <button key={club} onClick={() => setSelectedClub(selectedClub === club ? null : club)}
+                      className={`flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${selectedClub === club ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/60'}`}>
+                      <img src={`/asset/logo-club/${sportFolder}/${slugify(club)}.svg`} alt={club} className={`h-4 w-4 object-contain ${selectedClub === club ? '' : 'opacity-60'}`} onError={e => e.currentTarget.style.display = 'none'} />
                       {club}
                     </button>
                   );
@@ -222,37 +230,21 @@ export default function JoueurPage() {
             </div>
           )}
 
-          {filteredCards.length === 0 && (
-            <div className="text-center py-20 text-white/30 italic text-sm">Aucune carte pour ce filtre.</div>
-          )}
-
           <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 grid-flow-dense">
             {filteredCards.map(card => {
               const isHorizontal = horizontalCards[card.id] || card.is_horizontal;
               return (
-                <div
-                  key={card.id}
-                  onClick={() => router.push(`/card/${card.id}`)}
-                  className={`relative rounded-[12px] overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform hover:border-[#AFFF25]/30 ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}
-                >
-                  {card.image_url ? (
-                    <img
-                      src={card.image_url}
-                      alt={card.lastname}
-                      onLoad={e => handleImageLoad(card.id, e)}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px] p-2 text-center">
-                      {card.brand} {card.series}
-                    </div>
-                  )}
-                  {/* Badges */}
+                <div key={card.id} onClick={() => router.push(`/card/${card.id}`)}
+                  className={`relative rounded-[12px] overflow-hidden bg-white/5 border border-white/10 cursor-pointer active:scale-95 transition-transform hover:border-[#AFFF25]/30 ${isHorizontal ? 'col-span-2 aspect-[1.55]' : 'col-span-1 aspect-[3/4]'}`}>
+                  {card.image_url
+                    ? <img src={card.image_url} alt={card.lastname} onLoad={e => handleImageLoad(card.id, e)} className="w-full h-full object-cover" />
+                    : <div className="w-full h-full flex items-center justify-center text-white/20 text-[10px] p-2 text-center">{card.brand} {card.series}</div>
+                  }
                   <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
-                    {card.is_auto && <span className="text-[8px] px-1.5 py-0.5 rounded bg-[#f59e0b]/90 text-black font-black">A</span>}
-                    {card.is_patch && <span className="text-[8px] px-1.5 py-0.5 rounded bg-[#a78bfa]/90 text-black font-black">P</span>}
+                    {card.is_auto    && <span className="text-[8px] px-1.5 py-0.5 rounded bg-[#f59e0b]/90 text-black font-black">A</span>}
+                    {card.is_patch   && <span className="text-[8px] px-1.5 py-0.5 rounded bg-[#a78bfa]/90 text-black font-black">P</span>}
                     {card.is_numbered && <span className="text-[8px] px-1.5 py-0.5 rounded bg-black/80 text-white font-black">/{card.numbering_max}</span>}
-                    {card.is_rookie && <span className="text-[8px] px-1.5 py-0.5 rounded bg-[#34d399]/90 text-black font-black">RC</span>}
+                    {card.is_rookie  && <span className="text-[8px] px-1.5 py-0.5 rounded bg-[#34d399]/90 text-black font-black">RC</span>}
                   </div>
                   {card.is_graded && (
                     <div className="absolute bottom-1.5 right-1.5 text-[8px] px-1.5 py-0.5 rounded bg-[#AFFF25]/90 text-black font-black">
@@ -279,65 +271,90 @@ export default function JoueurPage() {
           {!statsLoading && statsData?.player === null && (
             <div className="text-center py-20">
               <p className="text-white/40 text-sm mb-2">Joueur introuvable dans l'API.</p>
-              <p className="text-white/20 text-xs">Vérifie que le nom correspond exactement.</p>
+              <p className="text-white/20 text-xs">Essaie de corriger le nom dans l'URL.</p>
             </div>
           )}
 
-          {!statsLoading && statsData && statsData.player && (
+          {!statsLoading && statsData?.player && (
             <>
-              {/* Current club from most recent stat */}
-              {stats[0]?.team && (
-                <div className="flex items-center gap-3 mb-6 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                  {stats[0].teamLogo && <img src={stats[0].teamLogo} alt={stats[0].team} className="h-10 w-10 object-contain" />}
-                  <div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-widest">Club actuel</div>
-                    <div className="text-lg font-black text-white">{stats[0].team}</div>
+              {/* ── SAISON EN COURS ── */}
+              {currentSeasonRows.length > 0 && (
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Saison en cours</span>
+                    <span className="text-[10px] text-white/30">{currentSeason}/{String(Number(currentSeason) + 1).slice(-2)}</span>
                   </div>
-                  {stats[0].rating && (
-                    <div className="ml-auto text-right">
-                      <div className="text-[10px] text-white/40 uppercase tracking-widest">Note moy.</div>
-                      <div className="text-2xl font-black text-[#AFFF25]">{stats[0].rating}</div>
+                  {currentSeasonRows.map((s: any, i: number) => (
+                    <div key={i} className={`rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden ${i > 0 ? 'mt-2' : ''}`}>
+                      <div className="flex items-center gap-3 px-4 py-3 bg-white/[0.02]">
+                        {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-6 w-6 object-contain" />}
+                        <div className="text-xs font-bold text-white">{s.team}</div>
+                        {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-4 w-4 object-contain ml-auto opacity-60" />}
+                        <div className="text-[10px] text-white/30 truncate max-w-[120px]">{s.league}</div>
+                        {s.rating && <div className="ml-2 text-[#AFFF25] font-black text-sm">{s.rating}</div>}
+                      </div>
+                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-px bg-white/[0.04]">
+                        <StatCell label="Matchs"  value={s.appearances} />
+                        <StatCell label="Min"     value={s.minutes ? `${s.minutes}'` : null} />
+                        <StatCell label="Buts"    value={s.goals}       highlight={(s.goals ?? 0) > 0} />
+                        <StatCell label="Passes"  value={s.assists}     highlight={(s.assists ?? 0) > 0} />
+                        <StatCell label="Tirs"    value={s.shots} />
+                        <StatCell label="Tirs C." value={s.shotsOn} />
+                        <StatCell label="J"       value={s.yellowCards} warn={(s.yellowCards ?? 0) > 0} />
+                        <StatCell label="R"       value={s.redCards}    danger={(s.redCards ?? 0) > 0} />
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               )}
 
-              {/* Stats table per season */}
-              {sortedSeasons.length > 0 && (
+              {/* ── CUMUL CARRIÈRE ── */}
+              {cumul && (
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Cumul carrière</span>
+                    <span className="text-[10px] text-white/20">{pastSeasons.length} saison{pastSeasons.length > 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
+                    <div className="grid grid-cols-4 sm:grid-cols-8 gap-px bg-white/[0.04]">
+                      <StatCell label="Matchs"  value={cumul.appearances || '—'} />
+                      <StatCell label="Min"     value={cumul.minutes ? `${cumul.minutes}'` : '—'} />
+                      <StatCell label="Buts"    value={cumul.goals || '—'}       highlight={(cumul.goals ?? 0) > 0} />
+                      <StatCell label="Passes"  value={cumul.assists || '—'}     highlight={(cumul.assists ?? 0) > 0} />
+                      <StatCell label="Tirs"    value={cumul.shots || '—'} />
+                      <StatCell label="Tirs C." value={cumul.shotsOn || '—'} />
+                      <StatCell label="J"       value={cumul.yellowCards || '—'} warn={(cumul.yellowCards ?? 0) > 0} />
+                      <StatCell label="R"       value={cumul.redCards || '—'}    danger={(cumul.redCards ?? 0) > 0} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── DÉTAIL PAR SAISON PASSÉE ── */}
+              {pastSeasons.length > 0 && (
                 <div className="mb-8">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-white/40 mb-3">Statistiques par saison</h3>
-                  <div className="space-y-3">
-                    {sortedSeasons.map(season => (
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Détail par saison</div>
+                  <div className="space-y-2">
+                    {pastSeasons.map(season => (
                       <div key={season} className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
-                        {statsBySeason[season].map((s: any, i: number) => (
+                        {pastBySeason[season].map((s: any, i: number) => (
                           <div key={i} className={i > 0 ? 'border-t border-white/[0.05]' : ''}>
-                            {/* Season + team header */}
-                            <div className="flex items-center gap-3 px-4 py-3 bg-white/[0.02]">
-                              <div className="text-xs font-black text-[#AFFF25]">{season}/{Number(season) + 1 - 2000}</div>
-                              {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-5 w-5 object-contain" />}
-                              <div className="text-xs font-bold text-white">{s.team}</div>
-                              {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-4 w-4 object-contain ml-auto opacity-60" />}
-                              <div className="text-[10px] text-white/30 truncate max-w-[120px]">{s.league}</div>
+                            <div className="flex items-center gap-3 px-4 py-2.5 bg-white/[0.02]">
+                              <div className="text-[10px] font-black text-white/60 w-12 shrink-0">{season}/{String(season + 1).slice(-2)}</div>
+                              {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-4 w-4 object-contain" />}
+                              <div className="text-[11px] font-bold text-white/80 flex-1 truncate">{s.team}</div>
+                              {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-3 w-3 object-contain opacity-50" />}
+                              <div className="text-[9px] text-white/20 truncate max-w-[100px]">{s.league}</div>
                             </div>
-                            {/* Stats grid */}
                             <div className="grid grid-cols-4 sm:grid-cols-8 gap-px bg-white/[0.04]">
-                              {[
-                                { label: 'Matchs', value: s.appearances ?? '—' },
-                                { label: 'Min', value: s.minutes ? `${s.minutes}'` : '—' },
-                                { label: 'Buts', value: s.goals ?? '—', highlight: (s.goals ?? 0) > 0 },
-                                { label: 'Passes', value: s.assists ?? '—', highlight: (s.assists ?? 0) > 0 },
-                                { label: 'Tirs', value: s.shots ?? '—' },
-                                { label: 'Tirs C.', value: s.shotsOn ?? '—' },
-                                { label: 'J', value: s.yellowCards ?? '—', warn: (s.yellowCards ?? 0) > 0 },
-                                { label: 'R', value: s.redCards ?? '—', danger: (s.redCards ?? 0) > 0 },
-                              ].map(stat => (
-                                <div key={stat.label} className="bg-[#040221] px-3 py-3 text-center">
-                                  <div className="text-[9px] text-white/30 uppercase tracking-widest mb-1">{stat.label}</div>
-                                  <div className={`text-sm font-black ${(stat as any).highlight ? 'text-[#AFFF25]' : (stat as any).warn ? 'text-yellow-400' : (stat as any).danger ? 'text-red-500' : 'text-white'}`}>
-                                    {stat.value}
-                                  </div>
-                                </div>
-                              ))}
+                              <StatCell label="Matchs"  value={s.appearances} />
+                              <StatCell label="Min"     value={s.minutes ? `${s.minutes}'` : null} />
+                              <StatCell label="Buts"    value={s.goals}       highlight={(s.goals ?? 0) > 0} />
+                              <StatCell label="Passes"  value={s.assists}     highlight={(s.assists ?? 0) > 0} />
+                              <StatCell label="Tirs"    value={s.shots} />
+                              <StatCell label="Tirs C." value={s.shotsOn} />
+                              <StatCell label="J"       value={s.yellowCards} warn={(s.yellowCards ?? 0) > 0} />
+                              <StatCell label="R"       value={s.redCards}    danger={(s.redCards ?? 0) > 0} />
                             </div>
                           </div>
                         ))}
@@ -347,12 +364,14 @@ export default function JoueurPage() {
                 </div>
               )}
 
-              {/* Trophies */}
+              {allStats.length === 0 && (
+                <div className="text-center py-12 text-white/30 italic text-sm">Aucune statistique disponible.</div>
+              )}
+
+              {/* ── PALMARÈS ── */}
               {trophies.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-black uppercase tracking-widest text-white/40 mb-3">
-                    Palmarès ({trophies.length})
-                  </h3>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Palmarès ({trophies.length})</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {trophies.map((t: any, i: number) => (
                       <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
@@ -365,10 +384,6 @@ export default function JoueurPage() {
                     ))}
                   </div>
                 </div>
-              )}
-
-              {stats.length === 0 && !statsLoading && (
-                <div className="text-center py-12 text-white/30 italic text-sm">Aucune statistique disponible.</div>
               )}
             </>
           )}
