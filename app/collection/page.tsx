@@ -759,6 +759,33 @@ export default function CollectionPage() {
 
       const publisherSlug = (clSelected.publisher || '').toLowerCase().replace(/\s+/g, '-');
 
+      // Check if a player from the checklist is owned in the user's collection
+      const norm = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+      const isOwned = (playerName: string): boolean => {
+        const normPlayer = norm(playerName);
+        if (!normPlayer) return false;
+        return cards.some(card => {
+          const cardFull = norm(`${card.firstname || ''} ${card.lastname || ''}`);
+          const cardRev  = norm(`${card.lastname || ''} ${card.firstname || ''}`);
+          const nameMatch = cardFull === normPlayer || cardRev === normPlayer
+            || cardFull.includes(normPlayer) || normPlayer.includes(cardFull);
+          if (!nameMatch) return false;
+
+          const colYear = String(clSelected.year || '');
+          const cardYear = String(card.year || '');
+          const yearMatch = !colYear || cardYear === colYear
+            || cardYear.includes(colYear.slice(-2)) // "2026" matches "2025-26"
+            || colYear.includes(cardYear.slice(-2));
+
+          const colPub  = norm(clSelected.publisher || '');
+          const colSerie = norm(clSelected.serie || '');
+          const brandMatch = !colPub || norm(card.brand || '').includes(colPub) || colPub.includes(norm(card.brand || ''));
+          const serieMatch = !colSerie || norm(card.series || '').includes(colSerie.slice(0, 6)) || colSerie.includes(norm(card.series || '').slice(0, 6));
+
+          return yearMatch && (brandMatch || serieMatch);
+        });
+      };
+
       const searchTerm = detailSearch.toLowerCase().trim();
 
       // Filter subsets by search
@@ -902,6 +929,7 @@ export default function CollectionPage() {
                 const color = CAT_COLORS[cat as string] || '#ffffff';
                 const items = filteredSubsets.filter((s: any) => s.subset === cat);
                 const totalPlayers = items.reduce((acc: number, s: any) => acc + (s.players?.length || 0), 0);
+                const totalOwned = items.reduce((acc: number, s: any) => acc + (s.players || []).filter((p: any) => isOwned(p.name)).length, 0);
                 const isCatOpen = expandedCats.has(cat as string);
                 return (
                   <div key={cat as string} id={`cat-anchor-${cat}`}>
@@ -912,9 +940,13 @@ export default function CollectionPage() {
                     >
                       <div className="h-[2px] flex-1 rounded-full transition-opacity" style={{ backgroundColor: color + '30' }} />
                       <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat as string}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>
-                        {totalPlayers > 0 ? `${totalPlayers} joueurs` : `${items.length} sets`}
-                      </span>
+                      {totalPlayers > 0 ? (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: totalOwned > 0 ? '#AFFF2520' : color + '15', color: totalOwned > 0 ? '#AFFF25' : color }}>
+                          {totalOwned > 0 ? `${totalOwned}/${totalPlayers}` : `${totalPlayers} joueurs`}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{items.length} sets</span>
+                      )}
                       <ChevronDown size={14} style={{ color }} className={`transition-transform ${isCatOpen ? '' : '-rotate-90'}`} />
                       <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
                     </button>
@@ -938,7 +970,21 @@ export default function CollectionPage() {
                                 <span className="text-sm font-black text-white italic uppercase tracking-tight text-left">{s.section}</span>
                                 <div className="flex items-center gap-2 shrink-0">
                                   {s.card_count && <span className="text-[10px] text-white/40">{s.card_count} cartes</span>}
-                                  {hasPlayers && <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{s.players.length}</span>}
+                                  {hasPlayers && (() => {
+                                    const ownedCount = s.players.filter((p: any) => isOwned(p.name)).length;
+                                    return (
+                                      <>
+                                        {ownedCount > 0 && (
+                                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#AFFF25]/15 text-[#AFFF25]">
+                                            {ownedCount}/{s.players.length}
+                                          </span>
+                                        )}
+                                        {ownedCount === 0 && (
+                                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{s.players.length}</span>
+                                        )}
+                                      </>
+                                    );
+                                  })()}
                                   <ChevronDown size={13} className={`transition-transform text-white/30 ${isSubOpen ? '' : '-rotate-90'}`} />
                                 </div>
                               </button>
@@ -958,10 +1004,17 @@ export default function CollectionPage() {
                                   {hasPlayers && (
                                     <div className="divide-y divide-white/[0.04]">
                                       {s.players.map((p: any, pi: number) => (
-                                        <div key={pi} className="flex items-center justify-between px-4 py-2.5 hover:bg-white/[0.03] transition-colors">
+                                        <div key={pi} className={`flex items-center justify-between px-4 py-2.5 transition-colors ${isOwned(p.name) ? 'bg-[#AFFF25]/[0.04]' : 'hover:bg-white/[0.03]'}`}>
                                           <div className="flex items-center gap-3">
                                             <span className="text-[9px] text-white/20 font-mono w-5 shrink-0 text-right">{pi + 1}</span>
-                                            <span className="text-sm font-bold text-white">{p.name}</span>
+                                            {isOwned(p.name) ? (
+                                              <span className="shrink-0 w-4 h-4 rounded-full bg-[#AFFF25] flex items-center justify-center">
+                                                <Check size={9} strokeWidth={3} className="text-[#040221]" />
+                                              </span>
+                                            ) : (
+                                              <span className="shrink-0 w-4 h-4 rounded-full border border-white/[0.12]" />
+                                            )}
+                                            <span className={`text-sm font-bold ${isOwned(p.name) ? 'text-[#AFFF25]' : 'text-white'}`}>{p.name}</span>
                                           </div>
                                           <div className="flex items-center gap-2 shrink-0 ml-3">
                                             <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
