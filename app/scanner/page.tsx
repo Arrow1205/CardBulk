@@ -136,7 +136,7 @@ function ScannerContent() {
   const freeCropCallbackRef = useRef<((file: File, url: string) => void) | null>(null);
 
   const [showEditor, setShowEditor] = useState(false);
-  const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, zoom: 1 });
+  const [imgSettings, setImgSettings] = useState({ brightness: 100, contrast: 100, zoom: 1, blackPoint: 0, fineRotation: 0 });
 
   const [showClubSuggestions, setShowClubSuggestions] = useState(false);
   const [showPlayerSuggestions, setShowPlayerSuggestions] = useState(false);
@@ -1027,13 +1027,20 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       const sx = (img.width - sw) / 2;
       const sy = (img.height - sh) / 2;
 
-      canvas.width = sw;
-      canvas.height = sh;
-      
+      // Rotation fine : ajuste les dimensions du canvas pour accueillir l'image pivotée
+      const rad = (imgSettings.fineRotation * Math.PI) / 180;
+      const absCos = Math.abs(Math.cos(rad));
+      const absSin = Math.abs(Math.sin(rad));
+      canvas.width  = Math.round(sw * absCos + sh * absSin);
+      canvas.height = Math.round(sw * absSin + sh * absCos);
+
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) return;
 
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(rad);
+      ctx.drawImage(img, sx, sy, sw, sh, -sw / 2, -sh / 2, sw, sh);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
@@ -1041,19 +1048,26 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       const b = imgSettings.brightness / 100;
       const c = imgSettings.contrast / 100;
       const intercept = 128 * (1 - c);
+      // Point noir : valeur 0-100 → seuil 0-255
+      const bp = imgSettings.blackPoint * 2.55;
+      const bpScale = bp < 255 ? 255 / (255 - bp) : 1;
 
       for (let i = 0; i < data.length; i += 4) {
           let r = data[i];
           let g = data[i + 1];
           let bl = data[i + 2];
 
-          r *= b; g *= b; bl *= b;
+          // Point noir
+          r = Math.max(0, (r - bp) * bpScale);
+          g = Math.max(0, (g - bp) * bpScale);
+          bl = Math.max(0, (bl - bp) * bpScale);
 
-          r = r * c + intercept;
-          g = g * c + intercept;
-          bl = bl * c + intercept;
+          // Luminosité + contraste
+          r = r * b * c + intercept;
+          g = g * b * c + intercept;
+          bl = bl * b * c + intercept;
 
-          data[i] = Math.max(0, Math.min(255, r));
+          data[i]     = Math.max(0, Math.min(255, r));
           data[i + 1] = Math.max(0, Math.min(255, g));
           data[i + 2] = Math.max(0, Math.min(255, bl));
       }
@@ -1080,7 +1094,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
           }
           
           setShowEditor(false);
-          setImgSettings({ brightness: 100, contrast: 100, zoom: 1 });
+          setImgSettings({ brightness: 100, contrast: 100, zoom: 1, blackPoint: 0, fineRotation: 0 });
           setIsApplyingEdit(false);
           // 💡 On a retiré processImageScan ici pour économiser les tokens !
       }, 'image/jpeg', 0.95);
@@ -1428,7 +1442,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
             <img 
               src={activePreviewUrl} 
               className="w-full h-full object-contain"
-              style={{ filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%)`, transform: `scale(${imgSettings.zoom})` }}
+              style={{ filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%)`, transform: `scale(${imgSettings.zoom}) rotate(${imgSettings.fineRotation}deg)` }}
               alt="Preview Edit" 
             />
           </div>
@@ -1439,6 +1453,8 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Zoom</span><span>{(imgSettings.zoom).toFixed(1)}x</span></div><input type="range" min="1" max="3" step="0.05" value={imgSettings.zoom} onChange={e => setImgSettings({...imgSettings, zoom: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Luminosité</span><span>{imgSettings.brightness}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.brightness} onChange={e => setImgSettings({...imgSettings, brightness: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
               <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Contraste</span><span>{imgSettings.contrast}%</span></div><input type="range" min="50" max="150" step="1" value={imgSettings.contrast} onChange={e => setImgSettings({...imgSettings, contrast: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
+              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Point Noir</span><span>{imgSettings.blackPoint}</span></div><input type="range" min="0" max="80" step="1" value={imgSettings.blackPoint} onChange={e => setImgSettings({...imgSettings, blackPoint: parseInt(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
+              <div><div className="flex justify-between text-xs text-white/70 font-bold mb-2 uppercase"><span>Rotation fine</span><span>{imgSettings.fineRotation > 0 ? '+' : ''}{imgSettings.fineRotation}°</span></div><input type="range" min="-10" max="10" step="0.5" value={imgSettings.fineRotation} onChange={e => setImgSettings({...imgSettings, fineRotation: parseFloat(e.target.value)})} className="w-full accent-[#AFFF25]" /></div>
             </div>
           </div>
           

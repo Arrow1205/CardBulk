@@ -6,7 +6,7 @@ async function fetchSoldPrices(keywords: string): Promise<number[]> {
   const ebayUrl = `https://www.ebay.fr/sch/i.html?_nkw=${encodeURIComponent(keywords)}&LH_Sold=1&LH_Complete=1&_ipg=20`;
 
   const fetchUrl = scraperApiKey
-    ? `http://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(ebayUrl)}&country_code=fr&premium=true`
+    ? `http://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(ebayUrl)}&country_code=fr`
     : ebayUrl;
 
   const res = await fetch(fetchUrl, {
