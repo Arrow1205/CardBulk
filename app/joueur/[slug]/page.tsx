@@ -60,6 +60,7 @@ export default function JoueurPage() {
   const [statsData, setStatsData] = useState<any | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsFetched, setStatsFetched] = useState(false);
+  const recentNews: any[] = statsData?.recentNews || [];
 
   useEffect(() => { loadCards(); }, [slug]);
   useEffect(() => { if (activeTab === 'stats' && !statsFetched) fetchStats(); }, [activeTab]);
@@ -394,6 +395,22 @@ export default function JoueurPage() {
 
               {allStats.length === 0 && (
                 <div className="text-center py-12 text-white/30 italic text-sm">Aucune statistique disponible.</div>
+              )}
+
+              {/* ── ACTUALITÉS ── */}
+              {recentNews.length > 0 && (
+                <div className="mt-7">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Actualités récentes</div>
+                  <div className="space-y-2">
+                    {recentNews.map((n: any, i: number) => (
+                      <div key={i} className="px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                        <div className="text-xs font-bold text-white mb-1">{n.title}</div>
+                        <div className="text-[11px] text-white/50 leading-relaxed">{n.summary}</div>
+                        {n.date && <div className="text-[9px] text-white/20 mt-1">{n.date}</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
               {/* ── PALMARÈS ── */}
