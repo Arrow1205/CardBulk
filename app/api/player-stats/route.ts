@@ -1,185 +1,127 @@
 import { NextResponse } from 'next/server';
 
-const BASE = 'https://api.sofascore.com/api/v1';
-const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Referer': 'https://www.sofascore.com/',
-  'Accept': 'application/json',
-};
+const BASE = 'https://v3.football.api-sports.io';
 
-async function sofa(path: string) {
+async function apiFetch(path: string, key: string) {
   const res = await fetch(`${BASE}${path}`, {
-    headers: HEADERS,
-    signal: AbortSignal.timeout(10000),
+    headers: { 'x-apisports-key': key },
+    signal: AbortSignal.timeout(12000),
   });
-  if (!res.ok) throw new Error(`SofaScore ${res.status}: ${path}`);
   return res.json();
 }
 
 const normName = (s: string) =>
   (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
 
-function bestPlayerMatch(players: any[], query: string): any | null {
-  if (!players.length) return null;
+function bestMatch(results: any[], query: string): any | null {
+  if (!results.length) return null;
   const q = normName(query);
-  for (const p of players) {
-    const full = normName(p.name || '');
-    const short = normName(p.shortName || '');
-    if (full === q || short === q) return p;
+  for (const r of results) {
+    const p = r.player;
+    const full = normName(`${p.firstname || ''} ${p.lastname || ''}`);
+    const rev  = normName(`${p.lastname || ''} ${p.firstname || ''}`);
+    if (full === q || rev === q) return p;
   }
-  for (const p of players) {
-    const full = normName(p.name || '');
+  for (const r of results) {
+    const p = r.player;
+    const full = normName(`${p.firstname || ''} ${p.lastname || ''}`);
     if (q.includes(full) || full.includes(q)) return p;
   }
-  return players[0];
-}
-
-// Current year for filtering recent seasons
-const CURRENT_YEAR = new Date().getFullYear();
-
-function seasonYear(yearStr: string): number {
-  // SofaScore year format: "25/26" or "2025/2026" or "2025"
-  const m = yearStr.match(/(\d{2,4})/);
-  if (!m) return 0;
-  const y = parseInt(m[1]);
-  return y < 100 ? 2000 + y : y;
+  return results[0].player;
 }
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const name = searchParams.get('name');
+  const API_KEY = process.env.API_FOOTBALL_KEY;
+
   if (!name) return NextResponse.json({ error: 'Missing name' }, { status: 400 });
+  if (!API_KEY) return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
 
   try {
-    // 1. Search player
-    const searchData = await sofa(`/search/all?q=${encodeURIComponent(name)}`);
-    const allPlayers = (searchData.results || [])
-      .filter((r: any) => r.type === 'player')
-      .map((r: any) => r.entity);
-
-    // Also try searching with just last name if needed
-    let players = allPlayers;
-    if (!players.length) {
+    // 1. Search player profile
+    let profileData = await apiFetch(`/players/profiles?search=${encodeURIComponent(name)}`, API_KEY);
+    if (!profileData.response?.length) {
       const lastName = name.split(' ').pop() || name;
-      const retry = await sofa(`/search/all?q=${encodeURIComponent(lastName)}`);
-      players = (retry.results || [])
-        .filter((r: any) => r.type === 'player')
-        .map((r: any) => r.entity);
+      profileData = await apiFetch(`/players/profiles?search=${encodeURIComponent(lastName)}`, API_KEY);
     }
-
-    if (!players.length) {
+    if (!profileData.response?.length) {
       return NextResponse.json({ player: null, stats: [], trophies: [] });
     }
 
-    const match = bestPlayerMatch(players, name);
-    const playerId = match.id;
+    const player = bestMatch(profileData.response, name);
+    const playerId = player.id;
 
-    // 2. Player details (current team, nationality, age, etc.)
-    const [detailData, seasonsData] = await Promise.all([
-      sofa(`/player/${playerId}`),
-      sofa(`/player/${playerId}/statistics/seasons`).catch(() => ({ uniqueTournamentSeasons: [] })),
-    ]);
+    // 2. Seasons to fetch
+    // Football season "N" = Aug N → May N+1 (e.g. season 2025 = 2025/26)
+    // Try from current year down 8 years — empty seasons cost nothing
+    const currentYear = new Date().getFullYear();
+    const seasons = Array.from({ length: 8 }, (_, i) => currentYear - i);
 
-    const pd = detailData.player || match;
-    const birthDate = pd.dateOfBirthTimestamp
-      ? new Date(pd.dateOfBirthTimestamp * 1000)
-      : null;
-    const age = birthDate
-      ? Math.floor((Date.now() - birthDate.getTime()) / (365.25 * 24 * 3600 * 1000))
-      : null;
+    console.log(`[player-stats] ${name} → id=${playerId}, trying seasons:`, seasons);
 
-    const player = {
-      id: playerId,
-      firstname: (pd.name || '').split(' ').slice(0, -1).join(' '),
-      lastname:  (pd.name || '').split(' ').slice(-1)[0] || pd.name,
-      name:      pd.name,
-      shortName: pd.shortName,
-      photo:     `https://api.sofascore.app/api/v1/player/${playerId}/image`,
-      nationality: pd.country?.name || null,
-      age,
-      currentTeam: pd.team?.name || null,
-      currentTeamLogo: pd.team?.id
-        ? `https://api.sofascore.app/api/v1/team/${pd.team.id}/image`
-        : null,
+    const statsResults = await Promise.all(
+      seasons.map(season =>
+        apiFetch(`/players?id=${playerId}&season=${season}`, API_KEY).catch(() => null)
+      )
+    );
+
+    const stats: any[] = [];
+    for (let i = 0; i < statsResults.length; i++) {
+      const result = statsResults[i];
+      const season = seasons[i];
+      if (!result?.response?.length) {
+        console.log(`[player-stats] season ${season}: no data`);
+        continue;
+      }
+      console.log(`[player-stats] season ${season}: ${result.response[0].statistics?.length} competitions`);
+      const entry = result.response[0];
+      for (const s of entry.statistics || []) {
+        stats.push({
+          season:      season,
+          seasonSort:  season,
+          seasonLabel: `${season}/${String(season + 1).slice(-2)}`,
+          team:        s.team?.name,
+          teamLogo:    s.team?.logo,
+          league:      s.league?.name,
+          leagueLogo:  s.league?.logo,
+          country:     s.league?.country,
+          appearances: s.games?.appearences ?? null,
+          minutes:     s.games?.minutes ?? null,
+          rating:      s.games?.rating ? parseFloat(s.games.rating).toFixed(1) : null,
+          goals:       s.goals?.total ?? null,
+          assists:     s.goals?.assists ?? null,
+          yellowCards: s.cards?.yellow ?? null,
+          redCards:    s.cards?.red ?? null,
+          shots:       s.shots?.total ?? null,
+          shotsOn:     s.shots?.on ?? null,
+        });
+      }
+    }
+
+    // 3. Trophies
+    const trophyData = await apiFetch(`/trophies?player=${playerId}`, API_KEY);
+    const trophies = (trophyData.response || [])
+      .filter((t: any) => t.place === 'Winner')
+      .map((t: any) => ({ league: t.league, country: t.country, season: t.season }));
+
+    // Build player object with current team from most recent stat
+    const mostRecent = stats[0];
+    const playerOut = {
+      ...player,
+      photo:           `https://media.api-sports.io/football/players/${playerId}.png`,
+      firstname:       player.firstname,
+      lastname:        player.lastname,
+      nationality:     player.nationality,
+      age:             player.age,
+      currentTeam:     mostRecent?.team || null,
+      currentTeamLogo: mostRecent?.teamLogo || null,
     };
 
-    // 3. Collect tournament/season pairs — keep recent 5 years only to limit requests
-    const pairs: Array<{ utId: number; utName: string; utLogo: string; country: string; sId: number; sYear: string }> = [];
-
-    for (const tEntry of (seasonsData.uniqueTournamentSeasons || [])) {
-      const ut = tEntry.uniqueTournament;
-      for (const season of (tEntry.seasons || [])) {
-        const yr = seasonYear(season.year);
-        if (yr < CURRENT_YEAR - 5) continue; // only last 5 years
-        pairs.push({
-          utId: ut.id,
-          utName: ut.name,
-          utLogo: `https://api.sofascore.app/api/v1/unique-tournament/${ut.id}/image`,
-          country: ut.category?.country?.name || ut.category?.name || '',
-          sId: season.id,
-          sYear: season.year,
-        });
-      }
-    }
-
-    // 4. Fetch stats for each pair (in parallel, limit 20 concurrent)
-    const CHUNK = 20;
-    const statsRows: any[] = [];
-
-    for (let i = 0; i < pairs.length; i += CHUNK) {
-      const chunk = pairs.slice(i, i + CHUNK);
-      const results = await Promise.allSettled(
-        chunk.map(p =>
-          sofa(`/player/${playerId}/unique-tournament/${p.utId}/season/${p.sId}/statistics/overall`)
-            .then(d => ({ pair: p, data: d }))
-        )
-      );
-      for (const r of results) {
-        if (r.status !== 'fulfilled') continue;
-        const { pair, data } = r.value;
-        const s = data.statistics;
-        if (!s || (s.appearances === 0 && s.goals === 0)) continue;
-
-        // Find team name from seasons data (SofaScore doesn't always include team in stats)
-        statsRows.push({
-          season:      pair.sYear,
-          seasonSort:  seasonYear(pair.sYear),
-          team:        s.team?.name || player.currentTeam || '',
-          teamLogo:    s.team?.id ? `https://api.sofascore.app/api/v1/team/${s.team.id}/image` : player.currentTeamLogo || '',
-          league:      pair.utName,
-          leagueLogo:  pair.utLogo,
-          country:     pair.country,
-          appearances: s.appearances ?? null,
-          minutes:     s.minutesPlayed ?? null,
-          rating:      s.rating ? parseFloat(s.rating).toFixed(1) : null,
-          goals:       s.goals ?? null,
-          assists:     s.assists ?? null,
-          yellowCards: s.yellowCards ?? null,
-          redCards:    s.redCards ?? null,
-          shots:       s.shots ?? null,
-          shotsOn:     s.shotsOnTarget ?? null,
-        });
-      }
-    }
-
-    // Sort by season desc
-    statsRows.sort((a, b) => b.seasonSort - a.seasonSort);
-
-    // 5. Honors / trophies
-    let trophies: any[] = [];
-    try {
-      const honorsData = await sofa(`/player/${playerId}/honors`);
-      trophies = (honorsData.honors || []).flatMap((h: any) =>
-        (h.items || []).map((item: any) => ({
-          league:  h.competition?.name || h.name || '',
-          country: h.competition?.country?.name || '',
-          season:  item.season?.year || item.year || '',
-        }))
-      );
-    } catch {}
-
-    return NextResponse.json({ player, stats: statsRows, trophies });
+    console.log(`[player-stats] total stat rows: ${stats.length}`);
+    return NextResponse.json({ player: playerOut, stats, trophies });
   } catch (e: any) {
+    console.error('[player-stats] error:', e.message);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }

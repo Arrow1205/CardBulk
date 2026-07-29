@@ -140,7 +140,8 @@ export default function JoueurPage() {
   // Saison en cours = la plus récente dans les données (tri sur seasonSort ou saison string)
   const sortedAllSeasons = Array.from(new Set(allStats.map(s => s.seasonSort ?? Number(s.season)))).sort((a, b) => b - a);
   const currentSeasonSort = sortedAllSeasons[0] ?? null;
-  const currentSeasonLabel = allStats.find(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort)?.season ?? null;
+  const currentSeasonLabel = allStats.find(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort)?.seasonLabel
+    ?? (currentSeasonSort ? `${currentSeasonSort}/${String(Number(currentSeasonSort) + 1).slice(-2)}` : null);
   const currentSeasonRows = allStats.filter(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort);
 
   // Compétitions internationales (sélection)
