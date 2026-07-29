@@ -157,6 +157,7 @@ export default function JoueurPage() {
   for (const s of pastRows) {
     if (isIntl(s)) continue;
     if (!s.team) continue;
+    if ((s.appearances ?? 0) === 0 && (s.goals ?? 0) === 0) continue;
     if (!clubMap[s.team]) clubMap[s.team] = { logo: s.teamLogo || '', rows: [] };
     clubMap[s.team].rows.push(s);
   }
@@ -169,6 +170,7 @@ export default function JoueurPage() {
   for (const s of allStats) {
     if (!isIntl(s)) continue;
     if (!s.team) continue;
+    if ((s.appearances ?? 0) === 0 && (s.goals ?? 0) === 0) continue;
     if (!intlMap[s.team]) intlMap[s.team] = { logo: s.teamLogo || '', rows: [] };
     intlMap[s.team].rows.push(s);
   }
@@ -310,11 +312,11 @@ export default function JoueurPage() {
               {currentSeasonRows.length > 0 && (
                 <div className="mb-7">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Saison en cours</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Dernière saison</span>
                     <span className="text-[10px] text-white/30">{currentSeasonLabel}</span>
                   </div>
                   <div className="rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden divide-y divide-white/[0.05]">
-                    {currentSeasonRows.map((s: any, i: number) => (
+                    {currentSeasonRows.filter((s: any) => (s.appearances ?? 0) > 0 || (s.goals ?? 0) > 0).map((s: any, i: number) => (
                       <div key={i}>
                         <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02]">
                           {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-5 w-5 object-contain" />}
