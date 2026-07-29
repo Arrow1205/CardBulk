@@ -148,7 +148,7 @@ export default function JoueurPage() {
   const isIntl = (row: any) => INTL_KEYWORDS.some(k => (row.league || '').toLowerCase().includes(k));
 
   // Stats des saisons passées uniquement
-  const pastRows = allStats.filter(s => Number(s.season) !== currentSeason);
+  const pastRows = allStats.filter(s => (s.seasonSort ?? Number(s.season)) !== currentSeasonSort);
 
   // Agrégat par club (past seasons — club only, not intl)
   const clubMap: Record<string, { logo: string; rows: any[] }> = {};
