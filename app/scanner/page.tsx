@@ -159,6 +159,7 @@ function ScannerContent() {
 
   const [cameraZoom, setCameraZoom] = useState(1);
   const [nativeZoomSupported, setNativeZoomSupported] = useState(false);
+  const [tilt, setTilt] = useState<{ gamma: number } | null>(null);
 
   const [autoScanProgress, setAutoScanProgress] = useState(0);
   const autoCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -237,6 +238,15 @@ function ScannerContent() {
   }, [editId]);
 
   useEffect(() => { return () => stopCamera(); }, []);
+
+  useEffect(() => {
+    if (!isCameraOpen) { setTilt(null); return; }
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (e.gamma !== null) setTilt({ gamma: e.gamma });
+    };
+    window.addEventListener('deviceorientation', handleOrientation, true);
+    return () => window.removeEventListener('deviceorientation', handleOrientation, true);
+  }, [isCameraOpen]);
 
   useEffect(() => {
     if (isCameraOpen && videoRef.current && streamRef.current) {
@@ -528,8 +538,13 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
 
   const startCamera = async () => {
     setIsCameraOpen(true);
-    setCameraZoom(1); 
-    
+    setCameraZoom(1);
+
+    // Demande de permission iOS 13+ pour le gyroscope
+    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+      try { await (DeviceOrientationEvent as any).requestPermission(); } catch {}
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" }, width: { ideal: 3840, min: 1920 }, height: { ideal: 2160, min: 1080 }, frameRate: { ideal: 30 } }
@@ -1411,6 +1426,20 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
           </div>
 
           <div className="absolute bottom-0 left-0 w-full pb-32 pt-20 flex flex-col items-center z-20 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-auto">
+             {tilt !== null && (
+               <div className="flex items-center gap-3 mb-5 bg-black/60 px-5 py-2 rounded-full border border-white/20">
+                 <div className="relative w-28 h-2 bg-white/20 rounded-full overflow-visible">
+                   <div
+                     className={`absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full transition-all duration-150 ${Math.abs(tilt.gamma) < 5 ? 'bg-green-400' : Math.abs(tilt.gamma) < 15 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                     style={{ left: `${Math.max(4, Math.min(96, 50 + tilt.gamma * 2.5))}%`, transform: 'translate(-50%, -50%)' }}
+                   />
+                   <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-px h-3 bg-white/40" />
+                 </div>
+                 <span className={`text-[10px] font-bold min-w-[52px] text-center ${Math.abs(tilt.gamma) < 5 ? 'text-green-400' : 'text-white/70'}`}>
+                   {Math.abs(tilt.gamma) < 5 ? 'Niveau' : `${tilt.gamma > 0 ? '→' : '←'} ${Math.abs(Math.round(tilt.gamma))}°`}
+                 </span>
+               </div>
+             )}
              <button onClick={captureImageAndCrop} className="w-[72px] h-[72px] bg-white rounded-full border-[4px] border-[#AFFF25] flex items-center justify-center active:scale-90 transition-transform relative overflow-hidden">
                 {scanMode === 'auto' && (
                    <div className="absolute inset-0 bg-[#AFFF25] transition-all duration-75 origin-bottom" style={{ transform: `scaleY(${autoScanProgress / 100})` }}></div>
@@ -1439,12 +1468,22 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
           </header>
 
           <div className="relative w-full flex-1 max-h-[50vh] rounded-2xl overflow-hidden border border-white/20 bg-black/50 flex items-center justify-center">
-            <img 
-              src={activePreviewUrl} 
+            <img
+              src={activePreviewUrl}
               className="w-full h-full object-contain"
-              style={{ filter: `brightness(${imgSettings.brightness}%) contrast(${imgSettings.contrast}%)`, transform: `scale(${imgSettings.zoom}) rotate(${imgSettings.fineRotation}deg)` }}
-              alt="Preview Edit" 
+              style={{
+                filter: `brightness(${Math.max(0, imgSettings.brightness - imgSettings.blackPoint * 0.45)}%) contrast(${imgSettings.contrast + imgSettings.blackPoint}%)`,
+                transform: `scale(${imgSettings.zoom}) rotate(${imgSettings.fineRotation}deg)`
+              }}
+              alt="Preview Edit"
             />
+            {/* Lignes de guidage */}
+            <div className="absolute inset-0 pointer-events-none z-10">
+              <div className="absolute w-full border-t border-[#AFFF25]/50" style={{ top: '33.33%' }} />
+              <div className="absolute w-full border-t border-[#AFFF25]/50" style={{ top: '66.66%' }} />
+              <div className="absolute h-full border-l border-[#AFFF25]/50" style={{ left: '33.33%' }} />
+              <div className="absolute h-full border-l border-[#AFFF25]/50" style={{ left: '66.66%' }} />
+            </div>
           </div>
 
           <div className="mt-8 space-y-6 pb-32 overflow-y-auto">
@@ -1497,7 +1536,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
         <div className="relative w-full max-w-[220px] lg:max-w-[320px] mx-auto mb-6 lg:mb-10">
           
           {activePreviewUrl ? (
-            <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl">
+            <div className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl" style={{ touchAction: 'none' }}>
               <img src={activePreviewUrl} className="w-[85%] h-[85%] object-contain rounded-xl z-0" alt="Preview" />
               
               {(analyzing || (isVerifyingBulk && pendingCards[currentVerifyIndex]?.status === 'analyzing')) && !showEditor && (

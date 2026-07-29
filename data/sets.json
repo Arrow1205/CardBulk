@@ -1180,6 +1180,39 @@
             "notes": "Set Topps au design spectaculaire orienté entertainment"
           },
           {
+            "name": "Simplicidad",
+            "full_name": "Topps Simplicidad UEFA Club Competitions",
+            "visual_hints": "Design artistique inspiré de l'art espagnol, fond texturé, typographie élégante, sets thématiques nommés en espagnol (Artista, Joyas, Velocidad...), logo UEFA en haut, sans finition chrome",
+            "common_subsets": [
+              "BASE / ARTISTA",
+              "BASE / ESTRELLAS ESPAÑOLAS",
+              "BASE / ESTRELLAS INTERNACIONALES",
+              "BASE / EXALTACIÓN",
+              "BASE / INFRANQUEABLES",
+              "BASE / JOYAS",
+              "BASE / RAÍCES",
+              "BASE / RETRATO",
+              "BASE / VELOCIDAD",
+              "PARALLEL / BLUE /99",
+              "PARALLEL / GREEN /75",
+              "PARALLEL / PURPLE /50",
+              "PARALLEL / ORANGE /25",
+              "PARALLEL / BLACK /10",
+              "PARALLEL / RED /5",
+              "PARALLEL / GOLD 1/1",
+              "AUTOGRAPH / JOYAS",
+              "AUTOGRAPH / DUAL",
+              "AUTOGRAPH / TRIPLE BOOK",
+              "AUTOGRAPH / ONLY1 1/1"
+            ],
+            "ebay_keywords": [
+              "Topps Simplicidad",
+              "Topps Simplicidad UEFA"
+            ],
+            "ebay_template": "{joueur} Topps Simplicidad {saison} {numero}",
+            "notes": "Set premium UEFA artisanal, thèmes nommés en espagnol"
+          },
+          {
             "name": "Stadium Club",
             "full_name": "Topps Stadium Club Soccer",
             "visual_hints": "Logo \"STADIUM CLUB\". Base photocard premium. Photographie artistique de qualité studio pleine carte, très peu de design, cadre fin. Texte minimaliste en bas.",
