@@ -1,0 +1,62 @@
+{
+  "collection_id": "topps-premier-league-2027-soccer-cards",
+  "source_url": "https://www.beckett.com/news/2026-27-topps-premier-league-soccer-cards/",
+  "fiche": {
+    "annee": "2027",
+    "editeur": "TOPPS",
+    "serie": "PREMIER LEAGUE",
+    "sport": "SOCCER"
+  },
+  "subsets": [
+    {
+      "subset": "BASE",
+      "section": null,
+      "description": null
+    },
+    {
+      "subset": "AUTOGRAPH",
+      "section": null,
+      "description": null
+    },
+    {
+      "subset": "RELIC",
+      "section": "AUTOGRAPHS",
+      "description": null
+    },
+    {
+      "subset": "INSERT",
+      "section": null,
+      "description": null
+    },
+    {
+      "subset": "PARALLEL",
+      "section": "RAINBOW",
+      "description": null
+    },
+    {
+      "subset": "PARALLEL",
+      "section": "/07",
+      "description": null
+    },
+    {
+      "subset": "PARALLEL",
+      "section": "/1",
+      "description": null
+    },
+    {
+      "subset": "PARALLEL",
+      "section": "/2",
+      "description": null
+    },
+    {
+      "subset": "PARALLEL",
+      "section": "/3",
+      "description": null
+    },
+    {
+      "subset": "PARALLEL",
+      "section": "/4",
+      "description": null
+    }
+  ]
+}
