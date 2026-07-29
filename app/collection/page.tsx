@@ -30,6 +30,7 @@ const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 
 import SET_DATA from '@/data/sets.json';
 import TYPE_CARTE from '@/data/type-carte.json';
+import COLLECTIONS_CATALOG from '@/data/collections/collections_catalog.json';
 
 type Message = { role: 'user' | 'assistant', content: string };
 
@@ -112,7 +113,6 @@ export default function CollectionPage() {
   const [checklistSearch, setChecklistSearch] = useState('');
   const [checklistType, setChecklistType] = useState<string | null>(null);
   const [checklistBrand, setChecklistBrand] = useState<string | null>(null);
-  const [checklistSport, setChecklistSport] = useState<string | null>(null);
 
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -513,185 +513,249 @@ export default function CollectionPage() {
     );
   };
 
+  // ── Checklist : état de navigation ──────────────────────────────────────
+  const [clView, setClView] = useState<'list' | 'detail'>('list');
+  const [clSelected, setClSelected] = useState<any | null>(null);
+  const [clDetail, setClDetail] = useState<any | null>(null);
+  const [clDetailLoading, setClDetailLoading] = useState(false);
+
+  const openCollection = async (col: any) => {
+    setClSelected(col);
+    setClView('detail');
+    setClDetail(null);
+    setClDetailLoading(true);
+    try {
+      const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}`);
+      if (res.ok) setClDetail(await res.json());
+    } catch {}
+    setClDetailLoading(false);
+  };
+
+  const CAT_COLORS: Record<string, string> = {
+    'BASE':        '#AFFF25',
+    'INSERT':      '#34d399',
+    'PARALLEL':    '#60a5fa',
+    'AUTOGRAPH':   '#f59e0b',
+    'RELIC':       '#a78bfa',
+    'MEMORABILIA': '#a78bfa',
+    'OR':          '#fbbf24',
+    'SPECIAL':     '#f43f5e',
+  };
+
+  const getMainCat = (cardType: string): string => {
+    const u = cardType.toUpperCase();
+    if (u.startsWith('BASE')) return 'BASE';
+    if (u.startsWith('INSERT') || u.includes('SPECIAL INSERT')) return 'INSERT';
+    if (u.startsWith('AUTOGRAPH')) return 'AUTOGRAPH';
+    if (u.startsWith('RELIC')) return 'RELIC';
+    if (u.startsWith('MEMORABILIA')) return 'MEMORABILIA';
+    if (u.startsWith('PARALLEL') || u.startsWith('REFRACTOR')) return 'PARALLEL';
+    if (u.startsWith('OR ') || u === 'OR') return 'OR';
+    return 'SPECIAL';
+  };
+
   const renderChecklist = () => {
-    const CATEGORY_ORDER = ['BASE / INSERT', 'NUMÉROTÉ', 'AUTOGRAPH', 'RELIC', 'AUTO RELIC'];
-    const CATEGORY_COLORS: Record<string, string> = {
-      'BASE / INSERT':  '#AFFF25',
-      'NUMÉROTÉ':       '#60a5fa',
-      'AUTOGRAPH':      '#f59e0b',
-      'RELIC':          '#a78bfa',
-      'AUTO RELIC':     '#f43f5e',
-    };
+    const catalog = COLLECTIONS_CATALOG as any[];
 
-    const getCategory = (card: any): string => {
-      if (card.is_auto && card.is_patch) return 'AUTO RELIC';
-      if (card.is_auto) return 'AUTOGRAPH';
-      if (card.is_patch) return 'RELIC';
-      if (card.is_numbered) return 'NUMÉROTÉ';
-      return 'BASE / INSERT';
-    };
+    // ── Vue détail ──────────────────────────────────────────────────────────
+    if (clView === 'detail' && clSelected) {
+      const cardTypes: string[] = clSelected.card_types || [];
 
-    const allBrands = Array.from(new Set(cards.map(c => c.brand).filter(Boolean))).sort();
-    const availableSports = SPORT_ORDER.filter(s => cards.some(c => c.sport === s));
+      // Grouper par catégorie principale
+      const CAT_ORDER = ['BASE', 'INSERT', 'PARALLEL', 'AUTOGRAPH', 'RELIC', 'MEMORABILIA', 'OR', 'SPECIAL'];
+      const grouped: Record<string, string[]> = {};
+      CAT_ORDER.forEach(c => { grouped[c] = []; });
+      cardTypes.forEach(ct => { grouped[getMainCat(ct)].push(ct); });
 
-    const filtered = cards.filter(card => {
+      // Subsets depuis collection.json (si chargés)
+      const subsets: any[] = clDetail?.subsets || [];
+      const fiche: any = clDetail?.fiche || null;
+      const subsetCats = Array.from(new Set(subsets.map((s: any) => s.subset)));
+
+      const publisherSlug = (clSelected.publisher || '').toLowerCase().replace(/\s+/g, '-');
+
+      return (
+        <div className="w-full animate-in fade-in duration-300 pb-[180px]">
+          {/* Header */}
+          <div className="px-6 lg:px-[80px] flex items-center gap-4 mb-6">
+            <button onClick={() => { setClView('list'); setClSelected(null); setClDetail(null); }} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 active:scale-95 transition-transform shrink-0">
+              <ChevronLeft size={20} />
+            </button>
+            <div className="overflow-hidden flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <img src={`/asset/logo-marque/${publisherSlug}.png`} alt={clSelected.publisher} className="h-4 object-contain mix-blend-screen" onError={e => e.currentTarget.style.display = 'none'} />
+                <span className="text-xs text-[#AFFF25] font-bold uppercase tracking-widest">{clSelected.publisher} · {clSelected.year}</span>
+              </div>
+              <h2 className="text-xl font-black italic uppercase tracking-tight text-white leading-tight truncate">{clSelected.serie}</h2>
+            </div>
+          </div>
+
+          {/* Fiche technique */}
+          {fiche && (
+            <div className="mx-6 lg:mx-[80px] mb-6 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1.5">
+              {fiche.contenu_global && <p className="text-xs text-white/60 leading-relaxed">{fiche.contenu_global}</p>}
+              {fiche.dotation_boite && <p className="text-xs text-white/40 leading-relaxed italic">{fiche.dotation_boite}</p>}
+            </div>
+          )}
+
+          {clDetailLoading && (
+            <div className="flex justify-center py-8"><Loader2 className="animate-spin text-[#AFFF25]" size={28} /></div>
+          )}
+
+          {/* Subsets (si collection.json chargé et a des subsets) */}
+          {subsets.length > 0 ? (
+            <div className="px-6 lg:px-[80px] space-y-6">
+              {subsetCats.map(cat => {
+                const color = CAT_COLORS[cat] || '#ffffff';
+                const items = subsets.filter((s: any) => s.subset === cat);
+                return (
+                  <div key={cat}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
+                      <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{items.length}</span>
+                      <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
+                    </div>
+                    <div className="space-y-1">
+                      {items.map((s: any, idx: number) => (
+                        <div key={idx} className="flex items-start justify-between px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                          <div>
+                            <span className="text-sm font-bold text-white">{s.section}</span>
+                            {s.description && <p className="text-xs text-white/40 mt-0.5">{s.description}</p>}
+                          </div>
+                          <span className="text-[10px] text-white/20 font-mono shrink-0 ml-3 mt-1">{idx + 1}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : !clDetailLoading && (
+            /* Fallback : card_types depuis le catalog */
+            <div className="px-6 lg:px-[80px] space-y-6">
+              {CAT_ORDER.filter(cat => grouped[cat].length > 0).map(cat => {
+                const color = CAT_COLORS[cat] || '#ffffff';
+                return (
+                  <div key={cat}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
+                      <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{grouped[cat].length}</span>
+                      <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '30' }} />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {grouped[cat].map((ct, idx) => {
+                        const sub = ct.includes('/') ? ct.split('/').slice(1).join('/').trim() : ct;
+                        return (
+                          <span key={idx} className="text-xs px-3 py-1.5 rounded-full border font-medium" style={{ borderColor: color + '30', color: color + 'cc', backgroundColor: color + '08' }}>
+                            {sub}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+              {cardTypes.length === 0 && (
+                <div className="text-center py-12 text-white/30 italic text-sm">Aucune donnée disponible pour cette collection.</div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ── Vue liste ───────────────────────────────────────────────────────────
+    const publishers = Array.from(new Set(catalog.map(c => c.publisher).filter(Boolean))).sort() as string[];
+    const years = Array.from(new Set(catalog.map(c => c.year).filter(Boolean))).sort((a: any, b: any) => b - a) as number[];
+
+    const filtered = catalog.filter(col => {
       const term = checklistSearch.toLowerCase().trim();
-      const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
-      const searchMatch = !term || fullName.includes(term) || card.club_name?.toLowerCase().includes(term) || card.series?.toLowerCase().includes(term);
-      const typeMatch = !checklistType || getCategory(card) === checklistType;
-      const brandMatch = !checklistBrand || card.brand === checklistBrand;
-      const sportMatch = !checklistSport || card.sport === checklistSport;
-      return searchMatch && typeMatch && brandMatch && sportMatch;
+      const searchMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
+      const pubMatch = !checklistBrand || col.publisher === checklistBrand;
+      const yearMatch = !checklistType || String(col.year) === checklistType;
+      return searchMatch && pubMatch && yearMatch;
     });
-
-    const grouped: Record<string, any[]> = {};
-    CATEGORY_ORDER.forEach(cat => { grouped[cat] = []; });
-    filtered.forEach(card => { grouped[getCategory(card)].push(card); });
-
-    const total = filtered.length;
 
     return (
       <div className="w-full animate-in fade-in duration-300">
-        {/* Barre de recherche */}
+        {/* Recherche */}
         <div className="px-6 lg:px-[80px] mb-4 mt-2">
           <div className="relative">
             <input
               type="text"
-              placeholder="Rechercher joueur, club, série..."
+              placeholder="Rechercher une collection..."
               value={checklistSearch}
               onChange={e => setChecklistSearch(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-5 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-all"
             />
             <div className="absolute right-4 top-1/2 -translate-y-1/2">
-              {checklistSearch ? (
-                <button onClick={() => setChecklistSearch('')} className="text-red-500"><X size={16} /></button>
-              ) : (
-                <Search size={16} className="text-[#AFFF25]" />
-              )}
+              {checklistSearch ? <button onClick={() => setChecklistSearch('')} className="text-red-500"><X size={16} /></button> : <Search size={16} className="text-[#AFFF25]" />}
             </div>
           </div>
         </div>
 
-        {/* Filtres sport */}
-        {availableSports.length > 1 && (
-          <div className="overflow-x-auto mb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
-              <button onClick={() => setChecklistSport(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Tout</button>
-              {availableSports.map(s => (
-                <button key={s} onClick={() => setChecklistSport(checklistSport === s ? null : s)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistSport === s ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
-                  {SPORT_CONFIG[s]?.label || s}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Filtres type de carte */}
+        {/* Filtre publisher */}
         <div className="overflow-x-auto mb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
-            <button onClick={() => setChecklistType(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistType ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Toutes</button>
-            {CATEGORY_ORDER.map(cat => {
-              const count = grouped[cat]?.length || 0;
-              if (count === 0 && checklistType !== cat) return null;
-              const color = CATEGORY_COLORS[cat];
-              const isActive = checklistType === cat;
+            <button onClick={() => setChecklistBrand(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistBrand ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/60'}`}>Tous</button>
+            {publishers.map(pub => {
+              const slug = pub.toLowerCase().replace(/\s+/g, '-');
               return (
-                <button key={cat} onClick={() => setChecklistType(isActive ? null : cat)} style={isActive ? { backgroundColor: color + '20', borderColor: color, color } : {}} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${isActive ? '' : 'bg-white/5 border-white/10 text-white/60'}`}>
-                  {cat} {count > 0 && <span className="opacity-60">({count})</span>}
+                <button key={pub} onClick={() => setChecklistBrand(checklistBrand === pub ? null : pub)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all flex items-center gap-2 ${checklistBrand === pub ? 'bg-white/15 border-white/30 text-white' : 'bg-white/5 border-white/10 text-white/60'}`}>
+                  <img src={`/asset/logo-marque/${slug}.png`} alt={pub} className="h-3.5 object-contain mix-blend-screen" onError={e => e.currentTarget.style.display = 'none'} />
+                  {pub}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Filtres marque */}
-        {allBrands.length > 1 && (
-          <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
-              <button onClick={() => setChecklistBrand(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistBrand ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/50'}`}>Toutes marques</button>
-              {allBrands.map(brand => (
-                <button key={brand} onClick={() => setChecklistBrand(checklistBrand === brand ? null : brand)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistBrand === brand ? 'bg-white/20 border-white/30 text-white' : 'bg-white/5 border-white/10 text-white/50'}`}>
-                  {brand}
-                </button>
-              ))}
-            </div>
+        {/* Filtre année */}
+        <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
+            <button onClick={() => setChecklistType(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistType ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>Toutes années</button>
+            {years.slice(0, 6).map(y => (
+              <button key={y} onClick={() => setChecklistType(checklistType === String(y) ? null : String(y))} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistType === String(y) ? 'bg-white/15 border-white/30 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>{y}</button>
+            ))}
           </div>
-        )}
-
-        {/* Compteur */}
-        <div className="px-6 lg:px-[80px] mb-4">
-          <span className="text-xs text-white/40">{total} carte{total > 1 ? 's' : ''}</span>
         </div>
 
-        {/* Liste groupée par catégorie */}
-        <div className="px-6 lg:px-[80px] space-y-6 pb-[180px]">
-          {CATEGORY_ORDER.filter(cat => grouped[cat].length > 0).map(cat => {
-            const color = CATEGORY_COLORS[cat];
+        {/* Compteur */}
+        <div className="px-6 lg:px-[80px] mb-3">
+          <span className="text-xs text-white/30">{filtered.length} collection{filtered.length > 1 ? 's' : ''}</span>
+        </div>
+
+        {/* Liste collections */}
+        <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
+          {filtered.map((col: any) => {
+            const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
+            const hasAuto = col.card_types?.some((ct: string) => ct.toUpperCase().startsWith('AUTOGRAPH'));
+            const hasRelic = col.card_types?.some((ct: string) => ct.toUpperCase().startsWith('RELIC') || ct.toUpperCase().startsWith('MEMORABILIA'));
             return (
-              <div key={cat}>
-                {/* En-tête catégorie */}
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '40' }} />
-                  <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{grouped[cat].length}</span>
-                  <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '40' }} />
+              <div
+                key={col.folder}
+                onClick={() => openCollection(col)}
+                className="flex items-center justify-between px-4 py-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.07] active:scale-[0.99] transition-all cursor-pointer group"
+              >
+                <div className="flex items-center gap-4 overflow-hidden">
+                  <img src={`/asset/logo-marque/${publisherSlug}.png`} alt={col.publisher} className="h-7 w-7 object-contain mix-blend-screen shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" onError={e => e.currentTarget.style.display = 'none'} />
+                  <div className="overflow-hidden">
+                    <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-0.5">{col.publisher} · {col.year}</div>
+                    <div className="text-sm font-black text-white italic uppercase tracking-tight truncate">{col.serie}</div>
+                  </div>
                 </div>
-
-                {/* Lignes joueurs */}
-                <div className="space-y-1">
-                  {grouped[cat].map((card, idx) => (
-                    <div
-                      key={card.id}
-                      onClick={() => router.push(`/card/${card.id}`)}
-                      className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.07] active:scale-[0.99] transition-all cursor-pointer group"
-                    >
-                      {/* Gauche : numéro + prénom + nom + RC */}
-                      <div className="flex items-center gap-3 overflow-hidden">
-                        <span className="text-[10px] text-white/20 font-mono w-5 shrink-0">{idx + 1}</span>
-                        <div className="overflow-hidden">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-black text-white uppercase italic truncate">
-                              {card.firstname && <span className="font-normal not-italic text-white/60 mr-1">{card.firstname}</span>}
-                              {card.lastname}
-                            </span>
-                            {card.is_rookie && (
-                              <span className="shrink-0 text-[9px] font-black px-1.5 py-0.5 rounded bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/30 leading-none">RC</span>
-                            )}
-                          </div>
-                          {card.series && (
-                            <div className="text-[10px] text-white/30 truncate mt-0.5">{card.brand} · {card.series}</div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Droite : club + logo */}
-                      <div className="flex items-center gap-2 shrink-0 ml-3">
-                        {card.club_name && (
-                          <>
-                            <span className="text-xs text-white/40 text-right max-w-[100px] truncate hidden sm:block">{card.club_name}</span>
-                            <img
-                              src={`/asset/logo-club/${SPORT_FOLDERS[card.sport] || 'foot'}/${slugify(card.club_name)}.svg`}
-                              alt={card.club_name}
-                              className="h-6 w-6 object-contain opacity-70 group-hover:opacity-100 transition-opacity"
-                              onError={e => e.currentTarget.style.display = 'none'}
-                            />
-                          </>
-                        )}
-                        {card.is_numbered && card.numbering_low && (
-                          <span className="text-[9px] font-bold text-blue-400/70">/{card.numbering_max}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-1.5 shrink-0 ml-3">
+                  {hasAuto && <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20 font-bold">AUTO</span>}
+                  {hasRelic && <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/20 font-bold">RELIC</span>}
+                  <ChevronLeft size={14} className="text-white/20 rotate-180" />
                 </div>
               </div>
             );
           })}
-
-          {total === 0 && (
-            <div className="text-center py-20 text-white/30 italic text-sm">
-              {cards.length === 0 ? 'Aucune carte dans ta collection' : 'Aucune carte ne correspond aux filtres.'}
-            </div>
+          {filtered.length === 0 && (
+            <div className="text-center py-20 text-white/30 italic text-sm">Aucune collection trouvée.</div>
           )}
         </div>
       </div>
