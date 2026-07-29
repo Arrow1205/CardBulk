@@ -22,13 +22,12 @@ const SPORT_FOLDERS: Record<string, string> = {
 };
 
 // ── SofaScore client-side fetch (works from browser, blocked server-side) ──
-const SOFA = 'https://api.sofascore.com/api/v1';
+const SOFA_PROXY = 'https://scan-hobby.hdauvois.workers.dev';
 const SOFA_IMG = 'https://api.sofascore.app/api/v1';
-const SOFA_HEADERS = { 'Accept': 'application/json' };
 const CURRENT_YEAR = new Date().getFullYear();
 
 async function sofaGet(path: string) {
-  const r = await fetch(`${SOFA}${path}`, { headers: SOFA_HEADERS });
+  const r = await fetch(`${SOFA_PROXY}?path=${encodeURIComponent(path)}`);
   if (!r.ok) throw new Error(`SofaScore ${r.status} ${path}`);
   return r.json();
 }
