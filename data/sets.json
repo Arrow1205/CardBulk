@@ -1368,6 +1368,21 @@
             ],
             "ebay_template": "{joueur} Chrome UWCL {saison} {numero}",
             "notes": "Version chromée du set UWCL"
+          },
+          {
+            "name": "Winners Collection",
+            "full_name": "Topps Winners Collection",
+            "visual_hints": "Ces cartes mettent probablement en scène des joueurs d'Arsenal en action, vêtus de leurs maillots de club. Le design intégrerait l'esthétique moderne de Topps, mettant potentiellement en avant les succès de l'équipe ou les performances individuelles des joueurs.",
+            "common_subsets": [
+              "BASE",
+              "AUTOGRAPH",
+              "INSERT / AUTOGRAPHS"
+            ],
+            "ebay_keywords": [
+              "Topps Winners Collection"
+            ],
+            "ebay_template": "{joueur} Topps Winners Collection {saison} {numero}",
+            "notes": "Ajouté automatiquement depuis https://www.beckett.com/news/2025-26-topps-winners-collection-arsenal-soccer-cards/"
           }
         ],
         "tennis": [
