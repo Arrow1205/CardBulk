@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus, ScanLine, Share2, Copy } from 'lucide-react';
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus, ScanLine, Share2, Copy, ListChecks } from 'lucide-react';
 import QRCode from "react-qr-code";
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
@@ -74,7 +74,7 @@ const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 export default function CollectionPage() {
   const router = useRouter();
   
-  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' /* | 'scouty' */>('cartes');
+  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' | 'checklist'>('cartes');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   
@@ -107,6 +107,12 @@ export default function CollectionPage() {
   
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+
+  // Checklist filters
+  const [checklistSearch, setChecklistSearch] = useState('');
+  const [checklistType, setChecklistType] = useState<string | null>(null);
+  const [checklistBrand, setChecklistBrand] = useState<string | null>(null);
+  const [checklistSport, setChecklistSport] = useState<string | null>(null);
 
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -507,6 +513,191 @@ export default function CollectionPage() {
     );
   };
 
+  const renderChecklist = () => {
+    const CATEGORY_ORDER = ['BASE / INSERT', 'NUMÉROTÉ', 'AUTOGRAPH', 'RELIC', 'AUTO RELIC'];
+    const CATEGORY_COLORS: Record<string, string> = {
+      'BASE / INSERT':  '#AFFF25',
+      'NUMÉROTÉ':       '#60a5fa',
+      'AUTOGRAPH':      '#f59e0b',
+      'RELIC':          '#a78bfa',
+      'AUTO RELIC':     '#f43f5e',
+    };
+
+    const getCategory = (card: any): string => {
+      if (card.is_auto && card.is_patch) return 'AUTO RELIC';
+      if (card.is_auto) return 'AUTOGRAPH';
+      if (card.is_patch) return 'RELIC';
+      if (card.is_numbered) return 'NUMÉROTÉ';
+      return 'BASE / INSERT';
+    };
+
+    const allBrands = [...new Set(cards.map(c => c.brand).filter(Boolean))].sort();
+    const availableSports = SPORT_ORDER.filter(s => cards.some(c => c.sport === s));
+
+    const filtered = cards.filter(card => {
+      const term = checklistSearch.toLowerCase().trim();
+      const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
+      const searchMatch = !term || fullName.includes(term) || card.club_name?.toLowerCase().includes(term) || card.series?.toLowerCase().includes(term);
+      const typeMatch = !checklistType || getCategory(card) === checklistType;
+      const brandMatch = !checklistBrand || card.brand === checklistBrand;
+      const sportMatch = !checklistSport || card.sport === checklistSport;
+      return searchMatch && typeMatch && brandMatch && sportMatch;
+    });
+
+    const grouped: Record<string, any[]> = {};
+    CATEGORY_ORDER.forEach(cat => { grouped[cat] = []; });
+    filtered.forEach(card => { grouped[getCategory(card)].push(card); });
+
+    const total = filtered.length;
+
+    return (
+      <div className="w-full animate-in fade-in duration-300">
+        {/* Barre de recherche */}
+        <div className="px-6 lg:px-[80px] mb-4 mt-2">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Rechercher joueur, club, série..."
+              value={checklistSearch}
+              onChange={e => setChecklistSearch(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-5 pr-12 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#AFFF25] transition-all"
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+              {checklistSearch ? (
+                <button onClick={() => setChecklistSearch('')} className="text-red-500"><X size={16} /></button>
+              ) : (
+                <Search size={16} className="text-[#AFFF25]" />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Filtres sport */}
+        {availableSports.length > 1 && (
+          <div className="overflow-x-auto mb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
+              <button onClick={() => setChecklistSport(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistSport ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Tout</button>
+              {availableSports.map(s => (
+                <button key={s} onClick={() => setChecklistSport(checklistSport === s ? null : s)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistSport === s ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                  {SPORT_CONFIG[s]?.label || s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Filtres type de carte */}
+        <div className="overflow-x-auto mb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
+            <button onClick={() => setChecklistType(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistType ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>Toutes</button>
+            {CATEGORY_ORDER.map(cat => {
+              const count = grouped[cat]?.length || 0;
+              if (count === 0 && checklistType !== cat) return null;
+              const color = CATEGORY_COLORS[cat];
+              const isActive = checklistType === cat;
+              return (
+                <button key={cat} onClick={() => setChecklistType(isActive ? null : cat)} style={isActive ? { backgroundColor: color + '20', borderColor: color, color } : {}} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${isActive ? '' : 'bg-white/5 border-white/10 text-white/60'}`}>
+                  {cat} {count > 0 && <span className="opacity-60">({count})</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Filtres marque */}
+        {allBrands.length > 1 && (
+          <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
+              <button onClick={() => setChecklistBrand(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistBrand ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/50'}`}>Toutes marques</button>
+              {allBrands.map(brand => (
+                <button key={brand} onClick={() => setChecklistBrand(checklistBrand === brand ? null : brand)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistBrand === brand ? 'bg-white/20 border-white/30 text-white' : 'bg-white/5 border-white/10 text-white/50'}`}>
+                  {brand}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Compteur */}
+        <div className="px-6 lg:px-[80px] mb-4">
+          <span className="text-xs text-white/40">{total} carte{total > 1 ? 's' : ''}</span>
+        </div>
+
+        {/* Liste groupée par catégorie */}
+        <div className="px-6 lg:px-[80px] space-y-6 pb-[180px]">
+          {CATEGORY_ORDER.filter(cat => grouped[cat].length > 0).map(cat => {
+            const color = CATEGORY_COLORS[cat];
+            return (
+              <div key={cat}>
+                {/* En-tête catégorie */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '40' }} />
+                  <span className="text-[11px] font-black uppercase tracking-widest" style={{ color }}>{cat}</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: color + '15', color }}>{grouped[cat].length}</span>
+                  <div className="h-[2px] flex-1 rounded-full" style={{ backgroundColor: color + '40' }} />
+                </div>
+
+                {/* Lignes joueurs */}
+                <div className="space-y-1">
+                  {grouped[cat].map((card, idx) => (
+                    <div
+                      key={card.id}
+                      onClick={() => router.push(`/card/${card.id}`)}
+                      className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.07] active:scale-[0.99] transition-all cursor-pointer group"
+                    >
+                      {/* Gauche : numéro + prénom + nom + RC */}
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <span className="text-[10px] text-white/20 font-mono w-5 shrink-0">{idx + 1}</span>
+                        <div className="overflow-hidden">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-black text-white uppercase italic truncate">
+                              {card.firstname && <span className="font-normal not-italic text-white/60 mr-1">{card.firstname}</span>}
+                              {card.lastname}
+                            </span>
+                            {card.is_rookie && (
+                              <span className="shrink-0 text-[9px] font-black px-1.5 py-0.5 rounded bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/30 leading-none">RC</span>
+                            )}
+                          </div>
+                          {card.series && (
+                            <div className="text-[10px] text-white/30 truncate mt-0.5">{card.brand} · {card.series}</div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Droite : club + logo */}
+                      <div className="flex items-center gap-2 shrink-0 ml-3">
+                        {card.club_name && (
+                          <>
+                            <span className="text-xs text-white/40 text-right max-w-[100px] truncate hidden sm:block">{card.club_name}</span>
+                            <img
+                              src={`/asset/logo-club/${SPORT_FOLDERS[card.sport] || 'foot'}/${slugify(card.club_name)}.svg`}
+                              alt={card.club_name}
+                              className="h-6 w-6 object-contain opacity-70 group-hover:opacity-100 transition-opacity"
+                              onError={e => e.currentTarget.style.display = 'none'}
+                            />
+                          </>
+                        )}
+                        {card.is_numbered && card.numbering_low && (
+                          <span className="text-[9px] font-bold text-blue-400/70">/{card.numbering_max}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          {total === 0 && (
+            <div className="text-center py-20 text-white/30 italic text-sm">
+              {cards.length === 0 ? 'Aucune carte dans ta collection' : 'Aucune carte ne correspond aux filtres.'}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   if (activeFolderId && currentFolder) {
     return (
       <div className="min-h-screen bg-[#040221] text-white font-sans pb-32 animate-in slide-in-from-right-8 duration-300">
@@ -586,8 +777,10 @@ export default function CollectionPage() {
         {!targetFolderId && (
           <div className="flex justify-center px-6 gap-6 mb-4">
             <button onClick={() => setActiveTab('cartes')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'cartes' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Cartes{activeTab === 'cartes' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
-            
+
             <button onClick={() => { setActiveTab('dossiers'); setSearchQuery(''); }} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative ${activeTab === 'dossiers' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>Dossiers{activeTab === 'dossiers' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
+
+            <button onClick={() => { setActiveTab('checklist'); setSearchQuery(''); }} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'checklist' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}><ListChecks size={14} />Checklist{activeTab === 'checklist' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             
             {/* <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
               <Sparkles size={14} className={activeTab === 'scouty' ? "text-[#AFFF25]" : "text-white/40"} /> Scouty
@@ -600,6 +793,8 @@ export default function CollectionPage() {
       <div className="relative h-[calc(100vh-140px)] overflow-y-auto pb-32">
         
         {activeTab === 'cartes' && renderCardsAndFilters()}
+
+        {activeTab === 'checklist' && renderChecklist()}
 
         {activeTab === 'dossiers' && !targetFolderId && (
           <div className="animate-in fade-in duration-300 w-full">
