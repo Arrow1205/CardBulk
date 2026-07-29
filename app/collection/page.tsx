@@ -603,6 +603,12 @@ export default function CollectionPage() {
           )}
 
           {/* Subsets avec joueurs */}
+          {subsets.length > 0 && !clDetail?.xlsx_parsed && (
+            <div className="mx-6 lg:mx-[80px] mb-4 px-4 py-3 rounded-xl bg-[#f59e0b]/10 border border-[#f59e0b]/20 flex items-center gap-2">
+              <span className="text-[#f59e0b] text-xs font-bold">⚠ Données partielles</span>
+              <span className="text-white/40 text-xs">Les joueurs ne sont pas encore disponibles pour cette collection. Relance le sync en mode "all" une fois GEMINI_API_KEY configuré.</span>
+            </div>
+          )}
           {subsets.length > 0 ? (
             <div className="px-6 lg:px-[80px] space-y-8">
               {subsetCats.map(cat => {
@@ -624,6 +630,8 @@ export default function CollectionPage() {
                     <div className="space-y-4">
                       {items.map((s: any, idx: number) => {
                         const hasPlayers = s.players && s.players.length > 0;
+                        const hasContent = hasPlayers || (s.parallels && s.parallels.length > 0) || s.description;
+                        if (!hasContent) return null;
                         return (
                           <div key={idx} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
                             {/* Header section */}
@@ -717,13 +725,13 @@ export default function CollectionPage() {
     const publishers = Array.from(new Set(catalog.map(c => c.publisher).filter(Boolean))).sort() as string[];
     const years = Array.from(new Set(catalog.map(c => c.year).filter(Boolean))).sort((a: any, b: any) => b - a) as number[];
 
-    const filtered = catalog.filter(col => {
+    const filtered = (catalog as any[]).filter(col => {
       const term = checklistSearch.toLowerCase().trim();
       const searchMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
       const pubMatch = !checklistBrand || col.publisher === checklistBrand;
       const yearMatch = !checklistType || String(col.year) === checklistType;
       return searchMatch && pubMatch && yearMatch;
-    });
+    }).sort((a: any, b: any) => (b.year || 0) - (a.year || 0));
 
     return (
       <div className="w-full animate-in fade-in duration-300">
