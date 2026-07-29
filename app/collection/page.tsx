@@ -124,6 +124,7 @@ export default function CollectionPage() {
   const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
   const [expandedSubsets, setExpandedSubsets] = useState<Set<string>>(new Set());
   const [detailSearch, setDetailSearch] = useState('');
+  const [ownedCardPreview, setOwnedCardPreview] = useState<any | null>(null);
 
   // Manual collection add
   const [manualCollections, setManualCollections] = useState<any[]>([]);
@@ -795,6 +796,34 @@ export default function CollectionPage() {
         });
       };
 
+      const findOwnedCard = (playerName: string): any | null => {
+        const normPlayer = norm(playerName);
+        if (normPlayer.length < 2) return null;
+        return cards.find(card => {
+          const cardFull = norm(`${card.firstname || ''} ${card.lastname || ''}`);
+          const cardRev  = norm(`${card.lastname || ''} ${card.firstname || ''}`);
+          if (cardFull.length < 2) return false;
+          const nameMatch = cardFull === normPlayer || cardRev === normPlayer
+            || (cardFull.length >= 4 && normPlayer.includes(cardFull))
+            || (normPlayer.length >= 4 && cardFull.includes(normPlayer));
+          if (!nameMatch) return false;
+          const colYear = String(clSelected.year || '');
+          const cardYear = String(card.year || '');
+          const yearMatch = !colYear || cardYear === colYear
+            || (colYear.length === 4 && cardYear.includes(colYear))
+            || (cardYear.length === 4 && colYear.includes(cardYear));
+          const colPub   = norm(clSelected.publisher || '');
+          const colSerie = norm(clSelected.serie || '');
+          const cardBrand = norm(card.brand || '');
+          const cardSerie = norm(card.series || '');
+          const brandMatch = colPub.length > 0 && cardBrand.length > 0
+            && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
+          const serieMatch = colSerie.length > 0 && cardSerie.length > 0
+            && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
+          return yearMatch && brandMatch && serieMatch;
+        }) || null;
+      };
+
       const searchTerm = detailSearch.toLowerCase().trim();
 
       // Filter subsets by search
@@ -1023,7 +1052,14 @@ export default function CollectionPage() {
                                             ) : (
                                               <span className="shrink-0 w-4 h-4 rounded-full border border-white/[0.12]" />
                                             )}
-                                            <span className={`text-sm font-bold ${isOwned(p.name) ? 'text-[#AFFF25]' : 'text-white'}`}>{p.name}</span>
+                                            {isOwned(p.name) ? (
+                                              <button
+                                                onClick={() => setOwnedCardPreview(findOwnedCard(p.name))}
+                                                className="text-sm font-bold text-[#AFFF25] hover:underline underline-offset-2 text-left"
+                                              >{p.name}</button>
+                                            ) : (
+                                              <span className="text-sm font-bold text-white">{p.name}</span>
+                                            )}
                                           </div>
                                           <div className="flex items-center gap-2 shrink-0 ml-3">
                                             <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
@@ -1192,6 +1228,68 @@ export default function CollectionPage() {
             <div className="text-center py-20 text-white/30 italic text-sm">Aucune collection trouvée.</div>
           )}
         </div>
+
+        {/* Owned card preview modal */}
+        {ownedCardPreview && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setOwnedCardPreview(null)}>
+            <div className="w-full max-w-xs bg-[#0c0b2e] border border-white/10 rounded-3xl overflow-hidden animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+              {/* Card image */}
+              <div className="relative bg-black/40 flex items-center justify-center" style={{ minHeight: 220 }}>
+                {ownedCardPreview.image_url ? (
+                  <img src={ownedCardPreview.image_url} alt={ownedCardPreview.lastname} className="w-full object-contain max-h-64" />
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-12 text-white/20 gap-2">
+                    <span className="text-4xl">🃏</span>
+                    <span className="text-xs">Pas d'image</span>
+                  </div>
+                )}
+                <button onClick={() => setOwnedCardPreview(null)} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-black/50 text-white/60 hover:text-white transition-colors"><X size={14} /></button>
+              </div>
+
+              {/* Card info */}
+              <div className="p-5 space-y-3">
+                <div>
+                  <div className="text-xs text-white/40 uppercase tracking-widest mb-0.5">{ownedCardPreview.firstname}</div>
+                  <div className="text-2xl font-black italic uppercase text-[#AFFF25] leading-tight">{ownedCardPreview.lastname}</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  {ownedCardPreview.brand && (
+                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                      <div className="text-white/30 mb-0.5">Marque</div>
+                      <div className="text-white font-bold">{ownedCardPreview.brand}</div>
+                    </div>
+                  )}
+                  {ownedCardPreview.series && (
+                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                      <div className="text-white/30 mb-0.5">Série</div>
+                      <div className="text-white font-bold truncate">{ownedCardPreview.series}</div>
+                    </div>
+                  )}
+                  {ownedCardPreview.year && (
+                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                      <div className="text-white/30 mb-0.5">Année</div>
+                      <div className="text-white font-bold">{ownedCardPreview.year}</div>
+                    </div>
+                  )}
+                  {ownedCardPreview.club_name && (
+                    <div className="bg-white/[0.04] rounded-xl px-3 py-2">
+                      <div className="text-white/30 mb-0.5">Club</div>
+                      <div className="text-white font-bold truncate">{ownedCardPreview.club_name}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {ownedCardPreview.is_auto && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20 font-bold">AUTO</span>}
+                  {ownedCardPreview.is_patch && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/20 font-bold">PATCH</span>}
+                  {ownedCardPreview.is_numbered && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#60a5fa]/15 text-[#60a5fa] border border-[#60a5fa]/20 font-bold">/{ownedCardPreview.numbering_max}</span>}
+                  {ownedCardPreview.is_rc && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#34d399]/15 text-[#34d399] border border-[#34d399]/20 font-bold">RC</span>}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Add collection modal */}
         {showAddModal && (
