@@ -114,6 +114,12 @@ export default function CollectionPage() {
   const [checklistType, setChecklistType] = useState<string | null>(null);
   const [checklistBrand, setChecklistBrand] = useState<string | null>(null);
 
+  // Checklist navigation
+  const [clView, setClView] = useState<'list' | 'detail'>('list');
+  const [clSelected, setClSelected] = useState<any | null>(null);
+  const [clDetail, setClDetail] = useState<any | null>(null);
+  const [clDetailLoading, setClDetailLoading] = useState(false);
+
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -512,12 +518,6 @@ export default function CollectionPage() {
       </div>
     );
   };
-
-  // ── Checklist : état de navigation ──────────────────────────────────────
-  const [clView, setClView] = useState<'list' | 'detail'>('list');
-  const [clSelected, setClSelected] = useState<any | null>(null);
-  const [clDetail, setClDetail] = useState<any | null>(null);
-  const [clDetailLoading, setClDetailLoading] = useState(false);
 
   const openCollection = async (col: any) => {
     setClSelected(col);
