@@ -1,13 +1,57 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// ── TheSportsDB — photo + club actuel (gratuit, fiable) ──
+// ── Wikipedia API — stats de carrière à jour ──
+async function findWikipediaPage(name: string): Promise<string | null> {
+  const search = await fetch(
+    `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name + ' footballer')}&srlimit=5&format=json`,
+    { signal: AbortSignal.timeout(8000) }
+  ).then(r => r.json());
+
+  const results = search.query?.search || [];
+  if (!results.length) return null;
+
+  // Prendre le premier résultat dont le titre contient le nom
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+  const q = norm(name);
+  const match = results.find((r: any) => norm(r.title).includes(q) || q.includes(norm(r.title)))
+    || results[0];
+  return match.title;
+}
+
+async function fetchWikiStats(pageTitle: string): Promise<{ sections: Record<string, string>; intro: string }> {
+  // Récupérer les sections de la page
+  const [sectionsData, introData] = await Promise.all([
+    fetch(`https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(pageTitle)}&prop=sections&format=json`).then(r => r.json()),
+    fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(pageTitle)}&prop=extracts&exintro=true&explaintext=true&format=json`).then(r => r.json()),
+  ]);
+
+  const allSections: any[] = sectionsData.parse?.sections || [];
+  const intro = Object.values((introData.query?.pages || {}) as Record<string, any>)[0]?.extract || '';
+
+  // Trouver les sections utiles
+  const USEFUL = ['career statistics', 'club career', 'international career', 'honours', 'personal life'];
+  const usefulSections = allSections.filter((s: any) =>
+    USEFUL.some(k => s.line.toLowerCase().includes(k))
+  );
+
+  const sections: Record<string, string> = {};
+  for (const section of usefulSections.slice(0, 6)) {
+    try {
+      const d = await fetch(
+        `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(pageTitle)}&prop=wikitext&section=${section.index}&format=json`
+      ).then(r => r.json());
+      sections[section.line] = d.parse?.wikitext?.['*'] || '';
+    } catch {}
+  }
+
+  return { sections, intro };
+}
+
+// ── TheSportsDB — photo ──
 async function fetchTSDB(name: string) {
   try {
-    const r = await fetch(
-      `https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(name)}`,
-      { signal: AbortSignal.timeout(6000) }
-    );
+    const r = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(name)}`, { signal: AbortSignal.timeout(6000) });
     const d = await r.json();
     const players: any[] = d.player || [];
     const norm = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
@@ -18,52 +62,45 @@ async function fetchTSDB(name: string) {
   } catch { return null; }
 }
 
-// ── Gemini avec Google Search grounding — stats temps réel ──
-async function fetchGeminiStats(name: string, apiKey: string) {
+// ── Gemini — structurer le wikitext en JSON ──
+async function geminiStructure(name: string, wikiContent: string, apiKey: string) {
   const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-2.5-flash',
-    // @ts-ignore
-    tools: [{ googleSearch: {} }],
-  });
+  const prompt = `Tu es un expert football. Voici le contenu Wikipedia de ${name} :
 
-  const prompt = `Recherche les statistiques footballistiques complètes du joueur "${name}".
-Retourne UNIQUEMENT un objet JSON valide (sans markdown, sans \`\`\`), avec cette structure exacte :
+${wikiContent.slice(0, 15000)}
+
+Extrait et retourne UNIQUEMENT un JSON valide (sans markdown, sans \`\`\`) :
 {
-  "currentTeam": "nom du club actuel",
+  "currentTeam": "club actuel",
   "nationality": "nationalité",
   "age": 30,
-  "position": "Attaquant",
+  "position": "poste",
   "stats": [
     {
-      "season": "25/26",
-      "seasonSort": 2025,
-      "team": "nom du club",
-      "league": "nom de la compétition",
+      "season": "2024-25",
+      "seasonSort": 2024,
+      "team": "club",
+      "league": "compétition",
       "country": "pays",
       "appearances": 10,
       "goals": 5,
-      "assists": 3,
-      "minutes": 800,
-      "yellowCards": 1,
-      "redCards": 0
+      "assists": 0,
+      "minutes": null,
+      "yellowCards": null,
+      "redCards": null
     }
   ],
   "trophies": [
-    { "league": "Ligue 1", "country": "France", "season": "2024/25" }
-  ],
-  "recentNews": [
-    { "title": "titre de l'actualité récente", "summary": "résumé en 1 phrase", "date": "2025-07-01" }
+    { "league": "nom trophée", "country": "pays", "season": "saison" }
   ]
 }
-Inclure les 5 dernières saisons minimum. Inclure les matchs en club ET en sélection nationale séparément.
-Pour recentNews, inclure les 3 dernières actualités importantes du joueur.`;
+Inclure toutes les saisons du tableau Career statistics (club ET sélection nationale séparément).
+Pour la sélection, utilise le nom du pays comme "team". Ne pas inclure les lignes "Total".`;
 
   const result = await model.generateContent(prompt);
   const text = result.response.text().trim();
-
-  // Extraire le JSON même si Gemini ajoute du texte autour
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('No JSON in Gemini response');
   return JSON.parse(jsonMatch[0]);
@@ -78,38 +115,26 @@ export async function GET(req: Request) {
   if (!GEMINI_KEY) return NextResponse.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
 
   try {
-    // Requêtes parallèles : TheSportsDB (photo) + Gemini (stats)
-    const [tsdb, gemini] = await Promise.allSettled([
+    // Parallèle : photo + recherche Wikipedia
+    const [tsdb, wikiTitle] = await Promise.all([
       fetchTSDB(name),
-      fetchGeminiStats(name, GEMINI_KEY),
+      findWikipediaPage(name),
     ]);
 
-    const tsdbPlayer = tsdb.status === 'fulfilled' ? tsdb.value : null;
-    const geminiData = gemini.status === 'fulfilled' ? gemini.value : null;
-
-    if (gemini.status === 'rejected') {
-      console.error('[player-stats] Gemini error:', (gemini as any).reason?.message);
+    if (!wikiTitle) {
+      return NextResponse.json({ player: buildPlayer(tsdb, null, []), stats: [], trophies: [] });
     }
 
-    const birthDate = tsdbPlayer?.dateBorn;
-    const age = birthDate
-      ? Math.floor((Date.now() - new Date(birthDate).getTime()) / (365.25 * 24 * 3600 * 1000))
-      : geminiData?.age ?? null;
+    console.log(`[player-stats] Wikipedia page: "${wikiTitle}"`);
 
-    const player = {
-      firstname: (tsdbPlayer?.strPlayer || name).split(' ').slice(0, -1).join(' '),
-      lastname:  (tsdbPlayer?.strPlayer || name).split(' ').slice(-1)[0] || name,
-      photo:     tsdbPlayer?.strThumb || tsdbPlayer?.strCutout || null,
-      nationality:    tsdbPlayer?.strNationality || geminiData?.nationality || null,
-      age,
-      position:       geminiData?.position || tsdbPlayer?.strPosition || null,
-      currentTeam:    geminiData?.currentTeam || tsdbPlayer?.strTeam || null,
-      currentTeamLogo: null,
-    };
+    const { sections, intro } = await fetchWikiStats(wikiTitle);
+    const wikiContent = intro + '\n\n' + Object.entries(sections).map(([k, v]) => `==${k}==\n${v}`).join('\n\n');
 
-    const stats: any[] = (geminiData?.stats || []).map((s: any) => ({
+    const gemini = await geminiStructure(name, wikiContent, GEMINI_KEY);
+
+    const stats: any[] = (gemini.stats || []).map((s: any) => ({
       season:      s.season,
-      seasonSort:  s.seasonSort ?? parseInt((s.season || '').split('/')[0]) + 2000,
+      seasonSort:  s.seasonSort ?? parseInt((s.season || '').split(/[-\/]/)[0]),
       seasonLabel: s.season,
       team:        s.team,
       teamLogo:    null,
@@ -123,20 +148,37 @@ export async function GET(req: Request) {
       assists:     s.assists ?? null,
       yellowCards: s.yellowCards ?? null,
       redCards:    s.redCards ?? null,
-      shots:       null,
-      shotsOn:     null,
     }));
 
     stats.sort((a, b) => b.seasonSort - a.seasonSort);
 
     return NextResponse.json({
-      player,
+      player:     buildPlayer(tsdb, gemini, stats),
       stats,
-      trophies: geminiData?.trophies || [],
-      recentNews: geminiData?.recentNews || [],
+      trophies:   gemini.trophies || [],
+      recentNews: [],
     });
   } catch (e: any) {
     console.error('[player-stats] error:', e.message);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
+}
+
+function buildPlayer(tsdb: any, gemini: any, stats: any[]) {
+  const name = tsdb?.strPlayer || '';
+  const birthDate = tsdb?.dateBorn;
+  const age = birthDate
+    ? Math.floor((Date.now() - new Date(birthDate).getTime()) / (365.25 * 24 * 3600 * 1000))
+    : gemini?.age ?? null;
+
+  return {
+    firstname:   name.split(' ').slice(0, -1).join(' '),
+    lastname:    name.split(' ').slice(-1)[0] || name,
+    photo:       tsdb?.strThumb || tsdb?.strCutout || null,
+    nationality: tsdb?.strNationality || gemini?.nationality || null,
+    age,
+    position:    gemini?.position || tsdb?.strPosition || null,
+    currentTeam: gemini?.currentTeam || tsdb?.strTeam || stats[0]?.team || null,
+    currentTeamLogo: null,
+  };
 }
