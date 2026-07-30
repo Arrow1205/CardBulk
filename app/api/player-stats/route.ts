@@ -22,7 +22,11 @@ async function fetchTSDB(name: string) {
 async function fetchGeminiStats(name: string, apiKey: string) {
   const genAI = new GoogleGenerativeAI(apiKey);
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    // @ts-ignore
+    tools: [{ googleSearch: {} }],
+  });
 
   const prompt = `Recherche les statistiques footballistiques complètes du joueur "${name}".
 Retourne UNIQUEMENT un objet JSON valide (sans markdown, sans \`\`\`), avec cette structure exacte :
