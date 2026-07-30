@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Trophy } from 'lucide-react';
+import { ChevronLeft, Loader2, Trophy, RefreshCw } from 'lucide-react';
 
 const slugify = (text: string) =>
   text.toString().toLowerCase().trim()
@@ -51,7 +51,7 @@ export default function JoueurPage() {
   const recentNews: any[] = [];
 
   useEffect(() => { loadCards(); }, [slug]);
-  useEffect(() => { if (activeTab === 'stats' && !statsFetched) fetchStats(); }, [activeTab]);
+  useEffect(() => { if (activeTab === 'stats' && !statsFetched) fetchStats(false); }, [activeTab]);
 
   const filterByPlayer = (all: any[]) => {
     const termNorm = norm(playerName);
@@ -87,11 +87,12 @@ export default function JoueurPage() {
     setLoading(false);
   };
 
-  const fetchStats = async () => {
+  const fetchStats = async (refresh = false) => {
     setStatsLoading(true);
     setStatsFetched(true);
     try {
-      const res = await fetch(`/api/player-stats?name=${encodeURIComponent(playerName)}`);
+      const url = `/api/player-stats?name=${encodeURIComponent(playerName)}${refresh ? '&refresh=1' : ''}`;
+      const res = await fetch(url);
       setStatsData(await res.json());
     } catch (e) {
       console.error('fetchStats error:', e);
@@ -253,15 +254,26 @@ export default function JoueurPage() {
             </div>
           )}
 
-          {!statsLoading && statsData?.player === null && (
+          {!statsLoading && statsFetched && !statsData?.player && (
             <div className="text-center py-20">
-              <p className="text-white/40 text-sm mb-2">Joueur introuvable dans l'API.</p>
+              <p className="text-white/40 text-sm mb-2">Joueur introuvable dans Wikipedia.</p>
               <p className="text-white/20 text-xs">Essaie de corriger le nom dans l'URL.</p>
             </div>
           )}
 
           {!statsLoading && statsData?.player && (
             <>
+              {/* ── CTA Mise à jour ── */}
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={() => fetchStats(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-white/40 hover:text-white/70 hover:border-white/20 transition-all active:scale-95"
+                >
+                  <RefreshCw size={11} />
+                  Mise à jour des données
+                </button>
+              </div>
+
               {/* ── SAISON EN COURS ── */}
               {currentSeason && (
                 <div className="mb-7">
@@ -271,6 +283,12 @@ export default function JoueurPage() {
                   </div>
                   <div className="rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02]">
+                      <img
+                        src={`/asset/logo-club/foot/${slugify(currentSeason.club)}.svg`}
+                        alt=""
+                        className="h-5 w-5 object-contain shrink-0"
+                        onError={e => (e.currentTarget.style.display = 'none')}
+                      />
                       <span className="text-xs font-bold text-white flex-1 truncate">{currentSeason.club}</span>
                       <span className="text-[10px] text-white/30 truncate max-w-[120px]">{currentSeason.league}</span>
                     </div>
@@ -288,27 +306,32 @@ export default function JoueurPage() {
                 <div className="mb-7">
                   <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Carrière · Clubs</div>
                   <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden divide-y divide-white/[0.05]">
-                    <div className="grid grid-cols-[1fr_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
+                    <div className="grid grid-cols-[1fr_auto_auto] px-4 py-2 bg-white/[0.02]">
                       <span className="text-[9px] text-white/25 uppercase tracking-widest">Club</span>
-                      {['M', 'Buts', 'Passes'].map(h => (
-                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-12">{h}</span>
+                      {['Matchs', 'Buts'].map(h => (
+                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-14">{h}</span>
                       ))}
                     </div>
                     {clubCareer.map((c: any, i: number) => (
-                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto] items-center px-4 py-2.5">
-                        <span className="text-xs font-bold text-white truncate">{c.club}</span>
-                        <span className="text-xs font-black text-white text-center w-12">{c.apps ?? '—'}</span>
-                        <span className={`text-xs font-black text-center w-12 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
-                        <span className={`text-xs font-black text-center w-12 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
+                      <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img
+                            src={`/asset/logo-club/foot/${slugify(c.club)}.svg`}
+                            alt=""
+                            className="h-5 w-5 object-contain shrink-0"
+                            onError={e => (e.currentTarget.style.display = 'none')}
+                          />
+                          <span className="text-xs font-bold text-white truncate">{c.club}</span>
+                        </div>
+                        <span className="text-xs font-black text-white text-center w-14">{c.apps ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-14 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
                       </div>
                     ))}
-                    {/* Total carrière club */}
                     {careerTotal && (
-                      <div className="grid grid-cols-[1fr_auto_auto_auto] items-center px-4 py-2.5 bg-white/[0.04] border-t border-white/[0.08]">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Total</span>
-                        <span className="text-xs font-black text-white text-center w-12">{careerTotal.apps}</span>
-                        <span className={`text-xs font-black text-center w-12 ${(careerTotal.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{careerTotal.goals}</span>
-                        <span className={`text-xs font-black text-center w-12 ${(careerTotal.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{careerTotal.assists}</span>
+                      <div className="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2.5 bg-white/[0.04] border-t border-white/[0.08]">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Total carrière</span>
+                        <span className="text-xs font-black text-white text-center w-14">{careerTotal.apps}</span>
+                        <span className={`text-xs font-black text-center w-14 ${(careerTotal.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{careerTotal.goals}</span>
                       </div>
                     )}
                   </div>
@@ -320,18 +343,25 @@ export default function JoueurPage() {
                 <div className="mb-7">
                   <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Sélection nationale</div>
                   <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden divide-y divide-white/[0.05]">
-                    <div className="grid grid-cols-[1fr_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
+                    <div className="grid grid-cols-[1fr_auto_auto] px-4 py-2 bg-white/[0.02]">
                       <span className="text-[9px] text-white/25 uppercase tracking-widest">Équipe</span>
-                      {['M', 'Buts', 'Passes'].map(h => (
-                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-12">{h}</span>
+                      {['Matchs', 'Buts'].map(h => (
+                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-14">{h}</span>
                       ))}
                     </div>
                     {intlCareer.map((c: any, i: number) => (
-                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto] items-center px-4 py-2.5">
-                        <span className="text-xs font-bold text-white truncate">{c.nation}</span>
-                        <span className="text-xs font-black text-white text-center w-12">{c.apps ?? '—'}</span>
-                        <span className={`text-xs font-black text-center w-12 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
-                        <span className={`text-xs font-black text-center w-12 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
+                      <div key={i} className="grid grid-cols-[1fr_auto_auto] items-center px-4 py-2.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img
+                            src={`/asset/logo-club/foot/${slugify(c.nation)}.svg`}
+                            alt=""
+                            className="h-5 w-5 object-contain shrink-0"
+                            onError={e => (e.currentTarget.style.display = 'none')}
+                          />
+                          <span className="text-xs font-bold text-white truncate">{c.nation}</span>
+                        </div>
+                        <span className="text-xs font-black text-white text-center w-14">{c.apps ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-14 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
                       </div>
                     ))}
                   </div>
@@ -346,25 +376,26 @@ export default function JoueurPage() {
               {(trophies.leagues > 0 || trophies.cups > 0 || (trophies.international?.length ?? 0) > 0) && (
                 <div>
                   <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Palmarès</div>
-                  <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {trophies.leagues > 0 && (
-                      <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <Trophy size={16} className="text-[#f59e0b] shrink-0" />
-                        <span className="text-xs font-bold text-white flex-1">Championnats remportés</span>
-                        <span className="text-sm font-black text-[#AFFF25]">×{trophies.leagues}</span>
+                      <div className="flex flex-col items-center gap-2 px-3 py-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] text-center">
+                        <Trophy size={20} className="text-[#f59e0b]" />
+                        <span className="text-[10px] font-bold text-white leading-tight">Championnat</span>
+                        <span className="text-xl font-black text-[#AFFF25]">{trophies.leagues}</span>
                       </div>
                     )}
                     {trophies.cups > 0 && (
-                      <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <Trophy size={16} className="text-purple-400 shrink-0" />
-                        <span className="text-xs font-bold text-white flex-1">Coupes remportées</span>
-                        <span className="text-sm font-black text-[#AFFF25]">×{trophies.cups}</span>
+                      <div className="flex flex-col items-center gap-2 px-3 py-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] text-center">
+                        <Trophy size={20} className="text-[#f59e0b]" />
+                        <span className="text-[10px] font-bold text-white leading-tight">Coupe</span>
+                        <span className="text-xl font-black text-[#AFFF25]">{trophies.cups}</span>
                       </div>
                     )}
                     {trophies.international?.map((t: string, i: number) => (
-                      <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <Trophy size={16} className="text-sky-400 shrink-0" />
-                        <span className="text-xs font-bold text-white">{t}</span>
+                      <div key={i} className="flex flex-col items-center gap-2 px-3 py-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] text-center">
+                        <Trophy size={20} className="text-[#f59e0b]" />
+                        <span className="text-[10px] font-bold text-white leading-tight">{t}</span>
+                        <span className="text-xl font-black text-[#AFFF25]">1</span>
                       </div>
                     ))}
                   </div>

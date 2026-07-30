@@ -410,11 +410,15 @@ export async function GET(req: Request) {
   const name = searchParams.get('name');
   if (!name) return NextResponse.json({ error: 'Missing name' }, { status: 400 });
 
-  const slug = slugify(name);
-  const cached = await readCache(slug);
-  if (cached) {
-    console.log(`[player-stats] cache hit: ${slug}`);
-    return NextResponse.json(cached);
+  const slug    = slugify(name);
+  const refresh = searchParams.get('refresh') === '1';
+
+  if (!refresh) {
+    const cached = await readCache(slug);
+    if (cached) {
+      console.log(`[player-stats] cache hit: ${slug}`);
+      return NextResponse.json(cached);
+    }
   }
 
   try {
