@@ -21,18 +21,6 @@ const SPORT_FOLDERS: Record<string, string> = {
   SOCCER: 'foot', BASKETBALL: 'NBA', BASEBALL: 'MLB', NFL: 'NFL', NHL: 'NHL',
 };
 
-function sumStats(rows: any[]) {
-  return rows.reduce((acc, s) => ({
-    appearances: (acc.appearances ?? 0) + (s.appearances ?? 0),
-    minutes:     (acc.minutes ?? 0)     + (s.minutes ?? 0),
-    goals:       (acc.goals ?? 0)       + (s.goals ?? 0),
-    assists:     (acc.assists ?? 0)      + (s.assists ?? 0),
-    shots:       (acc.shots ?? 0)       + (s.shots ?? 0),
-    shotsOn:     (acc.shotsOn ?? 0)     + (s.shotsOn ?? 0),
-    yellowCards: (acc.yellowCards ?? 0) + (s.yellowCards ?? 0),
-    redCards:    (acc.redCards ?? 0)    + (s.redCards ?? 0),
-  }), {} as any);
-}
 
 function StatCell({ label, value, highlight, warn, danger }: { label: string; value: any; highlight?: boolean; warn?: boolean; danger?: boolean }) {
   return (
@@ -60,7 +48,7 @@ export default function JoueurPage() {
   const [statsData, setStatsData] = useState<any | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsFetched, setStatsFetched] = useState(false);
-  const recentNews: any[] = statsData?.recentNews || [];
+  const recentNews: any[] = [];
 
   useEffect(() => { loadCards(); }, [slug]);
   useEffect(() => { if (activeTab === 'stats' && !statsFetched) fetchStats(); }, [activeTab]);
@@ -135,49 +123,14 @@ export default function JoueurPage() {
   const uniqueClubs = Array.from(new Set(cards.map(c => c.club_name).filter(Boolean))).sort() as string[];
   const filteredCards = selectedClub ? cards.filter(c => c.club_name === selectedClub) : cards;
 
-  // ── Stats ──
-  const allStats: any[] = statsData?.stats || [];
-  const trophies: any[] = statsData?.trophies || [];
+  // ── Stats (nouvelles structures depuis l'API) ──
+  const currentSeason: any  = statsData?.currentSeason  || null;
+  const clubCareer:    any[] = statsData?.clubCareer    || [];
+  const intlCareer:    any[] = statsData?.intlCareer    || [];
+  const careerTotal:  any   = statsData?.careerTotal    || null;
+  const trophies:     any   = statsData?.trophies       || { leagues: 0, cups: 0, international: [] };
 
-  // Saison en cours = la plus récente dans les données (tri sur seasonSort ou saison string)
-  const sortedAllSeasons = Array.from(new Set(allStats.map(s => s.seasonSort ?? Number(s.season)))).sort((a, b) => b - a);
-  const currentSeasonSort = sortedAllSeasons[0] ?? null;
-  const currentSeasonLabel = allStats.find(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort)?.seasonLabel
-    ?? (currentSeasonSort ? `${currentSeasonSort}/${String(Number(currentSeasonSort) + 1).slice(-2)}` : null);
-  const currentSeasonRows = allStats.filter(s => (s.seasonSort ?? Number(s.season)) === currentSeasonSort);
-
-  // Compétitions internationales (sélection)
-  const INTL_KEYWORDS = ['world cup', 'euro', 'nations league', 'copa america', 'afcon', 'gold cup', 'friendlies', 'olympic', 'u21', 'u23'];
-  const isIntl = (row: any) => INTL_KEYWORDS.some(k => (row.league || '').toLowerCase().includes(k));
-
-  // Stats des saisons passées uniquement
-  const pastRows = allStats.filter(s => (s.seasonSort ?? Number(s.season)) !== currentSeasonSort);
-
-  // Agrégat par club (past seasons — club only, not intl)
-  const clubMap: Record<string, { logo: string; rows: any[] }> = {};
-  for (const s of pastRows) {
-    if (isIntl(s)) continue;
-    if (!s.team) continue;
-    if ((s.appearances ?? 0) === 0 && (s.goals ?? 0) === 0) continue;
-    if (!clubMap[s.team]) clubMap[s.team] = { logo: s.teamLogo || '', rows: [] };
-    clubMap[s.team].rows.push(s);
-  }
-  const clubCareer = Object.entries(clubMap)
-    .map(([team, { logo, rows }]) => ({ team, logo, ...sumStats(rows) }))
-    .sort((a, b) => (b.appearances ?? 0) - (a.appearances ?? 0));
-
-  // Agrégat sélection (all seasons)
-  const intlMap: Record<string, { logo: string; rows: any[] }> = {};
-  for (const s of allStats) {
-    if (!isIntl(s)) continue;
-    if (!s.team) continue;
-    if ((s.appearances ?? 0) === 0 && (s.goals ?? 0) === 0) continue;
-    if (!intlMap[s.team]) intlMap[s.team] = { logo: s.teamLogo || '', rows: [] };
-    intlMap[s.team].rows.push(s);
-  }
-  const intlCareer = Object.entries(intlMap)
-    .map(([team, { logo, rows }]) => ({ team, logo, ...sumStats(rows) }))
-    .sort((a, b) => (b.appearances ?? 0) - (a.appearances ?? 0));
+  const hasStats = currentSeason || clubCareer.length > 0 || intlCareer.length > 0;
 
   return (
     <div className="min-h-screen bg-[#040221] text-white font-sans">
@@ -309,31 +262,23 @@ export default function JoueurPage() {
 
           {!statsLoading && statsData?.player && (
             <>
-              {/* ── SAISON EN COURS : détail par compétition ── */}
-              {currentSeasonRows.length > 0 && (
+              {/* ── SAISON EN COURS ── */}
+              {currentSeason && (
                 <div className="mb-7">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Dernière saison</span>
-                    <span className="text-[10px] text-white/30">{currentSeasonLabel}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#AFFF25]">Saison en cours</span>
+                    <span className="text-[10px] text-white/30">{currentSeason.season}</span>
                   </div>
-                  <div className="rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden divide-y divide-white/[0.05]">
-                    {currentSeasonRows.filter((s: any) => (s.appearances ?? 0) > 0 || (s.goals ?? 0) > 0).map((s: any, i: number) => (
-                      <div key={i}>
-                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02]">
-                          {s.teamLogo && <img src={s.teamLogo} alt={s.team} className="h-5 w-5 object-contain" />}
-                          <span className="text-xs font-bold text-white flex-1 truncate">{s.team}</span>
-                          {s.leagueLogo && <img src={s.leagueLogo} alt={s.league} className="h-4 w-4 object-contain opacity-50" />}
-                          <span className="text-[10px] text-white/30 truncate max-w-[110px]">{s.league}</span>
-                          {s.rating && <span className="ml-2 text-[#AFFF25] font-black text-sm shrink-0">{s.rating}</span>}
-                        </div>
-                        <div className="grid grid-cols-4 gap-px bg-white/[0.04]">
-                          <StatCell label="Matchs"  value={s.appearances} />
-                          <StatCell label="Min"     value={s.minutes ? `${s.minutes}'` : null} />
-                          <StatCell label="Buts"    value={s.goals}   highlight={(s.goals ?? 0) > 0} />
-                          <StatCell label="Passes"  value={s.assists} highlight={(s.assists ?? 0) > 0} />
-                        </div>
-                      </div>
-                    ))}
+                  <div className="rounded-2xl bg-white/[0.04] border border-[#AFFF25]/20 overflow-hidden">
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02]">
+                      <span className="text-xs font-bold text-white flex-1 truncate">{currentSeason.club}</span>
+                      <span className="text-[10px] text-white/30 truncate max-w-[120px]">{currentSeason.league}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-px bg-white/[0.04]">
+                      <StatCell label="Matchs" value={currentSeason.apps ?? 0} />
+                      <StatCell label="Buts"   value={currentSeason.goals ?? 0} highlight={(currentSeason.goals ?? 0) > 0} />
+                      <StatCell label="Passes" value={currentSeason.assists ?? 0} highlight={(currentSeason.assists ?? 0) > 0} />
+                    </div>
                   </div>
                 </div>
               )}
@@ -343,25 +288,29 @@ export default function JoueurPage() {
                 <div className="mb-7">
                   <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Carrière · Clubs</div>
                   <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden divide-y divide-white/[0.05]">
-                    {/* Header */}
-                    <div className="grid grid-cols-[1fr_auto_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
+                    <div className="grid grid-cols-[1fr_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
                       <span className="text-[9px] text-white/25 uppercase tracking-widest">Club</span>
-                      {['M', 'Min', 'Buts', 'Passes'].map(h => (
-                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-10">{h}</span>
+                      {['M', 'Buts', 'Passes'].map(h => (
+                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-12">{h}</span>
                       ))}
                     </div>
-                    {clubCareer.map((c, i) => (
-                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center px-4 py-2.5">
-                        <div className="flex items-center gap-2 min-w-0">
-                          {c.logo && <img src={c.logo} alt={c.team} className="h-5 w-5 object-contain shrink-0" onError={e => e.currentTarget.style.display='none'} />}
-                          <span className="text-xs font-bold text-white truncate">{c.team}</span>
-                        </div>
-                        <span className="text-xs font-black text-white text-center w-10">{c.appearances ?? '—'}</span>
-                        <span className="text-xs text-white/50 text-center w-10">{c.minutes ? `${c.minutes}'` : '—'}</span>
-                        <span className={`text-xs font-black text-center w-10 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
-                        <span className={`text-xs font-black text-center w-10 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
+                    {clubCareer.map((c: any, i: number) => (
+                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto] items-center px-4 py-2.5">
+                        <span className="text-xs font-bold text-white truncate">{c.club}</span>
+                        <span className="text-xs font-black text-white text-center w-12">{c.apps ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-12 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-12 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
                       </div>
                     ))}
+                    {/* Total carrière club */}
+                    {careerTotal && (
+                      <div className="grid grid-cols-[1fr_auto_auto_auto] items-center px-4 py-2.5 bg-white/[0.04] border-t border-white/[0.08]">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Total</span>
+                        <span className="text-xs font-black text-white text-center w-12">{careerTotal.apps}</span>
+                        <span className={`text-xs font-black text-center w-12 ${(careerTotal.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{careerTotal.goals}</span>
+                        <span className={`text-xs font-black text-center w-12 ${(careerTotal.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{careerTotal.assists}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -371,60 +320,51 @@ export default function JoueurPage() {
                 <div className="mb-7">
                   <div className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Sélection nationale</div>
                   <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden divide-y divide-white/[0.05]">
-                    <div className="grid grid-cols-[1fr_auto_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
+                    <div className="grid grid-cols-[1fr_auto_auto_auto] px-4 py-2 bg-white/[0.02]">
                       <span className="text-[9px] text-white/25 uppercase tracking-widest">Équipe</span>
-                      {['M', 'Min', 'Buts', 'Passes'].map(h => (
-                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-10">{h}</span>
+                      {['M', 'Buts', 'Passes'].map(h => (
+                        <span key={h} className="text-[9px] text-white/25 uppercase tracking-widest text-center w-12">{h}</span>
                       ))}
                     </div>
-                    {intlCareer.map((c, i) => (
-                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center px-4 py-2.5">
-                        <div className="flex items-center gap-2 min-w-0">
-                          {c.logo && <img src={c.logo} alt={c.team} className="h-5 w-5 object-contain shrink-0" onError={e => e.currentTarget.style.display='none'} />}
-                          <span className="text-xs font-bold text-white truncate">{c.team}</span>
-                        </div>
-                        <span className="text-xs font-black text-white text-center w-10">{c.appearances ?? '—'}</span>
-                        <span className="text-xs text-white/50 text-center w-10">{c.minutes ? `${c.minutes}'` : '—'}</span>
-                        <span className={`text-xs font-black text-center w-10 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
-                        <span className={`text-xs font-black text-center w-10 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
+                    {intlCareer.map((c: any, i: number) => (
+                      <div key={i} className="grid grid-cols-[1fr_auto_auto_auto] items-center px-4 py-2.5">
+                        <span className="text-xs font-bold text-white truncate">{c.nation}</span>
+                        <span className="text-xs font-black text-white text-center w-12">{c.apps ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-12 ${(c.goals ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.goals ?? '—'}</span>
+                        <span className={`text-xs font-black text-center w-12 ${(c.assists ?? 0) > 0 ? 'text-[#AFFF25]' : 'text-white/50'}`}>{c.assists ?? '—'}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {allStats.length === 0 && (
+              {!hasStats && (
                 <div className="text-center py-12 text-white/30 italic text-sm">Aucune statistique disponible.</div>
               )}
 
-              {/* ── ACTUALITÉS ── */}
-              {recentNews.length > 0 && (
-                <div className="mt-7">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Actualités récentes</div>
-                  <div className="space-y-2">
-                    {recentNews.map((n: any, i: number) => (
-                      <div key={i} className="px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <div className="text-xs font-bold text-white mb-1">{n.title}</div>
-                        <div className="text-[11px] text-white/50 leading-relaxed">{n.summary}</div>
-                        {n.date && <div className="text-[9px] text-white/20 mt-1">{n.date}</div>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* ── PALMARÈS ── */}
-              {trophies.length > 0 && (
+              {(trophies.leagues > 0 || trophies.cups > 0 || (trophies.international?.length ?? 0) > 0) && (
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Palmarès ({trophies.length})</div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {trophies.map((t: any, i: number) => (
-                      <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Palmarès</div>
+                  <div className="flex flex-col gap-2">
+                    {trophies.leagues > 0 && (
+                      <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
                         <Trophy size={16} className="text-[#f59e0b] shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs font-bold text-white truncate">{t.league}</div>
-                          <div className="text-[10px] text-white/40">{t.country} · {t.season}</div>
-                        </div>
+                        <span className="text-xs font-bold text-white flex-1">Championnats remportés</span>
+                        <span className="text-sm font-black text-[#AFFF25]">×{trophies.leagues}</span>
+                      </div>
+                    )}
+                    {trophies.cups > 0 && (
+                      <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                        <Trophy size={16} className="text-purple-400 shrink-0" />
+                        <span className="text-xs font-bold text-white flex-1">Coupes remportées</span>
+                        <span className="text-sm font-black text-[#AFFF25]">×{trophies.cups}</span>
+                      </div>
+                    )}
+                    {trophies.international?.map((t: string, i: number) => (
+                      <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                        <Trophy size={16} className="text-sky-400 shrink-0" />
+                        <span className="text-xs font-bold text-white">{t}</span>
                       </div>
                     ))}
                   </div>
