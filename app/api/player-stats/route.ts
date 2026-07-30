@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 const CACHE_TTL_DAYS = 7;
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 // ── Wikitext utilities ──
 
@@ -14,7 +16,7 @@ function cleanWiki(s: string): string {
   return s
     .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
     .replace(/\{\{[^}]*\}\}/g, '')
-    .replace(/colspan="\d+"\s*\|[^|]*/gi, '')
+    .replace(/colspan="\d+"\s*\|[^|!]*/gi, '')
     .replace(/rowspan="\d+"\s*\|/gi, '')
     .replace(/style="[^"]*"\s*\|?/gi, '')
     .replace(/class="[^"]*"\s*\|?/gi, '')
@@ -23,85 +25,105 @@ function cleanWiki(s: string): string {
     .trim();
 }
 
-// Extract numeric values from a row block (split by || then |)
-function rowNums(rowBlock: string): number[] {
-  const cleaned = rowBlock
+// Extract numbers from a `|` data line (cells separated by ||)
+function dataNums(line: string): number[] {
+  const cleaned = line
     .replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1')
     .replace(/\{\{[^}]*\}\}/g, '')
     .replace(/colspan="\d+"\s*\|[^|]*/gi, '')
-    .replace(/rowspan="\d+"\s*\|/gi, '')
-    .replace(/style="[^"]*"\s*\|?/gi, '')
-    .replace(/class="[^"]*"\s*\|?/gi, '');
+    .replace(/rowspan="\d+"\s*\|/gi, '');
   return cleaned.split(/\|+/)
     .map(c => c.trim())
     .filter(c => /^\d+$/.test(c))
     .map(Number);
 }
 
-// ── Club career table parser ──
-// Returns sous-total rows (one per club) + most recent individual season row
+// Extract numbers from a `!` header line (cells separated by !!)
+function headerNums(line: string): number[] {
+  const cleaned = line
+    .replace(/\{\{[^}]*\}\}/g, '')
+    .replace(/colspan="\d+"\s*\|[^!]*/gi, '')
+    .replace(/—|–|-{2,}/g, '');
+  return cleaned.split(/!!/)
+    .map(c => c.replace(/^!/, '').trim())
+    .filter(c => /^\d+$/.test(c))
+    .map(Number);
+}
 
-interface ClubRow  { club: string; apps: number; goals: number; assists: number }
-interface IntlRow  { nation: string; apps: number; goals: number; assists: number }
-interface SeasonRow { season: string; seasonSort: number; club: string; league: string; apps: number; goals: number; assists: number }
-interface CareerTotal { apps: number; goals: number; assists: number }
+// ── Club career parser ──
+// Wikipedia format:
+//   data rows start with |   (| or || separator)
+//   total rows start with !  (!! separator), line "Total" or "Career total"
+
+interface ClubRow  { club: string; apps: number; goals: number }
+interface SeasonRow { season: string; seasonSort: number; club: string; league: string; apps: number; goals: number }
+interface CareerTotal { apps: number; goals: number }
 
 function parseClubTable(wikitext: string): {
   clubCareer: ClubRow[];
   currentSeason: SeasonRow | null;
   careerTotal: CareerTotal | null;
 } {
-  const clubCareer: ClubRow[] = [];
-  let careerTotal: CareerTotal | null = null;
-  let currentSeason: SeasonRow | null = null;
-
-  // Find the first table
   const tStart = wikitext.indexOf('{|');
-  if (tStart === -1) return { clubCareer, currentSeason, careerTotal };
+  if (tStart === -1) return { clubCareer: [], currentSeason: null, careerTotal: null };
   const tEnd = wikitext.indexOf('|}', tStart);
-  const table = wikitext.slice(tStart, tEnd);
+  const tableText = wikitext.slice(tStart, tEnd);
 
-  const rows = table.split(/^\s*\|-/m).slice(1);
+  const rowBlocks = tableText.split(/^\s*\|-/m).slice(1);
+
   let currentClub = '';
   let clubRowspan = 0;
+  const clubTotals: ClubRow[] = [];          // clubs with a ! Total row
+  const clubTotalsSet = new Set<string>();    // names of those clubs
+  const clubIndividual = new Map<string, { apps: number; goals: number }[]>();
+  let careerTotal: CareerTotal | null = null;
+  let currentSeason: SeasonRow | null = null;
   let latestSeasonSort = -1;
 
-  for (const row of rows) {
-    const lowerRow = row.toLowerCase();
-    const nums = rowNums(row);
+  for (const block of rowBlocks) {
+    const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
 
-    // ── Career total row ──
-    if (lowerRow.includes('total sur la carri') || lowerRow.includes('career total') || lowerRow.includes('total de carri')) {
-      if (nums.length >= 3) {
-        careerTotal = { apps: nums[nums.length - 3], goals: nums[nums.length - 2], assists: nums[nums.length - 1] };
-      }
-      continue;
-    }
+    // Separate | and ! lines
+    const dataLines   = lines.filter(l => l.startsWith('|') && !l.startsWith('|}') && !l.startsWith('|+'));
+    const headerLines = lines.filter(l => l.startsWith('!'));
 
-    // ── Sous-total row ──
-    if (lowerRow.includes('sous-total') || lowerRow.includes('sub-total') || lowerRow.includes('subtotal')) {
-      if (currentClub && nums.length >= 3) {
-        // Remove if we already have this club (keep first occurrence = all seasons)
-        if (!clubCareer.find(c => c.club === currentClub)) {
-          clubCareer.push({ club: currentClub, apps: nums[nums.length - 3], goals: nums[nums.length - 2], assists: nums[nums.length - 1] });
+    // ── ! Total / Career total block ──
+    if (headerLines.length > 0) {
+      const firstH = headerLines[0];
+      const isCareerTotal = /career\s*total/i.test(firstH);
+      const isClubTotal   = !isCareerTotal && /\bTotal\b/i.test(firstH);
+
+      if (isCareerTotal || isClubTotal) {
+        let nums = headerNums(firstH);
+        if (nums.length < 2 && headerLines[1]) {
+          nums = headerNums(headerLines[1]);
         }
+        if (nums.length >= 2) {
+          const apps  = nums[nums.length - 2];
+          const goals = nums[nums.length - 1];
+          if (isCareerTotal) {
+            careerTotal = { apps, goals };
+          } else if (currentClub) {
+            clubTotals.push({ club: currentClub, apps, goals });
+            clubTotalsSet.add(currentClub);
+          }
+        }
+        // Reset rowspan after a club total so the next club is detected correctly
+        clubRowspan = 0;
+        continue;
       }
-      continue;
     }
 
-    // ── Regular season row: extract club + season info ──
-    const lines = row.split('\n');
+    // ── Regular data row ──
     const cells: string[] = [];
     let hasNewClub = false;
 
-    for (const line of lines) {
-      const t = line.trim();
-      if (!t.startsWith('|') || t.startsWith('|}') || t.startsWith('|+')) continue;
-      const content = t.slice(1);
+    for (const line of dataLines) {
+      const content = line.slice(1);
       const rsMatch = content.match(/^rowspan="(\d+)"\|(.+)/);
       if (rsMatch) {
         clubRowspan = parseInt(rsMatch[1]);
-        currentClub = cleanWiki(rsMatch[2].split('||')[0]);
+        currentClub = cleanWiki(rsMatch[2].split('||')[0]).replace(/\s*\(loan\)/i, '').trim();
         hasNewClub = true;
         rsMatch[2].split('||').slice(1).forEach(p => cells.push(cleanWiki(p)));
         continue;
@@ -112,72 +134,100 @@ function parseClubTable(wikitext: string): {
     if (!hasNewClub) {
       if (clubRowspan > 0) clubRowspan--;
       else if (cells.length > 0 && !cells[0].match(/^\d{4}/) && cells[0] !== '') {
-        currentClub = cells.shift()!;
+        currentClub = cells.shift()!.replace(/\s*\(loan\)/i, '').trim();
       }
     }
 
-    if (cells.length < 3) continue;
+    if (cells.length < 2 || !currentClub) continue;
     const season = cells[0];
-    const league = cells[1];
     if (!season.match(/\d{4}/)) continue;
 
-    const yearMatch = season.match(/(\d{4})/);
-    const seasonSort = yearMatch ? parseInt(yearMatch[1]) : 0;
+    // Collect all numbers from the stats line (last | line of the block)
+    const statsLine = dataLines[dataLines.length - 1] || '';
+    const nums = dataNums(statsLine);
+    if (nums.length < 2) continue;
 
-    if (nums.length >= 3 && seasonSort >= latestSeasonSort) {
+    const apps  = nums[nums.length - 2];
+    const goals = nums[nums.length - 1];
+    if (apps === 0 && goals === 0) continue;
+
+    // YYYY-YY → sort key 202526, standalone YYYY → 202500 (so YYYY-YY ranks higher)
+    const yearMatch  = season.match(/(\d{4})[–\-](\d{2,4})/);
+    const yearMatch2 = season.match(/(\d{4})/);
+    const baseYear   = yearMatch ? parseInt(yearMatch[1]) : (yearMatch2 ? parseInt(yearMatch2[1]) : 0);
+    const endPart    = yearMatch ? parseInt(yearMatch[2].length === 2 ? yearMatch[1].slice(0,2) + yearMatch[2] : yearMatch[2]) : 0;
+    const seasonSort = baseYear * 100 + (endPart ? endPart % 100 : 0);
+
+    // Track current (most recent) season
+    if (seasonSort >= latestSeasonSort) {
       latestSeasonSort = seasonSort;
       currentSeason = {
-        season: season.replace(/–/g, '-'),
+        season:      season.replace(/–/g, '-'),
         seasonSort,
-        club: currentClub,
-        league,
-        apps:    nums[nums.length - 3],
-        goals:   nums[nums.length - 2],
-        assists: nums[nums.length - 1],
+        club:        currentClub,
+        league:      cells[1] || '',
+        apps,
+        goals,
       };
     }
+
+    // Track per-club individual rows (for single-season clubs)
+    if (!clubIndividual.has(currentClub)) clubIndividual.set(currentClub, []);
+    clubIndividual.get(currentClub)!.push({ apps, goals });
   }
 
-  // Sort club career by appearances desc
+  // Add single-season clubs (no Total row found)
+  const clubCareer: ClubRow[] = [...clubTotals];
+  clubIndividual.forEach((rows, club) => {
+    if (clubTotalsSet.has(club)) return;
+    const apps  = rows.reduce((s: number, r: { apps: number; goals: number }) => s + r.apps,  0);
+    const goals = rows.reduce((s: number, r: { apps: number; goals: number }) => s + r.goals, 0);
+    if (apps > 0 || goals > 0) clubCareer.push({ club, apps, goals });
+  });
+
   clubCareer.sort((a, b) => b.apps - a.apps);
 
-  return { clubCareer, currentSeason, careerTotal };
+  // Remove current season club from career list (already shown separately)
+  const filtered = currentSeason
+    ? clubCareer.filter(c => c.club !== currentSeason.club)
+    : clubCareer;
+
+  return { clubCareer: filtered, currentSeason, careerTotal };
 }
 
-// ── International table parser ──
-function parseIntlTable(wikitext: string): IntlRow[] {
-  // Find the table
+// ── International career parser ──
+function parseIntlTable(wikitext: string): { nation: string; apps: number; goals: number }[] {
   const tStart = wikitext.indexOf('{|');
   if (tStart === -1) return [];
   const tEnd = wikitext.indexOf('|}', tStart);
-  const table = wikitext.slice(tStart, tEnd);
-  const rows = table.split(/^\s*\|-/m).slice(1);
+  const tableText = wikitext.slice(tStart, tEnd);
+  const rowBlocks = tableText.split(/^\s*\|-/m).slice(1);
 
   let nation = '';
   let nationRowspan = 0;
-  const intlMap: Record<string, { apps: number; goals: number; assists: number }> = {};
+  const totals: { nation: string; apps: number; goals: number }[] = [];
+  const rows = new Map<string, { apps: number; goals: number }[]>();
 
-  for (const row of rows) {
-    const lowerRow = row.toLowerCase();
-    const nums = rowNums(row);
+  for (const block of rowBlocks) {
+    const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+    const headerLines = lines.filter(l => l.startsWith('!'));
+    const dataLines   = lines.filter(l => l.startsWith('|') && !l.startsWith('|}') && !l.startsWith('|+'));
 
-    // Total row → skip or capture as single entry
-    if (lowerRow.includes('total') && nation) {
-      if (nums.length >= 2) {
-        if (!intlMap[nation]) intlMap[nation] = { apps: 0, goals: 0, assists: 0 };
-        intlMap[nation] = { apps: nums[nums.length - 2], goals: nums[nums.length - 1], assists: nums.length >= 3 ? nums[nums.length - 3] : 0 };
+    // Total row (may be inline: !colspan="2"|Total!!137!!57)
+    if (headerLines.length > 0 && /\bTotal\b/i.test(headerLines[0])) {
+      const nums = headerNums(headerLines[0]);
+      if (nums.length >= 2 && nation) {
+        totals.push({ nation, apps: nums[nums.length - 2], goals: nums[nums.length - 1] });
       }
       continue;
     }
 
-    const lines = row.split('\n');
+    // Data row
     const cells: string[] = [];
     let hasNewNation = false;
 
-    for (const line of lines) {
-      const t = line.trim();
-      if (!t.startsWith('|') || t.startsWith('|}') || t.startsWith('|+')) continue;
-      const content = t.slice(1);
+    for (const line of dataLines) {
+      const content = line.slice(1);
       const rsMatch = content.match(/^rowspan="(\d+)"\|(.+)/);
       if (rsMatch) {
         nationRowspan = parseInt(rsMatch[1]);
@@ -189,62 +239,82 @@ function parseIntlTable(wikitext: string): IntlRow[] {
       content.split('||').forEach(p => cells.push(cleanWiki(p)));
     }
 
-    if (!hasNewNation) {
-      if (nationRowspan > 0) nationRowspan--;
-      else if (cells.length > 0 && !cells[0].match(/^\d{4}/) && cells[0] !== '') {
-        nation = cells.shift()!;
-      }
-    }
+    if (!hasNewNation && nationRowspan > 0) nationRowspan--;
 
-    if (!nation || nums.length < 2) continue;
-    const year = cells[0];
-    if (!year?.match(/\d{4}/) && !year?.match(/\d{4}–/)) continue;
+    if (!nation || !cells[0]?.match(/^\d{4}/)) continue;
 
-    if (!intlMap[nation]) intlMap[nation] = { apps: 0, goals: 0, assists: 0 };
-    intlMap[nation].apps    += nums[nums.length - 2] ?? 0;
-    intlMap[nation].goals   += nums[nums.length - 1] ?? 0;
+    const statsLine = dataLines[dataLines.length - 1] || '';
+    const nums = dataNums(statsLine);
+    if (nums.length < 2) continue;
+
+    if (!rows.has(nation)) rows.set(nation, []);
+    rows.get(nation)!.push({ apps: nums[nums.length - 2], goals: nums[nums.length - 1] });
   }
 
-  return Object.entries(intlMap)
-    .map(([nation, s]) => ({ nation, ...s }))
-    .filter(r => r.apps > 0 || r.goals > 0)
-    .sort((a, b) => b.apps - a.apps);
+  // Prefer Total rows; fallback to summed individual rows
+  const result: { nation: string; apps: number; goals: number }[] = [];
+  const seen = new Set<string>();
+  for (const t of totals) {
+    result.push(t);
+    seen.add(t.nation);
+  }
+  rows.forEach((arr, nation) => {
+    if (seen.has(nation)) return;
+    result.push({ nation, apps: arr.reduce((s: number, r: { apps: number; goals: number }) => s + r.apps, 0), goals: arr.reduce((s: number, r: { apps: number; goals: number }) => s + r.goals, 0) });
+  });
+  return result.filter(r => r.apps > 0 || r.goals > 0).sort((a, b) => b.apps - a.apps);
 }
 
-// ── Trophies parser ──
-const LEAGUE_KW = ['ligue 1', 'premier league', 'serie a', 'la liga', 'bundesliga', 'primeira liga', 'eredivisie', 'super lig', 'championship title', 'league champion', 'mls cup'];
-const CUP_KW    = ['fa cup', 'coupe de france', 'coppa italia', 'copa del rey', 'dfb-pokal', 'carabao', 'league cup', 'efl cup', 'trophée des champions', 'supercoppa', 'community shield', 'coupe de la ligue', 'copa do brasil'];
-const INTL_KW   = ['world cup', 'euro', 'uefa nations', 'copa america', 'africa cup', 'afcon', 'gold cup', 'olympic'];
+// ── Trophies ──
+const LEAGUE_KW = ['ligue 1', 'premier league', 'serie a', 'la liga', 'bundesliga', 'primeira liga', 'eredivisie', 'super lig', 'mls cup'];
+const CUP_KW    = ['fa cup', 'coupe de france', 'coppa italia', 'copa del rey', 'dfb-pokal', 'carabao cup', 'league cup', 'efl cup', 'community shield', 'coupe de la ligue', 'copa do brasil', 'supercoppa', 'europa league', 'champions league', 'conference league'];
+const INTL_KW   = ['fifa world cup', 'uefa european championship', 'european championship', 'uefa nations league', 'nations league', 'copa america', 'africa cup', 'afcon', 'gold cup'];
 
 function parseTrophies(wikitext: string): { leagues: number; cups: number; international: string[] } {
   const lines = wikitext.split('\n');
-  let currentTrophy = '';
   let leagues = 0, cups = 0;
   const international: string[] = [];
 
   for (const line of lines) {
     const t = line.trim();
-    if (t.startsWith("'''") || (t.startsWith('==') && !t.startsWith('==='))) {
-      currentTrophy = t.replace(/'+|=+/g, '').replace(/\[\[.*?\|?(.*?)\]\]/g, '$1').trim().toLowerCase();
-    } else if (t.startsWith('*') && currentTrophy) {
-      if (LEAGUE_KW.some(k => currentTrophy.includes(k))) leagues++;
-      else if (CUP_KW.some(k => currentTrophy.includes(k))) cups++;
-      else if (INTL_KW.some(k => currentTrophy.includes(k))) {
-        const year = t.match(/\d{4}(?:[–-]\d{2,4})?/)?.[0] || '';
-        const label = currentTrophy.split(/\n/)[0].replace(/\b\w/g, l => l.toUpperCase());
-        if (year && !international.find(s => s === `${label} (${year})`)) {
-          international.push(`${label} (${year})`);
-        }
+    if (!t.startsWith('*')) continue;
+
+    // Strip ref tags to avoid picking up citation years
+    const clean = t.replace(/<ref[^>]*>[\s\S]*?<\/ref>/g, '').replace(/<ref[^>]*\/>/g, '').replace(/\{\{[^}]*\}\}/g, '');
+
+    // Extract trophy name from the first [[...]] link or bold text
+    const linkMatch  = clean.match(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/);
+    const boldMatch  = clean.match(/^\*\s*'''([^']+)'''/);
+    const trophyRaw  = (linkMatch?.[1] || boldMatch?.[1] || '').toLowerCase().trim();
+    if (!trophyRaw) continue;
+
+    // Extract season strings ONLY from [[...]] links (not from refs or surrounding text)
+    const seasonLinkMatches = Array.from(clean.matchAll(/\[\[([^\]]*\d{4}[^\]]*)\]\]/g));
+    const seasonLinks = seasonLinkMatches.map(m => {
+      const parts = m[1].split('|');
+      return parts[parts.length - 1].replace(/\[\[|\]\]/g, '').trim();
+    }).filter((s: string) => /\d{4}/.test(s));
+
+    const numWins = Math.max(seasonLinks.length, 1);
+
+    if (LEAGUE_KW.some(k => trophyRaw.includes(k))) {
+      leagues += numWins;
+    } else if (CUP_KW.some(k => trophyRaw.includes(k))) {
+      cups += numWins;
+    } else if (INTL_KW.some(k => trophyRaw.includes(k))) {
+      const label = trophyRaw.replace(/\b\w/g, (l: string) => l.toUpperCase());
+      const uniqueSeasons = seasonLinks.filter((s: string, i: number) => seasonLinks.indexOf(s) === i);
+      for (const s of uniqueSeasons) {
+        const entry = `${label} (${s})`;
+        if (!international.includes(entry)) international.push(entry);
       }
     }
   }
-
   return { leagues, cups, international };
 }
 
-// ── Wikipedia fetch ──
+// ── Wikipedia ──
 async function fetchFromWikipedia(name: string) {
-  // 1. Search
   const search = await fetch(
     `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(name + ' footballer')}&srlimit=5&format=json`,
     { signal: AbortSignal.timeout(8000) }
@@ -258,42 +328,43 @@ async function fetchFromWikipedia(name: string) {
 
   console.log(`[player-stats] Wikipedia: "${page.title}"`);
 
-  // 2. List sections
   const sectionsData = await fetch(
     `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(page.title)}&prop=sections&format=json`
   ).then(r => r.json());
 
   const sections: any[] = sectionsData.parse?.sections || [];
-  const careerSection  = sections.find((s: any) => s.line.toLowerCase().includes('career statistic'));
-  const honoursSection = sections.find((s: any) => s.line.toLowerCase().includes('honour') || s.line.toLowerCase().includes('honor'));
-  const intlSection    = sections.find((s: any) => s.line.toLowerCase().includes('international') && s.line.toLowerCase().includes('career'));
 
-  // 3. Fetch wikitext in parallel
-  const fetchSection = (idx: number) =>
+  // Find "Career statistics" parent section, then look for its children only
+  const careerStatsIdx = sections.findIndex((s: any) => /career statistics/i.test(s.line));
+  const statsChildren  = careerStatsIdx >= 0 ? sections.slice(careerStatsIdx + 1) : sections;
+
+  const clubSection = statsChildren.find((s: any) => /^club$/i.test(s.line.trim()));
+  const intlSection = statsChildren.find((s: any) => /^international$/i.test(s.line.trim()));
+  const honSection  = sections.find((s: any) => /^honours?$|^honors?$/i.test(s.line.trim()));
+
+  const fetchSec = (idx: number) =>
     fetch(`https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(page.title)}&prop=wikitext&section=${idx}&format=json`)
-      .then(r => r.json()).then(d => d.parse?.wikitext?.['*'] || '');
+      .then(r => r.json()).then(d => (d.parse?.wikitext?.['*'] as string) || '');
 
-  const [careerText, intlText, honoursText, introData] = await Promise.all([
-    careerSection  ? fetchSection(careerSection.index)  : Promise.resolve(''),
-    intlSection    ? fetchSection(intlSection.index)    : Promise.resolve(''),
-    honoursSection ? fetchSection(honoursSection.index) : Promise.resolve(''),
+  const [clubText, intlText, honText, introData] = await Promise.all([
+    clubSection ? fetchSec(clubSection.index) : Promise.resolve(''),
+    intlSection ? fetchSec(intlSection.index) : Promise.resolve(''),
+    honSection  ? fetchSec(honSection.index)  : Promise.resolve(''),
     fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(page.title)}&prop=extracts&exintro=true&explaintext=true&format=json`).then(r => r.json()),
   ]);
 
-  const { clubCareer, currentSeason, careerTotal } = parseClubTable(careerText || '');
-  // International: check intlSection first, fallback to second table in careerText
-  const intlWikitext = intlText || careerText.slice(careerText.indexOf('|}') + 2); // after first table
-  const intlCareer = parseIntlTable(intlWikitext);
-  const trophies   = parseTrophies(honoursText);
+  const { clubCareer, currentSeason, careerTotal } = parseClubTable(clubText);
+  const intlCareer = parseIntlTable(intlText);
+  const trophies   = parseTrophies(honText);
 
   const intro: string = (Object.values((introData.query?.pages || {}) as Record<string, any>)[0]?.extract as string) || '';
-  const currentTeamMatch = intro.match(/plays(?:ed)? (?:as [\w\s-]+ )?for (?:[\w\s]+club )?([A-Z][^\.,]+)/);
-  const currentTeam = currentTeamMatch?.[1]?.trim() || currentSeason?.club || clubCareer[0]?.club || null;
+  const teamMatch   = intro.match(/plays(?:ed)? (?:as [\w\s-]+ )?for (?:[\w\s]+club )?([A-Z][^,.\n]+?)(?:\s+and\s|\s*[,.]|$)/);
+  const currentTeam = teamMatch?.[1]?.trim() || currentSeason?.club || clubCareer[0]?.club || null;
 
   return { clubCareer, currentSeason, intlCareer, careerTotal, trophies, currentTeam };
 }
 
-// ── TheSportsDB (photo) ──
+// ── TheSportsDB ──
 async function fetchTSDB(name: string) {
   try {
     const d = await fetch(
@@ -309,18 +380,16 @@ async function fetchTSDB(name: string) {
   } catch { return null; }
 }
 
-// ── Supabase cache ──
+// ── Cache ──
 function slugify(name: string) {
   return name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 }
 
 async function readCache(slug: string) {
   try {
-    const { data } = await supabase
-      .from('player_stats_cache')
-      .select('data, updated_at')
-      .eq('slug', slug)
-      .single();
+    const sb = getSupabase();
+    if (!sb) return null;
+    const { data } = await sb.from('player_stats_cache').select('data, updated_at').eq('slug', slug).single();
     if (!data) return null;
     const age = (Date.now() - new Date(data.updated_at).getTime()) / (1000 * 60 * 60 * 24);
     return age < CACHE_TTL_DAYS ? data.data : null;
@@ -329,7 +398,9 @@ async function readCache(slug: string) {
 
 async function writeCache(slug: string, data: any) {
   try {
-    await supabase.from('player_stats_cache').upsert({ slug, data, updated_at: new Date().toISOString() });
+    const sb = getSupabase();
+    if (!sb) return;
+    await sb.from('player_stats_cache').upsert({ slug, data, updated_at: new Date().toISOString() });
   } catch {}
 }
 
@@ -340,7 +411,6 @@ export async function GET(req: Request) {
   if (!name) return NextResponse.json({ error: 'Missing name' }, { status: 400 });
 
   const slug = slugify(name);
-
   const cached = await readCache(slug);
   if (cached) {
     console.log(`[player-stats] cache hit: ${slug}`);
@@ -365,11 +435,11 @@ export async function GET(req: Request) {
         currentTeam:     wiki?.currentTeam || tsdb?.strTeam || null,
         currentTeamLogo: null,
       },
-      currentSeason: wiki?.currentSeason || null,
-      clubCareer:    wiki?.clubCareer    || [],
-      intlCareer:    wiki?.intlCareer    || [],
-      careerTotal:   wiki?.careerTotal   || null,
-      trophies:      wiki?.trophies      || { leagues: 0, cups: 0, international: [] },
+      currentSeason: wiki?.currentSeason ?? null,
+      clubCareer:    wiki?.clubCareer    ?? [],
+      intlCareer:    wiki?.intlCareer    ?? [],
+      careerTotal:   wiki?.careerTotal   ?? null,
+      trophies:      wiki?.trophies      ?? { leagues: 0, cups: 0, international: [] },
     };
 
     await writeCache(slug, result);
