@@ -23,9 +23,9 @@ async function fetchGeminiStats(name: string, apiKey: string) {
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const model = genAI.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-    // @ts-ignore — google_search tool
-    tools: [{ google_search: {} }],
+    model: 'gemini-1.5-flash',
+    // @ts-ignore — googleSearch grounding tool
+    tools: [{ googleSearch: {} }],
   });
 
   const prompt = `Recherche les statistiques footballistiques complètes du joueur "${name}".
