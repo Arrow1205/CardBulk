@@ -72,6 +72,95 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
 
 const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 
+// ── Matching checklist ↔ cartes possédées (partagé liste + détail) ──
+const normText = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
+// La colonne "variation" d'une carte est saisie au format "TYPE - RARETÉ" ou "TYPE / RARETÉ"
+// (ex: "INSERT - WONDERKIDS", "AUTOGRAPH - BASE VARIATION", "BASE - SP").
+function splitVariation(variation: string): { type: string; name: string } {
+  if (!variation) return { type: '', name: '' };
+  const parts = variation.split(/\s*[-/]\s*/).map(p => p.trim()).filter(Boolean);
+  return { type: parts[0] || '', name: parts.slice(1).join(' ') };
+}
+
+const SUBSET_CAT_KEYWORDS: Record<string, string[]> = {
+  AUTOGRAPH: ['AUTOGRAPH', 'AUTO'],
+  RELIC:     ['RELIC', 'MEMORABILIA', 'JERSEY', 'SWATCH', 'PATCH'],
+  INSERT:    ['INSERT'],
+  PARALLEL:  ['PARALLEL', 'REFRACTOR'],
+};
+function detectSubsetCat(s: string): string | null {
+  const u = (s || '').toUpperCase();
+  if (u === 'BASE') return 'BASE';
+  for (const [cat, kws] of Object.entries(SUBSET_CAT_KEYWORDS)) {
+    if (kws.some(k => u.includes(k))) return cat;
+  }
+  return null;
+}
+
+// Confronte le type de carte attendu (subset + section du checklist) aux specs de la carte possédée
+// (flags is_auto/is_patch + variation découpée). On ne bloque que quand on peut détecter la
+// catégorie avec confiance des deux côtés ; sinon (subsets "produit" type PRIZM, SELECT...) on laisse passer.
+function cardMatchesSubset(subset: string | undefined, section: string | undefined, card: any): boolean {
+  const subsetCat = detectSubsetCat(subset || '');
+  const { type: cardType, name: cardName } = splitVariation(card.variation || '');
+  const cardCat = detectSubsetCat(cardType)
+    || (card.is_auto ? 'AUTOGRAPH' : null)
+    || (card.is_patch ? 'RELIC' : null);
+
+  if (subsetCat === 'AUTOGRAPH' && !card.is_auto) return false;
+  if (subsetCat === 'RELIC' && !card.is_patch) return false;
+  if (subsetCat === 'BASE' && (card.is_auto || card.is_patch)) return false;
+  if (subsetCat && cardCat && subsetCat !== cardCat) return false;
+
+  if ((subsetCat === 'INSERT' || subsetCat === 'PARALLEL' || !subsetCat) && cardName) {
+    const nameNorm    = normText(cardName);
+    const sectionNorm = normText(section || '');
+    if (nameNorm.length >= 3 && sectionNorm.length >= 3) {
+      if (!(nameNorm.includes(sectionNorm) || sectionNorm.includes(nameNorm))) return false;
+    }
+  }
+  return true;
+}
+
+// Retrouve la carte possédée correspondant à une ligne de checklist (joueur + subset/section),
+// pour une collection identifiée par éditeur/série/année.
+function findMatchingCard(
+  playerName: string,
+  subset: string | undefined,
+  section: string | undefined,
+  colYear: string,
+  colPub: string,
+  colSerie: string,
+  cards: any[]
+): any | null {
+  const normPlayer = normText(playerName);
+  if (normPlayer.length < 2) return null;
+  return cards.find(card => {
+    const cardFull = normText(`${card.firstname || ''} ${card.lastname || ''}`);
+    const cardRev  = normText(`${card.lastname || ''} ${card.firstname || ''}`);
+    if (cardFull.length < 2) return false;
+    const nameMatch = cardFull === normPlayer || cardRev === normPlayer
+      || (cardFull.length >= 4 && normPlayer.includes(cardFull))
+      || (normPlayer.length >= 4 && cardFull.includes(normPlayer));
+    if (!nameMatch) return false;
+
+    const cardYear = String(card.year || '');
+    const yearMatch = !colYear || cardYear === colYear
+      || (colYear.length === 4 && cardYear.includes(colYear))
+      || (cardYear.length === 4 && colYear.includes(cardYear));
+
+    const cardBrand = normText(card.brand || '');
+    const cardSerie = normText(card.series || '');
+    const brandMatch = colPub.length > 0 && cardBrand.length > 0
+      && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
+    const serieMatch = colSerie.length > 0 && cardSerie.length > 0
+      && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
+
+    return yearMatch && brandMatch && serieMatch && cardMatchesSubset(subset, section, card);
+  }) || null;
+}
+
 export default function CollectionPage() {
   const router = useRouter();
   
@@ -133,6 +222,14 @@ export default function CollectionPage() {
   const [addFile, setAddFile] = useState<File | null>(null);
   const [addLoading, setAddLoading] = useState(false);
   const addFileRef = useRef<HTMLInputElement>(null);
+  const [jsonImportLoading, setJsonImportLoading] = useState(false);
+  const jsonImportRef = useRef<HTMLInputElement>(null);
+
+  // Nombre réel de cartes possédées "cochées" par collection (calculé depuis le vrai checklist,
+  // pas une simple estimation brand/série) — utilisé pour le badge liste + masquer les sets vides.
+  const [realOwnedCounts, setRealOwnedCounts] = useState<Record<string, number>>({});
+  const [countsLoading, setCountsLoading] = useState(false);
+  const countsComputedForRef = useRef<number>(-1);
 
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -152,6 +249,51 @@ export default function CollectionPage() {
     const saved = localStorage.getItem('manual_collections');
     if (saved) try { setManualCollections(JSON.parse(saved)); } catch {}
   }, []);
+
+  // Calcule le vrai nombre de cartes cochées par collection (via son checklist réel), pour l'onglet Checklist.
+  // Se relance uniquement quand `cards` change vraiment (nouveau scan, suppression...), pas à chaque rendu.
+  useEffect(() => {
+    if (activeTab !== 'checklist' || cards.length === countsComputedForRef.current) return;
+    countsComputedForRef.current = cards.length;
+    setCountsLoading(true);
+
+    const allCols = [...(COLLECTIONS_CATALOG as any[]), ...manualCollections];
+    const CONCURRENCY = 12;
+    let cancelled = false;
+
+    (async () => {
+      const results: Record<string, number> = {};
+      let i = 0;
+      async function worker() {
+        while (i < allCols.length) {
+          const col = allCols[i++];
+          try {
+            const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}&light=1`);
+            if (!res.ok) { results[col.folder] = 0; continue; }
+            const raw = await res.json();
+            const checklist: any[] = raw.checklist || [];
+            const colYear  = String(col.annee || col.year || '').match(/\d{4}/)?.[0] || '';
+            const colPub   = normText(col.editeur || col.publisher || '');
+            const colSerie = normText(col.serie || '');
+            let count = 0;
+            for (const item of checklist) {
+              if (findMatchingCard(item.joueur, item.subset, item.section, colYear, colPub, colSerie, cards)) count++;
+            }
+            results[col.folder] = count;
+          } catch {
+            results[col.folder] = 0;
+          }
+        }
+      }
+      await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+      if (!cancelled) {
+        setRealOwnedCounts(results);
+        setCountsLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [activeTab, cards, manualCollections]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -669,6 +811,57 @@ export default function CollectionPage() {
     }
   };
 
+  // Import d'une checklist déjà normalisée (format data/collections/_TEMPLATE/collection.json).
+  // Écrit directement le fichier + l'entrée catalogue côté serveur via /api/collection/import.
+  const handleJsonFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setJsonImportLoading(true);
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const fiche = data?.fiche;
+      if (!fiche?.serie || !fiche?.editeur) {
+        alert('JSON invalide : fiche.serie et fiche.editeur sont requis (voir data/collections/_TEMPLATE/).');
+        return;
+      }
+      if (!Array.isArray(data.checklist)) {
+        alert('JSON invalide : "checklist" doit être un tableau.');
+        return;
+      }
+
+      const year = parseInt(String(fiche.annee || '').match(/\d{4}/)?.[0] || '') || new Date().getFullYear();
+      const folder = data.collection_id || slugify(`${fiche.editeur}-${fiche.serie}-${fiche.annee || year}-soccer-cards`);
+      const catalogEntry = {
+        year,
+        annee: fiche.annee || String(year),
+        editeur: fiche.editeur,
+        publisher: fiche.editeur,
+        serie: fiche.serie,
+        card_types: [],
+        beckett_url: '',
+      };
+
+      const res = await fetch('/api/collection/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folder, data, catalogEntry }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Erreur import');
+
+      alert(`Collection "${fiche.serie}" importée. Recharge la page pour la voir apparaître.`);
+      setShowAddModal(false);
+      window.location.reload();
+    } catch (err: any) {
+      alert(`Erreur import JSON : ${err.message || err}`);
+      console.error(err);
+    } finally {
+      setJsonImportLoading(false);
+      if (jsonImportRef.current) jsonImportRef.current.value = '';
+    }
+  };
+
   const handleAddCollection = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!addForm.name.trim() || !addForm.year.trim()) return;
@@ -771,32 +964,6 @@ export default function CollectionPage() {
 
   const renderChecklist = () => {
     const catalog = COLLECTIONS_CATALOG as any[];
-    const norm = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
-
-    // Nombre de cartes possédées correspondant à une collection (brand + série + année),
-    // sans dépendre du checklist joueur — utilisé pour la vue liste (badge + masquage des sets vides).
-    // Garde-fou : on exige une longueur minimale (4 car.) avant d'autoriser un match par sous-chaîne,
-    // sinon des séries courtes (ex: "OR") matchaient quasiment toutes les collections par erreur.
-    const countOwnedForCollection = (col: any): number => {
-      const colPub   = norm(col.editeur || col.publisher || '');
-      const colSerie = norm(col.serie || '');
-      const colYear  = String(col.annee || col.year || '').match(/\d{4}/)?.[0] || '';
-      if (!colPub || !colSerie) return 0;
-      return cards.filter(card => {
-        const cardBrand = norm(card.brand || '');
-        const cardSerie = norm(card.series || '');
-        const cardYear  = String(card.year || '');
-        if (!cardBrand || !cardSerie) return false;
-
-        const yearMatch = !colYear || cardYear === colYear;
-        const brandMatch = cardBrand === colPub
-          || (cardBrand.length >= 4 && colPub.length >= 4 && (cardBrand.includes(colPub) || colPub.includes(cardBrand)));
-        const serieMatch = cardSerie === colSerie
-          || (cardSerie.length >= 4 && colSerie.length >= 4 && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie)));
-
-        return yearMatch && brandMatch && serieMatch;
-      }).length;
-    };
 
     // ── Vue détail ──────────────────────────────────────────────────────────
     if (clView === 'detail' && clSelected) {
@@ -815,125 +982,29 @@ export default function CollectionPage() {
 
       const publisherSlug = (clSelected.publisher || '').toLowerCase().replace(/\s+/g, '-');
 
-      // La colonne "variation" d'une carte est saisie au format "TYPE - RARETÉ" ou "TYPE / RARETÉ"
-      // (ex: "INSERT - WONDERKIDS", "AUTOGRAPH - BASE VARIATION", "BASE - SP").
-      // On la découpe pour retrouver le type (BASE/INSERT/AUTOGRAPH/RELIC/PARALLEL...) et le nom
-      // précis de la rareté/insert, à confronter au subset + section du checklist.
-      const splitVariation = (variation: string): { type: string; name: string } => {
-        if (!variation) return { type: '', name: '' };
-        const parts = variation.split(/\s*[-/]\s*/).map(p => p.trim()).filter(Boolean);
-        return { type: parts[0] || '', name: parts.slice(1).join(' ') };
-      };
+      const colYearSel  = String(clSelected.annee || clSelected.year || '').match(/\d{4}/)?.[0] || '';
+      const colPubSel   = normText(clSelected.editeur || clSelected.publisher || '');
+      const colSerieSel = normText(clSelected.serie || '');
 
-      const CAT_KEYWORDS: Record<string, string[]> = {
-        AUTOGRAPH: ['AUTOGRAPH', 'AUTO'],
-        RELIC:     ['RELIC', 'MEMORABILIA', 'JERSEY', 'SWATCH', 'PATCH'],
-        INSERT:    ['INSERT'],
-        PARALLEL:  ['PARALLEL', 'REFRACTOR'],
-      };
-      const detectCat = (s: string): string | null => {
-        const u = (s || '').toUpperCase();
-        if (u === 'BASE') return 'BASE';
-        for (const [cat, kws] of Object.entries(CAT_KEYWORDS)) {
-          if (kws.some(k => u.includes(k))) return cat;
-        }
-        return null;
-      };
+      const isOwned = (playerName: string, subset?: string, section?: string): boolean =>
+        !!findMatchingCard(playerName, subset, section, colYearSel, colPubSel, colSerieSel, cards);
 
-      // Confronte le type de carte attendu (subset + section du checklist) aux specs de la carte possédée
-      // (flags is_auto/is_patch + variation découpée). On ne bloque que quand on peut détecter la
-      // catégorie avec confiance des deux côtés ; sinon (subsets "produit" type PRIZM, SELECT...) on laisse passer.
-      const matchesSubsetType = (subset: string | undefined, section: string | undefined, card: any): boolean => {
-        const subsetCat = detectCat(subset || '');
-        const { type: cardType, name: cardName } = splitVariation(card.variation || '');
-        const cardCat = detectCat(cardType)
-          || (card.is_auto ? 'AUTOGRAPH' : null)
-          || (card.is_patch ? 'RELIC' : null);
+      const findOwnedCard = (playerName: string, subset?: string, section?: string): any | null =>
+        findMatchingCard(playerName, subset, section, colYearSel, colPubSel, colSerieSel, cards);
 
-        // Flags explicites (saisie fiable) : priorité absolue
-        if (subsetCat === 'AUTOGRAPH' && !card.is_auto) return false;
-        if (subsetCat === 'RELIC' && !card.is_patch) return false;
-        if (subsetCat === 'BASE' && (card.is_auto || card.is_patch)) return false;
-
-        // Catégorie déduite de la variation vs catégorie du subset : doivent concorder si les deux sont connues
-        if (subsetCat && cardCat && subsetCat !== cardCat) return false;
-
-        // Pour les catégories non-uniques (plusieurs inserts/parallèles distincts dans un même set),
-        // on compare aussi le nom de la rareté (ex: "WONDERKIDS") à la section du checklist,
-        // pour éviter qu'un insert quelconque valide toutes les lignes "INSERT".
-        if ((subsetCat === 'INSERT' || subsetCat === 'PARALLEL' || !subsetCat) && cardName) {
-          const nameNorm    = norm(cardName);
-          const sectionNorm = norm(section || '');
-          if (nameNorm.length >= 3 && sectionNorm.length >= 3) {
-            const nameMatches = nameNorm.includes(sectionNorm) || sectionNorm.includes(nameNorm);
-            if (!nameMatches) return false;
-          }
-        }
-
-        return true;
-      };
-
-      const isOwned = (playerName: string, subset?: string, section?: string): boolean => {
-        const normPlayer = norm(playerName);
-        if (normPlayer.length < 2) return false;
-        return cards.some(card => {
-          const cardFull = norm(`${card.firstname || ''} ${card.lastname || ''}`);
-          const cardRev  = norm(`${card.lastname || ''} ${card.firstname || ''}`);
-          // Both sides must be non-empty to avoid empty-string false positives
-          if (cardFull.length < 2) return false;
-          const nameMatch = cardFull === normPlayer || cardRev === normPlayer
-            || (cardFull.length >= 4 && normPlayer.includes(cardFull))
-            || (normPlayer.length >= 4 && cardFull.includes(normPlayer));
-          if (!nameMatch) return false;
-
-          const colYear = String(clSelected.year || '');
-          const cardYear = String(card.year || '');
-          // Year: exact match or one contains the other as a 4-digit substring
-          const yearMatch = !colYear || cardYear === colYear
-            || (colYear.length === 4 && cardYear.includes(colYear))
-            || (cardYear.length === 4 && colYear.includes(cardYear));
-
-          const colPub   = norm(clSelected.publisher || '');
-          const colSerie = norm(clSelected.serie || '');
-          const cardBrand = norm(card.brand || '');
-          const cardSerie = norm(card.series || '');
-          // Both brand and serie must match (not just one of the two)
-          const brandMatch = colPub.length > 0 && cardBrand.length > 0
-            && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
-          const serieMatch = colSerie.length > 0 && cardSerie.length > 0
-            && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
-
-          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, section, card);
-        });
-      };
-
-      const findOwnedCard = (playerName: string, subset?: string, section?: string): any | null => {
-        const normPlayer = norm(playerName);
-        if (normPlayer.length < 2) return null;
-        return cards.find(card => {
-          const cardFull = norm(`${card.firstname || ''} ${card.lastname || ''}`);
-          const cardRev  = norm(`${card.lastname || ''} ${card.firstname || ''}`);
-          if (cardFull.length < 2) return false;
-          const nameMatch = cardFull === normPlayer || cardRev === normPlayer
-            || (cardFull.length >= 4 && normPlayer.includes(cardFull))
-            || (normPlayer.length >= 4 && cardFull.includes(normPlayer));
-          if (!nameMatch) return false;
-          const colYear = String(clSelected.year || '');
-          const cardYear = String(card.year || '');
-          const yearMatch = !colYear || cardYear === colYear
-            || (colYear.length === 4 && cardYear.includes(colYear))
-            || (cardYear.length === 4 && colYear.includes(cardYear));
-          const colPub   = norm(clSelected.publisher || '');
-          const colSerie = norm(clSelected.serie || '');
-          const cardBrand = norm(card.brand || '');
-          const cardSerie = norm(card.series || '');
-          const brandMatch = colPub.length > 0 && cardBrand.length > 0
-            && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
-          const serieMatch = colSerie.length > 0 && cardSerie.length > 0
-            && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
-          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, section, card);
-        }) || null;
-      };
+      // Toutes les cartes de la collection possédées (brand + série + année), pour la vignette du haut.
+      const ownedCardsForCollection = cards.filter(card => {
+        const cardBrand = normText(card.brand || '');
+        const cardSerie = normText(card.series || '');
+        if (!cardBrand || !cardSerie) return false;
+        const cardYear = String(card.year || '');
+        const yearMatch = !colYearSel || cardYear === colYearSel;
+        const brandMatch = cardBrand === colPubSel
+          || (cardBrand.length >= 4 && colPubSel.length >= 4 && (cardBrand.includes(colPubSel) || colPubSel.includes(cardBrand)));
+        const serieMatch = cardSerie === colSerieSel
+          || (cardSerie.length >= 4 && colSerieSel.length >= 4 && (cardSerie.includes(colSerieSel) || colSerieSel.includes(cardSerie)));
+        return yearMatch && brandMatch && serieMatch;
+      });
 
       const searchTerm = detailSearch.toLowerCase().trim();
 
@@ -1040,6 +1111,31 @@ export default function CollectionPage() {
                     </button>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* Tes cartes de cette collection */}
+          {ownedCardsForCollection.length > 0 && (
+            <div className="mb-5">
+              <div className="px-6 lg:px-[80px] text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">
+                Tes cartes de cette collection ({ownedCardsForCollection.length})
+              </div>
+              <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
+                  {ownedCardsForCollection.map(card => (
+                    <button
+                      key={card.id}
+                      onClick={() => router.push(`/card/${card.id}`)}
+                      className="shrink-0 h-[110px] aspect-[3/4] rounded-xl overflow-hidden bg-white/5 border border-white/10 active:scale-95 transition-transform"
+                    >
+                      {card.image_url
+                        ? <img src={card.image_url} alt={card.lastname} className="w-full h-full object-cover" />
+                        : <div className="w-full h-full flex items-center justify-center text-white/20 text-[9px] p-1 text-center">{card.firstname} {card.lastname}</div>
+                      }
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -1259,7 +1355,7 @@ export default function CollectionPage() {
       const yearMatch = !checklistType || String(col.year) === checklistType;
       return searchMatch && pubMatch && yearMatch;
     })
-      .map(col => ({ ...col, ownedCount: countOwnedForCollection(col) }))
+      .map(col => ({ ...col, ownedCount: realOwnedCounts[col.folder] ?? 0 }))
       .filter(col => col.ownedCount > 0)
       .sort((a: any, b: any) => (b.year || 0) - (a.year || 0));
 
@@ -1309,7 +1405,9 @@ export default function CollectionPage() {
 
         {/* Compteur + bouton ajout */}
         <div className="px-6 lg:px-[80px] mb-3 flex items-center justify-between">
-          <span className="text-xs text-white/30">{filtered.length} collection{filtered.length > 1 ? 's' : ''}</span>
+          <span className="text-xs text-white/30">
+            {countsLoading ? 'Calcul de ta progression...' : `${filtered.length} collection${filtered.length > 1 ? 's' : ''}`}
+          </span>
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/5 transition-all active:scale-95 text-xs font-bold text-white/60 hover:text-[#AFFF25]"
@@ -1319,7 +1417,12 @@ export default function CollectionPage() {
           </button>
         </div>
 
+        {countsLoading && (
+          <div className="flex justify-center py-10"><Loader2 className="animate-spin text-[#AFFF25]" size={26} /></div>
+        )}
+
         {/* Liste collections */}
+        {!countsLoading && (
         <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
           {filtered.map((col: any) => {
             const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
@@ -1335,9 +1438,9 @@ export default function CollectionPage() {
                   <div className="overflow-hidden">
                     <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-0.5">{col.editeur || col.publisher} · {col.annee || col.year}</div>
                     <div className="text-sm font-black italic uppercase tracking-tight truncate">
-                      <span className="text-white">{serieParts[0]}</span>
+                      <span className="text-[#AFFF25]">{serieParts[0]}</span>
                       {serieParts.length > 1 && (
-                        <span className="text-[#AFFF25]"> / {serieParts.slice(1).join(' / ')}</span>
+                        <span className="text-white"> / {serieParts.slice(1).join(' / ')}</span>
                       )}
                     </div>
                   </div>
@@ -1353,6 +1456,7 @@ export default function CollectionPage() {
             <div className="text-center py-20 text-white/30 italic text-sm">Aucune collection trouvée.</div>
           )}
         </div>
+        )}
 
         {/* Add collection modal */}
         {showAddModal && (
@@ -1361,6 +1465,29 @@ export default function CollectionPage() {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-black italic uppercase tracking-tight text-white">Nouvelle collection</h3>
                 <button onClick={() => setShowAddModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors"><X size={16} /></button>
+              </div>
+
+              {/* Import JSON normalisé — recommandé, écrit directement dans data/collections/ */}
+              <div>
+                <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1.5">
+                  Checklist JSON (recommandé)
+                </label>
+                <input ref={jsonImportRef} type="file" accept=".json" className="hidden" onChange={handleJsonFileImport} />
+                <button
+                  type="button"
+                  onClick={() => jsonImportRef.current?.click()}
+                  disabled={jsonImportLoading}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-[#AFFF25]/30 hover:border-[#AFFF25]/60 hover:bg-[#AFFF25]/5 transition-all text-sm text-[#AFFF25]/80 hover:text-[#AFFF25] disabled:opacity-40"
+                >
+                  {jsonImportLoading ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />}
+                  <span>{jsonImportLoading ? 'Import en cours...' : 'Importer un fichier .json (format data/collections/_TEMPLATE)'}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-[10px] text-white/30 uppercase tracking-widest">ou manuellement</span>
+                <div className="h-px flex-1 bg-white/10" />
               </div>
 
               <form onSubmit={handleAddCollection} className="space-y-4">
