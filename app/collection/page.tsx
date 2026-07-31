@@ -236,18 +236,29 @@ export default function CollectionPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     // Migration one-shot : on repart de data/collections/ comme unique source de vérité.
-    // Les anciennes collections ajoutées manuellement (avant le scraping complet) sont purgées.
-    const MIGRATION_KEY = 'cardbulk_checklist_migrated_v1';
+    // Les anciennes collections ajoutées manuellement en local (avant le passage à Supabase) sont purgées.
+    const MIGRATION_KEY = 'cardbulk_checklist_migrated_v2';
     if (!localStorage.getItem(MIGRATION_KEY)) {
       localStorage.removeItem('manual_collections');
       Object.keys(localStorage).forEach(k => {
         if (k.startsWith('checklist_override_')) localStorage.removeItem(k);
       });
       localStorage.setItem(MIGRATION_KEY, '1');
-      return;
     }
-    const saved = localStorage.getItem('manual_collections');
-    if (saved) try { setManualCollections(JSON.parse(saved)); } catch {}
+
+    // Collections importées manuellement (checklists JSON), stockées en base pour être
+    // permanentes (le filesystem Vercel est éphémère — voir app/api/collection/route.ts).
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('manual_collections')
+        .select('folder, catalog')
+        .eq('user_id', user.id);
+      if (!error && data) {
+        setManualCollections(data.map((row: any) => ({ folder: row.folder, ...row.catalog })));
+      }
+    })();
   }, []);
 
   // Calcule le vrai nombre de cartes cochées par collection (via son checklist réel), pour l'onglet Checklist.
@@ -842,17 +853,23 @@ export default function CollectionPage() {
         beckett_url: '',
       };
 
-      const res = await fetch('/api/collection/import', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ folder, data, catalogEntry }),
-      });
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error || 'Erreur import');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { alert('Tu dois être connecté pour importer une collection.'); return; }
 
-      alert(`Collection "${fiche.serie}" importée. Recharge la page pour la voir apparaître.`);
+      // Stocké en base (Supabase) plutôt que sur disque : sur Vercel le filesystem est
+      // éphémère, une écriture dans data/collections/ ne survivrait pas au-delà de la requête.
+      const { error } = await supabase.from('manual_collections').upsert({
+        folder,
+        user_id: user.id,
+        catalog: catalogEntry,
+        data,
+        updated_at: new Date().toISOString(),
+      });
+      if (error) throw new Error(error.message);
+
+      setManualCollections(prev => [...prev.filter(c => c.folder !== folder), { folder, ...catalogEntry }]);
       setShowAddModal(false);
-      window.location.reload();
+      alert(`Collection "${fiche.serie}" importée avec succès.`);
     } catch (err: any) {
       alert(`Erreur import JSON : ${err.message || err}`);
       console.error(err);
