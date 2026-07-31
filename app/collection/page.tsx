@@ -775,19 +775,25 @@ export default function CollectionPage() {
 
     // Nombre de cartes possédées correspondant à une collection (brand + série + année),
     // sans dépendre du checklist joueur — utilisé pour la vue liste (badge + masquage des sets vides).
+    // Garde-fou : on exige une longueur minimale (4 car.) avant d'autoriser un match par sous-chaîne,
+    // sinon des séries courtes (ex: "OR") matchaient quasiment toutes les collections par erreur.
     const countOwnedForCollection = (col: any): number => {
       const colPub   = norm(col.editeur || col.publisher || '');
       const colSerie = norm(col.serie || '');
-      const colYear  = String(col.annee || col.year || '');
+      const colYear  = String(col.annee || col.year || '').match(/\d{4}/)?.[0] || '';
       if (!colPub || !colSerie) return 0;
       return cards.filter(card => {
         const cardBrand = norm(card.brand || '');
         const cardSerie = norm(card.series || '');
         const cardYear  = String(card.year || '');
-        const yearMatch = !colYear || cardYear === colYear
-          || (colYear.length >= 4 && cardYear.length >= 4 && cardYear.slice(0, 4) === colYear.slice(0, 4));
-        const brandMatch = cardBrand.length > 0 && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
-        const serieMatch = cardSerie.length > 0 && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
+        if (!cardBrand || !cardSerie) return false;
+
+        const yearMatch = !colYear || cardYear === colYear;
+        const brandMatch = cardBrand === colPub
+          || (cardBrand.length >= 4 && colPub.length >= 4 && (cardBrand.includes(colPub) || colPub.includes(cardBrand)));
+        const serieMatch = cardSerie === colSerie
+          || (cardSerie.length >= 4 && colSerie.length >= 4 && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie)));
+
         return yearMatch && brandMatch && serieMatch;
       }).length;
     };
@@ -809,23 +815,65 @@ export default function CollectionPage() {
 
       const publisherSlug = (clSelected.publisher || '').toLowerCase().replace(/\s+/g, '-');
 
-      // Confronte le type de carte attendu (déduit du nom du subset) aux specs de la carte possédée.
-      // On ne bloque QUE sur les catégories qu'on peut détecter avec confiance (auto/relic/base) ;
-      // pour les subsets "produit" (PRIZM, SELECT, ABSOLUTE...) on ne filtre pas — info non disponible.
-      const matchesSubsetType = (subset: string | undefined, card: any): boolean => {
-        const s = (subset || '').toUpperCase();
-        if (!s) return true;
-        const isAutoSubset  = s.includes('AUTOGRAPH') || s.includes('AUTO');
-        const isRelicSubset = s.includes('RELIC') || s.includes('MEMORABILIA') || s.includes('JERSEY') || s.includes('SWATCH') || s.includes('PATCH');
-        const isBaseSubset  = s === 'BASE';
+      // La colonne "variation" d'une carte est saisie au format "TYPE - RARETÉ" ou "TYPE / RARETÉ"
+      // (ex: "INSERT - WONDERKIDS", "AUTOGRAPH - BASE VARIATION", "BASE - SP").
+      // On la découpe pour retrouver le type (BASE/INSERT/AUTOGRAPH/RELIC/PARALLEL...) et le nom
+      // précis de la rareté/insert, à confronter au subset + section du checklist.
+      const splitVariation = (variation: string): { type: string; name: string } => {
+        if (!variation) return { type: '', name: '' };
+        const parts = variation.split(/\s*[-/]\s*/).map(p => p.trim()).filter(Boolean);
+        return { type: parts[0] || '', name: parts.slice(1).join(' ') };
+      };
 
-        if (isAutoSubset && !card.is_auto) return false;
-        if (isRelicSubset && !card.is_patch) return false;
-        if (isBaseSubset && (card.is_auto || card.is_patch)) return false;
+      const CAT_KEYWORDS: Record<string, string[]> = {
+        AUTOGRAPH: ['AUTOGRAPH', 'AUTO'],
+        RELIC:     ['RELIC', 'MEMORABILIA', 'JERSEY', 'SWATCH', 'PATCH'],
+        INSERT:    ['INSERT'],
+        PARALLEL:  ['PARALLEL', 'REFRACTOR'],
+      };
+      const detectCat = (s: string): string | null => {
+        const u = (s || '').toUpperCase();
+        if (u === 'BASE') return 'BASE';
+        for (const [cat, kws] of Object.entries(CAT_KEYWORDS)) {
+          if (kws.some(k => u.includes(k))) return cat;
+        }
+        return null;
+      };
+
+      // Confronte le type de carte attendu (subset + section du checklist) aux specs de la carte possédée
+      // (flags is_auto/is_patch + variation découpée). On ne bloque que quand on peut détecter la
+      // catégorie avec confiance des deux côtés ; sinon (subsets "produit" type PRIZM, SELECT...) on laisse passer.
+      const matchesSubsetType = (subset: string | undefined, section: string | undefined, card: any): boolean => {
+        const subsetCat = detectCat(subset || '');
+        const { type: cardType, name: cardName } = splitVariation(card.variation || '');
+        const cardCat = detectCat(cardType)
+          || (card.is_auto ? 'AUTOGRAPH' : null)
+          || (card.is_patch ? 'RELIC' : null);
+
+        // Flags explicites (saisie fiable) : priorité absolue
+        if (subsetCat === 'AUTOGRAPH' && !card.is_auto) return false;
+        if (subsetCat === 'RELIC' && !card.is_patch) return false;
+        if (subsetCat === 'BASE' && (card.is_auto || card.is_patch)) return false;
+
+        // Catégorie déduite de la variation vs catégorie du subset : doivent concorder si les deux sont connues
+        if (subsetCat && cardCat && subsetCat !== cardCat) return false;
+
+        // Pour les catégories non-uniques (plusieurs inserts/parallèles distincts dans un même set),
+        // on compare aussi le nom de la rareté (ex: "WONDERKIDS") à la section du checklist,
+        // pour éviter qu'un insert quelconque valide toutes les lignes "INSERT".
+        if ((subsetCat === 'INSERT' || subsetCat === 'PARALLEL' || !subsetCat) && cardName) {
+          const nameNorm    = norm(cardName);
+          const sectionNorm = norm(section || '');
+          if (nameNorm.length >= 3 && sectionNorm.length >= 3) {
+            const nameMatches = nameNorm.includes(sectionNorm) || sectionNorm.includes(nameNorm);
+            if (!nameMatches) return false;
+          }
+        }
+
         return true;
       };
 
-      const isOwned = (playerName: string, subset?: string): boolean => {
+      const isOwned = (playerName: string, subset?: string, section?: string): boolean => {
         const normPlayer = norm(playerName);
         if (normPlayer.length < 2) return false;
         return cards.some(card => {
@@ -855,11 +903,11 @@ export default function CollectionPage() {
           const serieMatch = colSerie.length > 0 && cardSerie.length > 0
             && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
 
-          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, card);
+          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, section, card);
         });
       };
 
-      const findOwnedCard = (playerName: string, subset?: string): any | null => {
+      const findOwnedCard = (playerName: string, subset?: string, section?: string): any | null => {
         const normPlayer = norm(playerName);
         if (normPlayer.length < 2) return null;
         return cards.find(card => {
@@ -883,7 +931,7 @@ export default function CollectionPage() {
             && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
           const serieMatch = colSerie.length > 0 && cardSerie.length > 0
             && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
-          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, card);
+          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, section, card);
         }) || null;
       };
 
@@ -1030,7 +1078,7 @@ export default function CollectionPage() {
                 const color = CAT_COLORS[cat as string] || '#ffffff';
                 const items = filteredSubsets.filter((s: any) => s.subset === cat);
                 const totalPlayers = items.reduce((acc: number, s: any) => acc + (s.players?.length || 0), 0);
-                const totalOwned = items.reduce((acc: number, s: any) => acc + (s.players || []).filter((p: any) => isOwned(p.name, s.subset)).length, 0);
+                const totalOwned = items.reduce((acc: number, s: any) => acc + (s.players || []).filter((p: any) => isOwned(p.name, s.subset, s.section)).length, 0);
                 const isCatOpen = expandedCats.has(cat as string);
                 return (
                   <div key={cat as string} id={`cat-anchor-${cat}`}>
@@ -1072,7 +1120,7 @@ export default function CollectionPage() {
                                 <div className="flex items-center gap-2 shrink-0">
                                   {s.card_count && <span className="text-[10px] text-white/40">{s.card_count} cartes</span>}
                                   {hasPlayers && (() => {
-                                    const ownedCount = s.players.filter((p: any) => isOwned(p.name, s.subset)).length;
+                                    const ownedCount = s.players.filter((p: any) => isOwned(p.name, s.subset, s.section)).length;
                                     return (
                                       <>
                                         {ownedCount > 0 && (
@@ -1105,7 +1153,7 @@ export default function CollectionPage() {
                                   {hasPlayers && (
                                     <div className="divide-y divide-white/[0.04]">
                                       {s.players.map((p: any, pi: number) => {
-                                        const owned = isOwned(p.name, s.subset);
+                                        const owned = isOwned(p.name, s.subset, s.section);
                                         return (
                                         <div key={pi} className={`flex items-center justify-between px-4 py-2.5 transition-colors ${owned ? 'bg-[#AFFF25]/[0.04]' : 'hover:bg-white/[0.03]'}`}>
                                           <div className="flex items-center gap-3">
@@ -1119,7 +1167,7 @@ export default function CollectionPage() {
                                             )}
                                             {owned ? (
                                               <button
-                                                onClick={() => setOwnedCardPreview(findOwnedCard(p.name, s.subset))}
+                                                onClick={() => setOwnedCardPreview(findOwnedCard(p.name, s.subset, s.section))}
                                                 className="text-sm font-bold text-[#AFFF25] hover:underline underline-offset-2 text-left"
                                               >{p.name}</button>
                                             ) : (
@@ -1275,6 +1323,7 @@ export default function CollectionPage() {
         <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
           {filtered.map((col: any) => {
             const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
+            const serieParts = (col.serie || '').split(/\s*\/\s*/);
             return (
               <div
                 key={col.folder}
@@ -1285,7 +1334,12 @@ export default function CollectionPage() {
                   <img src={`/asset/logo-marque/${publisherSlug}.png`} alt={col.publisher} className="h-7 w-7 object-contain mix-blend-screen shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" onError={e => e.currentTarget.style.display = 'none'} />
                   <div className="overflow-hidden">
                     <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-0.5">{col.editeur || col.publisher} · {col.annee || col.year}</div>
-                    <div className="text-sm font-black text-white italic uppercase tracking-tight truncate">{col.serie}</div>
+                    <div className="text-sm font-black italic uppercase tracking-tight truncate">
+                      <span className="text-white">{serieParts[0]}</span>
+                      {serieParts.length > 1 && (
+                        <span className="text-[#AFFF25]"> / {serieParts.slice(1).join(' / ')}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-3">
