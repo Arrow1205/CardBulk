@@ -1,0 +1,19 @@
+{
+  "collection_id": "editeur-serie-ligue-annee-sport-cards",
+  "fiche": {
+    "annee": "2026 (avril)",
+    "pays": "France",
+    "editeur": "PANINI",
+    "serie": "SELECT / SERIE A",
+    "support": "Cartes",
+    "version": "V.O. (version originale) en anglais",
+    "contenu_global": "250 cartes de base + 200 cartes spéciales par insertion",
+    "dotation_boite": "5 cartes de base parallèles, 3 cartes de base parallèles numérotées, + 1 carte AUTOGRAPH"
+  },
+  "checklist": [
+    { "numero": "1", "joueur": "Prénom Nom", "mention": null, "subset": "BASE", "section": "TERRACE" },
+    { "numero": "2", "joueur": "Prénom Nom", "mention": "Rookie Card", "subset": "BASE", "section": "TERRACE" },
+    { "numero": "1", "joueur": "Prénom Nom", "mention": null, "subset": "AUTOGRAPH", "section": "SELECT MEMORABILIA" },
+    { "numero": "1", "joueur": "Prénom Nom", "mention": null, "subset": "MEMORABILIA", "section": "JUMBO SWATCHES" }
+  ]
+}
