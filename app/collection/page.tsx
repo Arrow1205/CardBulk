@@ -776,6 +776,17 @@ export default function CollectionPage() {
 
       setManualCollections(prev => [...prev.filter(c => c.folder !== folder), { folder, ...catalogEntry }]);
       setShowAddModal(false);
+
+      // Recalcule immédiatement la progression (force le contournement du cache) pour que la
+      // collection fraîchement importée apparaisse tout de suite avec son vrai compteur.
+      setCountsLoading(true);
+      try {
+        const res = await authedFetch('/api/checklist-progress?refresh=1');
+        const result = await res.json();
+        if (res.ok) setRealOwnedCounts(result.counts || {});
+      } catch {}
+      setCountsLoading(false);
+
       alert(`Collection "${fiche.serie}" importée avec succès.`);
     } catch (err: any) {
       alert(`Erreur import JSON : ${err.message || err}`);
@@ -1280,7 +1291,6 @@ export default function CollectionPage() {
       return searchMatch && pubMatch && yearMatch;
     })
       .map(col => ({ ...col, ownedCount: realOwnedCounts[col.folder] ?? 0 }))
-      .filter(col => col.ownedCount > 0)
       .sort((a: any, b: any) => (b.year || 0) - (a.year || 0));
 
     return (
@@ -1330,7 +1340,8 @@ export default function CollectionPage() {
         {/* Compteur + bouton ajout */}
         <div className="px-6 lg:px-[80px] mb-3 flex items-center justify-between">
           <span className="text-xs text-white/30">
-            {countsLoading ? 'Calcul de ta progression...' : `${filtered.length} collection${filtered.length > 1 ? 's' : ''}`}
+            {`${filtered.length} collection${filtered.length > 1 ? 's' : ''}`}
+            {countsLoading && ' · calcul de ta progression...'}
           </span>
           <button
             onClick={() => setShowAddModal(true)}
@@ -1341,12 +1352,12 @@ export default function CollectionPage() {
           </button>
         </div>
 
-        {(countsLoading || sharedCollections === null) && (
+        {sharedCollections === null && (
           <div className="flex justify-center py-10"><Loader2 className="animate-spin text-[#AFFF25]" size={26} /></div>
         )}
 
         {/* Liste collections */}
-        {!countsLoading && sharedCollections !== null && (
+        {sharedCollections !== null && (
         <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
           {filtered.map((col: any) => {
             const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
@@ -1370,7 +1381,9 @@ export default function CollectionPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-3">
-                  <span className="text-[10px] px-2 py-1 rounded-full bg-[#AFFF25]/15 text-[#AFFF25] font-bold">{col.ownedCount}</span>
+                  {col.ownedCount > 0 && (
+                    <span className="text-[10px] px-2 py-1 rounded-full bg-[#AFFF25]/15 text-[#AFFF25] font-bold">{col.ownedCount}</span>
+                  )}
                   <ChevronLeft size={14} className="text-white/20 rotate-180" />
                 </div>
               </div>

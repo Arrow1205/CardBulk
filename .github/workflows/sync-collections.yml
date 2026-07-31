@@ -1,11 +1,13 @@
 name: Sync Collections depuis Beckett Soccer
 
 on:
-  schedule:
-    # Tous les vendredis à 9h00 UTC
-    - cron: '0 9 * * 5'
+  # Cron hebdomadaire désactivé — l'utilisateur gère désormais les checklists
+  # manuellement via l'import JSON dans l'app, pour garder le contrôle total.
+  # Réactiver en décommentant le bloc ci-dessous si besoin.
+  # schedule:
+  #   - cron: '0 9 * * 5'
 
-  # Déclenchement manuel depuis GitHub Actions
+  # Déclenchement manuel depuis GitHub Actions (toujours disponible)
   workflow_dispatch:
     inputs:
       mode:

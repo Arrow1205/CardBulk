@@ -10,13 +10,22 @@ export async function GET(req: Request) {
 
     const forceRefresh = new URL(req.url).searchParams.get('refresh') === '1';
 
-    const { data: cards } = await supabase
-      .from('cards')
-      .select('id, updated_at, firstname, lastname, brand, series, variation, year, is_auto, is_patch')
-      .eq('user_id', user.id)
-      .eq('is_wishlist', false);
+    // Toutes les collections (scrapées globales + importées par l'utilisateur) vivent dans Supabase.
+    const [{ data: cards }, { data: sharedRows }, { data: manualRows }] = await Promise.all([
+      supabase
+        .from('cards')
+        .select('id, updated_at, firstname, lastname, brand, series, variation, year, is_auto, is_patch')
+        .eq('user_id', user.id)
+        .eq('is_wishlist', false),
+      supabase.from('collections').select('folder, catalog, data'),
+      supabase.from('manual_collections').select('folder, catalog, data').eq('user_id', user.id),
+    ]);
 
-    const signature = cardsSignature(cards || []);
+    // La signature inclut aussi l'ensemble des collections (pas seulement les cartes) : sinon,
+    // importer une nouvelle collection sans changer ses cartes gardait l'ancien cache et son
+    // compteur restait à 0 (donc masquée par la règle "ne pas afficher si vide").
+    const folderIds = [...(sharedRows || []), ...(manualRows || [])].map(r => r.folder).sort().join('|');
+    const signature = `${cardsSignature(cards || [])}::${folderIds}`;
 
     if (!forceRefresh) {
       const { data: cached } = await supabase
@@ -28,12 +37,6 @@ export async function GET(req: Request) {
         return NextResponse.json({ counts: cached.counts, cached: true });
       }
     }
-
-    // Toutes les collections (scrapées globales + importées par l'utilisateur) vivent dans Supabase.
-    const [{ data: sharedRows }, { data: manualRows }] = await Promise.all([
-      supabase.from('collections').select('folder, catalog, data'),
-      supabase.from('manual_collections').select('folder, catalog, data').eq('user_id', user.id),
-    ]);
 
     const counts: Record<string, number> = {};
 
