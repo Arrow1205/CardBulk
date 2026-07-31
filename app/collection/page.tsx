@@ -48,6 +48,17 @@ const slugify = (text: string) => {
     .replace(/\-\-+/g, '-');
 };
 
+// La session est gérée côté client via le SDK Supabase classique (localStorage), pas via les
+// cookies Next.js — nos routes API ont donc besoin du token d'accès explicitement dans le header
+// Authorization pour identifier l'utilisateur (voir lib/supabaseServer.ts).
+async function authedFetch(url: string, init?: RequestInit) {
+  const { data: { session } } = await supabase.auth.getSession();
+  return fetch(url, {
+    ...init,
+    headers: { ...(init?.headers || {}), Authorization: `Bearer ${session?.access_token || ''}` },
+  });
+}
+
 const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: string, setSearchQuery: (val: string) => void }) => (
   <div className="fixed bottom-[108px] left-0 w-full px-6 z-40 pointer-events-none lg:hidden">
     <div className="relative w-full max-w-md mx-auto pointer-events-auto">
@@ -194,7 +205,7 @@ export default function CollectionPage() {
 
     (async () => {
       try {
-        const res = await fetch('/api/checklist-progress');
+        const res = await authedFetch('/api/checklist-progress');
         const result = await res.json();
         if (res.ok) setRealOwnedCounts(result.counts || {});
       } catch {}
@@ -630,7 +641,7 @@ export default function CollectionPage() {
     // All cats open by default — will be set once data loads
     setExpandedCats(new Set(['BASE', 'INSERT', 'PARALLEL', 'AUTOGRAPH', 'RELIC', 'MEMORABILIA', 'OR', 'SPECIAL']));
     try {
-      const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}`);
+      const res = await authedFetch(`/api/collection?folder=${encodeURIComponent(col.folder)}`);
       if (res.ok) {
         const raw = await res.json();
         let detail: any;

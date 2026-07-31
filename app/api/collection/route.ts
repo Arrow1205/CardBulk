@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { supabaseFromRequest } from '@/lib/supabaseServer';
 
 // Toutes les collections (scrapées + importées manuellement) vivent désormais dans Supabase.
 // On ne touche plus au disque ici : data/collections/ contient ~1.3 Go d'images/HTML de
@@ -15,7 +14,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = supabaseFromRequest(req);
 
     // 1. Collections scrapées (globales, table `collections`)
     const { data: shared } = await supabase
