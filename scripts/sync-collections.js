@@ -41,6 +41,48 @@ const sleep   = ms => new Promise(r => setTimeout(r, ms));
 const loadJson = p  => JSON.parse(fs.readFileSync(p, 'utf8'));
 const saveJson = (p, d) => fs.writeFileSync(p, JSON.stringify(d, null, 2) + '\n', 'utf8');
 
+// ─── Push vers Supabase (table `collections`) ────────────────────────────────
+// Les collections vivent en base pour que l'app n'ait jamais besoin de lire
+// data/collections/ sur disque à l'exécution (voir app/api/collection/route.ts).
+// Nécessite NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (secrets GitHub Actions).
+async function pushToSupabase(folderIds, catalog) {
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SERVICE_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    console.log('   ⚠ Supabase non configuré (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY manquants) — push ignoré');
+    return;
+  }
+
+  let createClient;
+  try {
+    ({ createClient } = require('@supabase/supabase-js'));
+  } catch {
+    console.log('   ⚠ @supabase/supabase-js introuvable — push Supabase ignoré');
+    return;
+  }
+
+  const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
+  console.log(`☁️  Push Supabase (${folderIds.length} collection(s))...`);
+
+  for (const folderId of folderIds) {
+    const entry = catalog.find(c => c.folder === folderId);
+    if (!entry) continue;
+    const filePath = path.join(COL_DIR, folderId, 'collection.json');
+    if (!fs.existsSync(filePath)) continue;
+
+    const raw = loadJson(filePath);
+    const { folder, ...catalogEntry } = entry;
+    const { error } = await supabase.from('collections').upsert({
+      folder: folderId,
+      catalog: catalogEntry,
+      data: { fiche: raw.fiche || null, checklist: raw.checklist || [] },
+      updated_at: new Date().toISOString(),
+    });
+    if (error) console.error(`   ✗ ${folderId} : ${error.message}`);
+    else console.log(`   ✓ ${folderId}`);
+  }
+}
+
 // ─── HTTP fetch (direct puis ScraperAPI) ─────────────────────────────────────
 async function fetchPage(url, { retry = true } = {}) {
   const candidates = [url];
@@ -583,6 +625,7 @@ async function main() {
   }
 
   let added = 0, skipped = 0, errors = 0;
+  const addedFolders = [];
 
   // ── 3. Traiter chaque collection ─────────────────────────────────────────
   for (const item of toProcess) {
@@ -645,6 +688,7 @@ async function main() {
 
       // g. Ajouter dans les fichiers
       addToAllFiles(meta, cardTypes, item.url, index, catalog, sets, xlsxSubsets);
+      addedFolders.push(meta.folder_id);
       seenSet.add(item.slug);
       added++;
 
@@ -667,6 +711,8 @@ async function main() {
     saveJson(CAT_PATH,   catalog);
     saveJson(SETS_PATH,  sets);
     console.log('   ✓ index.json, collections_catalog.json, sets.json');
+
+    await pushToSupabase(addedFolders, catalog);
   }
   saveJson(TRACKED_PATH, [...seenSet]);
 

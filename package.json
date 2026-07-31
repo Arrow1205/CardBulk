@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "sync:collections": "node scripts/sync-collections.js",
-    "sync:init": "node scripts/sync-collections.js --init"
+    "sync:init": "node scripts/sync-collections.js --init",
+    "migrate:collections": "node scripts/migrate-collections-to-supabase.js"
   },
   "optionalDependencies": {
     "xlsx": "^0.18.5"

@@ -37,6 +37,9 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Installer les dépendances (pour le push Supabase)
+        run: npm ci --omit=dev --no-audit --no-fund
+
       # Init automatique si c'est la 1re exécution, ou si mode=init
       - name: Init / Premier lancement
         env:
@@ -61,6 +64,8 @@ jobs:
         env:
           GEMINI_API_KEY:  ${{ secrets.GEMINI_API_KEY }}
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL:  ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           MODE="${{ github.event.inputs.mode }}"
           if [ "$MODE" = "all" ]; then

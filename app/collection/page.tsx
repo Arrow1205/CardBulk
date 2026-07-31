@@ -30,7 +30,7 @@ const FOLDER_TYPES = ['Binder', 'Deck', 'Boîte', 'Digital', 'Autre'];
 
 import SET_DATA from '@/data/sets.json';
 import TYPE_CARTE from '@/data/type-carte.json';
-import COLLECTIONS_CATALOG from '@/data/collections/collections_catalog.json';
+import { normText, findMatchingCard } from '@/lib/checklistMatching';
 
 type Message = { role: 'user' | 'assistant', content: string };
 
@@ -71,95 +71,6 @@ const FloatingSearchBar = ({ searchQuery, setSearchQuery }: { searchQuery: strin
 );
 
 const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
-
-// ── Matching checklist ↔ cartes possédées (partagé liste + détail) ──
-const normText = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
-
-// La colonne "variation" d'une carte est saisie au format "TYPE - RARETÉ" ou "TYPE / RARETÉ"
-// (ex: "INSERT - WONDERKIDS", "AUTOGRAPH - BASE VARIATION", "BASE - SP").
-function splitVariation(variation: string): { type: string; name: string } {
-  if (!variation) return { type: '', name: '' };
-  const parts = variation.split(/\s*[-/]\s*/).map(p => p.trim()).filter(Boolean);
-  return { type: parts[0] || '', name: parts.slice(1).join(' ') };
-}
-
-const SUBSET_CAT_KEYWORDS: Record<string, string[]> = {
-  AUTOGRAPH: ['AUTOGRAPH', 'AUTO'],
-  RELIC:     ['RELIC', 'MEMORABILIA', 'JERSEY', 'SWATCH', 'PATCH'],
-  INSERT:    ['INSERT'],
-  PARALLEL:  ['PARALLEL', 'REFRACTOR'],
-};
-function detectSubsetCat(s: string): string | null {
-  const u = (s || '').toUpperCase();
-  if (u === 'BASE') return 'BASE';
-  for (const [cat, kws] of Object.entries(SUBSET_CAT_KEYWORDS)) {
-    if (kws.some(k => u.includes(k))) return cat;
-  }
-  return null;
-}
-
-// Confronte le type de carte attendu (subset + section du checklist) aux specs de la carte possédée
-// (flags is_auto/is_patch + variation découpée). On ne bloque que quand on peut détecter la
-// catégorie avec confiance des deux côtés ; sinon (subsets "produit" type PRIZM, SELECT...) on laisse passer.
-function cardMatchesSubset(subset: string | undefined, section: string | undefined, card: any): boolean {
-  const subsetCat = detectSubsetCat(subset || '');
-  const { type: cardType, name: cardName } = splitVariation(card.variation || '');
-  const cardCat = detectSubsetCat(cardType)
-    || (card.is_auto ? 'AUTOGRAPH' : null)
-    || (card.is_patch ? 'RELIC' : null);
-
-  if (subsetCat === 'AUTOGRAPH' && !card.is_auto) return false;
-  if (subsetCat === 'RELIC' && !card.is_patch) return false;
-  if (subsetCat === 'BASE' && (card.is_auto || card.is_patch)) return false;
-  if (subsetCat && cardCat && subsetCat !== cardCat) return false;
-
-  if ((subsetCat === 'INSERT' || subsetCat === 'PARALLEL' || !subsetCat) && cardName) {
-    const nameNorm    = normText(cardName);
-    const sectionNorm = normText(section || '');
-    if (nameNorm.length >= 3 && sectionNorm.length >= 3) {
-      if (!(nameNorm.includes(sectionNorm) || sectionNorm.includes(nameNorm))) return false;
-    }
-  }
-  return true;
-}
-
-// Retrouve la carte possédée correspondant à une ligne de checklist (joueur + subset/section),
-// pour une collection identifiée par éditeur/série/année.
-function findMatchingCard(
-  playerName: string,
-  subset: string | undefined,
-  section: string | undefined,
-  colYear: string,
-  colPub: string,
-  colSerie: string,
-  cards: any[]
-): any | null {
-  const normPlayer = normText(playerName);
-  if (normPlayer.length < 2) return null;
-  return cards.find(card => {
-    const cardFull = normText(`${card.firstname || ''} ${card.lastname || ''}`);
-    const cardRev  = normText(`${card.lastname || ''} ${card.firstname || ''}`);
-    if (cardFull.length < 2) return false;
-    const nameMatch = cardFull === normPlayer || cardRev === normPlayer
-      || (cardFull.length >= 4 && normPlayer.includes(cardFull))
-      || (normPlayer.length >= 4 && cardFull.includes(normPlayer));
-    if (!nameMatch) return false;
-
-    const cardYear = String(card.year || '');
-    const yearMatch = !colYear || cardYear === colYear
-      || (colYear.length === 4 && cardYear.includes(colYear))
-      || (cardYear.length === 4 && colYear.includes(cardYear));
-
-    const cardBrand = normText(card.brand || '');
-    const cardSerie = normText(card.series || '');
-    const brandMatch = colPub.length > 0 && cardBrand.length > 0
-      && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
-    const serieMatch = colSerie.length > 0 && cardSerie.length > 0
-      && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
-
-    return yearMatch && brandMatch && serieMatch && cardMatchesSubset(subset, section, card);
-  }) || null;
-}
 
 export default function CollectionPage() {
   const router = useRouter();
@@ -215,6 +126,10 @@ export default function CollectionPage() {
   const [detailSearch, setDetailSearch] = useState('');
   const [ownedCardPreview, setOwnedCardPreview] = useState<any | null>(null);
 
+  // Catalogue des collections scrapées (globales), chargé depuis Supabase — fallback sur
+  // le JSON statique (bundle) tant que le chargement n'est pas terminé.
+  const [sharedCollections, setSharedCollections] = useState<any[] | null>(null);
+
   // Manual collection add
   const [manualCollections, setManualCollections] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -229,7 +144,7 @@ export default function CollectionPage() {
   // pas une simple estimation brand/série) — utilisé pour le badge liste + masquer les sets vides.
   const [realOwnedCounts, setRealOwnedCounts] = useState<Record<string, number>>({});
   const [countsLoading, setCountsLoading] = useState(false);
-  const countsComputedForRef = useRef<number>(-1);
+  const countsComputedForRef = useRef<string>('');
 
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -246,9 +161,15 @@ export default function CollectionPage() {
       localStorage.setItem(MIGRATION_KEY, '1');
     }
 
-    // Collections importées manuellement (checklists JSON), stockées en base pour être
-    // permanentes (le filesystem Vercel est éphémère — voir app/api/collection/route.ts).
+    // Collections scrapées (globales) + importées manuellement — tout vit dans Supabase
+    // (le filesystem Vercel est éphémère et data/collections/ contient 1.3 Go d'images
+    // de scraping inutiles au runtime — voir app/api/collection/route.ts).
     (async () => {
+      const sharedRes = await supabase.from('collections').select('folder, catalog');
+      if (!sharedRes.error && sharedRes.data) {
+        setSharedCollections(sharedRes.data.map((row: any) => ({ folder: row.folder, ...row.catalog })));
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data, error } = await supabase
@@ -262,49 +183,24 @@ export default function CollectionPage() {
   }, []);
 
   // Calcule le vrai nombre de cartes cochées par collection (via son checklist réel), pour l'onglet Checklist.
-  // Se relance uniquement quand `cards` change vraiment (nouveau scan, suppression...), pas à chaque rendu.
+  // Le calcul est fait côté serveur (/api/checklist-progress) et mis en cache dans Supabase
+  // (table checklist_progress_cache) — partagé entre tous tes appareils, invalidé automatiquement
+  // quand ta collection de cartes change.
   useEffect(() => {
-    if (activeTab !== 'checklist' || cards.length === countsComputedForRef.current) return;
-    countsComputedForRef.current = cards.length;
+    const key = `${activeTab}::${cards.length}::${manualCollections.length}`;
+    if (activeTab !== 'checklist' || key === countsComputedForRef.current) return;
+    countsComputedForRef.current = key;
     setCountsLoading(true);
 
-    const allCols = [...(COLLECTIONS_CATALOG as any[]), ...manualCollections];
-    const CONCURRENCY = 12;
-    let cancelled = false;
-
     (async () => {
-      const results: Record<string, number> = {};
-      let i = 0;
-      async function worker() {
-        while (i < allCols.length) {
-          const col = allCols[i++];
-          try {
-            const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}&light=1`);
-            if (!res.ok) { results[col.folder] = 0; continue; }
-            const raw = await res.json();
-            const checklist: any[] = raw.checklist || [];
-            const colYear  = String(col.annee || col.year || '').match(/\d{4}/)?.[0] || '';
-            const colPub   = normText(col.editeur || col.publisher || '');
-            const colSerie = normText(col.serie || '');
-            let count = 0;
-            for (const item of checklist) {
-              if (findMatchingCard(item.joueur, item.subset, item.section, colYear, colPub, colSerie, cards)) count++;
-            }
-            results[col.folder] = count;
-          } catch {
-            results[col.folder] = 0;
-          }
-        }
-      }
-      await Promise.all(Array.from({ length: CONCURRENCY }, worker));
-      if (!cancelled) {
-        setRealOwnedCounts(results);
-        setCountsLoading(false);
-      }
+      try {
+        const res = await fetch('/api/checklist-progress');
+        const result = await res.json();
+        if (res.ok) setRealOwnedCounts(result.counts || {});
+      } catch {}
+      setCountsLoading(false);
     })();
-
-    return () => { cancelled = true; };
-  }, [activeTab, cards, manualCollections]);
+  }, [activeTab, cards.length, manualCollections.length]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -980,7 +876,7 @@ export default function CollectionPage() {
   };
 
   const renderChecklist = () => {
-    const catalog = COLLECTIONS_CATALOG as any[];
+    const catalog = sharedCollections || [];
 
     // ── Vue détail ──────────────────────────────────────────────────────────
     if (clView === 'detail' && clSelected) {
@@ -1434,12 +1330,12 @@ export default function CollectionPage() {
           </button>
         </div>
 
-        {countsLoading && (
+        {(countsLoading || sharedCollections === null) && (
           <div className="flex justify-center py-10"><Loader2 className="animate-spin text-[#AFFF25]" size={26} /></div>
         )}
 
         {/* Liste collections */}
-        {!countsLoading && (
+        {!countsLoading && sharedCollections !== null && (
         <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
           {filtered.map((col: any) => {
             const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
