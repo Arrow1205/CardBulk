@@ -771,6 +771,26 @@ export default function CollectionPage() {
 
   const renderChecklist = () => {
     const catalog = COLLECTIONS_CATALOG as any[];
+    const norm = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
+    // Nombre de cartes possédées correspondant à une collection (brand + série + année),
+    // sans dépendre du checklist joueur — utilisé pour la vue liste (badge + masquage des sets vides).
+    const countOwnedForCollection = (col: any): number => {
+      const colPub   = norm(col.editeur || col.publisher || '');
+      const colSerie = norm(col.serie || '');
+      const colYear  = String(col.annee || col.year || '');
+      if (!colPub || !colSerie) return 0;
+      return cards.filter(card => {
+        const cardBrand = norm(card.brand || '');
+        const cardSerie = norm(card.series || '');
+        const cardYear  = String(card.year || '');
+        const yearMatch = !colYear || cardYear === colYear
+          || (colYear.length >= 4 && cardYear.length >= 4 && cardYear.slice(0, 4) === colYear.slice(0, 4));
+        const brandMatch = cardBrand.length > 0 && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
+        const serieMatch = cardSerie.length > 0 && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
+        return yearMatch && brandMatch && serieMatch;
+      }).length;
+    };
 
     // ── Vue détail ──────────────────────────────────────────────────────────
     if (clView === 'detail' && clSelected) {
@@ -789,9 +809,23 @@ export default function CollectionPage() {
 
       const publisherSlug = (clSelected.publisher || '').toLowerCase().replace(/\s+/g, '-');
 
-      // Check if a player from the checklist is owned in the user's collection
-      const norm = (s: string) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
-      const isOwned = (playerName: string): boolean => {
+      // Confronte le type de carte attendu (déduit du nom du subset) aux specs de la carte possédée.
+      // On ne bloque QUE sur les catégories qu'on peut détecter avec confiance (auto/relic/base) ;
+      // pour les subsets "produit" (PRIZM, SELECT, ABSOLUTE...) on ne filtre pas — info non disponible.
+      const matchesSubsetType = (subset: string | undefined, card: any): boolean => {
+        const s = (subset || '').toUpperCase();
+        if (!s) return true;
+        const isAutoSubset  = s.includes('AUTOGRAPH') || s.includes('AUTO');
+        const isRelicSubset = s.includes('RELIC') || s.includes('MEMORABILIA') || s.includes('JERSEY') || s.includes('SWATCH') || s.includes('PATCH');
+        const isBaseSubset  = s === 'BASE';
+
+        if (isAutoSubset && !card.is_auto) return false;
+        if (isRelicSubset && !card.is_patch) return false;
+        if (isBaseSubset && (card.is_auto || card.is_patch)) return false;
+        return true;
+      };
+
+      const isOwned = (playerName: string, subset?: string): boolean => {
         const normPlayer = norm(playerName);
         if (normPlayer.length < 2) return false;
         return cards.some(card => {
@@ -821,11 +855,11 @@ export default function CollectionPage() {
           const serieMatch = colSerie.length > 0 && cardSerie.length > 0
             && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
 
-          return yearMatch && brandMatch && serieMatch;
+          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, card);
         });
       };
 
-      const findOwnedCard = (playerName: string): any | null => {
+      const findOwnedCard = (playerName: string, subset?: string): any | null => {
         const normPlayer = norm(playerName);
         if (normPlayer.length < 2) return null;
         return cards.find(card => {
@@ -849,7 +883,7 @@ export default function CollectionPage() {
             && (cardBrand.includes(colPub) || colPub.includes(cardBrand));
           const serieMatch = colSerie.length > 0 && cardSerie.length > 0
             && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
-          return yearMatch && brandMatch && serieMatch;
+          return yearMatch && brandMatch && serieMatch && matchesSubsetType(subset, card);
         }) || null;
       };
 
@@ -996,7 +1030,7 @@ export default function CollectionPage() {
                 const color = CAT_COLORS[cat as string] || '#ffffff';
                 const items = filteredSubsets.filter((s: any) => s.subset === cat);
                 const totalPlayers = items.reduce((acc: number, s: any) => acc + (s.players?.length || 0), 0);
-                const totalOwned = items.reduce((acc: number, s: any) => acc + (s.players || []).filter((p: any) => isOwned(p.name)).length, 0);
+                const totalOwned = items.reduce((acc: number, s: any) => acc + (s.players || []).filter((p: any) => isOwned(p.name, s.subset)).length, 0);
                 const isCatOpen = expandedCats.has(cat as string);
                 return (
                   <div key={cat as string} id={`cat-anchor-${cat}`}>
@@ -1038,7 +1072,7 @@ export default function CollectionPage() {
                                 <div className="flex items-center gap-2 shrink-0">
                                   {s.card_count && <span className="text-[10px] text-white/40">{s.card_count} cartes</span>}
                                   {hasPlayers && (() => {
-                                    const ownedCount = s.players.filter((p: any) => isOwned(p.name)).length;
+                                    const ownedCount = s.players.filter((p: any) => isOwned(p.name, s.subset)).length;
                                     return (
                                       <>
                                         {ownedCount > 0 && (
@@ -1070,20 +1104,22 @@ export default function CollectionPage() {
                                   {/* Players */}
                                   {hasPlayers && (
                                     <div className="divide-y divide-white/[0.04]">
-                                      {s.players.map((p: any, pi: number) => (
-                                        <div key={pi} className={`flex items-center justify-between px-4 py-2.5 transition-colors ${isOwned(p.name) ? 'bg-[#AFFF25]/[0.04]' : 'hover:bg-white/[0.03]'}`}>
+                                      {s.players.map((p: any, pi: number) => {
+                                        const owned = isOwned(p.name, s.subset);
+                                        return (
+                                        <div key={pi} className={`flex items-center justify-between px-4 py-2.5 transition-colors ${owned ? 'bg-[#AFFF25]/[0.04]' : 'hover:bg-white/[0.03]'}`}>
                                           <div className="flex items-center gap-3">
                                             <span className="text-[9px] text-white/20 font-mono w-5 shrink-0 text-right">{pi + 1}</span>
-                                            {isOwned(p.name) ? (
+                                            {owned ? (
                                               <span className="shrink-0 w-4 h-4 rounded-full bg-[#AFFF25] flex items-center justify-center">
                                                 <Check size={9} strokeWidth={3} className="text-[#040221]" />
                                               </span>
                                             ) : (
                                               <span className="shrink-0 w-4 h-4 rounded-full border border-white/[0.12]" />
                                             )}
-                                            {isOwned(p.name) ? (
+                                            {owned ? (
                                               <button
-                                                onClick={() => setOwnedCardPreview(findOwnedCard(p.name))}
+                                                onClick={() => setOwnedCardPreview(findOwnedCard(p.name, s.subset))}
                                                 className="text-sm font-bold text-[#AFFF25] hover:underline underline-offset-2 text-left"
                                               >{p.name}</button>
                                             ) : (
@@ -1105,7 +1141,8 @@ export default function CollectionPage() {
                                             </div>
                                           )}
                                         </div>
-                                      ))}
+                                        );
+                                      })}
                                     </div>
                                   )}
 
@@ -1173,7 +1210,10 @@ export default function CollectionPage() {
       const pubMatch = !checklistBrand || normPub(col.publisher) === checklistBrand;
       const yearMatch = !checklistType || String(col.year) === checklistType;
       return searchMatch && pubMatch && yearMatch;
-    }).sort((a: any, b: any) => (b.year || 0) - (a.year || 0));
+    })
+      .map(col => ({ ...col, ownedCount: countOwnedForCollection(col) }))
+      .filter(col => col.ownedCount > 0)
+      .sort((a: any, b: any) => (b.year || 0) - (a.year || 0));
 
     return (
       <div className="w-full animate-in fade-in duration-300">
@@ -1235,8 +1275,6 @@ export default function CollectionPage() {
         <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
           {filtered.map((col: any) => {
             const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
-            const hasAuto = col.card_types?.some((ct: string) => ct.toUpperCase().startsWith('AUTOGRAPH'));
-            const hasRelic = col.card_types?.some((ct: string) => ct.toUpperCase().startsWith('RELIC') || ct.toUpperCase().startsWith('MEMORABILIA'));
             return (
               <div
                 key={col.folder}
@@ -1246,13 +1284,12 @@ export default function CollectionPage() {
                 <div className="flex items-center gap-4 overflow-hidden">
                   <img src={`/asset/logo-marque/${publisherSlug}.png`} alt={col.publisher} className="h-7 w-7 object-contain mix-blend-screen shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" onError={e => e.currentTarget.style.display = 'none'} />
                   <div className="overflow-hidden">
-                    <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-0.5">{col.publisher} · {col.year}</div>
+                    <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-0.5">{col.editeur || col.publisher} · {col.annee || col.year}</div>
                     <div className="text-sm font-black text-white italic uppercase tracking-tight truncate">{col.serie}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0 ml-3">
-                  {hasAuto && <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20 font-bold">AUTO</span>}
-                  {hasRelic && <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/20 font-bold">RELIC</span>}
+                <div className="flex items-center gap-2 shrink-0 ml-3">
+                  <span className="text-[10px] px-2 py-1 rounded-full bg-[#AFFF25]/15 text-[#AFFF25] font-bold">{col.ownedCount}</span>
                   <ChevronLeft size={14} className="text-white/20 rotate-180" />
                 </div>
               </div>

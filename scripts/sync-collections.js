@@ -434,13 +434,17 @@ function addToAllFiles(meta, cardTypes, beckettUrl, index, catalog, sets, xlsxSu
     });
   }
 
-  // 3. collections_catalog.json
+  // 3. collections_catalog.json — on garde le nom COMPLET (avec ligue/compétition)
+  // pour que deux produits d'une même gamme (ex: SELECT / SERIE A vs SELECT / LA LIGA)
+  // ne soient pas indiscernables dans la liste.
   if (!catalog.find(c => c.folder === folder_id)) {
     catalog.push({
       folder:       folder_id,
       year,
+      annee:        String(year),
+      editeur:      publisher,
       publisher,
-      serie,
+      serie:        full_serie_name || serie,
       card_types:   cardTypes,
       beckett_url:  beckettUrl,
     });
