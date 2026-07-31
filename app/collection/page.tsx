@@ -150,6 +150,9 @@ export default function CollectionPage() {
   const addFileRef = useRef<HTMLInputElement>(null);
   const [jsonImportLoading, setJsonImportLoading] = useState(false);
   const jsonImportRef = useRef<HTMLInputElement>(null);
+  const [isDraggingJson, setIsDraggingJson] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Nombre réel de cartes possédées "cochées" par collection (calculé depuis le vrai checklist,
   // pas une simple estimation brand/série) — utilisé pour le badge liste + masquer les sets vides.
@@ -731,21 +734,20 @@ export default function CollectionPage() {
 
   // Import d'une checklist déjà normalisée (format data/collections/_TEMPLATE/collection.json).
   // Écrit directement le fichier + l'entrée catalogue côté serveur via /api/collection/import.
-  const handleJsonFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setJsonImportLoading(true);
+  const MAX_JSON_IMPORT = 5;
+
+  // Import d'un seul fichier — écrit directement dans Supabase (manual_collections), permanent
+  // et partagé entre appareils (le filesystem Vercel est éphémère).
+  const importOneJsonFile = async (file: File, userId: string): Promise<{ ok: boolean; folder?: string; catalogEntry?: any; serie?: string; error?: string }> => {
     try {
       const text = await file.text();
       const data = JSON.parse(text);
       const fiche = data?.fiche;
       if (!fiche?.serie || !fiche?.editeur) {
-        alert('JSON invalide : fiche.serie et fiche.editeur sont requis (voir data/collections/_TEMPLATE/).');
-        return;
+        return { ok: false, error: `${file.name} : fiche.serie et fiche.editeur sont requis` };
       }
       if (!Array.isArray(data.checklist)) {
-        alert('JSON invalide : "checklist" doit être un tableau.');
-        return;
+        return { ok: false, error: `${file.name} : "checklist" doit être un tableau` };
       }
 
       const year = parseInt(String(fiche.annee || '').match(/\d{4}/)?.[0] || '') || new Date().getFullYear();
@@ -760,40 +762,107 @@ export default function CollectionPage() {
         beckett_url: '',
       };
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { alert('Tu dois être connecté pour importer une collection.'); return; }
-
-      // Stocké en base (Supabase) plutôt que sur disque : sur Vercel le filesystem est
-      // éphémère, une écriture dans data/collections/ ne survivrait pas au-delà de la requête.
       const { error } = await supabase.from('manual_collections').upsert({
         folder,
-        user_id: user.id,
+        user_id: userId,
         catalog: catalogEntry,
         data,
         updated_at: new Date().toISOString(),
       });
-      if (error) throw new Error(error.message);
+      if (error) return { ok: false, error: `${file.name} : ${error.message}` };
 
-      setManualCollections(prev => [...prev.filter(c => c.folder !== folder), { folder, ...catalogEntry }]);
-      setShowAddModal(false);
-
-      // Recalcule immédiatement la progression (force le contournement du cache) pour que la
-      // collection fraîchement importée apparaisse tout de suite avec son vrai compteur.
-      setCountsLoading(true);
-      try {
-        const res = await authedFetch('/api/checklist-progress?refresh=1');
-        const result = await res.json();
-        if (res.ok) setRealOwnedCounts(result.counts || {});
-      } catch {}
-      setCountsLoading(false);
-
-      alert(`Collection "${fiche.serie}" importée avec succès.`);
+      return { ok: true, folder, catalogEntry, serie: fiche.serie };
     } catch (err: any) {
-      alert(`Erreur import JSON : ${err.message || err}`);
-      console.error(err);
+      return { ok: false, error: `${file.name} : ${err.message || err}` };
+    }
+  };
+
+  // Importe jusqu'à 5 fichiers JSON à la fois (input classique ou drag & drop).
+  const importJsonFiles = async (fileList: FileList | File[]) => {
+    const files = Array.from(fileList).filter(f => f.name.toLowerCase().endsWith('.json'));
+    if (files.length === 0) return;
+    if (files.length > MAX_JSON_IMPORT) {
+      alert(`Maximum ${MAX_JSON_IMPORT} fichiers à la fois (tu en as sélectionné ${files.length}).`);
+      return;
+    }
+
+    setJsonImportLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { alert('Tu dois être connecté pour importer une collection.'); return; }
+
+      const results = await Promise.all(files.map(f => importOneJsonFile(f, user.id)));
+      const succeeded = results.filter(r => r.ok);
+      const failed = results.filter(r => !r.ok);
+
+      if (succeeded.length > 0) {
+        setManualCollections(prev => {
+          let next = [...prev];
+          for (const r of succeeded) {
+            next = [...next.filter(c => c.folder !== r.folder), { folder: r.folder, ...r.catalogEntry }];
+          }
+          return next;
+        });
+        setShowAddModal(false);
+
+        // Recalcule immédiatement la progression (force le contournement du cache) pour que les
+        // collections fraîchement importées apparaissent tout de suite avec leur vrai compteur.
+        setCountsLoading(true);
+        try {
+          const res = await authedFetch('/api/checklist-progress?refresh=1');
+          const result = await res.json();
+          if (res.ok) setRealOwnedCounts(result.counts || {});
+        } catch {}
+        setCountsLoading(false);
+      }
+
+      const parts: string[] = [];
+      if (succeeded.length > 0) parts.push(`${succeeded.length} collection${succeeded.length > 1 ? 's' : ''} importée${succeeded.length > 1 ? 's' : ''} avec succès.`);
+      if (failed.length > 0) parts.push(`Erreurs :\n${failed.map(f => `- ${f.error}`).join('\n')}`);
+      alert(parts.join('\n\n'));
     } finally {
       setJsonImportLoading(false);
-      if (jsonImportRef.current) jsonImportRef.current.value = '';
+    }
+  };
+
+  const handleJsonFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) await importJsonFiles(files);
+    if (jsonImportRef.current) jsonImportRef.current.value = '';
+  };
+
+  const handleJsonDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingJson(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) await importJsonFiles(files);
+  };
+
+  // Supprime une checklist importée manuellement (table manual_collections).
+  const handleDeleteCollection = async () => {
+    if (!clSelected) return;
+    setDeleteLoading(true);
+    try {
+      const { error } = await supabase.from('manual_collections').delete().eq('folder', clSelected.folder);
+      if (error) throw new Error(error.message);
+
+      setManualCollections(prev => prev.filter(c => c.folder !== clSelected.folder));
+      setSharedCollections(prev => prev ? prev.filter(c => c.folder !== clSelected.folder) : prev);
+      setRealOwnedCounts(prev => {
+        const next = { ...prev };
+        delete next[clSelected.folder];
+        return next;
+      });
+
+      setShowDeleteConfirm(false);
+      setClView('list');
+      setClSelected(null);
+      setClDetail(null);
+    } catch (err: any) {
+      alert(`Erreur suppression : ${err.message || err}`);
+      console.error(err);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -1011,7 +1080,43 @@ export default function CollectionPage() {
                 <Trash2 size={13} className="text-red-400" />
               </button>
             )}
+            {/* Supprimer la checklist */}
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95"
+              title="Supprimer cette checklist"
+            >
+              <Trash2 size={13} className="text-red-400" />
+              <span className="text-xs font-bold text-red-400">Supprimer</span>
+            </button>
           </div>
+
+          {/* Popin de confirmation de suppression */}
+          {showDeleteConfirm && clSelected && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => !deleteLoading && setShowDeleteConfirm(false)}>
+              <div className="w-full max-w-sm bg-[#0c0b2e] border border-white/10 rounded-3xl p-6 space-y-5" onClick={e => e.stopPropagation()}>
+                <p className="text-sm text-white leading-relaxed">
+                  Es-tu sûr de vouloir supprimer la checklist "<span className="font-bold text-[#AFFF25]">{clSelected.serie}</span>" ?
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleDeleteCollection}
+                    disabled={deleteLoading}
+                    className="flex-1 py-3 rounded-xl bg-red-500 text-white font-black text-sm uppercase tracking-widest active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {deleteLoading ? <Loader2 size={15} className="animate-spin" /> : 'Oui'}
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    disabled={deleteLoading}
+                    className="flex-1 py-3 rounded-xl bg-[#34d399] text-[#040221] font-black text-sm uppercase tracking-widest active:scale-[0.98] transition-all disabled:opacity-50"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Search bar */}
           <div className="px-6 lg:px-[80px] mb-4">
@@ -1404,21 +1509,29 @@ export default function CollectionPage() {
                 <button onClick={() => setShowAddModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-colors"><X size={16} /></button>
               </div>
 
-              {/* Import JSON normalisé — recommandé, écrit directement dans data/collections/ */}
+              {/* Import JSON normalisé — recommandé, écrit directement en base (Supabase) */}
               <div>
                 <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1.5">
-                  Checklist JSON (recommandé)
+                  Checklist JSON (recommandé) — jusqu'à {MAX_JSON_IMPORT} fichiers à la fois
                 </label>
-                <input ref={jsonImportRef} type="file" accept=".json" className="hidden" onChange={handleJsonFileImport} />
-                <button
-                  type="button"
-                  onClick={() => jsonImportRef.current?.click()}
-                  disabled={jsonImportLoading}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-[#AFFF25]/30 hover:border-[#AFFF25]/60 hover:bg-[#AFFF25]/5 transition-all text-sm text-[#AFFF25]/80 hover:text-[#AFFF25] disabled:opacity-40"
+                <input ref={jsonImportRef} type="file" accept=".json" multiple className="hidden" onChange={handleJsonFileImport} />
+                <div
+                  onDragOver={e => { e.preventDefault(); setIsDraggingJson(true); }}
+                  onDragLeave={() => setIsDraggingJson(false)}
+                  onDrop={handleJsonDrop}
+                  onClick={() => !jsonImportLoading && jsonImportRef.current?.click()}
+                  className={`w-full flex flex-col items-center justify-center gap-2 py-6 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+                    isDraggingJson
+                      ? 'border-[#AFFF25] bg-[#AFFF25]/10'
+                      : 'border-[#AFFF25]/30 hover:border-[#AFFF25]/60 hover:bg-[#AFFF25]/5'
+                  } ${jsonImportLoading ? 'opacity-40 pointer-events-none' : ''}`}
                 >
-                  {jsonImportLoading ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />}
-                  <span>{jsonImportLoading ? 'Import en cours...' : 'Importer un fichier .json (format data/collections/_TEMPLATE)'}</span>
-                </button>
+                  {jsonImportLoading ? <Loader2 size={20} className="animate-spin text-[#AFFF25]" /> : <Plus size={20} className="text-[#AFFF25]" />}
+                  <span className="text-sm text-[#AFFF25]/80 text-center px-4">
+                    {jsonImportLoading ? 'Import en cours...' : 'Glisse-dépose ou clique pour choisir un ou plusieurs fichiers .json'}
+                  </span>
+                  <span className="text-[10px] text-white/30">(format data/collections/_TEMPLATE)</span>
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
