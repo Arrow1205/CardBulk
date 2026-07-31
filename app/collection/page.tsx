@@ -137,10 +137,20 @@ export default function CollectionPage() {
   // const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('manual_collections');
-      if (saved) try { setManualCollections(JSON.parse(saved)); } catch {}
+    if (typeof window === 'undefined') return;
+    // Migration one-shot : on repart de data/collections/ comme unique source de vérité.
+    // Les anciennes collections ajoutées manuellement (avant le scraping complet) sont purgées.
+    const MIGRATION_KEY = 'cardbulk_checklist_migrated_v1';
+    if (!localStorage.getItem(MIGRATION_KEY)) {
+      localStorage.removeItem('manual_collections');
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('checklist_override_')) localStorage.removeItem(k);
+      });
+      localStorage.setItem(MIGRATION_KEY, '1');
+      return;
     }
+    const saved = localStorage.getItem('manual_collections');
+    if (saved) try { setManualCollections(JSON.parse(saved)); } catch {}
   }, []);
 
   useEffect(() => {
@@ -540,6 +550,27 @@ export default function CollectionPage() {
     );
   };
 
+  // Transforme le checklist[] scrapé (data/collections/<folder>/collection.json) en
+  // subsets[].players[] — le format attendu par le rendu de la vue détail.
+  const buildDetailFromChecklist = (raw: any) => {
+    const groups = new Map<string, { subset: string; section: string; players: any[] }>();
+    for (const item of raw.checklist || []) {
+      const subset = item.subset || 'BASE';
+      const section = item.section || subset;
+      const key = `${subset}||${section}`;
+      if (!groups.has(key)) groups.set(key, { subset, section, players: [] });
+      groups.get(key)!.players.push({ name: item.joueur, club: '', mention: item.mention || null });
+    }
+    const subsets = Array.from(groups.values()).map(g => ({
+      subset: g.subset,
+      section: g.section,
+      card_count: g.players.length,
+      parallels: [],
+      players: g.players,
+    }));
+    return { ...raw, subsets, xlsx_parsed: true, xlsx_source: 'catalog' };
+  };
+
   const openCollection = async (col: any) => {
     setClSelected(col);
     setClView('detail');
@@ -550,22 +581,20 @@ export default function CollectionPage() {
     // All cats open by default — will be set once data loads
     setExpandedCats(new Set(['BASE', 'INSERT', 'PARALLEL', 'AUTOGRAPH', 'RELIC', 'MEMORABILIA', 'OR', 'SPECIAL']));
     try {
-      const localKey = `checklist_override_${col.folder}`;
-      const localData = typeof window !== 'undefined' ? localStorage.getItem(localKey) : null;
-      if (localData) {
-        const parsed = JSON.parse(localData);
-        setClDetail(parsed);
-        // Open all subset keys by default
-        const allKeys = new Set((parsed.subsets || []).map((s: any) => `${s.subset}-${s.section}`));
-        setExpandedSubsets(allKeys as Set<string>);
-        setClDetailLoading(false);
-        return;
-      }
       const res = await fetch(`/api/collection?folder=${encodeURIComponent(col.folder)}`);
       if (res.ok) {
-        const data = await res.json();
-        setClDetail(data);
-        const allKeys = new Set((data.subsets || []).map((s: any) => `${s.subset}-${s.section}`));
+        const raw = await res.json();
+        let detail: any;
+        if (raw.checklist && raw.checklist.length > 0) {
+          detail = buildDetailFromChecklist(raw);
+        } else {
+          // Pas de checklist scrapée pour ce set : fallback sur un éventuel import XLSX local
+          const localKey = `checklist_override_${col.folder}`;
+          const localData = typeof window !== 'undefined' ? localStorage.getItem(localKey) : null;
+          detail = localData ? JSON.parse(localData) : raw;
+        }
+        setClDetail(detail);
+        const allKeys = new Set((detail.subsets || []).map((s: any) => `${s.subset}-${s.section}`));
         setExpandedSubsets(allKeys as Set<string>);
       }
     } catch {}
@@ -1060,16 +1089,21 @@ export default function CollectionPage() {
                                             ) : (
                                               <span className="text-sm font-bold text-white">{p.name}</span>
                                             )}
+                                            {p.mention && (
+                                              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#AFFF25]/10 text-[#AFFF25] border border-[#AFFF25]/20 font-bold uppercase tracking-wide shrink-0">{p.mention}</span>
+                                            )}
                                           </div>
-                                          <div className="flex items-center gap-2 shrink-0 ml-3">
-                                            <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
-                                            <img
-                                              src={`/asset/logo-club/foot/${slugify(p.club)}.svg`}
-                                              alt={p.club}
-                                              className="h-5 w-5 object-contain opacity-60"
-                                              onError={e => (e.currentTarget.style.display = 'none')}
-                                            />
-                                          </div>
+                                          {p.club && (
+                                            <div className="flex items-center gap-2 shrink-0 ml-3">
+                                              <span className="text-xs text-white/40 truncate max-w-[120px] hidden sm:block">{p.club}</span>
+                                              <img
+                                                src={`/asset/logo-club/foot/${slugify(p.club)}.svg`}
+                                                alt={p.club}
+                                                className="h-5 w-5 object-contain opacity-60"
+                                                onError={e => (e.currentTarget.style.display = 'none')}
+                                              />
+                                            </div>
+                                          )}
                                         </div>
                                       ))}
                                     </div>
