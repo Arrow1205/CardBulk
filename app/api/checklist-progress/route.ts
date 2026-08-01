@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { findMatchingCard, cardsSignature, normText } from '@/lib/checklistMatching';
 import { supabaseFromRequest } from '@/lib/supabaseServer';
 
+// Empêche Next.js/Vercel de mettre cette route en cache — sinon une collection supprimée
+// puis réimportée pouvait continuer à renvoyer d'anciens compteurs mis en cache.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: Request) {
   try {
     const supabase = supabaseFromRequest(req);
@@ -34,7 +39,7 @@ export async function GET(req: Request) {
         .eq('user_id', user.id)
         .single();
       if (cached && cached.cards_signature === signature) {
-        return NextResponse.json({ counts: cached.counts, cached: true });
+        return NextResponse.json({ counts: cached.counts, cached: true }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
       }
     }
 
@@ -52,7 +57,7 @@ export async function GET(req: Request) {
       updated_at: new Date().toISOString(),
     });
 
-    return NextResponse.json({ counts, cached: false });
+    return NextResponse.json({ counts, cached: false }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

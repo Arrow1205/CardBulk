@@ -1054,7 +1054,7 @@ export default function CollectionPage() {
                   <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#AFFF25]/10 text-[#AFFF25] border border-[#AFFF25]/20 font-bold">LOCAL</span>
                 )}
               </div>
-              <h2 className="text-xl font-black italic uppercase tracking-tight text-white leading-tight truncate">{clSelected.serie || formatCollectionIdWithoutBrand(clSelected.folder)}</h2>
+              <h2 className="text-xl font-black italic uppercase tracking-tight text-white leading-tight truncate">{formatCollectionIdWithoutBrand(clSelected.folder)}</h2>
             </div>
             {/* Upload XLSX button */}
             <input ref={xlsxInputRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleXlsxUpload} />
@@ -1096,7 +1096,7 @@ export default function CollectionPage() {
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => !deleteLoading && setShowDeleteConfirm(false)}>
               <div className="w-full max-w-sm bg-[#0c0b2e] border border-white/10 rounded-3xl p-6 space-y-5" onClick={e => e.stopPropagation()}>
                 <p className="text-sm text-white leading-relaxed">
-                  Es-tu sûr de vouloir supprimer la checklist "<span className="font-bold text-[#AFFF25]">{clSelected.serie || formatCollectionIdWithoutBrand(clSelected.folder)}</span>" ?
+                  Es-tu sûr de vouloir supprimer la checklist "<span className="font-bold text-[#AFFF25]">{formatCollectionIdWithoutBrand(clSelected.folder)}</span>" ?
                 </p>
                 <div className="flex gap-3">
                   <button
@@ -1466,7 +1466,7 @@ export default function CollectionPage() {
         <div className="px-6 lg:px-[80px] space-y-2 pb-[180px]">
           {filtered.map((col: any) => {
             const publisherSlug = (col.publisher || '').toLowerCase().replace(/\s+/g, '-');
-            const displaySerie = col.serie || formatCollectionIdWithoutBrand(col.folder);
+            const displaySerie = formatCollectionIdWithoutBrand(col.folder);
             const serieParts = displaySerie.split(/\s*\/\s*/);
             return (
               <div
