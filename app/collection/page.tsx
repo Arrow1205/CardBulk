@@ -734,7 +734,11 @@ export default function CollectionPage() {
 
   // Import d'une checklist déjà normalisée (format data/collections/_TEMPLATE/collection.json).
   // Écrit directement le fichier + l'entrée catalogue côté serveur via /api/collection/import.
-  const MAX_JSON_IMPORT = 5;
+  // Supabase encaisse largement plus que ça niveau écritures ; la vraie limite est de ne pas
+  // envoyer des dizaines de requêtes en même temps depuis le navigateur. On traite donc par
+  // petits lots concurrents (IMPORT_CONCURRENCY) plutôt que tout en parallèle d'un coup.
+  const MAX_JSON_IMPORT = 30;
+  const IMPORT_CONCURRENCY = 6;
 
   // Import d'un seul fichier — écrit directement dans Supabase (manual_collections), permanent
   // et partagé entre appareils (le filesystem Vercel est éphémère).
@@ -790,8 +794,19 @@ export default function CollectionPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { alert('Tu dois être connecté pour importer une collection.'); return; }
+      const userId = user.id;
 
-      const results = await Promise.all(files.map(f => importOneJsonFile(f, user.id)));
+      // Traitement par lots concurrents limités (pas tout en parallèle d'un coup)
+      const results: Awaited<ReturnType<typeof importOneJsonFile>>[] = [];
+      let i = 0;
+      const worker = async () => {
+        while (i < files.length) {
+          const file = files[i++];
+          results.push(await importOneJsonFile(file, userId));
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(IMPORT_CONCURRENCY, files.length) }, worker));
+
       const succeeded = results.filter(r => r.ok);
       const failed = results.filter(r => !r.ok);
 
