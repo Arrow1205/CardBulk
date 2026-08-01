@@ -95,3 +95,28 @@ export function findMatchingCard(
 export function cardsSignature(cards: any[]): string {
   return cards.map((c: any) => `${c.id}:${c.updated_at}`).sort().join('|');
 }
+
+// Dérive un nom lisible depuis un collection_id/folder en retirant le préfixe de marque
+// (déjà affiché ailleurs — éditeur), sans y toucher pour le reste.
+// Ex: "futera-fans-selection-borussia-monchengladbach-2025-26" -> "fans selection borussia monchengladbach 2025-26"
+const KNOWN_BRANDS = new Set(['futera', 'panini', 'topps', 'donruss']);
+
+export function formatCollectionIdWithoutBrand(collectionId: string): string {
+  const parts = collectionId.split('-');
+  const start = parts.length > 0 && KNOWN_BRANDS.has(parts[0].toLowerCase()) ? 1 : 0;
+  const rest = parts.slice(start);
+
+  const out: string[] = [];
+  for (let i = 0; i < rest.length; i++) {
+    const cur = rest[i];
+    const next = rest[i + 1];
+    // Recolle un couple "AAAA" + "AA" (ex: 2025 + 26) en "AAAA-AA" pour garder le format saison
+    if (/^\d{4}$/.test(cur) && next && /^\d{2}$/.test(next)) {
+      out.push(`${cur}-${next}`);
+      i++;
+    } else {
+      out.push(cur);
+    }
+  }
+  return out.join(' ');
+}
