@@ -572,23 +572,22 @@ function ScannerContent() {
     if (matchedSet?.common_subsets) availableVariations = matchedSet.common_subsets;
   }
 
-  // Enrichissement par les checklists importées (source de vérité qui grandit au fur et
-  // à mesure) — pour l'instant uniquement du foot, donc appliqué seulement pour SOCCER.
-  // Additif : ne retire jamais une option déjà présente depuis sets.json.
-  if (formData.sport === 'SOCCER' && checklistCatalog.length > 0) {
-    const existingBrandNames = new Set(availableBrands.map((b: any) => b.name.toUpperCase()));
+  // Pour SOCCER, les checklists importées sont la SEULE source de vérité — on remplace
+  // entièrement les options de sets.json (pas de fusion), pour ne jamais revoir des
+  // anciennes collections qui n'ont pas/plus de checklist derrière. Tant que le
+  // catalogue n'est pas encore chargé, on garde une liste vide plutôt que de flasher
+  // les anciennes valeurs.
+  if (formData.sport === 'SOCCER') {
     const checklistBrandNames = Array.from(new Set(checklistCatalog.map(c => c.editeur.toUpperCase())));
-    const extraBrands = checklistBrandNames.filter(n => !existingBrandNames.has(n)).map(name => ({ name }));
-    if (extraBrands.length > 0) availableBrands = [...availableBrands, ...extraBrands];
+    availableBrands = checklistBrandNames.map(name => ({ name }));
 
     if (formData.brand) {
       const brandUpper = formData.brand.toUpperCase();
-      const checklistSeries = Array.from(new Set(
+      availableSets = Array.from(new Set(
         checklistCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie)
       ));
-      const existingSetNames = new Set(availableSets.map(s => s.toUpperCase()));
-      const extraSets = checklistSeries.filter(s => !existingSetNames.has(s.toUpperCase()));
-      if (extraSets.length > 0) availableSets = [...availableSets, ...extraSets];
+    } else {
+      availableSets = [];
     }
   }
 
