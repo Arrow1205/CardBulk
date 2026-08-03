@@ -1,58 +1,77 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { normText } from '@/lib/checklistMatching';
+import { supabaseFromRequest } from '@/lib/supabaseServer';
 
+// Empêche Next.js/Vercel de mettre cette route en cache — les checklists sont ajoutées
+// au fur et à mesure, il ne faut jamais servir une réponse figée.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// Source des variations/subsets proposées au scan : les checklists réelles (Supabase),
+// mises à jour dès qu'une nouvelle collection est importée — plus de fichier statique
+// à régénérer manuellement (data/subsets-index.json est obsolète).
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const brand = searchParams.get('brand') || '';
-  const year = searchParams.get('year') || '';
+  const brand  = searchParams.get('brand') || '';
+  const year   = searchParams.get('year') || '';
   const series = searchParams.get('series') || '';
   const player = searchParams.get('player') || '';
 
   try {
-    const indexPath = path.join(process.cwd(), 'data', 'subsets-index.json');
-    const raw = fs.readFileSync(indexPath, 'utf-8');
-    const index: Record<string, any> = JSON.parse(raw);
+    const supabase = supabaseFromRequest(req);
+    const [{ data: shared }, { data: manual }] = await Promise.all([
+      supabase.from('collections').select('folder, catalog, data'),
+      supabase.from('manual_collections').select('folder, catalog, data'),
+    ]);
+    const allCollections = [...(shared || []), ...(manual || [])];
 
-    const subsetMap = new Map<string, { value: string, label: string }>();
-    const seriesKey = series.split('/')[0].trim().toLowerCase();
+    const normBrand  = normText(brand);
+    const seriesKey  = normText(series.split('/')[0] || '');
+    const normPlayer = normText(player);
 
-    for (const col of Object.values(index)) {
-      const yearMatch = !year || (col.annee || '') === year;
-      const brandMatch = !brand || (col.editeur || '').toLowerCase() === brand.toLowerCase();
-      const seriesMatch = !series || (col.serie || '').toLowerCase().includes(seriesKey);
+    const subsetMap = new Map<string, { value: string; label: string }>();
+
+    for (const row of allCollections) {
+      const col = row.catalog || {};
+      const colYear  = String(col.annee || col.year || '');
+      const colPub   = normText(col.editeur || col.publisher || '');
+      const colSerie = normText(col.serie || '');
+
+      const yearMatch   = !year || colYear.includes(year);
+      const brandMatch  = !brand || colPub === normBrand || colPub.includes(normBrand) || normBrand.includes(colPub);
+      const seriesMatch = !series || colSerie.includes(seriesKey);
       if (!yearMatch || !brandMatch || !seriesMatch) continue;
 
-      let subsetsToUse: any[] = col.subsets || [];
+      let checklist: any[] = row.data?.checklist || [];
 
-      // Filter by player if provided
-      if (player && col.players) {
-        const playerLower = player.toLowerCase();
-        const matchedKey = Object.keys(col.players).find(k => k.includes(playerLower) || playerLower.includes(k));
-        if (matchedKey) {
-          const playerSubsetValues = new Set(col.players[matchedKey]);
-          subsetsToUse = subsetsToUse.filter((s: any) => playerSubsetValues.has(s.value));
-        }
+      if (player) {
+        checklist = checklist.filter(item => {
+          const j = normText(item.joueur || '');
+          return j.length >= 2 && (j.includes(normPlayer) || normPlayer.includes(j));
+        });
       }
 
-      for (const s of subsetsToUse) {
-        if (!s.value || subsetMap.has(s.value)) continue;
-        const label = s.value.split('/').map((p: string) =>
+      for (const item of checklist) {
+        const subset  = item.subset || '';
+        const section = item.section || '';
+        const value = section && section !== subset ? `${subset} / ${section}` : subset;
+        if (!value || subsetMap.has(value)) continue;
+        const label = value.split('/').map((p: string) =>
           p.trim().charAt(0).toUpperCase() + p.trim().slice(1).toLowerCase()
         ).join(' / ');
-        subsetMap.set(s.value, { value: s.value, label });
+        subsetMap.set(value, { value, label });
       }
     }
 
-    const ORDER = ['BASE', 'INSERT', 'AUTOGRAPH', 'AUTOGRAPHED MEMORABILIA', 'MEMORABILIA'];
+    const ORDER = ['BASE', 'INSERT', 'AUTOGRAPH', 'AUTOGRAPHED MEMORABILIA', 'MEMORABILIA', 'RELIC'];
     const result = Array.from(subsetMap.values()).sort((a, b) => {
-      const ai = ORDER.findIndex(o => a.value.startsWith(o));
-      const bi = ORDER.findIndex(o => b.value.startsWith(o));
+      const ai = ORDER.findIndex(o => a.value.toUpperCase().startsWith(o));
+      const bi = ORDER.findIndex(o => b.value.toUpperCase().startsWith(o));
       if (ai !== bi) return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
       return a.value.localeCompare(b.value);
     });
 
-    return NextResponse.json({ subsets: result });
+    return NextResponse.json({ subsets: result }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
   } catch (e: any) {
     return NextResponse.json({ subsets: [], error: e.message });
   }

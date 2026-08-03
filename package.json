@@ -9,7 +9,8 @@
     "lint": "next lint",
     "sync:collections": "node scripts/sync-collections.js",
     "sync:init": "node scripts/sync-collections.js --init",
-    "migrate:collections": "node scripts/migrate-collections-to-supabase.js"
+    "migrate:collections": "node scripts/migrate-collections-to-supabase.js",
+    "match:cards": "node scripts/match-cards-to-checklists.js"
   },
   "optionalDependencies": {
     "xlsx": "^0.18.5"

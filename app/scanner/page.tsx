@@ -84,6 +84,16 @@ type PendingCard = {
 
 const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 
+// Les routes API lisent la session via le token Bearer (voir lib/supabaseServer.ts),
+// pas via les cookies — il faut donc l'attacher explicitement à chaque appel.
+async function authedFetch(url: string, init?: RequestInit) {
+  const { data: { session } } = await supabase.auth.getSession();
+  return fetch(url, {
+    ...init,
+    headers: { ...(init?.headers || {}), Authorization: `Bearer ${session?.access_token || ''}` },
+  });
+}
+
 export default function ScannerPage() { 
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>}>
@@ -149,6 +159,9 @@ function ScannerContent() {
 
   const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
   const [loadingSubsets, setLoadingSubsets] = useState(false);
+  // Catalogue léger (éditeur/série/année) des checklists importées — vient enrichir
+  // les menus Marque/Collection en plus de data/sets.json, au fur et à mesure des imports.
+  const [checklistCatalog, setChecklistCatalog] = useState<{ editeur: string; serie: string; annee: string }[]>([]);
   const [scanExamples, setScanExamples] = useState<any[]>([]);
   const [showCustomVariation, setShowCustomVariation] = useState(false);
 
@@ -398,6 +411,26 @@ function ScannerContent() {
     }
   }, [draggingCorner]);
 
+  // Catalogue des checklists (éditeur/série/année) — chargé une fois, sert à enrichir
+  // les menus Marque/Collection avec les collections importées, en plus de sets.json.
+  useEffect(() => {
+    (async () => {
+      const [sharedRes, manualRes] = await Promise.allSettled([
+        supabase.from('collections').select('catalog'),
+        supabase.from('manual_collections').select('catalog'),
+      ]);
+      const rows: any[] = [
+        ...(sharedRes.status === 'fulfilled' ? sharedRes.value.data || [] : []),
+        ...(manualRes.status === 'fulfilled' ? manualRes.value.data || [] : []),
+      ];
+      setChecklistCatalog(rows.map(r => ({
+        editeur: (r.catalog?.editeur || r.catalog?.publisher || '').trim(),
+        serie: (r.catalog?.serie || '').trim(),
+        annee: String(r.catalog?.annee || r.catalog?.year || ''),
+      })).filter(c => c.editeur && c.serie));
+    })();
+  }, []);
+
   useEffect(() => {
     if (!formData.brand || !formData.year) {
       setDynamicSubsets([]);
@@ -414,7 +447,7 @@ function ScannerContent() {
 
     const fetchAll = async () => {
       const [apiRes, userRes] = await Promise.allSettled([
-        fetch(`/api/subsets?${params}`).then(r => r.json()),
+        authedFetch(`/api/subsets?${params}`).then(r => r.json()),
         supabase
           .from('custom_subsets')
           .select('variation')
@@ -513,8 +546,8 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
-  const allBrands = SET_DATA.brands || [];
-  const availableBrands = formData.year
+  const allBrands: any[] = SET_DATA.brands || [];
+  let availableBrands: any[] = formData.year
     ? allBrands.filter((b: any) => {
         const yearSet = YEAR_BRAND_MAP[formData.year];
         return !yearSet || yearSet.has(b.name.toLowerCase());
@@ -537,6 +570,26 @@ function ScannerContent() {
   if (formData.series) {
     const matchedSet = availableSetObjects.find((s: any) => s.name?.toLowerCase() === formData.series.toLowerCase());
     if (matchedSet?.common_subsets) availableVariations = matchedSet.common_subsets;
+  }
+
+  // Enrichissement par les checklists importées (source de vérité qui grandit au fur et
+  // à mesure) — pour l'instant uniquement du foot, donc appliqué seulement pour SOCCER.
+  // Additif : ne retire jamais une option déjà présente depuis sets.json.
+  if (formData.sport === 'SOCCER' && checklistCatalog.length > 0) {
+    const existingBrandNames = new Set(availableBrands.map((b: any) => b.name.toUpperCase()));
+    const checklistBrandNames = Array.from(new Set(checklistCatalog.map(c => c.editeur.toUpperCase())));
+    const extraBrands = checklistBrandNames.filter(n => !existingBrandNames.has(n)).map(name => ({ name }));
+    if (extraBrands.length > 0) availableBrands = [...availableBrands, ...extraBrands];
+
+    if (formData.brand) {
+      const brandUpper = formData.brand.toUpperCase();
+      const checklistSeries = Array.from(new Set(
+        checklistCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie)
+      ));
+      const existingSetNames = new Set(availableSets.map(s => s.toUpperCase()));
+      const extraSets = checklistSeries.filter(s => !existingSetNames.has(s.toUpperCase()));
+      if (extraSets.length > 0) availableSets = [...availableSets, ...extraSets];
+    }
   }
 
   const sportImage = formData.sport ? SPORT_CONFIG[formData.sport]?.image : null;

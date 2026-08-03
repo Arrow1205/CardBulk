@@ -13,6 +13,8 @@ export function splitVariation(variation: string): { type: string; name: string 
 }
 
 const SUBSET_CAT_KEYWORDS: Record<string, string[]> = {
+  // Doit être vérifié AVANT AUTOGRAPH/RELIC (sinon "A+R"/"AUTOGRAPH RELIC" matcherait AUTOGRAPH en premier).
+  AUTOGRAPH_RELIC: ['A+R', 'AUTOGRAPH RELIC', 'AUTOGRAPHED RELIC', 'AUTO RELIC', 'AUTO/RELIC', 'AUTOGRAPH MEMORABILIA', 'AUTOGRAPHED MEMORABILIA'],
   AUTOGRAPH: ['AUTOGRAPH', 'AUTO'],
   RELIC:     ['RELIC', 'MEMORABILIA', 'JERSEY', 'SWATCH', 'PATCH'],
   INSERT:    ['INSERT'],
@@ -35,20 +37,25 @@ export function cardMatchesSubset(subset: string | undefined, section: string | 
   const subsetCat = detectSubsetCat(subset || '');
   const { type: cardType, name: cardName } = splitVariation(card.variation || '');
   const cardCat = detectSubsetCat(cardType)
+    || (card.is_auto && card.is_patch ? 'AUTOGRAPH_RELIC' : null)
     || (card.is_auto ? 'AUTOGRAPH' : null)
     || (card.is_patch ? 'RELIC' : null);
 
+  if (subsetCat === 'AUTOGRAPH_RELIC' && !(card.is_auto && card.is_patch)) return false;
   if (subsetCat === 'AUTOGRAPH' && !card.is_auto) return false;
   if (subsetCat === 'RELIC' && !card.is_patch) return false;
   if (subsetCat === 'BASE' && (card.is_auto || card.is_patch)) return false;
   if (subsetCat && cardCat && subsetCat !== cardCat) return false;
 
-  if ((subsetCat === 'INSERT' || subsetCat === 'PARALLEL' || !subsetCat) && cardName) {
+  // Si la variation de la carte précise un nom de rareté (ex: "WONDERKIDS", "FUSION"),
+  // il doit correspondre EXACTEMENT à la section du checklist — une simple sous-chaîne
+  // ferait matcher "PRIZED FOOTBALLERS" avec "PRIZED FOOTBALLERS FUSION" par erreur,
+  // alors que ce sont deux variantes distinctes. S'applique à toutes les catégories
+  // (pas seulement INSERT/PARALLEL) dès qu'un nom précis est renseigné des deux côtés.
+  if (cardName) {
     const nameNorm    = normText(cardName);
     const sectionNorm = normText(section || '');
-    if (nameNorm.length >= 3 && sectionNorm.length >= 3) {
-      if (!(nameNorm.includes(sectionNorm) || sectionNorm.includes(nameNorm))) return false;
-    }
+    if (nameNorm.length >= 3 && sectionNorm.length >= 3 && nameNorm !== sectionNorm) return false;
   }
   return true;
 }
