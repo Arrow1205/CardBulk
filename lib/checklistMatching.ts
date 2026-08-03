@@ -103,27 +103,59 @@ export function cardsSignature(cards: any[]): string {
   return cards.map((c: any) => `${c.id}:${c.updated_at}`).sort().join('|');
 }
 
-// Dérive un nom lisible depuis un collection_id/folder en retirant le préfixe de marque
-// (déjà affiché ailleurs — éditeur), sans y toucher pour le reste.
-// Ex: "futera-fans-selection-borussia-monchengladbach-2025-26" -> "fans selection borussia monchengladbach 2025-26"
+// Dérive un nom lisible et simplifié depuis un collection_id/folder, pour l'affichage
+// sur la page Checklist : retire la marque (déjà affichée ailleurs — éditeur), les
+// années/saisons, les mois, et le bruit de scraping ("soccer cards", "fiche signalétique
+// avec check-list", "précommande en...", etc.). Garde tout le reste, y compris le pays.
+// Ex: "topps-match-attax-bundesliga-allemagne-2023-octobre-soccer-cards" -> "Match Attax Bundesliga Allemagne"
 const KNOWN_BRANDS = new Set(['futera', 'panini', 'topps', 'donruss']);
 
+const MONTHS_FR = new Set([
+  'janvier', 'fevrier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+  'aout', 'août', 'septembre', 'octobre', 'novembre', 'decembre', 'décembre',
+]);
+
+const JUNK_WORDS = new Set([
+  'soccer', 'cards', 'card', 'trading',
+  'fiche', 'signaletique', 'signalétique', 'avec', 'check', 'list', 'li',
+  'coup', 'il', 'oeil', 'mise', 'jour', 'precommande', 'précommande', 'en',
+  'd', 'l',
+]);
+
 export function formatCollectionIdWithoutBrand(collectionId: string): string {
-  const parts = collectionId.split('-');
-  const start = parts.length > 0 && KNOWN_BRANDS.has(parts[0].toLowerCase()) ? 1 : 0;
-  const rest = parts.slice(start);
+  let parts = collectionId.split('-');
+  if (parts.length > 0 && KNOWN_BRANDS.has(parts[0].toLowerCase())) parts = parts.slice(1);
 
   const out: string[] = [];
-  for (let i = 0; i < rest.length; i++) {
-    const cur = rest[i];
-    const next = rest[i + 1];
-    // Recolle un couple "AAAA" + "AA" (ex: 2025 + 26) en "AAAA-AA" pour garder le format saison
-    if (/^\d{4}$/.test(cur) && next && /^\d{2}$/.test(next)) {
-      out.push(`${cur}-${next}`);
-      i++;
-    } else {
-      out.push(cur);
+  for (let i = 0; i < parts.length; i++) {
+    const raw = parts[i];
+    const low = raw.toLowerCase();
+
+    if (MONTHS_FR.has(low) || JUNK_WORDS.has(low)) continue;
+
+    // Année 4 chiffres (1900-2099) : on la retire, avec son éventuel suffixe de saison
+    // à 2 chiffres qui suit immédiatement (ex: "2025" + "26" -> les deux disparaissent).
+    if (/^(19|20)\d{2}$/.test(raw)) {
+      const next = parts[i + 1];
+      if (next && /^\d{2}$/.test(next)) i++;
+      continue;
     }
+
+    // Saison écrite en format court ("24-25") : deux nombres à 2 chiffres consécutifs.
+    if (/^\d{2}$/.test(raw)) {
+      const next = parts[i + 1];
+      if (next && /^\d{2}$/.test(next)) {
+        const a = parseInt(raw, 10);
+        const b = parseInt(next, 10);
+        if (b === (a + 1) % 100) { i++; continue; }
+      }
+    }
+
+    out.push(raw);
   }
-  return out.join(' ');
+
+  return out
+    .filter(Boolean)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
 }

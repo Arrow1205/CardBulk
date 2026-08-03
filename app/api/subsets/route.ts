@@ -29,19 +29,30 @@ export async function GET(req: Request) {
     const seriesKey  = normText(series.split('/')[0] || '');
     const normPlayer = normText(player);
 
-    const subsetMap = new Map<string, { value: string; label: string }>();
-
-    for (const row of allCollections) {
+    const matchesRow = (row: any, requireYear: boolean) => {
       const col = row.catalog || {};
       const colYear  = String(col.annee || col.year || '');
       const colPub   = normText(col.editeur || col.publisher || '');
       const colSerie = normText(col.serie || '');
 
-      const yearMatch   = !year || colYear.includes(year);
+      const yearMatch   = !requireYear || !year || colYear.includes(year);
       const brandMatch  = !brand || colPub === normBrand || colPub.includes(normBrand) || normBrand.includes(colPub);
       const seriesMatch = !series || colSerie.includes(seriesKey);
-      if (!yearMatch || !brandMatch || !seriesMatch) continue;
+      return yearMatch && brandMatch && seriesMatch;
+    };
 
+    // Le champ Année du formulaire ne correspond pas forcément exactement à l'année de la
+    // collection choisie (le menu Collection/Set n'est pas filtré par année) — si le filtre
+    // strict ne renvoie rien, on retente sans le critère année plutôt que de renvoyer une
+    // liste de subsets vide.
+    let matchingRows = allCollections.filter(row => matchesRow(row, true));
+    if (matchingRows.length === 0) {
+      matchingRows = allCollections.filter(row => matchesRow(row, false));
+    }
+
+    const subsetMap = new Map<string, { value: string; label: string }>();
+
+    for (const row of matchingRows) {
       let checklist: any[] = row.data?.checklist || [];
 
       if (player) {
