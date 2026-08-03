@@ -546,7 +546,7 @@ function ScannerContent() {
   const searchPlayerStr = formData.lastname.toLowerCase();
   const filteredPlayers = searchPlayerStr ? safePlayers.filter((p: any) => p.name?.toLowerCase().includes(searchPlayerStr)).slice(0, 10) : [];
 
-  const allBrands: any[] = SET_DATA.brands || [];
+  const allBrands: any[] = (SET_DATA.brands || []).slice().sort((a: any, b: any) => a.name.localeCompare(b.name));
   let availableBrands: any[] = formData.year
     ? allBrands.filter((b: any) => {
         const yearSet = YEAR_BRAND_MAP[formData.year];
@@ -562,7 +562,7 @@ function ScannerContent() {
     if (selectedBrandObj?.sports) {
       const sportsData = selectedBrandObj.sports as any;
       if (sportsData[sportJsonKey]) {
-        availableSetObjects = sportsData[sportJsonKey];
+        availableSetObjects = sportsData[sportJsonKey].slice().sort((a: any, b: any) => (a.name || '').localeCompare(b.name || ''));
         availableSets = availableSetObjects.map((s: any) => s.name).filter(Boolean);
       }
     }
@@ -578,14 +578,14 @@ function ScannerContent() {
   // catalogue n'est pas encore chargé, on garde une liste vide plutôt que de flasher
   // les anciennes valeurs.
   if (formData.sport === 'SOCCER') {
-    const checklistBrandNames = Array.from(new Set(checklistCatalog.map(c => c.editeur.toUpperCase())));
+    const checklistBrandNames = Array.from(new Set(checklistCatalog.map(c => c.editeur.toUpperCase()))).sort((a, b) => a.localeCompare(b));
     availableBrands = checklistBrandNames.map(name => ({ name }));
 
     if (formData.brand) {
       const brandUpper = formData.brand.toUpperCase();
       availableSets = Array.from(new Set(
         checklistCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie)
-      ));
+      )).sort((a, b) => a.localeCompare(b));
     } else {
       availableSets = [];
     }
