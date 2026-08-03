@@ -583,9 +583,18 @@ function ScannerContent() {
 
     if (formData.brand) {
       const brandUpper = formData.brand.toUpperCase();
-      availableSets = Array.from(new Set(
-        checklistCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie)
-      )).sort((a, b) => a.localeCompare(b));
+      let seriesForBrand = checklistCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie);
+
+      // Chez Topps, une même gamme (Finest, Match Attax, Chrome, Merlin, Deco, Museum...)
+      // ressort chaque année sous le même nom — seule l'année change, la partie après le
+      // "/" ne fait que lister la ou les compétitions couvertes cette année-là. On ne garde
+      // donc que le nom de la gamme. (Chez Panini au contraire, Select/Prizm déclinent de
+      // vrais produits différents par championnat : on ne fusionne pas dans ce cas.)
+      if (brandUpper === 'TOPPS') {
+        seriesForBrand = seriesForBrand.map(s => s.split('/')[0].trim());
+      }
+
+      availableSets = Array.from(new Set(seriesForBrand)).sort((a, b) => a.localeCompare(b));
     } else {
       availableSets = [];
     }

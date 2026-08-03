@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus, ScanLine, Share2, Copy, ClipboardList } from 'lucide-react';
+import { Search, Plus, X, Folder, LayoutGrid, Star, ChevronLeft, ChevronDown, Trash2, Loader2, Check, Sparkles, Send, Minus, ScanLine, Share2, Copy, ClipboardList, Pencil, Save } from 'lucide-react';
 import QRCode from "react-qr-code";
 
 const SPORT_ORDER = ['SOCCER', 'TENNIS', 'BASKETBALL', 'BASEBALL', 'NHL', 'NFL', 'F1'];
@@ -153,6 +153,14 @@ export default function CollectionPage() {
   const [isDraggingJson, setIsDraggingJson] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // Édition manuelle d'une checklist importée (manual_collections uniquement)
+  const [editMode, setEditMode] = useState(false);
+  const [editChecklist, setEditChecklist] = useState<any[]>([]);
+  const [savingChecklist, setSavingChecklist] = useState(false);
+  const [showAddSubsetForm, setShowAddSubsetForm] = useState(false);
+  const [newSubsetCat, setNewSubsetCat] = useState('BASE');
+  const [newSubsetSection, setNewSubsetSection] = useState('');
 
   // Nombre réel de cartes possédées "cochées" par collection (calculé depuis le vrai checklist,
   // pas une simple estimation brand/série) — utilisé pour le badge liste + masquer les sets vides.
@@ -622,7 +630,7 @@ export default function CollectionPage() {
       const section = item.section || subset;
       const key = `${subset}||${section}`;
       if (!groups.has(key)) groups.set(key, { subset, section, players: [] });
-      groups.get(key)!.players.push({ name: item.joueur, club: '', mention: item.mention || null });
+      groups.get(key)!.players.push({ name: item.joueur, club: '', mention: item.mention || null, numero: item.numero || '' });
     }
     const subsets = Array.from(groups.values()).map(g => ({
       subset: g.subset,
@@ -662,6 +670,70 @@ export default function CollectionPage() {
       }
     } catch {}
     setClDetailLoading(false);
+  };
+
+  // ── Édition manuelle du checklist ──────────────────────────────────────────
+  const startEditChecklist = () => {
+    setEditChecklist(JSON.parse(JSON.stringify(clDetail?.checklist || [])));
+    setEditMode(true);
+    setShowAddSubsetForm(false);
+  };
+
+  const cancelEditChecklist = () => {
+    setEditMode(false);
+    setEditChecklist([]);
+    setShowAddSubsetForm(false);
+  };
+
+  const updateEditRow = (idx: number, field: 'numero' | 'joueur' | 'mention', value: string) => {
+    setEditChecklist(prev => prev.map((it, i) => (i === idx ? { ...it, [field]: value } : it)));
+  };
+
+  const deleteEditRow = (idx: number) => {
+    setEditChecklist(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const addRowToGroup = (subset: string, section: string) => {
+    setEditChecklist(prev => [...prev, { numero: '', joueur: '', mention: null, subset, section }]);
+  };
+
+  const addNewSubsetGroup = () => {
+    const section = newSubsetSection.trim() || newSubsetCat;
+    addRowToGroup(newSubsetCat, section);
+    setNewSubsetSection('');
+    setShowAddSubsetForm(false);
+  };
+
+  const saveChecklist = async () => {
+    if (!clSelected) return;
+    setSavingChecklist(true);
+    try {
+      const cleaned = editChecklist.filter(item => (item.joueur || '').trim().length > 0);
+      const newData = { collection_id: clSelected.folder, fiche: clDetail?.fiche || null, checklist: cleaned };
+      const { error } = await supabase
+        .from('manual_collections')
+        .update({ data: newData, updated_at: new Date().toISOString() })
+        .eq('folder', clSelected.folder);
+      if (error) throw new Error(error.message);
+
+      setEditMode(false);
+      setEditChecklist([]);
+      await openCollection(clSelected);
+
+      // Recalcule la progression (le contenu du checklist a changé)
+      setCountsLoading(true);
+      try {
+        const res = await authedFetch('/api/checklist-progress?refresh=1');
+        const result = await res.json();
+        if (res.ok) setRealOwnedCounts(result.counts || {});
+      } catch {}
+      setCountsLoading(false);
+    } catch (err: any) {
+      alert(`Erreur enregistrement : ${err.message || err}`);
+      console.error(err);
+    } finally {
+      setSavingChecklist(false);
+    }
   };
 
   const handleXlsxUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1054,6 +1126,10 @@ export default function CollectionPage() {
         });
       };
 
+      // Seules les checklists importées manuellement (manual_collections) sont éditables —
+      // les ~200 collections scrapées globales (table `collections`) restent en lecture seule.
+      const isManualCollection = manualCollections.some(c => c.folder === clSelected.folder);
+
       return (
         <div className="w-full animate-in fade-in duration-300 pb-[180px]">
           {/* Header */}
@@ -1071,39 +1147,72 @@ export default function CollectionPage() {
               </div>
               <h2 className="text-xl font-black italic uppercase tracking-tight text-white leading-tight truncate">{formatCollectionIdWithoutBrand(clSelected.folder)}</h2>
             </div>
-            {/* Upload XLSX button */}
-            <input ref={xlsxInputRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleXlsxUpload} />
-            <button
-              onClick={() => xlsxInputRef.current?.click()}
-              disabled={xlsxUploading}
-              className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/5 transition-all active:scale-95 disabled:opacity-50"
-              title="Importer un fichier XLSX"
-            >
-              {xlsxUploading ? <Loader2 size={15} className="animate-spin text-[#AFFF25]" /> : <Plus size={15} className="text-[#AFFF25]" />}
-              <span className="text-xs font-bold text-white/70">XLSX</span>
-            </button>
-            {clDetail?.xlsx_source === 'manual' && (
-              <button
-                onClick={() => {
-                  if (!clSelected) return;
-                  localStorage.removeItem(`checklist_override_${clSelected.folder}`);
-                  openCollection(clSelected);
-                }}
-                className="shrink-0 w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:border-red-500/40 hover:bg-red-500/5 transition-all active:scale-95"
-                title="Supprimer les données locales"
-              >
-                <Trash2 size={13} className="text-red-400" />
-              </button>
+            {editMode ? (
+              <>
+                <button
+                  onClick={cancelEditChecklist}
+                  disabled={savingChecklist}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all active:scale-95 disabled:opacity-50"
+                >
+                  <X size={13} className="text-white/60" />
+                  <span className="text-xs font-bold text-white/60">Annuler</span>
+                </button>
+                <button
+                  onClick={saveChecklist}
+                  disabled={savingChecklist}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#AFFF25] hover:bg-[#9ee615] transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {savingChecklist ? <Loader2 size={13} className="animate-spin text-[#040221]" /> : <Save size={13} className="text-[#040221]" />}
+                  <span className="text-xs font-bold text-[#040221]">Enregistrer</span>
+                </button>
+              </>
+            ) : (
+              <>
+                {isManualCollection && (
+                  <button
+                    onClick={startEditChecklist}
+                    className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/5 transition-all active:scale-95"
+                    title="Modifier cette checklist"
+                  >
+                    <Pencil size={13} className="text-[#AFFF25]" />
+                    <span className="text-xs font-bold text-white/70">Modifier</span>
+                  </button>
+                )}
+                {/* Upload XLSX button */}
+                <input ref={xlsxInputRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleXlsxUpload} />
+                <button
+                  onClick={() => xlsxInputRef.current?.click()}
+                  disabled={xlsxUploading}
+                  className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#AFFF25]/40 hover:bg-[#AFFF25]/5 transition-all active:scale-95 disabled:opacity-50"
+                  title="Importer un fichier XLSX"
+                >
+                  {xlsxUploading ? <Loader2 size={15} className="animate-spin text-[#AFFF25]" /> : <Plus size={15} className="text-[#AFFF25]" />}
+                  <span className="text-xs font-bold text-white/70">XLSX</span>
+                </button>
+                {clDetail?.xlsx_source === 'manual' && (
+                  <button
+                    onClick={() => {
+                      if (!clSelected) return;
+                      localStorage.removeItem(`checklist_override_${clSelected.folder}`);
+                      openCollection(clSelected);
+                    }}
+                    className="shrink-0 w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:border-red-500/40 hover:bg-red-500/5 transition-all active:scale-95"
+                    title="Supprimer les données locales"
+                  >
+                    <Trash2 size={13} className="text-red-400" />
+                  </button>
+                )}
+                {/* Supprimer la checklist */}
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95"
+                  title="Supprimer cette checklist"
+                >
+                  <Trash2 size={13} className="text-red-400" />
+                  <span className="text-xs font-bold text-red-400">Supprimer</span>
+                </button>
+              </>
             )}
-            {/* Supprimer la checklist */}
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95"
-              title="Supprimer cette checklist"
-            >
-              <Trash2 size={13} className="text-red-400" />
-              <span className="text-xs font-bold text-red-400">Supprimer</span>
-            </button>
           </div>
 
           {/* Popin de confirmation de suppression */}
@@ -1149,6 +1258,8 @@ export default function CollectionPage() {
             </div>
           </div>
 
+          {!editMode && (
+          <>
           {/* Category anchors */}
           {filteredSubsetCats.length > 1 && (
             <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -1390,6 +1501,122 @@ export default function CollectionPage() {
               )}
             </div>
           )}
+          </>
+          )}
+
+          {/* ── Mode édition ── */}
+          {editMode && (() => {
+            const groupKeyOf = (it: any) => `${it.subset || 'BASE'}||${it.section || it.subset || 'BASE'}`;
+            const orderedKeys: string[] = [];
+            editChecklist.forEach(it => {
+              const k = groupKeyOf(it);
+              if (!orderedKeys.includes(k)) orderedKeys.push(k);
+            });
+            const CAT_OPTIONS = ['BASE', 'INSERT', 'AUTOGRAPH', 'RELIC', 'MEMORABILIA', 'PARALLEL', 'OR', 'SPECIAL'];
+
+            return (
+              <div className="px-6 lg:px-[80px] space-y-4">
+                <button
+                  onClick={() => setShowAddSubsetForm(v => !v)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-[#AFFF25]/40 hover:border-[#AFFF25]/70 hover:bg-[#AFFF25]/5 transition-all text-sm font-bold text-[#AFFF25]"
+                >
+                  <Plus size={15} /> Ajouter un subset (catégorie)
+                </button>
+
+                {showAddSubsetForm && (
+                  <div className="rounded-2xl bg-white/[0.03] border border-white/[0.08] p-4 space-y-3">
+                    <div className="flex gap-2">
+                      <select
+                        value={newSubsetCat}
+                        onChange={e => setNewSubsetCat(e.target.value)}
+                        className="flex-1 bg-[#040221] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#AFFF25]/50"
+                      >
+                        {CAT_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Nom de la section (ex: WONDERKIDS)"
+                        value={newSubsetSection}
+                        onChange={e => setNewSubsetSection(e.target.value)}
+                        className="flex-1 bg-[#040221] border border-white/20 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/30 outline-none focus:border-[#AFFF25]/50"
+                      />
+                    </div>
+                    <button
+                      onClick={addNewSubsetGroup}
+                      className="w-full py-2.5 rounded-xl bg-[#AFFF25] text-[#040221] font-black text-xs uppercase tracking-widest active:scale-[0.98] transition-all"
+                    >
+                      Créer ce subset
+                    </button>
+                  </div>
+                )}
+
+                {orderedKeys.length === 0 && (
+                  <div className="text-center py-12 text-white/30 italic text-sm">Aucune carte pour l'instant — ajoute un subset ci-dessus pour commencer.</div>
+                )}
+
+                {orderedKeys.map(key => {
+                  const rows = editChecklist
+                    .map((item, idx) => ({ item, idx }))
+                    .filter(({ item }) => groupKeyOf(item) === key);
+                  const { subset, section } = rows[0].item;
+                  const color = CAT_COLORS[subset] || '#ffffff';
+
+                  return (
+                    <div key={key} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.05]" style={{ backgroundColor: color + '08' }}>
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-black uppercase tracking-widest" style={{ color }}>{subset}</span>
+                          <span className="text-sm font-black text-white italic uppercase tracking-tight ml-2 truncate">{section}</span>
+                        </div>
+                        <span className="text-[10px] text-white/40 shrink-0">{rows.length} carte{rows.length > 1 ? 's' : ''}</span>
+                      </div>
+
+                      <div className="divide-y divide-white/[0.04]">
+                        {rows.map(({ item, idx }) => (
+                          <div key={idx} className="flex items-center gap-2 px-4 py-2 flex-wrap">
+                            <input
+                              type="text"
+                              placeholder="N°"
+                              value={item.numero || ''}
+                              onChange={e => updateEditRow(idx, 'numero', e.target.value)}
+                              className="w-14 bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white/70 outline-none focus:border-[#AFFF25]/50"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Nom du joueur"
+                              value={item.joueur || ''}
+                              onChange={e => updateEditRow(idx, 'joueur', e.target.value)}
+                              className="flex-1 min-w-[140px] bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:border-[#AFFF25]/50"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Mention (Rookie Card...)"
+                              value={item.mention || ''}
+                              onChange={e => updateEditRow(idx, 'mention', e.target.value)}
+                              className="w-40 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white/70 outline-none focus:border-[#AFFF25]/50"
+                            />
+                            <button
+                              onClick={() => deleteEditRow(idx)}
+                              className="shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95"
+                            >
+                              <Trash2 size={13} className="text-red-400" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={() => addRowToGroup(subset, section)}
+                        className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-[#AFFF25]/80 hover:text-[#AFFF25] hover:bg-[#AFFF25]/5 transition-all border-t border-white/[0.04]"
+                      >
+                        <Plus size={13} /> Ajouter une carte
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       );
     }
