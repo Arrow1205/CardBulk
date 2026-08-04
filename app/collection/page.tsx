@@ -1452,7 +1452,7 @@ export default function CollectionPage() {
                                         return (
                                         <div key={pi} className={`flex items-center justify-between px-4 py-2.5 transition-colors ${owned ? 'bg-[#AFFF25]/[0.04]' : 'hover:bg-white/[0.03]'}`}>
                                           <div className="flex items-center gap-3">
-                                            <span className="text-[9px] text-white/20 font-mono w-5 shrink-0 text-right">{pi + 1}</span>
+                                            <span className="text-[9px] text-white/30 font-mono w-8 shrink-0 text-right">{p.numero || pi + 1}</span>
                                             {owned ? (
                                               <span className="shrink-0 w-4 h-4 rounded-full bg-[#AFFF25] flex items-center justify-center">
                                                 <Check size={9} strokeWidth={3} className="text-[#040221]" />

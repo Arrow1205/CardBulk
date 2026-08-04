@@ -50,7 +50,7 @@ export async function GET(req: Request) {
       matchingRows = allCollections.filter(row => matchesRow(row, false));
     }
 
-    const subsetMap = new Map<string, { value: string; label: string }>();
+    const subsetMap = new Map<string, { value: string; label: string; numero?: string }>();
 
     for (const row of matchingRows) {
       let checklist: any[] = row.data?.checklist || [];
@@ -70,7 +70,8 @@ export async function GET(req: Request) {
         const label = value.split('/').map((p: string) =>
           p.trim().charAt(0).toUpperCase() + p.trim().slice(1).toLowerCase()
         ).join(' / ');
-        subsetMap.set(value, { value, label });
+        const numero = item.numero ? String(item.numero) : undefined;
+        subsetMap.set(value, { value, label, numero });
       }
     }
 

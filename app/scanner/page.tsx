@@ -163,7 +163,7 @@ function ScannerContent() {
   yearsList.push('2020');
   for (let y = 2019; y >= 1994; y--) yearsList.push(String(y));
 
-  const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
+  const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string, numero?: string}[]>([]);
   const [loadingSubsets, setLoadingSubsets] = useState(false);
   const [playerFoundInChecklist, setPlayerFoundInChecklist] = useState<boolean | null>(null);
   // Niveau 1 : joueur trouvé dans au moins une checklist (vérif globale, sans filtre year/brand)
@@ -174,6 +174,7 @@ function ScannerContent() {
   const [checklistPlayerIndex, setChecklistPlayerIndex] = useState<Map<string, string[]>>(new Map());
   const [scanExamples, setScanExamples] = useState<any[]>([]);
   const [showCustomVariation, setShowCustomVariation] = useState(false);
+  const [variationDropdownOpen, setVariationDropdownOpen] = useState(false);
 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
@@ -193,6 +194,15 @@ function ScannerContent() {
 
   const scanModeRef = useRef(scanMode);
   useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
+
+  useEffect(() => {
+    if (!variationDropdownOpen) return;
+    const handler = () => setVariationDropdownOpen(false);
+    document.addEventListener('click', handler, true);
+    return () => document.removeEventListener('click', handler, true);
+  }, [variationDropdownOpen]);
+
+  useEffect(() => { setVariationDropdownOpen(false); }, [formData.series]);
   const isFlashingRef = useRef(isFlashing);
   useEffect(() => { isFlashingRef.current = isFlashing; }, [isFlashing]);
   const captureRef = useRef(() => {});
@@ -498,7 +508,7 @@ function ScannerContent() {
           .eq('series', formData.series || '')
       ]);
 
-      const apiSubsets: {value: string, label: string}[] =
+      const apiSubsets: {value: string, label: string, numero?: string}[] =
         apiRes.status === 'fulfilled' ? (apiRes.value.subsets || []) : [];
 
       // Vérification joueur dans la checklist
@@ -1876,40 +1886,74 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
 
                 {/* VARIATION / SUBSET — Niveau 4 : désactivé tant que la collection n'est pas choisie */}
                 <div className={`relative transition-opacity ${!formData.series ? 'opacity-40 pointer-events-none' : ''}`}>
-                  <select
-                    value={showCustomVariation ? '__autre__' : formData.variation}
-                    disabled={!formData.series}
-                    onChange={e => {
-                      if (e.target.value === '__autre__') {
-                        setShowCustomVariation(true);
-                        setFormData({...formData, variation: ''});
-                      } else {
-                        setShowCustomVariation(false);
-                        setFormData({...formData, variation: e.target.value});
-                      }
-                    }}
-                    className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors"
-                  >
-                    <option value="">{loadingSubsets ? 'Chargement...' : 'Variation / Subset'}</option>
-                    {(() => {
-                      // Fusion : dynamic (subsets-index) + common (sets.json), sans doublons
-                      const dynamicVals = new Set(dynamicSubsets.map(s => s.value));
-                      const fromSetsJson = availableVariations
-                        .filter(v => !dynamicVals.has(v))
-                        .map(v => ({ value: v, label: v }));
-                      return [...dynamicSubsets, ...fromSetsJson];
-                    })().map((s: {value: string, label: string}) => (
-                      <option key={s.value} value={s.value}>{s.label.replace(/\s*\/\s*/g, ' - ')}</option>
-                    ))}
-                    {!showCustomVariation && formData.variation && ![...dynamicSubsets, ...availableVariations].some((s: any) => (typeof s === 'string' ? s : s.value) === formData.variation) && (
-                      <option value={formData.variation}>{formData.variation.replace(/\s*\/\s*/g, ' - ')}</option>
-                    )}
-                    <option value="__autre__">— Autre (saisie libre) —</option>
-                  </select>
-                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
-                  {!showCustomVariation && formData.variation && (
-                    <p className="text-[10px] text-white/40 mt-1.5 px-4">{formData.variation.replace(/\s*\/\s*/g, ' - ')}</p>
-                  )}
+                  {(() => {
+                    const dynamicVals = new Set(dynamicSubsets.map(s => s.value));
+                    const fromSetsJson = availableVariations
+                      .filter(v => !dynamicVals.has(v))
+                      .map(v => ({ value: v, label: v, numero: undefined as string | undefined }));
+                    const allOptions: { value: string; label: string; numero?: string }[] = [...dynamicSubsets, ...fromSetsJson];
+                    if (!showCustomVariation && formData.variation && !allOptions.some(s => s.value === formData.variation)) {
+                      allOptions.push({ value: formData.variation, label: formData.variation });
+                    }
+                    const selectedOption = allOptions.find(s => s.value === formData.variation);
+                    const displayLabel = showCustomVariation
+                      ? null
+                      : selectedOption
+                        ? selectedOption.label.replace(/\s*\/\s*/g, ' - ')
+                        : null;
+                    return (
+                      <div className="relative">
+                        <button
+                          type="button"
+                          disabled={!formData.series}
+                          onClick={() => { if (!showCustomVariation) setVariationDropdownOpen(o => !o); }}
+                          className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 pr-10 text-left outline-none focus:border-[#AFFF25]/50 transition-colors flex items-center justify-between"
+                        >
+                          <span className={displayLabel ? 'text-white' : 'text-white/40'}>
+                            {loadingSubsets ? 'Chargement...' : (displayLabel || 'Variation / Subset')}
+                          </span>
+                          {selectedOption?.numero && (
+                            <span className="text-white/40 text-xs font-mono mr-6">#{selectedOption.numero}</span>
+                          )}
+                          <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                        </button>
+                        {variationDropdownOpen && !showCustomVariation && (
+                          <div className="absolute z-50 w-full mt-1 bg-[#0a0630] border border-white/20 rounded-2xl overflow-hidden shadow-xl max-h-64 overflow-y-auto">
+                            {allOptions.map(s => (
+                              <button
+                                key={s.value}
+                                type="button"
+                                onClick={() => {
+                                  setFormData({...formData, variation: s.value});
+                                  setVariationDropdownOpen(false);
+                                  setShowCustomVariation(false);
+                                }}
+                                className="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-white/10 transition-colors text-left"
+                              >
+                                <span className={formData.variation === s.value ? 'text-[#AFFF25]' : 'text-white'}>
+                                  {s.label.replace(/\s*\/\s*/g, ' - ')}
+                                </span>
+                                {s.numero && (
+                                  <span className="text-white/40 text-xs font-mono ml-2 shrink-0">#{s.numero}</span>
+                                )}
+                              </button>
+                            ))}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowCustomVariation(true);
+                                setFormData({...formData, variation: ''});
+                                setVariationDropdownOpen(false);
+                              }}
+                              className="w-full px-4 py-2.5 text-sm text-white/40 hover:bg-white/10 transition-colors text-left border-t border-white/10"
+                            >
+                              — Autre (saisie libre) —
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
                 {showCustomVariation && (
                   <div className="relative mt-2">
