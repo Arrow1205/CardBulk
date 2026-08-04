@@ -169,9 +169,9 @@ function ScannerContent() {
   // Niveau 1 : joueur trouvé dans au moins une checklist (vérif globale, sans filtre year/brand)
   const [playerInChecklists, setPlayerInChecklists] = useState<boolean | null>(null);
   const [checkingPlayer, setCheckingPlayer] = useState(false);
-  // Catalogue léger (éditeur/série/année) des checklists importées — vient enrichir
-  // les menus Marque/Collection en plus de data/sets.json, au fur et à mesure des imports.
-  const [checklistCatalog, setChecklistCatalog] = useState<{ editeur: string; serie: string; annee: string }[]>([]);
+  // Catalogue des checklists importées + index joueur→folders pour le filtrage en cascade
+  const [checklistCatalog, setChecklistCatalog] = useState<{ editeur: string; serie: string; annee: string; folder: string }[]>([]);
+  const [checklistPlayerIndex, setChecklistPlayerIndex] = useState<Map<string, string[]>>(new Map());
   const [scanExamples, setScanExamples] = useState<any[]>([]);
   const [showCustomVariation, setShowCustomVariation] = useState(false);
 
@@ -421,23 +421,39 @@ function ScannerContent() {
     }
   }, [draggingCorner]);
 
-  // Catalogue des checklists (éditeur/série/année) — chargé une fois, sert à enrichir
-  // les menus Marque/Collection avec les collections importées, en plus de sets.json.
+  // Catalogue des checklists + index joueur→folders — chargé une fois au montage
   useEffect(() => {
     (async () => {
       const [sharedRes, manualRes] = await Promise.allSettled([
-        supabase.from('collections').select('catalog'),
-        supabase.from('manual_collections').select('catalog'),
+        supabase.from('collections').select('folder, catalog, data'),
+        supabase.from('manual_collections').select('folder, catalog, data'),
       ]);
       const rows: any[] = [
         ...(sharedRes.status === 'fulfilled' ? sharedRes.value.data || [] : []),
         ...(manualRes.status === 'fulfilled' ? manualRes.value.data || [] : []),
       ];
+
       setChecklistCatalog(rows.map(r => ({
+        folder: r.folder || '',
         editeur: (r.catalog?.editeur || r.catalog?.publisher || '').trim(),
         serie: (r.catalog?.serie || '').trim(),
         annee: String(r.catalog?.annee || r.catalog?.year || ''),
       })).filter(c => c.editeur && c.serie));
+
+      // Index joueur normalisé → [folder, ...]
+      const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, '').trim();
+      const index = new Map<string, string[]>();
+      for (const r of rows) {
+        const checklist: any[] = r.data?.checklist || [];
+        for (const item of checklist) {
+          const name = norm(item.joueur || '');
+          if (name.length >= 2) {
+            if (!index.has(name)) index.set(name, []);
+            if (!index.get(name)!.includes(r.folder)) index.get(name)!.push(r.folder);
+          }
+        }
+      }
+      setChecklistPlayerIndex(index);
     })();
   }, []);
 
@@ -606,25 +622,44 @@ function ScannerContent() {
     if (matchedSet?.common_subsets) availableVariations = matchedSet.common_subsets;
   }
 
-  // Pour SOCCER, les checklists importées sont la SEULE source de vérité — on remplace
-  // entièrement les options de sets.json (pas de fusion). Les variations viennent
-  // exclusivement de l'API subsets (filtrées par joueur si un nom est saisi).
+  // Pour SOCCER, les checklists importées sont la SEULE source de vérité.
+  // Cascade : joueur → année → brand → collection → variation.
   if (formData.sport === 'SOCCER') {
     availableVariations = [];
+
+    // Résoudre les folders contenant ce joueur (index chargé au montage)
+    const normPlayer = ([formData.firstname, formData.lastname].filter(Boolean).join(' ')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, '').trim();
+    let playerFolderSet: Set<string> | null = null;
+    if (normPlayer.length >= 2 && checklistPlayerIndex.size > 0) {
+      playerFolderSet = new Set<string>();
+      checklistPlayerIndex.forEach((folders, name) => {
+        if (name.includes(normPlayer) || normPlayer.includes(name)) {
+          folders.forEach(f => playerFolderSet!.add(f));
+        }
+      });
+    }
+
+    // Filtrage par année
     const yearFilter = formData.year ? formData.year.slice(0, 4) : '';
-    const filteredCatalog = yearFilter
+    let filteredCatalog = yearFilter
       ? checklistCatalog.filter(c => c.annee.includes(yearFilter))
       : checklistCatalog;
 
-    const checklistBrandNames = Array.from(new Set(filteredCatalog.map(c => c.editeur.toUpperCase()))).sort((a, b) => a.localeCompare(b));
+    // Filtrage par joueur (Niveau 3 : brand already chosen — filter series by player)
+    // Niveau 2 : brands filtered by player + year
+    const playerYearCatalog = playerFolderSet
+      ? filteredCatalog.filter(c => playerFolderSet!.has(c.folder))
+      : filteredCatalog;
+
+    const checklistBrandNames = Array.from(new Set(playerYearCatalog.map(c => c.editeur.toUpperCase()))).sort((a, b) => a.localeCompare(b));
     availableBrands = checklistBrandNames.map(name => ({ name }));
 
     if (formData.brand) {
       const brandUpper = formData.brand.toUpperCase();
-      let seriesForBrand = filteredCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie);
-
+      // Niveau 3 : collections filtrées par joueur + année + brand
+      const brandCatalog = playerYearCatalog.filter(c => c.editeur.toUpperCase() === brandUpper);
+      let seriesForBrand = brandCatalog.map(c => c.serie);
       seriesForBrand = seriesForBrand.map(s => s.split('/')[0].trim());
-
       availableSets = Array.from(new Set(seriesForBrand)).sort((a, b) => a.localeCompare(b));
     } else {
       availableSets = [];
