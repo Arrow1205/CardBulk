@@ -1683,9 +1683,9 @@ export default function CollectionPage() {
     let playerMatchFolders: Set<string> | null = null;
     if (normTerm.length >= 3 && playerIndex) {
       playerMatchFolders = new Set<string>();
-      for (const [name, folders] of playerIndex) {
+      playerIndex.forEach((folders, name) => {
         if (name.includes(normTerm)) folders.forEach(f => playerMatchFolders!.add(f));
-      }
+      });
     }
 
     const filtered = allCatalog.filter(col => {
