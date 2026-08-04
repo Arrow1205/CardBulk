@@ -827,13 +827,15 @@ export default function CollectionPage() {
       }
 
       const year = parseInt(String(fiche.annee || '').match(/\d{4}/)?.[0] || '') || new Date().getFullYear();
-      const folder = data.collection_id || slugify(`${fiche.editeur}-${fiche.serie}-${fiche.annee || year}-soccer-cards`);
+      const normEditeur = fiche.editeur.trim().toUpperCase();
+      const normSerie = fiche.serie.trim().toUpperCase();
+      const folder = data.collection_id || slugify(`${normEditeur}-${normSerie}-${fiche.annee || year}-soccer-cards`);
       const catalogEntry = {
         year,
         annee: fiche.annee || String(year),
-        editeur: fiche.editeur,
-        publisher: fiche.editeur,
-        serie: fiche.serie,
+        editeur: normEditeur,
+        publisher: normEditeur,
+        serie: normSerie,
         card_types: [],
         beckett_url: '',
       };
@@ -1628,13 +1630,26 @@ export default function CollectionPage() {
 
     const allCatalog = [...catalog, ...manualCollections];
     const publishers = Array.from(new Set(allCatalog.map(c => normPub(c.publisher)).filter(Boolean))).sort() as string[];
-    const years = Array.from(new Set(allCatalog.map(c => c.year).filter(Boolean))).sort((a: any, b: any) => b - a) as number[];
+
+    const getColPeriod = (col: any): string => {
+      const annee = String(col.annee || col.year || '');
+      const seasonMatch = annee.match(/(\d{4})-(\d{2})/);
+      if (seasonMatch) return `${seasonMatch[1]}-${seasonMatch[2]}`;
+      const yearMatch = annee.match(/\d{4}/);
+      return yearMatch ? yearMatch[0] : String(col.year || '');
+    };
+    const periodSortKey = (p: string) => {
+      const m = p.match(/^(\d{4})-(\d{2})$/);
+      return m ? parseInt(m[1]) + 0.5 : parseInt(p);
+    };
+    const periods = Array.from(new Set(allCatalog.map(getColPeriod).filter(Boolean)))
+      .sort((a, b) => periodSortKey(b) - periodSortKey(a));
 
     const filtered = allCatalog.filter(col => {
       const term = checklistSearch.toLowerCase().trim();
       const searchMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
       const pubMatch = !checklistBrand || normPub(col.publisher) === checklistBrand;
-      const yearMatch = !checklistType || String(col.year) === checklistType;
+      const yearMatch = !checklistType || getColPeriod(col) === checklistType;
       return searchMatch && pubMatch && yearMatch;
     })
       .map(col => ({ ...col, ownedCount: realOwnedCounts[col.folder] ?? 0 }))
@@ -1678,8 +1693,8 @@ export default function CollectionPage() {
         <div className="overflow-x-auto mb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div className="flex gap-2 px-6 lg:px-[80px] pb-1 w-max">
             <button onClick={() => setChecklistType(null)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${!checklistType ? 'bg-white/10 border-white/20 text-white' : 'bg-white/5 border-white/10 text-white/40'}`}>Toutes années</button>
-            {years.slice(0, 8).map(y => (
-              <button key={y} onClick={() => setChecklistType(checklistType === String(y) ? null : String(y))} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistType === String(y) ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/40'}`}>{y}</button>
+            {periods.map(p => (
+              <button key={p} onClick={() => setChecklistType(checklistType === p ? null : p)} className={`px-4 py-1.5 rounded-full border text-xs font-bold transition-all ${checklistType === p ? 'bg-[#AFFF25] text-[#040221] border-[#AFFF25]' : 'bg-white/5 border-white/10 text-white/40'}`}>{p}</button>
             ))}
           </div>
         </div>

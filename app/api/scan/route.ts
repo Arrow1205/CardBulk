@@ -2,7 +2,35 @@ import { NextResponse } from "next/server";
 import sharp from "sharp";
 import TYPE_CARTE from '@/data/type-carte.json';
 import SET_DATA from '@/data/sets.json';
-import COLLECTIONS_CATALOG from '@/data/collections/collections_catalog.json';
+import { createClient } from '@supabase/supabase-js';
+
+let _catalogCache: any[] | null = null;
+let _catalogCacheAt = 0;
+
+async function getLiveCatalog(): Promise<any[]> {
+  if (_catalogCache && Date.now() - _catalogCacheAt < 5 * 60 * 1000) return _catalogCache;
+  try {
+    const sb = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    const [{ data: shared }, { data: manual }] = await Promise.all([
+      sb.from('collections').select('catalog'),
+      sb.from('manual_collections').select('catalog'),
+    ]);
+    const all = [...(shared || []), ...(manual || [])];
+    _catalogCache = all.map(r => ({
+      publisher: r.catalog?.editeur || r.catalog?.publisher || '',
+      serie: r.catalog?.serie || '',
+      year: r.catalog?.annee || String(r.catalog?.year || ''),
+      card_types: r.catalog?.card_types || [],
+    })).filter(e => e.publisher && e.serie);
+    _catalogCacheAt = Date.now();
+    return _catalogCache;
+  } catch {
+    return [];
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -71,6 +99,7 @@ export async function POST(req: Request) {
       ? `\n    EXEMPLES DE CARTES DÉJÀ VALIDÉES PAR L'UTILISATEUR (utilise ces confirmations pour affiner tes réponses) :\n${fewShotExamples.map((ex: any, i: number) => `    Exemple ${i + 1} : brand="${ex.brand}", series="${ex.series}", variation="${ex.variation}", sport="${ex.sport}", year="${ex.year}", is_auto=${ex.is_auto}, is_patch=${ex.is_patch}, is_rookie=${ex.is_rookie}, is_numbered=${ex.is_numbered}`).join('\n')}\n`
       : '';
 
+    const liveCatalog = await getLiveCatalog();
     const prompt = `Tu es un expert en cartes de sport et en vision par ordinateur.
     MISSION 1 : Analyse l'image et extrais les informations de la carte.
     MISSION 2 : Détecte les VRAIS bords physiques de la carte (ignore la table, les doigts...).
@@ -81,7 +110,7 @@ export async function POST(req: Request) {
     ═══════════════════════════════════════════
     Ce catalogue recense toutes les collections connues avec leurs types de cartes exacts.
     Chaque entrée contient : publisher (éditeur), serie, year (année), card_types (liste exhaustive des variations officielles).
-    ${JSON.stringify(COLLECTIONS_CATALOG)}
+    ${JSON.stringify(liveCatalog)}
 
     ═══════════════════════════════════════════
     DICTIONNAIRE 2 — Indices visuels par série (SETS) — utilisé si collection absente du catalogue

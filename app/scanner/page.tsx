@@ -155,7 +155,13 @@ function ScannerContent() {
   const [isCarteOpen, setIsCarteOpen] = useState(true);
 
   const [formData, setFormData] = useState(DEFAULT_FORM);
-  const yearsList = Array.from({ length: 2027 - 1994 + 1 }, (_, i) => 2027 - i);
+  const yearsList: string[] = ['2027'];
+  for (let y = 2026; y >= 2021; y--) {
+    yearsList.push(String(y));
+    yearsList.push(`${y - 1}-${String(y).slice(2)}`);
+  }
+  yearsList.push('2020');
+  for (let y = 2019; y >= 1994; y--) yearsList.push(String(y));
 
   const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
   const [loadingSubsets, setLoadingSubsets] = useState(false);
@@ -578,21 +584,19 @@ function ScannerContent() {
   // catalogue n'est pas encore chargé, on garde une liste vide plutôt que de flasher
   // les anciennes valeurs.
   if (formData.sport === 'SOCCER') {
-    const checklistBrandNames = Array.from(new Set(checklistCatalog.map(c => c.editeur.toUpperCase()))).sort((a, b) => a.localeCompare(b));
+    const yearFilter = formData.year ? formData.year.slice(0, 4) : '';
+    const filteredCatalog = yearFilter
+      ? checklistCatalog.filter(c => c.annee.includes(yearFilter))
+      : checklistCatalog;
+
+    const checklistBrandNames = Array.from(new Set(filteredCatalog.map(c => c.editeur.toUpperCase()))).sort((a, b) => a.localeCompare(b));
     availableBrands = checklistBrandNames.map(name => ({ name }));
 
     if (formData.brand) {
       const brandUpper = formData.brand.toUpperCase();
-      let seriesForBrand = checklistCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie);
+      let seriesForBrand = filteredCatalog.filter(c => c.editeur.toUpperCase() === brandUpper).map(c => c.serie);
 
-      // Chez Topps, une même gamme (Finest, Match Attax, Chrome, Merlin, Deco, Museum...)
-      // ressort chaque année sous le même nom — seule l'année change, la partie après le
-      // "/" ne fait que lister la ou les compétitions couvertes cette année-là. On ne garde
-      // donc que le nom de la gamme. (Chez Panini au contraire, Select/Prizm déclinent de
-      // vrais produits différents par championnat : on ne fusionne pas dans ce cas.)
-      if (brandUpper === 'TOPPS') {
-        seriesForBrand = seriesForBrand.map(s => s.split('/')[0].trim());
-      }
+      seriesForBrand = seriesForBrand.map(s => s.split('/')[0].trim());
 
       availableSets = Array.from(new Set(seriesForBrand)).sort((a, b) => a.localeCompare(b));
     } else {
