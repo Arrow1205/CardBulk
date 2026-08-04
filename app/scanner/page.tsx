@@ -165,6 +165,7 @@ function ScannerContent() {
 
   const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
   const [loadingSubsets, setLoadingSubsets] = useState(false);
+  const [playerFoundInChecklist, setPlayerFoundInChecklist] = useState<boolean | null>(null);
   // Catalogue léger (éditeur/série/année) des checklists importées — vient enrichir
   // les menus Marque/Collection en plus de data/sets.json, au fur et à mesure des imports.
   const [checklistCatalog, setChecklistCatalog] = useState<{ editeur: string; serie: string; annee: string }[]>([]);
@@ -440,6 +441,7 @@ function ScannerContent() {
   useEffect(() => {
     if (!formData.brand || !formData.year) {
       setDynamicSubsets([]);
+      setPlayerFoundInChecklist(null);
       setShowCustomVariation(false);
       return;
     }
@@ -464,6 +466,13 @@ function ScannerContent() {
       const apiSubsets: {value: string, label: string}[] =
         apiRes.status === 'fulfilled' ? (apiRes.value.subsets || []) : [];
 
+      // Vérification joueur dans la checklist
+      if (playerStr && formData.series) {
+        setPlayerFoundInChecklist(apiSubsets.length > 0);
+      } else {
+        setPlayerFoundInChecklist(null);
+      }
+
       const userSubsets: {value: string, label: string}[] = [];
       if (userRes.status === 'fulfilled' && userRes.value.data) {
         const existingValues = new Set(apiSubsets.map(s => s.value));
@@ -478,7 +487,7 @@ function ScannerContent() {
       setLoadingSubsets(false);
     };
 
-    fetchAll().catch(() => { setDynamicSubsets([]); setLoadingSubsets(false); });
+    fetchAll().catch(() => { setDynamicSubsets([]); setPlayerFoundInChecklist(null); setLoadingSubsets(false); });
   }, [formData.brand, formData.year, formData.series, formData.firstname, formData.lastname]);
 
   const getLocalImageUrl = async (url: string | null, file: File | null) => {
@@ -1733,7 +1742,15 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                     </ul>
                   )}
                 </div>
-                
+
+                {/* Validation joueur dans la checklist */}
+                {playerFoundInChecklist === false && formData.series && (
+                  <p className="text-xs text-red-400 px-4 -mt-2">⚠ Joueur introuvable dans la checklist « {formData.series} » — vérifie l'orthographe ou la collection.</p>
+                )}
+                {playerFoundInChecklist === true && formData.series && (
+                  <p className="text-xs text-[#AFFF25] px-4 -mt-2">✓ Joueur trouvé dans la checklist.</p>
+                )}
+
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
@@ -1765,36 +1782,37 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
 
                 {/* ANNÉE en premier */}
                 <div className="relative">
-                  <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                  <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value, brand: '', series: '', variation: ''})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
                     <option value="">Année</option>
                     {yearsList.map(y => <option key={y} value={y}>{y}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* FABRICANT */}
-                <div className="relative">
+                {/* FABRICANT — désactivé tant qu'aucune année n'est choisie */}
+                <div className={`relative transition-opacity ${!formData.year ? 'opacity-40 pointer-events-none' : ''}`}>
                   {formData.brand && <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 top-3.5 w-6 h-6 object-contain z-10" alt="Brand" />}
-                  <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className={`w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors ${formData.brand ? 'pl-[44px]' : 'pl-4'}`}>
+                  <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value, series: '', variation: ''})} disabled={!formData.year} className={`w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors ${formData.brand ? 'pl-[44px]' : 'pl-4'}`}>
                     <option value="">Fabricant</option>
                     {availableBrands.map((b: any) => <option key={b.name} value={b.name}>{b.name}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* COLLECTION / SET */}
-                <div className="relative">
-                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                {/* COLLECTION / SET — désactivé tant que le fabricant n'est pas choisi */}
+                <div className={`relative transition-opacity ${!formData.brand ? 'opacity-40 pointer-events-none' : ''}`}>
+                  <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value, variation: ''})} disabled={!formData.brand} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
                     <option value="">Collection / Set</option>
                     {availableSets.map((s: string) => <option key={s} value={s}>{s}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* VARIATION / SUBSET */}
-                <div className="relative">
+                {/* VARIATION / SUBSET — désactivé tant que la collection n'est pas choisie */}
+                <div className={`relative transition-opacity ${!formData.series ? 'opacity-40 pointer-events-none' : ''}`}>
                   <select
                     value={showCustomVariation ? '__autre__' : formData.variation}
+                    disabled={!formData.series}
                     onChange={e => {
                       if (e.target.value === '__autre__') {
                         setShowCustomVariation(true);
