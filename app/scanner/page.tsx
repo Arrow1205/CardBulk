@@ -195,11 +195,16 @@ function ScannerContent() {
   const scanModeRef = useRef(scanMode);
   useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
 
+  const variationDropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!variationDropdownOpen) return;
-    const handler = () => setVariationDropdownOpen(false);
-    document.addEventListener('click', handler, true);
-    return () => document.removeEventListener('click', handler, true);
+    const handler = (e: MouseEvent) => {
+      if (variationDropdownRef.current && !variationDropdownRef.current.contains(e.target as Node)) {
+        setVariationDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, [variationDropdownOpen]);
 
   useEffect(() => { setVariationDropdownOpen(false); }, [formData.series]);
@@ -1902,7 +1907,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                         ? selectedOption.label.replace(/\s*\/\s*/g, ' - ')
                         : null;
                     return (
-                      <div className="relative">
+                      <div className="relative" ref={variationDropdownRef}>
                         <button
                           type="button"
                           disabled={!formData.series}
