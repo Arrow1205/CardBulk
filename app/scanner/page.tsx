@@ -166,6 +166,9 @@ function ScannerContent() {
   const [dynamicSubsets, setDynamicSubsets] = useState<{value: string, label: string}[]>([]);
   const [loadingSubsets, setLoadingSubsets] = useState(false);
   const [playerFoundInChecklist, setPlayerFoundInChecklist] = useState<boolean | null>(null);
+  // Niveau 1 : joueur trouvé dans au moins une checklist (vérif globale, sans filtre year/brand)
+  const [playerInChecklists, setPlayerInChecklists] = useState<boolean | null>(null);
+  const [checkingPlayer, setCheckingPlayer] = useState(false);
   // Catalogue léger (éditeur/série/année) des checklists importées — vient enrichir
   // les menus Marque/Collection en plus de data/sets.json, au fur et à mesure des imports.
   const [checklistCatalog, setChecklistCatalog] = useState<{ editeur: string; serie: string; annee: string }[]>([]);
@@ -438,6 +441,22 @@ function ScannerContent() {
     })();
   }, []);
 
+  // Niveau 1 — vérifie si le joueur existe dans au moins une checklist (debounce 400ms)
+  useEffect(() => {
+    const name = [formData.firstname, formData.lastname].filter(Boolean).join(' ').trim();
+    if (name.length < 2) { setPlayerInChecklists(null); return; }
+    setCheckingPlayer(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await authedFetch(`/api/subsets?player=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        setPlayerInChecklists((data.subsets || []).length > 0);
+      } catch { setPlayerInChecklists(null); }
+      setCheckingPlayer(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [formData.firstname, formData.lastname]);
+
   useEffect(() => {
     if (!formData.brand || !formData.year) {
       setDynamicSubsets([]);
@@ -588,11 +607,10 @@ function ScannerContent() {
   }
 
   // Pour SOCCER, les checklists importées sont la SEULE source de vérité — on remplace
-  // entièrement les options de sets.json (pas de fusion), pour ne jamais revoir des
-  // anciennes collections qui n'ont pas/plus de checklist derrière. Tant que le
-  // catalogue n'est pas encore chargé, on garde une liste vide plutôt que de flasher
-  // les anciennes valeurs.
+  // entièrement les options de sets.json (pas de fusion). Les variations viennent
+  // exclusivement de l'API subsets (filtrées par joueur si un nom est saisi).
   if (formData.sport === 'SOCCER') {
+    availableVariations = [];
     const yearFilter = formData.year ? formData.year.slice(0, 4) : '';
     const filteredCatalog = yearFilter
       ? checklistCatalog.filter(c => c.annee.includes(yearFilter))
@@ -1743,14 +1761,6 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                   )}
                 </div>
 
-                {/* Validation joueur dans la checklist */}
-                {playerFoundInChecklist === false && formData.series && (
-                  <p className="text-xs text-red-400 px-4 -mt-2">⚠ Joueur introuvable dans la checklist « {formData.series} » — vérifie l'orthographe ou la collection.</p>
-                )}
-                {playerFoundInChecklist === true && formData.series && (
-                  <p className="text-xs text-[#AFFF25] px-4 -mt-2">✓ Joueur trouvé dans la checklist.</p>
-                )}
-
                 <div className="relative">
                   <label className="text-[10px] text-[#AFFF25] italic tracking-widest block mb-1">Club / Équipe</label>
                   <div className="relative flex items-center">
@@ -1768,6 +1778,16 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                       ))}
                     </ul>
                   )}
+                  {/* Message Niveau 1 — sous le champ Club */}
+                  {checkingPlayer && formData.lastname.length >= 2 && (
+                    <p className="text-xs text-white/40 px-4 mt-1">Recherche dans les checklists...</p>
+                  )}
+                  {!checkingPlayer && playerInChecklists === true && formData.lastname && (
+                    <p className="text-xs text-[#AFFF25] px-4 mt-1">✓ Joueur trouvé dans les checklists — sélectionne l'année pour continuer.</p>
+                  )}
+                  {!checkingPlayer && playerInChecklists === false && formData.lastname.length >= 2 && (
+                    <p className="text-xs text-orange-400 px-4 mt-1">⚠ Joueur non trouvé dans les checklists (continue quand même).</p>
+                  )}
                 </div>
               </div>
             )}
@@ -1780,16 +1800,21 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
             {isCarteOpen && (
               <div className="space-y-4 animate-in slide-in-from-top-2 fade-in duration-200">
 
-                {/* ANNÉE en premier */}
-                <div className="relative">
-                  <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value, brand: '', series: '', variation: ''})} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
-                    <option value="">Année</option>
-                    {yearsList.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
-                </div>
+                {/* ANNÉE — Niveau 1 : désactivé tant que joueur + club ne sont pas remplis */}
+                {(() => {
+                  const hasPlayerAndClub = formData.lastname.length >= 2 && formData.club.length >= 1;
+                  return (
+                    <div className={`relative transition-opacity ${!hasPlayerAndClub ? 'opacity-40 pointer-events-none' : ''}`}>
+                      <select value={formData.year} onChange={e => setFormData({...formData, year: e.target.value, brand: '', series: '', variation: ''})} disabled={!hasPlayerAndClub} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
+                        <option value="">Année / Saison</option>
+                        {yearsList.map(y => <option key={y} value={y}>{y}</option>)}
+                      </select>
+                      <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
+                    </div>
+                  );
+                })()}
 
-                {/* FABRICANT — désactivé tant qu'aucune année n'est choisie */}
+                {/* FABRICANT — Niveau 2 : désactivé tant qu'aucune année n'est choisie */}
                 <div className={`relative transition-opacity ${!formData.year ? 'opacity-40 pointer-events-none' : ''}`}>
                   {formData.brand && <img src={`/asset/brands/${brandSlug}.png`} onError={hideBrokenImage} className="absolute left-4 top-3.5 w-6 h-6 object-contain z-10" alt="Brand" />}
                   <select value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value, series: '', variation: ''})} disabled={!formData.year} className={`w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors ${formData.brand ? 'pl-[44px]' : 'pl-4'}`}>
@@ -1799,7 +1824,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
 
-                {/* COLLECTION / SET — désactivé tant que le fabricant n'est pas choisi */}
+                {/* COLLECTION / SET — Niveau 3 : désactivé tant que le fabricant n'est pas choisi */}
                 <div className={`relative transition-opacity ${!formData.brand ? 'opacity-40 pointer-events-none' : ''}`}>
                   <select value={formData.series} onChange={e => setFormData({...formData, series: e.target.value, variation: ''})} disabled={!formData.brand} className="w-full bg-[#040221] border border-white/20 p-3.5 rounded-full text-sm pl-4 appearance-none outline-none focus:border-[#AFFF25]/50 transition-colors">
                     <option value="">Collection / Set</option>
@@ -1807,8 +1832,14 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-white/50 pointer-events-none" size={16} />
                 </div>
+                {playerFoundInChecklist === false && formData.series && (
+                  <p className="text-xs text-red-400 px-4 -mt-2">⚠ Joueur introuvable dans « {formData.series} » — vérifie l'orthographe ou la collection.</p>
+                )}
+                {playerFoundInChecklist === true && formData.series && (
+                  <p className="text-xs text-[#AFFF25] px-4 -mt-2">✓ Joueur trouvé dans la checklist.</p>
+                )}
 
-                {/* VARIATION / SUBSET — désactivé tant que la collection n'est pas choisie */}
+                {/* VARIATION / SUBSET — Niveau 4 : désactivé tant que la collection n'est pas choisie */}
                 <div className={`relative transition-opacity ${!formData.series ? 'opacity-40 pointer-events-none' : ''}`}>
                   <select
                     value={showCustomVariation ? '__autre__' : formData.variation}

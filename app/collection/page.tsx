@@ -124,6 +124,9 @@ export default function CollectionPage() {
   const [checklistSearch, setChecklistSearch] = useState('');
   const [checklistType, setChecklistType] = useState<string | null>(null);
   const [checklistBrand, setChecklistBrand] = useState<string | null>(null);
+  // Index joueurs : nom_normalisé → [folder, ...] — chargé lazily à l'ouverture de l'onglet Checklist
+  const [playerIndex, setPlayerIndex] = useState<Map<string, string[]> | null>(null);
+  const [playerIndexLoading, setPlayerIndexLoading] = useState(false);
 
   // Checklist navigation
   const [clView, setClView] = useState<'list' | 'detail'>('list');
@@ -268,6 +271,34 @@ export default function CollectionPage() {
     }
   }, [activeTab, searchQuery, selectedSport, selectedBrands, showAuto, showPatch, showNumbered]);
 
+
+  // Chargement lazy de l'index joueurs (nom → [folders]) dès que l'onglet Checklist s'ouvre
+  useEffect(() => {
+    if (activeTab !== 'checklist' || playerIndex !== null || playerIndexLoading) return;
+    setPlayerIndexLoading(true);
+    (async () => {
+      try {
+        const [{ data: shared }, { data: manual }] = await Promise.all([
+          supabase.from('collections').select('folder, data'),
+          supabase.from('manual_collections').select('folder, data'),
+        ]);
+        const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, '').trim();
+        const index = new Map<string, string[]>();
+        for (const row of [...(shared || []), ...(manual || [])]) {
+          const checklist: any[] = row.data?.checklist || [];
+          for (const item of checklist) {
+            const name = norm(item.joueur || '');
+            if (name.length >= 2) {
+              if (!index.has(name)) index.set(name, []);
+              if (!index.get(name)!.includes(row.folder)) index.get(name)!.push(row.folder);
+            }
+          }
+        }
+        setPlayerIndex(index);
+      } catch {}
+      setPlayerIndexLoading(false);
+    })();
+  }, [activeTab, playerIndex, playerIndexLoading]);
 
   // useEffect(() => {
   //   if (activeTab === 'scouty') {
@@ -1645,9 +1676,23 @@ export default function CollectionPage() {
     const periods = Array.from(new Set(allCatalog.map(getColPeriod).filter(Boolean)))
       .sort((a, b) => periodSortKey(b) - periodSortKey(a));
 
+    // Index joueurs pour la recherche — folders où le terme matche un nom de joueur
+    const normSearch = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, '').trim();
+    const searchTerm = checklistSearch.trim();
+    const normTerm = normSearch(searchTerm);
+    let playerMatchFolders: Set<string> | null = null;
+    if (normTerm.length >= 3 && playerIndex) {
+      playerMatchFolders = new Set<string>();
+      for (const [name, folders] of playerIndex) {
+        if (name.includes(normTerm)) folders.forEach(f => playerMatchFolders!.add(f));
+      }
+    }
+
     const filtered = allCatalog.filter(col => {
-      const term = checklistSearch.toLowerCase().trim();
-      const searchMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
+      const term = searchTerm.toLowerCase();
+      const collectionMatch = !term || col.serie?.toLowerCase().includes(term) || col.publisher?.toLowerCase().includes(term) || String(col.year).includes(term);
+      const playerMatch = playerMatchFolders !== null && playerMatchFolders.has(col.folder);
+      const searchMatch = !term || collectionMatch || playerMatch;
       const pubMatch = !checklistBrand || normPub(col.publisher) === checklistBrand;
       const yearMatch = !checklistType || getColPeriod(col) === checklistType;
       return searchMatch && pubMatch && yearMatch;
