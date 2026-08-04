@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     const [{ data: cards }, { data: sharedRows }, { data: manualRows }] = await Promise.all([
       supabase
         .from('cards')
-        .select('id, updated_at, firstname, lastname, brand, series, variation, year, is_auto, is_patch')
+        .select('id, updated_at, firstname, lastname, brand, series, variation, year, is_auto, is_patch, sport')
         .eq('user_id', user.id)
         .eq('is_wishlist', false),
       supabase.from('collections').select('folder, catalog, data'),
@@ -47,7 +47,7 @@ export async function GET(req: Request) {
 
     for (const row of [...(sharedRows || []), ...(manualRows || [])]) {
       const col = { folder: row.folder, ...row.catalog };
-      counts[row.folder] = countOwned(col, row.data?.checklist || [], cards || []);
+      counts[row.folder] = countOwned(col, row.data?.checklist || [], cards || [], row.folder);
     }
 
     await supabase.from('checklist_progress_cache').upsert({
@@ -63,13 +63,30 @@ export async function GET(req: Request) {
   }
 }
 
-function countOwned(col: any, checklist: any[], cards: any[]): number {
+const SPORT_FROM_FOLDER: [string, string][] = [
+  ['soccer', 'SOCCER'], ['football', 'SOCCER'],
+  ['tennis', 'TENNIS'],
+  ['basketball', 'BASKETBALL'],
+  ['baseball', 'BASEBALL'],
+  ['hockey', 'HOCKEY'],
+];
+
+function colSportFromFolder(folder: string): string {
+  const f = folder.toLowerCase();
+  for (const [kw, sport] of SPORT_FROM_FOLDER) {
+    if (f.includes(kw)) return sport;
+  }
+  return '';
+}
+
+function countOwned(col: any, checklist: any[], cards: any[], folder: string): number {
   const colYear  = String(col.annee || col.year || '').match(/\d{4}/)?.[0] || '';
   const colPub   = normText(col.editeur || col.publisher || '');
   const colSerie = normText(col.serie || '');
+  const colSport = colSportFromFolder(folder);
   let count = 0;
   for (const item of checklist) {
-    if (findMatchingCard(item.joueur, item.subset, item.section, colYear, colPub, colSerie, cards)) count++;
+    if (findMatchingCard(item.joueur, item.subset, item.section, colYear, colPub, colSerie, cards, colSport)) count++;
   }
   return count;
 }

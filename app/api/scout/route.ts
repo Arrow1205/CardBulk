@@ -2,42 +2,72 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 
+// Cache RSS 30 min pour ne pas re-fetcher à chaque message
+let _rssCache: string | null = null;
+let _rssCacheAt = 0;
+
+async function getLiveRumorContext(): Promise<string> {
+  if (_rssCache && Date.now() - _rssCacheAt < 30 * 60 * 1000) return _rssCache;
+  try {
+    const res = await fetch(
+      'https://news.google.com/rss/search?q=transfert+football+rumeur&hl=fr&gl=FR&ceid=FR:fr',
+      { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(5000) }
+    );
+    const xml = await res.text();
+    const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
+    const titles: string[] = [];
+    for (const item of items.slice(0, 10)) {
+      const title = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/)?.[1]
+        || item.match(/<title>(.*?)<\/title>/)?.[1] || '';
+      if (title) titles.push(title);
+    }
+    _rssCache = titles.join('\n');
+    _rssCacheAt = Date.now();
+    return _rssCache;
+  } catch {
+    return '';
+  }
+}
+
 export async function POST(req: Request) {
   try {
     if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({ error: "Clé API non configurée." }, { status: 500 });
+      return NextResponse.json({ error: 'Clé API non configurée.' }, { status: 500 });
     }
 
-    const google = createGoogleGenerativeAI({
-      apiKey: process.env.GEMINI_API_KEY,
-    });
-
+    const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
     const body = await req.json();
-    
-    if (!body.messages || !body.playerName) {
-      return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
+
+    if (!body.messages) {
+      return NextResponse.json({ error: 'Requête invalide.' }, { status: 400 });
     }
 
-    // Le prompt système qui intègre maintenant TES données de collection
-    const systemPrompt = `Tu es "Scouty", un assistant expert en sports et en cartes de collection sportives.
-Tu combines des données de performance sportive avec la valeur et la rareté
-des cartes de joueurs. Tu es concis, précis et professionnel, avec un ton accessible et sympathique. précise également que tu peux faire des erreurs.
-Le joueur analysé actuellement est : ${body.playerName}.
+    const rumorContext = await getLiveRumorContext();
 
-Voici la liste exacte des cartes de ce joueur que l'utilisateur possède actuellement dans sa collection, avec les prix d'achat qu'il a payés :
-${JSON.stringify(body.collectionData, null, 2)}
+    const collectionSummary = Array.isArray(body.collectionData) && body.collectionData.length > 0
+      ? `\nCOLLECTION DE L'UTILISATEUR (${body.collectionData.length} cartes) :\n${JSON.stringify(body.collectionData, null, 2)}`
+      : '';
 
-RÈGLES ABSOLUES DE TON COMPORTEMENT :
-1. Sois extrêmement professionnel, direct et concis. Ne sois pas familier (mais tu tutoie).
-2. N'utilise JAMAIS d'emojis dans tes réponses. Aucun.
-3. Fais des réponses très courtes (3 phrases maximum). Va droit au but.
-4. ANALYSE DE PRIX : Si l'utilisateur demande s'il a payé cher, compare les prix d'achat fournis dans la liste avec tes connaissances du marché. Sois honnête. Si un prix te semble bon ou mauvais, dis-le. 
-5. COMPLÉTION ET RAINBOW : Si l'utilisateur demande ce qu'il lui manque (ex: pour un Rainbow), regarde la série/marque des cartes qu'il possède dans la liste fournie et cite les parallèles (couleurs/numérotations) majeures manquantes pour ce set précis.
-6. Tu es capable de proposer des rookies en te basant sur les stats des joueurs et de leur précosité en précisant toujours que lorsque l'utilisateur achete c'est lui qui prend le risque et que toi tu n'est que sur de la suposition aux vues des performances actuelle du joueur.
-7. Si tu ne connais pas la cote actuelle exacte pour vérifier le prix, dis "Je ne sais pas" et recommande de vérifier les "Ventes réussies" sur eBay ou 130point.
-8. Refuse poliment de répondre à toute question hors-sujet.
-9. Tutoiement autorisé;`;
+    const systemPrompt = `Tu es "Scouty", un expert reconnu en cartes de sport et en scouting de joueurs.
+Tu combines trois domaines d'expertise :
+1. Transferts & rumeurs — tu connais le marché des transferts footballistiques et sportifs en temps réel.
+2. Marché des cartes — tu connais la valeur des cartes (rookies, autos, parallèles, numérotées), les tendances eBay, et les investissements à fort potentiel.
+3. Analyse joueur — tu évalues le potentiel des jeunes talents et des joueurs en rumeur de transfert.
 
+ACTUALITÉS DE TRANSFERT DU JOUR (source : Google Actualités, mises à jour toutes les 30 min) :
+${rumorContext || 'Aucune actualité disponible pour le moment.'}
+${collectionSummary}
+
+RÈGLES ABSOLUES :
+1. Sois expert, direct et concis. 3 à 5 phrases maximum par réponse.
+2. Aucun emoji. Jamais.
+3. Tutoiement obligatoire.
+4. Pour les conseils d'investissement : précise toujours que c'est une analyse, pas une garantie financière.
+5. Si l'utilisateur te parle d'un joueur en rumeur de transfert : croise avec les actualités du jour et donne un avis éclairé sur l'impact potentiel sur la valeur de ses cartes.
+6. Si l'utilisateur a des cartes de ce joueur (voir COLLECTION) : analyse le delta valeur actuelle vs prix d'achat.
+7. Pour les recommandations d'achat : rookie card en priorité, puis auto, puis parallèles numérotées.
+8. Si tu ne connais pas une cote précise : dis-le et recommande eBay "Ventes réussies" ou 130point.
+9. Refuse poliment toute question hors cartes de sport et transferts.`;
 
     const { text } = await generateText({
       model: google('gemini-2.5-flash'),
@@ -46,9 +76,8 @@ RÈGLES ABSOLUES DE TON COMPORTEMENT :
     });
 
     return NextResponse.json({ text });
-    
   } catch (error: any) {
-    console.error("🚨 CRASH IA :", error);
-    return NextResponse.json({ error: "Le serveur IA a planté.", details: error.message }, { status: 500 });
+    console.error('Scouty crash:', error);
+    return NextResponse.json({ error: 'Erreur serveur Scouty.', details: error.message }, { status: 500 });
   }
 }

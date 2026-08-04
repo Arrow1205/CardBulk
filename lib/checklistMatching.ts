@@ -69,7 +69,8 @@ export function findMatchingCard(
   colYear: string,
   colPub: string,
   colSerie: string,
-  cards: any[]
+  cards: any[],
+  colSport?: string
 ): any | null {
   const normPlayer = normText(playerName);
   if (normPlayer.length < 2) return null;
@@ -94,6 +95,7 @@ export function findMatchingCard(
     const serieMatch = colSerie.length > 0 && cardSerie.length > 0
       && (cardSerie.includes(colSerie) || colSerie.includes(cardSerie));
 
+    if (colSport && card.sport && normText(card.sport) !== normText(colSport)) return false;
     return yearMatch && brandMatch && serieMatch && cardMatchesSubset(subset, section, card);
   }) || null;
 }

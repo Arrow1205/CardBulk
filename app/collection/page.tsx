@@ -86,7 +86,7 @@ const formatLabel = (str: string) => str.replace(/_/g, ' ').toUpperCase();
 export default function CollectionPage() {
   const router = useRouter();
   
-  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' | 'checklist'>('cartes');
+  const [activeTab, setActiveTab] = useState<'cartes' | 'dossiers' | 'checklist' | 'scouty'>('cartes');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   
@@ -112,10 +112,12 @@ export default function CollectionPage() {
   const [targetFolderId, setTargetFolderId] = useState<string | null>(null);
   const [selectedForFolder, setSelectedForFolder] = useState<Set<string>>(new Set());
 
-  // const [hasStartedScouty, setHasStartedScouty] = useState(false);
-  // const [aiLoading, setAiLoading] = useState(false);
-  // const [messages, setMessages] = useState<Message[]>([]);
-  // const [chatInput, setChatInput] = useState('');
+  const [hasStartedScouty, setHasStartedScouty] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
   
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -171,7 +173,7 @@ export default function CollectionPage() {
   const [countsLoading, setCountsLoading] = useState(false);
   const countsComputedForRef = useRef<string>('');
 
-  // const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -300,11 +302,22 @@ export default function CollectionPage() {
     })();
   }, [activeTab, playerIndex, playerIndexLoading]);
 
-  // useEffect(() => {
-  //   if (activeTab === 'scouty') {
-  //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  //   }
-  // }, [messages, aiLoading, activeTab]);
+  useEffect(() => {
+    if (activeTab === 'scouty') {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, aiLoading, activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'scouty') return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    navigator.serviceWorker.register('/sw.js').then(async (reg) => {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') return;
+      const sub = await reg.pushManager.getSubscription();
+      setPushEnabled(!!sub);
+    }).catch(() => {});
+  }, [activeTab]);
 
   const fetchCollection = async () => {
     if (typeof window !== 'undefined') {
@@ -431,52 +444,73 @@ export default function CollectionPage() {
     if (selectedArray.length > 0) await supabase.from('cards').update({ folder_id: folderId }).in('id', selectedArray);
   };
 
-  // const handleAskAI = async (questionText: string) => {
-  //   if (!questionText.trim()) return;
+  const handleAskAI = async (questionText: string) => {
+    if (!questionText.trim()) return;
+    if (!hasStartedScouty) setHasStartedScouty(true);
 
-  //   if (!hasStartedScouty) setHasStartedScouty(true);
+    const newMessages = [...messages, { role: 'user' as const, content: questionText }];
+    setMessages(newMessages);
+    setChatInput('');
+    setAiLoading(true);
 
-  //   const newMessages = [...messages, { role: 'user' as const, content: questionText }];
-  //   setMessages(newMessages);
-  //   setChatInput('');
-  //   setAiLoading(true);
+    const searchTerm = searchQuery.toLowerCase().trim();
+    const cardsToSend = searchTerm.length === 0 ? cards : cards.filter(card => {
+      const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
+      return fullName.includes(searchTerm) || `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase().includes(searchTerm);
+    });
 
-  //   const searchTerm = searchQuery.toLowerCase().trim();
-  //   const isGlobal = searchTerm.length === 0;
+    const formattedCollection = cardsToSend.map(c => ({
+      joueur: `${c.firstname || ''} ${c.lastname || ''}`.trim(),
+      sport: c.sport || 'Inconnu',
+      carte: `${c.brand || ''} ${c.series || ''} ${c.year || ''}`.trim(),
+      details: [
+        c.is_numbered ? `Numérotée /${c.numbering_max}` : '',
+        c.is_auto ? 'Auto' : '',
+        c.is_patch ? 'Patch' : ''
+      ].filter(Boolean).join(' - ') || 'Base',
+      prix_paye: c.purchase_price ? `${c.purchase_price}€` : 'Non renseigné'
+    }));
 
-  //   const cardsToSend = isGlobal ? cards : cards.filter(card => {
-  //     const fullName = `${card.firstname || ''} ${card.lastname || ''}`.toLowerCase();
-  //     const reverseFullName = `${card.lastname || ''} ${card.firstname || ''}`.toLowerCase();
-  //     return fullName.includes(searchTerm) || reverseFullName.includes(searchTerm);
-  //   });
+    try {
+      const response = await fetch('/api/scout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages, collectionData: formattedCollection }),
+      });
+      const data = await response.json();
+      setMessages([...newMessages, { role: 'assistant' as const, content: data.text || data.error || 'Erreur.' }]);
+    } catch {
+      setMessages([...newMessages, { role: 'assistant' as const, content: 'Erreur réseau. Réessaie plus tard.' }]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
-  //   const formattedCollection = cardsToSend.map(c => ({
-  //     joueur: `${c.firstname || ''} ${c.lastname || ''}`.trim(),
-  //     sport: c.sport || 'Inconnu',
-  //     carte: `${c.brand || 'Inconnu'} ${c.series || ''} ${c.year || ''}`.trim(),
-  //     details: [
-  //       c.is_numbered ? `Numérotée /${c.numbering_max}` : '',
-  //       c.is_auto ? 'Auto' : '',
-  //       c.is_patch ? 'Patch' : ''
-  //     ].filter(Boolean).join(' - ') || 'Base',
-  //     prix_paye: c.purchase_price ? `${c.purchase_price}€` : 'Non renseigné'
-  //   }));
-
-  //   try {
-  //     const response = await fetch('/api/scout', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ messages: newMessages, playerName: isGlobal ? "Global" : searchQuery, collectionData: formattedCollection }),
-  //     });
-  //     if (!response.ok) throw new Error('Erreur réseau');
-  //     const data = await response.json();
-  //     setMessages([...newMessages, { role: 'assistant' as const, content: data.text }]);
-  //   } catch (error) {
-  //     setMessages([...newMessages, { role: 'assistant' as const, content: "Erreur réseau. Veuillez réessayer plus tard." }]);
-  //   } finally {
-  //     setAiLoading(false);
-  //   }
-  // };
+  const handleTogglePush = async () => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    setPushLoading(true);
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      if (pushEnabled) {
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) await sub.unsubscribe();
+        await fetch('/api/push-subscribe', { method: 'DELETE', headers: { 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` } });
+        setPushEnabled(false);
+      } else {
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        });
+        await fetch('/api/push-subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` },
+          body: JSON.stringify({ subscription: sub }),
+        });
+        setPushEnabled(true);
+      }
+    } catch { /* permission refusée ou non supporté */ }
+    setPushLoading(false);
+  };
 
   if (loading) return <div className="min-h-screen bg-[#040221] flex items-center justify-center"><Loader2 className="animate-spin text-[#AFFF25]" size={40} /></div>;
 
@@ -2004,10 +2038,10 @@ export default function CollectionPage() {
 
             <button onClick={() => { setActiveTab('checklist'); setSearchQuery(''); }} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'checklist' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}><ClipboardList size={14} />Checklist{activeTab === 'checklist' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}</button>
             
-            {/* <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
-              <Sparkles size={14} className={activeTab === 'scouty' ? "text-[#AFFF25]" : "text-white/40"} /> Scouty
+            <button onClick={() => setActiveTab('scouty')} className={`pb-2 font-bold tracking-wide uppercase text-sm transition-colors relative flex items-center gap-1.5 ${activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40 hover:text-white/60'}`}>
+              <Sparkles size={14} className={activeTab === 'scouty' ? 'text-[#AFFF25]' : 'text-white/40'} /> Scouty
               {activeTab === 'scouty' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#AFFF25] shadow-[0_0_8px_rgba(175,255,37,0.5)]"></div>}
-            </button> */}
+            </button>
           </div>
         )}
       </div>
@@ -2036,20 +2070,29 @@ export default function CollectionPage() {
           </div>
         )}
 
-        {/* activeTab === 'scouty' && (
+        {activeTab === 'scouty' && (
           <div className="px-6 flex flex-col h-full relative animate-in fade-in duration-300 lg:max-w-2xl lg:mx-auto">
             {!hasStartedScouty ? (
               <div className="flex flex-col items-center justify-center h-full text-center pb-20">
                 <img src="/asset/scouty.svg" className="w-36 h-36 object-contain mb-6" alt="Scouty Avatar" />
-                <h2 className="text-2xl font-black italic text-[#AFFF25] mb-4">Salut moi c'est Scouty !</h2>
+                <h2 className="text-2xl font-black italic text-[#AFFF25] mb-4">Salut moi c&apos;est Scouty !</h2>
                 <p className="text-sm text-white/80 leading-relaxed px-2 mb-auto">
-                  Je suis ton assistant expert en cartes de sport et investissement.<br/>
-                  Je suis là pour t'aider à analyser le marché et évaluer tes cartes {searchQuery ? `de ${searchQuery}` : "!"}
+                  Expert en transferts, marché des cartes et scouting d&apos;investissement.<br/>
+                  Je lis les rumeurs du jour et je croise avec ta collection.
                 </p>
-                <div className="w-full mt-10">
-                  <p className="text-[10px] text-white/40 italic mb-4">Attention : je peux faire des erreurs, vérifie toujours avant de faire des investissements ou des ventes.</p>
+                <div className="w-full mt-10 space-y-3">
+                  {('Notification' in window) && (
+                    <button
+                      onClick={handleTogglePush}
+                      disabled={pushLoading}
+                      className={`w-full py-3 rounded-full font-bold text-sm border transition-all active:scale-95 ${pushEnabled ? 'border-[#AFFF25]/50 text-[#AFFF25] bg-[#AFFF25]/10' : 'border-white/20 text-white/60 bg-white/5'}`}
+                    >
+                      {pushLoading ? '...' : pushEnabled ? 'Notifs actives — Désactiver' : 'Activer les notifs quotidiennes (9h)'}
+                    </button>
+                  )}
+                  <p className="text-[10px] text-white/40 italic">Je peux faire des erreurs. Vérifie toujours avant de vendre ou d&apos;acheter.</p>
                   <button onClick={() => setHasStartedScouty(true)} className="w-full py-4 bg-[#2544ff] text-white rounded-full font-bold text-base active:scale-95 transition-transform shadow-[0_4px_20px_rgba(37,68,255,0.4)]">
-                    C'est parti !
+                    C&apos;est parti !
                   </button>
                 </div>
               </div>
@@ -2137,13 +2180,13 @@ export default function CollectionPage() {
                     </button>
                   </div>
                   <p className="text-[9px] text-white/40 italic text-center mt-3">
-                    Attention : je peux faire des erreurs, vérifie toujours avant de faire des investissements ou des ventes.
+                    Je peux faire des erreurs. Vérifie toujours avant de vendre ou d&apos;acheter.
                   </p>
                 </div>
               </div>
             )}
           </div>
-        ) */}
+        )}
 
       </div>
 

@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/admin/clean-checklists",
+      "schedule": "0 3 * * 0"
+    },
+    {
+      "path": "/api/scout-daily",
+      "schedule": "0 7 * * *"
+    }
+  ]
+}
