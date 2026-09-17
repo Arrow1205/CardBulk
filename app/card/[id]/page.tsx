@@ -717,8 +717,9 @@ export default function CardDetailsPage() {
                 ].filter(s => s !== undefined).join('\n').trim();
 
                 const draft = { title, description, price: suggestedPrice, image_url: card.image_url };
-                localStorage.setItem('vinted_draft', JSON.stringify(draft));
-                window.open('https://www.vinted.fr/items/new', '_blank');
+                // Encode dans le hash de l'URL (localStorage est isolé par domaine)
+                const hash = btoa(encodeURIComponent(JSON.stringify(draft)));
+                window.open(`https://www.vinted.fr/items/new#vd=${hash}`, '_blank');
               }}
               className="w-full max-w-[320px] mt-3 bg-[#00b4b4]/10 border-2 border-[#00b4b4]/40 text-[#00b4b4] py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#00b4b4]/20 active:scale-95 transition-all flex items-center justify-center gap-2"
             >

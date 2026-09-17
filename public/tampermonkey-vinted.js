@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CardBulk2 — Vinted Auto-fill
 // @namespace    https://cardbulk.app
-// @version      1.0
+// @version      1.1
 // @description  Pré-remplit le formulaire Vinted depuis un export CardBulk2
 // @author       CardBulk2
 // @match        https://www.vinted.fr/items/new*
@@ -13,38 +13,50 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'vinted_draft';
-
-  function setNativeValue(el, value) {
-    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set
-      || Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set;
-    if (nativeInputValueSetter) {
-      nativeInputValueSetter.call(el, value);
-    } else {
-      el.value = value;
+  // ── Lecture des données depuis le hash de l'URL ────────────────────────────
+  function getDraftFromHash() {
+    const hash = window.location.hash; // ex: #vd=BASE64
+    const match = hash.match(/#vd=([^&]+)/);
+    if (!match) return null;
+    try {
+      return JSON.parse(decodeURIComponent(atob(match[1])));
+    } catch {
+      return null;
     }
+  }
+
+  // ── Setter React-compatible ────────────────────────────────────────────────
+  function setNativeValue(el, value) {
+    const proto = el.tagName === 'TEXTAREA'
+      ? window.HTMLTextAreaElement.prototype
+      : window.HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+    if (setter) setter.call(el, value);
+    else el.value = value;
     el.dispatchEvent(new Event('input', { bubbles: true }));
     el.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-  function findInput(labelText) {
-    // Cherche par placeholder
-    const byPlaceholder = document.querySelector(`input[placeholder*="${labelText}"], textarea[placeholder*="${labelText}"]`);
-    if (byPlaceholder) return byPlaceholder;
+  // ── Cherche un champ par placeholder ou label ──────────────────────────────
+  function findField(keywords) {
+    for (const kw of keywords) {
+      const byPlaceholder = document.querySelector(
+        `input[placeholder*="${kw}" i], textarea[placeholder*="${kw}" i]`
+      );
+      if (byPlaceholder) return byPlaceholder;
 
-    // Cherche par label associé
-    const labels = Array.from(document.querySelectorAll('label'));
-    for (const label of labels) {
-      if (label.textContent.includes(labelText)) {
-        const forId = label.getAttribute('for');
-        if (forId) {
-          const el = document.getElementById(forId);
-          if (el) return el;
+      for (const label of document.querySelectorAll('label')) {
+        if (label.textContent.toLowerCase().includes(kw.toLowerCase())) {
+          const forId = label.getAttribute('for');
+          if (forId) {
+            const el = document.getElementById(forId);
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return el;
+          }
+          const child = label.querySelector('input, textarea');
+          if (child) return child;
+          const sibling = label.nextElementSibling;
+          if (sibling && (sibling.tagName === 'INPUT' || sibling.tagName === 'TEXTAREA')) return sibling;
         }
-        const sibling = label.nextElementSibling;
-        if (sibling && (sibling.tagName === 'INPUT' || sibling.tagName === 'TEXTAREA')) return sibling;
-        const child = label.querySelector('input, textarea');
-        if (child) return child;
       }
     }
     return null;
@@ -53,48 +65,15 @@
   function tryFillForm(draft) {
     let filled = 0;
 
-    // Titre
-    const titleSelectors = [
-      'input[name="title"]',
-      'input[id*="title"]',
-      'input[data-testid*="title"]',
-    ];
-    for (const sel of titleSelectors) {
-      const el = document.querySelector(sel);
-      if (el) { setNativeValue(el, draft.title); filled++; break; }
-    }
-    if (filled === 0) {
-      const el = findInput('titre') || findInput('Titre') || findInput('title');
-      if (el) { setNativeValue(el, draft.title); filled++; }
-    }
+    const title = findField(['titre', 'title', 'nom de l\'article', 'article']);
+    if (title) { setNativeValue(title, draft.title); filled++; }
 
-    // Description
-    const descSelectors = [
-      'textarea[name="description"]',
-      'textarea[id*="description"]',
-      'textarea[data-testid*="description"]',
-    ];
-    for (const sel of descSelectors) {
-      const el = document.querySelector(sel);
-      if (el) { setNativeValue(el, draft.description); filled++; break; }
-    }
-    if (filled < 2) {
-      const el = findInput('description') || findInput('Description');
-      if (el) { setNativeValue(el, draft.description); filled++; }
-    }
+    const desc = findField(['description', 'décris', 'détails', 'details']);
+    if (desc) { setNativeValue(desc, draft.description); filled++; }
 
-    // Prix
     if (draft.price > 0) {
-      const priceSelectors = [
-        'input[name="price"]',
-        'input[id*="price"]',
-        'input[data-testid*="price"]',
-        'input[type="number"]',
-      ];
-      for (const sel of priceSelectors) {
-        const el = document.querySelector(sel);
-        if (el) { setNativeValue(el, String(draft.price)); filled++; break; }
-      }
+      const price = findField(['prix', 'price', 'montant']);
+      if (price) { setNativeValue(price, String(draft.price)); filled++; }
     }
 
     return filled;
@@ -109,52 +88,63 @@
     banner.style.cssText = `
       position: fixed; top: 16px; right: 16px; z-index: 99999;
       background: ${isSuccess ? '#00b4b4' : '#f59e0b'};
-      color: white; padding: 12px 18px; border-radius: 10px;
+      color: white; padding: 14px 20px; border-radius: 12px;
       font-family: sans-serif; font-size: 14px; font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-width: 340px;
-      line-height: 1.4;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 360px;
+      line-height: 1.5; cursor: pointer;
     `;
     banner.textContent = message;
+    banner.onclick = () => banner.remove();
     document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 6000);
+    setTimeout(() => banner?.remove(), 10000);
   }
 
+  function copyToClipboard(draft) {
+    const text = [
+      draft.title,
+      '',
+      draft.description,
+      '',
+      `Prix suggéré : ${draft.price} €`,
+    ].join('\n');
+    navigator.clipboard.writeText(text).catch(() => {});
+  }
+
+  // ── Logique principale : réessaie jusqu'à ce que le formulaire soit prêt ──
   function run() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return; // Rien à remplir
+    const draft = getDraftFromHash();
+    if (!draft) return; // Pas de données CardBulk2 dans l'URL
 
-    let draft;
-    try {
-      draft = JSON.parse(raw);
-    } catch {
-      return;
-    }
+    // Nettoie le hash de l'URL sans recharger la page
+    history.replaceState(null, '', window.location.pathname + window.location.search);
 
-    // Essaie immédiatement, puis réessaie jusqu'à 5s si le DOM n'est pas prêt
     let attempts = 0;
     const interval = setInterval(() => {
       attempts++;
       const filled = tryFillForm(draft);
 
-      if (filled >= 2 || attempts >= 10) {
+      if (filled >= 2 || attempts >= 20) {
         clearInterval(interval);
-        localStorage.removeItem(STORAGE_KEY);
 
         if (filled >= 2) {
-          showBanner('CardBulk2 — Annonce pré-remplie ! Vérifie les champs et ajoute les photos avant de publier.', true);
+          showBanner(
+            `CardBulk2 ✓ — Annonce pré-remplie (${filled} champs). Ajoute les photos et vérifie le prix avant de publier.`,
+            true
+          );
         } else {
-          showBanner('CardBulk2 — Impossible de remplir automatiquement. Données copiées dans le presse-papier.', false);
-          const text = `${draft.title}\n\n${draft.description}\n\nPrix suggéré : ${draft.price} €`;
-          navigator.clipboard.writeText(text).catch(() => {});
+          copyToClipboard(draft);
+          showBanner(
+            'CardBulk2 — Impossible de remplir les champs automatiquement. Données copiées dans le presse-papier.',
+            false
+          );
         }
       }
     }, 500);
   }
 
-  // Lance après le chargement complet de la page
   if (document.readyState === 'complete') {
-    run();
+    setTimeout(run, 800); // Petite attente pour que React hydrate
   } else {
-    window.addEventListener('load', run);
+    window.addEventListener('load', () => setTimeout(run, 800));
   }
 })();
