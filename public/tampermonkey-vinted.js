@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         CardBulk2 — Vinted Auto-fill
 // @namespace    https://cardbulk.app
-// @version      1.2
+// @version      1.3
 // @description  Pré-remplit le formulaire Vinted depuis un export CardBulk2
 // @author       CardBulk2
 // @match        https://www.vinted.fr/items/new*
+// @match        https://vinted.fr/items/new*
 // @match        https://www.vinted.be/items/new*
+// @match        https://vinted.be/items/new*
 // @grant        none
 // @run-at       document-idle
 // ==/UserScript==
