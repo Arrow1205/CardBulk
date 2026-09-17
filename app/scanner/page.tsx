@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, ChevronRight, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight, ExternalLink } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, ChevronRight, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight, ExternalLink, ScanLine, ShieldCheck, AlertCircle } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
@@ -108,7 +108,7 @@ function ScannerContent() {
   const editId = searchParams.get('edit'); 
   const [isWishlistMode, setIsWishlistMode] = useState(searchParams.get('wishlist') === 'true');
 
-  const [scanMode, setScanMode] = useState<'unitaire' | 'lot' | 'auto' | 'quick'>('unitaire');
+  const [scanMode, setScanMode] = useState<'unitaire' | 'lot' | 'auto' | 'quick' | 'check'>('unitaire');
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   
   const [pendingCards, setPendingCards] = useState<PendingCard[]>([]);
@@ -188,6 +188,12 @@ function ScannerContent() {
   const [autoScanProgress, setAutoScanProgress] = useState(0);
   const [collectionMatches, setCollectionMatches] = useState<any[]>([]);
   const [searchingCollection, setSearchingCollection] = useState(false);
+
+  // Mode Vérif collection
+  const [checkImage, setCheckImage] = useState<string | null>(null); // data URL
+  const [checkLoading, setCheckLoading] = useState(false);
+  const [checkExtracted, setCheckExtracted] = useState<Record<string, string> | null>(null);
+  const [checkResults, setCheckResults] = useState<{ score: number; card: any; reason: string }[]>([]);
   const [autoSavedCount, setAutoSavedCount] = useState(0);
   const autoCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const prevFrameRef = useRef<Uint8ClampedArray | null>(null);
@@ -238,7 +244,7 @@ function ScannerContent() {
   useEffect(() => { isFlashingRef.current = isFlashing; }, [isFlashing]);
   const captureRef = useRef(() => {});
 
-  const handleTabSwitch = (mode: 'unitaire' | 'lot' | 'auto' | 'quick') => {
+  const handleTabSwitch = (mode: 'unitaire' | 'lot' | 'auto' | 'quick' | 'check') => {
     setScanMode(mode);
     if (mode === 'quick') {
       setIsJoueurOpen(false);
@@ -963,6 +969,19 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
+    e.target.value = '';
+
+    // Mode Vérif : on lit l'image en base64 et on appelle l'API de check
+    if (scanModeRef.current === 'check') {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        if (dataUrl) handleCheckCollection(dataUrl);
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
 
     if (files.length > 1 && activeSide === 'front') {
       if (files.length > 30) { alert("Max 30 cartes"); return; }
@@ -1528,6 +1547,26 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
     }
   };
 
+  const handleCheckCollection = async (dataUrl: string) => {
+    setCheckImage(dataUrl);
+    setCheckLoading(true);
+    setCheckExtracted(null);
+    setCheckResults([]);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const res = await fetch('/api/collection-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl, userId: user.id }),
+      });
+      const json = await res.json();
+      setCheckExtracted(json.extracted || null);
+      setCheckResults(json.results || []);
+    } catch { setCheckResults([]); }
+    setCheckLoading(false);
+  };
+
   const discardCurrentBulkCard = () => {
     if (pendingCards.length <= 1) {
       setPendingCards([]);
@@ -1737,13 +1776,16 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
               <button onClick={() => handleTabSwitch('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
               <button onClick={() => handleTabSwitch('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
               <button onClick={() => handleTabSwitch('quick')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'quick' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}><Search size={12}/> Rapide</button>
+              <button onClick={() => handleTabSwitch('check')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'check' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}><ScanLine size={12}/> Vérif</button>
             </div>
             
-            <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px]">
-              <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
-              <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
-              <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
-            </div>
+            {scanMode !== 'check' && (
+              <div className="relative grid grid-cols-2 bg-[#0A072E] border border-white/10 rounded-full p-1 w-[200px]">
+                <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-[#AFFF25] rounded-full transition-all duration-300 ease-out ${activeSide === 'front' ? 'left-1' : 'left-[calc(50%+2px)]'}`} />
+                <button onClick={() => setActiveSide('front')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'front' ? 'text-[#040221]' : 'text-white/60'}`}>Recto</button>
+                <button onClick={() => setActiveSide('back')} className={`relative z-10 py-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeSide === 'back' ? 'text-[#040221]' : 'text-white/60'}`}>Verso</button>
+              </div>
+            )}
           </div>
         )}
 
@@ -1755,8 +1797,108 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
           </div>
         )}
 
-        <div className="relative w-full max-w-[220px] lg:max-w-[320px] mx-auto mb-6 lg:mb-10">
-          
+        {/* ── Mode Vérification collection ───────────────────────────── */}
+        {scanMode === 'check' && (
+          <div className="w-full max-w-md mx-auto px-2 mt-2">
+            {/* Zone de capture */}
+            {!checkImage ? (
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-full aspect-[3/4] max-w-[220px] border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center gap-3 text-white/40">
+                  <ScanLine size={40} strokeWidth={1.5} />
+                  <p className="text-xs text-center leading-relaxed px-4">Prends une photo<br/>d'une carte pour vérifier<br/>si elle est dans ta collection</p>
+                </div>
+                <div className="flex gap-3 w-full justify-center">
+                  <button
+                    onClick={() => cameraInputRef.current?.click()}
+                    className="flex items-center gap-2 bg-[#AFFF25] text-[#040221] px-5 py-3 rounded-full font-black text-xs uppercase tracking-widest active:scale-95 transition-all"
+                  >
+                    <Camera size={16} /> Photo
+                  </button>
+                  <button
+                    onClick={() => galleryInputRef.current?.click()}
+                    className="flex items-center gap-2 border border-white/20 text-white/60 px-5 py-3 rounded-full font-bold text-xs uppercase tracking-widest active:scale-95 transition-all"
+                  >
+                    <ImageIcon size={16} /> Galerie
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {/* Aperçu carte scannée */}
+                <div className="flex gap-4 items-start">
+                  <img src={checkImage} className="w-[100px] aspect-[3/4] object-cover rounded-xl border border-white/10 shrink-0" alt="" />
+                  <div className="flex-1 min-w-0">
+                    {checkLoading && (
+                      <div className="flex flex-col gap-2 pt-2">
+                        <div className="flex items-center gap-2 text-white/50 text-xs">
+                          <Loader2 size={14} className="animate-spin" /> Analyse en cours...
+                        </div>
+                        <p className="text-[10px] text-white/30">Gemini compare visuellement ta carte avec ta collection</p>
+                      </div>
+                    )}
+                    {!checkLoading && checkExtracted && (
+                      <div className="space-y-1">
+                        <p className="text-sm font-bold text-white">{[checkExtracted.firstname, checkExtracted.lastname].filter(Boolean).join(' ') || '—'}</p>
+                        <p className="text-xs text-white/50">{[checkExtracted.brand, checkExtracted.series, checkExtracted.year].filter(Boolean).join(' · ')}</p>
+                        {checkExtracted.variation && <p className="text-xs text-[#AFFF25]/70">{checkExtracted.variation}</p>}
+                      </div>
+                    )}
+                    <button
+                      onClick={() => { setCheckImage(null); setCheckResults([]); setCheckExtracted(null); }}
+                      className="mt-3 text-[10px] text-white/30 underline uppercase tracking-widest"
+                    >
+                      Nouvelle scan
+                    </button>
+                  </div>
+                </div>
+
+                {/* Résultats */}
+                {!checkLoading && checkResults.length === 0 && checkExtracted && (
+                  <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <AlertCircle size={20} className="text-white/30 shrink-0" />
+                    <p className="text-sm text-white/50">Carte non trouvée dans ta collection</p>
+                  </div>
+                )}
+
+                {!checkLoading && checkResults.length > 0 && (
+                  <div className="space-y-2">
+                    {checkResults.map(({ card, score, reason }) => {
+                      const isExact = score >= 90;
+                      const isSimilar = score >= 60 && score < 90;
+                      return (
+                        <div
+                          key={card.id}
+                          onClick={() => router.push(`/card/${card.id}`)}
+                          className={`flex items-center gap-3 rounded-2xl p-3 active:scale-95 transition-all cursor-pointer border ${isExact ? 'bg-[#AFFF25]/10 border-[#AFFF25]/40' : isSimilar ? 'bg-orange-500/10 border-orange-500/30' : 'bg-white/5 border-white/10'}`}
+                        >
+                          {card.image_url && <img src={card.image_url} className="w-12 h-16 object-cover rounded-lg shrink-0" alt="" />}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              {isExact ? (
+                                <span className="text-[9px] font-black uppercase tracking-widest bg-[#AFFF25] text-[#040221] px-2 py-0.5 rounded-full flex items-center gap-1"><ShieldCheck size={10}/> Déjà possédée</span>
+                              ) : isSimilar ? (
+                                <span className="text-[9px] font-black uppercase tracking-widest bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full">{score}% similaire</span>
+                              ) : (
+                                <span className="text-[9px] font-black uppercase tracking-widest bg-white/10 text-white/40 px-2 py-0.5 rounded-full">{score}% similaire</span>
+                              )}
+                            </div>
+                            <p className="text-sm font-bold text-white truncate">{card.firstname} {card.lastname}</p>
+                            <p className="text-xs text-white/50 truncate">{card.brand} {card.series} {card.year}</p>
+                            <p className="text-xs text-white/40 truncate">{card.variation || 'Base'}</p>
+                          </div>
+                          <ChevronRight size={16} className="text-white/20 shrink-0" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className={`relative w-full max-w-[220px] lg:max-w-[320px] mx-auto mb-6 lg:mb-10 ${scanMode === 'check' ? 'hidden' : ''}`}>
+
           {activePreviewUrl ? (
             <div
               className="relative aspect-[3/4] w-full flex items-center justify-center overflow-hidden bg-white/5 border border-white/10 rounded-2xl lg:rounded-3xl"
@@ -1832,7 +1974,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
         )}
       </div>
 
-      <div className="relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300">
+      <div className={`relative z-30 w-full lg:w-1/3 lg:ml-auto bg-[#040221] lg:bg-[#040221]/95 lg:backdrop-blur-xl rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] px-6 pt-8 lg:pt-[100px] pb-32 min-h-[60vh] lg:min-h-screen border-t lg:border-t-0 lg:border-l border-white/5 transition-all duration-300 ${scanMode === 'check' ? 'hidden lg:hidden' : ''}`}>
         
 
         {isWishlistMode && scanMode !== 'quick' && (
