@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CardBulk2 — Vinted Auto-fill
 // @namespace    https://cardbulk.app
-// @version      1.1
+// @version      1.2
 // @description  Pré-remplit le formulaire Vinted depuis un export CardBulk2
 // @author       CardBulk2
 // @match        https://www.vinted.fr/items/new*
@@ -37,42 +37,17 @@
     el.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-  // ── Cherche un champ par placeholder ou label ──────────────────────────────
-  function findField(keywords) {
-    for (const kw of keywords) {
-      const byPlaceholder = document.querySelector(
-        `input[placeholder*="${kw}" i], textarea[placeholder*="${kw}" i]`
-      );
-      if (byPlaceholder) return byPlaceholder;
-
-      for (const label of document.querySelectorAll('label')) {
-        if (label.textContent.toLowerCase().includes(kw.toLowerCase())) {
-          const forId = label.getAttribute('for');
-          if (forId) {
-            const el = document.getElementById(forId);
-            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return el;
-          }
-          const child = label.querySelector('input, textarea');
-          if (child) return child;
-          const sibling = label.nextElementSibling;
-          if (sibling && (sibling.tagName === 'INPUT' || sibling.tagName === 'TEXTAREA')) return sibling;
-        }
-      }
-    }
-    return null;
-  }
-
-  function tryFillForm(draft) {
+function tryFillForm(draft) {
     let filled = 0;
 
-    const title = findField(['titre', 'title', 'nom de l\'article', 'article']);
+    const title = document.querySelector('input[name="title"], input#title, input[data-testid="title--input"]');
     if (title) { setNativeValue(title, draft.title); filled++; }
 
-    const desc = findField(['description', 'décris', 'détails', 'details']);
+    const desc = document.querySelector('textarea[name="descr_ut"], textarea[name="description"]');
     if (desc) { setNativeValue(desc, draft.description); filled++; }
 
     if (draft.price > 0) {
-      const price = findField(['prix', 'price', 'montant']);
+      const price = document.querySelector('input[name="price"], input#price, input[data-testid="price--input"]');
       if (price) { setNativeValue(price, String(draft.price)); filled++; }
     }
 
