@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Loader2, Search, ChevronDown, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight, ExternalLink } from 'lucide-react';
+import { ChevronLeft, Loader2, Search, ChevronDown, ChevronRight, Plus, Minus, Trash2, RotateCw, SlidersHorizontal, Wand2, X, Check, Camera, Image as ImageIcon, Crop, ArrowRight, ExternalLink } from 'lucide-react';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
 import BASKETBALL_CLUBS from '@/data/basketball-clubs.json';
@@ -78,7 +78,7 @@ type PendingCard = {
   previewUrl: string;
   originalFile: File;        
   originalPreviewUrl: string; 
-  status: 'pending' | 'analyzing' | 'done' | 'error';
+  status: 'pending' | 'analyzing' | 'done' | 'error' | 'auto-saved';
   aiResult: any;
 };
 
@@ -186,6 +186,9 @@ function ScannerContent() {
   const [tilt, setTilt] = useState<{ gamma: number; beta: number } | null>(null);
 
   const [autoScanProgress, setAutoScanProgress] = useState(0);
+  const [collectionMatches, setCollectionMatches] = useState<any[]>([]);
+  const [searchingCollection, setSearchingCollection] = useState(false);
+  const [autoSavedCount, setAutoSavedCount] = useState(0);
   const autoCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const prevFrameRef = useRef<Uint8ClampedArray | null>(null);
   const stableSinceRef = useRef<number | null>(null);
@@ -194,6 +197,29 @@ function ScannerContent() {
 
   const scanModeRef = useRef(scanMode);
   useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
+
+  useEffect(() => {
+    if (scanMode !== 'quick') { setCollectionMatches([]); return; }
+    const name = formData.lastname.trim();
+    if (name.length < 2) { setCollectionMatches([]); return; }
+    setSearchingCollection(true);
+    const timer = setTimeout(async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase
+          .from('cards')
+          .select('id, firstname, lastname, brand, series, year, variation, is_auto, is_patch, is_rookie, is_numbered, numbering_max, image_url')
+          .eq('user_id', user.id)
+          .eq('is_wishlist', false)
+          .ilike('lastname', `%${name}%`)
+          .limit(5);
+        setCollectionMatches(data || []);
+      } catch { setCollectionMatches([]); }
+      setSearchingCollection(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [formData.lastname, formData.firstname, scanMode]);
 
   const variationDropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -394,6 +420,20 @@ function ScannerContent() {
       }
     }
   }, [isVerifyingBulk, currentVerifyIndex, pendingCards]);
+
+  useEffect(() => {
+    if (!isVerifyingBulk || pendingCards.length === 0) return;
+    const current = pendingCards[currentVerifyIndex];
+    if (current?.status === 'auto-saved') {
+      if (currentVerifyIndex < pendingCards.length - 1) {
+        setCurrentVerifyIndex(prev => prev + 1);
+      } else {
+        setIsVerifyingBulk(false);
+        setPendingCards([]);
+        setScanMode('unitaire');
+      }
+    }
+  }, [currentVerifyIndex, pendingCards, isVerifyingBulk]);
 
   useEffect(() => {
     const handleMove = (e: TouchEvent | MouseEvent) => {
@@ -801,6 +841,19 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
         };
 
         setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'done', aiResult: aiData } : c));
+
+        // Auto-save si tous les champs clés sont présents
+        const isHighConfidence = !!(aiData.firstname && aiData.lastname && aiData.brand && aiData.series && aiData.year);
+        if (isHighConfidence) {
+          const currentCard = pendingCards.find(c => c.id === id);
+          const fileToSave = currentCard?.file || file;
+          const previewToSave = currentCard?.previewUrl || '';
+          const saved = await autoSaveCardDirect(aiData, fileToSave, previewToSave);
+          if (saved) {
+            setPendingCards(prev => prev.map(c => c.id === id ? { ...c, status: 'auto-saved' } : c));
+            setAutoSavedCount(prev => prev + 1);
+          }
+        }
 
         if (data.cropped_image_base64) {
           const resBlob = await fetch(`data:image/jpeg;base64,${data.cropped_image_base64}`);
@@ -1286,6 +1339,39 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
     });
   };
 
+  const autoSaveCardDirect = async (aiData: any, file: File, imageUrl: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+      let finalImageUrl = imageUrl;
+      const compressedFile = await compressImage(file);
+      const filePath = `${user.id}/${Date.now()}-auto.jpg`;
+      await supabase.storage.from('card-images').upload(filePath, compressedFile);
+      finalImageUrl = supabase.storage.from('card-images').getPublicUrl(filePath).data.publicUrl;
+      await supabase.from('cards').insert([{
+        user_id: user.id,
+        sport: aiData.sport,
+        firstname: aiData.firstname,
+        lastname: aiData.lastname,
+        brand: aiData.brand,
+        series: aiData.series,
+        variation: aiData.variation || null,
+        year: parseInt(aiData.year) || null,
+        is_rookie: aiData.is_rookie || false,
+        is_auto: aiData.is_auto || false,
+        is_patch: aiData.is_patch || false,
+        is_numbered: aiData.is_numbered || false,
+        numbering_low: parseInt(aiData.num_low) || null,
+        numbering_max: parseInt(aiData.num_high) || null,
+        club_name: aiData.club || '',
+        image_url: finalImageUrl,
+        is_wishlist: false,
+        purchase_price: 0,
+      }]);
+      return true;
+    } catch { return false; }
+  };
+
   const saveCard = async () => {
     setLoading(true);
     try {
@@ -1537,7 +1623,7 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
       {isCameraOpen && (
         <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
           
-          {(scanMode === 'lot' || scanMode === 'auto') && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.length} en attente...</div>)}
+          {(scanMode === 'lot' || scanMode === 'auto') && pendingCards.length > 0 && (<div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 bg-[#AFFF25] text-[#040221] px-5 py-2 rounded-full font-black text-xs uppercase tracking-widest z-50 animate-in fade-in slide-in-from-top-4">{pendingCards.filter(c => c.status !== 'auto-saved').length > 0 && `${pendingCards.filter(c => c.status !== 'auto-saved').length} en attente`}{autoSavedCount > 0 && ` · ${autoSavedCount} auto-sauvegardées`}</div>)}
           
           <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-100 origin-center" style={{ transform: nativeZoomSupported ? 'scale(1)' : `scale(${cameraZoom})` }} />
           
@@ -1650,7 +1736,6 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
             <div className="flex justify-center gap-4 sm:gap-6 w-full max-w-md">
               <button onClick={() => handleTabSwitch('unitaire')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'unitaire' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Unitaire</button>
               <button onClick={() => handleTabSwitch('lot')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${scanMode === 'lot' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>En Lot</button>
-              <button onClick={() => handleTabSwitch('auto')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'auto' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}>Auto <span className="bg-[#AFFF25]/20 text-[#AFFF25] px-1.5 py-0.5 rounded text-[8px]">Bêta</span></button>
               <button onClick={() => handleTabSwitch('quick')} className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1 ${scanMode === 'quick' ? 'text-[#AFFF25] border-b-2 border-[#AFFF25] pb-1' : 'text-white/40 border-b-2 border-transparent pb-1'}`}><Search size={12}/> Rapide</button>
             </div>
             
@@ -2028,13 +2113,40 @@ const brandSlug = formData.brand ? formData.brand.toLowerCase().replace(/\s+/g, 
           </div>
 
           {scanMode === 'quick' ? (
-             <button 
-               disabled={analyzing || !formData.firstname || !formData.lastname} 
-               onClick={handleQuickSearch} 
-               className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(formData.firstname && formData.lastname) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95 shadow-[0_0_20px_rgba(175,255,37,0.4)]' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
-             >
-               <ExternalLink size={20} strokeWidth={2.5} /> Rechercher sur eBay
-             </button>
+             <>
+               <button
+                 disabled={analyzing || !formData.firstname || !formData.lastname}
+                 onClick={handleQuickSearch}
+                 className={`w-full font-black italic py-4 rounded-full mt-6 mb-6 uppercase flex justify-center items-center gap-2 transition-all duration-300 ${(formData.firstname && formData.lastname) ? 'bg-[#AFFF25] text-[#040221] hover:bg-[#9ee615] active:scale-95 shadow-[0_0_20px_rgba(175,255,37,0.4)]' : 'bg-white/5 border border-white/10 text-white/30 cursor-not-allowed'}`}
+               >
+                 <ExternalLink size={20} strokeWidth={2.5} /> Rechercher sur eBay
+               </button>
+               <div className="mt-4">
+                 {searchingCollection && (
+                   <p className="text-xs text-white/40 text-center">Recherche dans ta collection...</p>
+                 )}
+                 {!searchingCollection && collectionMatches.length > 0 && (
+                   <div className="space-y-2">
+                     <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold px-1">Dans ta collection ({collectionMatches.length})</p>
+                     {collectionMatches.map(card => (
+                       <div key={card.id} onClick={() => router.push(`/card/${card.id}`)}
+                         className="flex items-center gap-3 bg-white/5 border border-[#AFFF25]/30 rounded-2xl p-3 active:scale-95 transition-all cursor-pointer">
+                         {card.image_url && <img src={card.image_url} className="w-12 h-16 object-cover rounded-lg shrink-0" alt="" />}
+                         <div className="flex-1 min-w-0">
+                           <p className="text-sm font-bold text-white truncate">{card.firstname} {card.lastname}</p>
+                           <p className="text-xs text-white/60 truncate">{card.brand} {card.series} {card.year}</p>
+                           <p className="text-xs text-[#AFFF25]/80 truncate">{card.variation || 'Base'}{card.is_auto ? ' · Auto' : ''}{card.is_patch ? ' · Patch' : ''}{card.is_numbered ? ` · /${card.numbering_max}` : ''}</p>
+                         </div>
+                         <ChevronRight size={16} className="text-white/30 shrink-0" />
+                       </div>
+                     ))}
+                   </div>
+                 )}
+                 {!searchingCollection && collectionMatches.length === 0 && formData.lastname.length >= 2 && (
+                   <p className="text-xs text-white/30 text-center italic">Pas dans ta collection</p>
+                 )}
+               </div>
+             </>
           ) : isVerifyingBulk ? (
             <div className="flex gap-3 mt-6 mb-6">
               <button 

@@ -96,6 +96,7 @@ export default function CollectionPage() {
   const [showAuto, setShowAuto] = useState(false);
   const [showPatch, setShowPatch] = useState(false);
   const [showNumbered, setShowNumbered] = useState(false);
+  const [showRookie, setShowRookie] = useState(false);
   
   const [openDropdown, setOpenDropdown] = useState<'brand' | 'spec' | null>(null);
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
@@ -244,6 +245,7 @@ export default function CollectionPage() {
           if (parsed.showAuto !== undefined) setShowAuto(parsed.showAuto);
           if (parsed.showPatch !== undefined) setShowPatch(parsed.showPatch);
           if (parsed.showNumbered !== undefined) setShowNumbered(parsed.showNumbered);
+          if (parsed.showRookie !== undefined) setShowRookie(parsed.showRookie);
           
           if (!searchParam && parsed.searchQuery !== undefined) setSearchQuery(parsed.searchQuery);
           if (!sportParam && parsed.selectedSport !== undefined) setSelectedSport(parsed.selectedSport);
@@ -267,11 +269,12 @@ export default function CollectionPage() {
         selectedBrands,
         showAuto,
         showPatch,
-        showNumbered
+        showNumbered,
+        showRookie
       };
       sessionStorage.setItem('cardbulk_collection_filters', JSON.stringify(filters));
     }
-  }, [activeTab, searchQuery, selectedSport, selectedBrands, showAuto, showPatch, showNumbered]);
+  }, [activeTab, searchQuery, selectedSport, selectedBrands, showAuto, showPatch, showNumbered, showRookie]);
 
 
   // Chargement lazy de l'index joueurs (nom → [folders]) dès que l'onglet Checklist s'ouvre
@@ -550,8 +553,9 @@ export default function CollectionPage() {
       const autoMatch = !showAuto || card.is_auto;
       const patchMatch = !showPatch || card.is_patch;
       const numberedMatch = !showNumbered || card.is_numbered;
-      
-      return searchMatch && sportMatch && brandMatch && autoMatch && patchMatch && numberedMatch;
+      const rookieMatch = !showRookie || card.is_rookie;
+
+      return searchMatch && sportMatch && brandMatch && autoMatch && patchMatch && numberedMatch && rookieMatch;
     });
 
     return (
@@ -580,7 +584,7 @@ export default function CollectionPage() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="relative w-full lg:w-[60%]">
               <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
+                <button onClick={() => setOpenDropdown(openDropdown === 'spec' ? null : 'spec')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${showAuto || showPatch || showNumbered || showRookie ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
                   Spécificités <ChevronDown size={14} className={openDropdown === 'spec' ? 'rotate-180' : ''} />
                 </button>
                 <button onClick={() => setOpenDropdown(openDropdown === 'brand' ? null : 'brand')} className={`shrink-0 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border text-xs lg:text-sm font-bold transition-all relative z-[70] ${selectedBrands.length > 0 ? 'bg-[#AFFF25]/10 border-[#AFFF25] text-[#AFFF25]' : 'bg-white/5 border-white/10 text-white'}`}>
@@ -590,7 +594,7 @@ export default function CollectionPage() {
 
               {openDropdown === 'spec' && (
                 <div className="absolute top-full left-0 w-full mt-2 z-[70] bg-[#040221] border border-white/10 rounded-[24px] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] animate-in fade-in slide-in-from-top-2">
-                  {[ { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) }, { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) }, { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) } ].map((item, idx) => (
+                  {[ { label: 'Autographe', state: showAuto, toggle: () => setShowAuto(!showAuto) }, { label: 'Patch', state: showPatch, toggle: () => setShowPatch(!showPatch) }, { label: 'Numéroté', state: showNumbered, toggle: () => setShowNumbered(!showNumbered) }, { label: 'Rookie', state: showRookie, toggle: () => setShowRookie(!showRookie) } ].map((item, idx) => (
                     <div key={idx} onClick={item.toggle} className="w-full flex items-center justify-between py-3 cursor-pointer group"><span className={`text-sm font-bold transition-colors ${item.state ? 'text-white' : 'text-white/60'}`}>{item.label}</span><div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors ${item.state ? 'bg-[#AFFF25]' : 'bg-white/20'}`}><div className={`w-4 h-4 rounded-full shadow-sm transition-transform ${item.state ? 'translate-x-4 bg-[#040221]' : 'translate-x-0 bg-white'}`}></div></div></div>
                   ))}
                   <button onClick={() => setOpenDropdown(null)} className="w-full mt-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">Confirmer</button>
