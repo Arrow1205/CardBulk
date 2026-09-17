@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CardBulk2 — Vinted Auto-fill
 // @namespace    https://cardbulk.app
-// @version      1.4
+// @version      1.5
 // @description  Pré-remplit le formulaire Vinted depuis un export CardBulk2
 // @author       CardBulk2
 // @match        https://www.vinted.fr/items/new*
@@ -60,6 +60,23 @@
     return filled;
   }
 
+  async function injectPhoto() {
+    if (!draft.image_url) return;
+    const input = document.querySelector('input[data-testid="add-photos-input"], input[name="photos"]');
+    if (!input) return;
+    try {
+      const resp = await fetch(draft.image_url);
+      const blob = await resp.blob();
+      const ext = (blob.type || 'image/jpeg').split('/')[1] || 'jpg';
+      const file = new File([blob], `card.${ext}`, { type: blob.type || 'image/jpeg' });
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    } catch { /* photo non injectée, l'utilisateur l'ajoute manuellement */ }
+  }
+
   function showBanner(message, isSuccess) {
     const existing = document.getElementById('cardbulk-banner');
     if (existing) existing.remove();
@@ -96,8 +113,9 @@
         clearInterval(interval);
 
         if (filled >= 2) {
+          injectPhoto();
           showBanner(
-            `CardBulk2 ✓ — Annonce pré-remplie (${filled} champs). Ajoute les photos et vérifie avant de publier.`,
+            `CardBulk2 ✓ — Annonce pré-remplie (${filled} champs + photo). Vérifie avant de publier.`,
             true
           );
         } else {
