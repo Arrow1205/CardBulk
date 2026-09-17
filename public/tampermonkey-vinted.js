@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CardBulk2 — Vinted Auto-fill
 // @namespace    https://cardbulk.app
-// @version      1.3
+// @version      1.4
 // @description  Pré-remplit le formulaire Vinted depuis un export CardBulk2
 // @author       CardBulk2
 // @match        https://www.vinted.fr/items/new*
@@ -9,23 +9,27 @@
 // @match        https://www.vinted.be/items/new*
 // @match        https://vinted.be/items/new*
 // @grant        none
-// @run-at       document-idle
+// @run-at       document-start
 // ==/UserScript==
 
 (function () {
   'use strict';
 
-  // ── Lecture des données depuis le hash de l'URL ────────────────────────────
-  function getDraftFromHash() {
-    const hash = window.location.hash; // ex: #vd=BASE64
-    const match = hash.match(/#vd=([^&]+)/);
-    if (!match) return null;
-    try {
-      return JSON.parse(decodeURIComponent(atob(match[1])));
-    } catch {
-      return null;
-    }
+  // ── Lit le hash IMMÉDIATEMENT (avant que le routeur SPA le nettoie) ────────
+  const rawHash = window.location.hash;
+  const hashMatch = rawHash.match(/#vd=([^&]+)/);
+  if (!hashMatch) return; // Pas de données CardBulk2 → on quitte
+
+  let draft = null;
+  try {
+    draft = JSON.parse(decodeURIComponent(atob(hashMatch[1])));
+  } catch {
+    return;
   }
+  if (!draft) return;
+
+  // Nettoie le hash de l'URL immédiatement
+  history.replaceState(null, '', window.location.pathname + window.location.search);
 
   // ── Setter React-compatible ────────────────────────────────────────────────
   function setNativeValue(el, value) {
@@ -39,7 +43,7 @@
     el.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-function tryFillForm(draft) {
+  function tryFillForm() {
     let filled = 0;
 
     const title = document.querySelector('input[name="title"], input#title, input[data-testid="title--input"]');
@@ -73,55 +77,45 @@ function tryFillForm(draft) {
     banner.textContent = message;
     banner.onclick = () => banner.remove();
     document.body.appendChild(banner);
-    setTimeout(() => banner?.remove(), 10000);
+    setTimeout(() => banner?.remove(), 12000);
   }
 
-  function copyToClipboard(draft) {
-    const text = [
-      draft.title,
-      '',
-      draft.description,
-      '',
-      `Prix suggéré : ${draft.price} €`,
-    ].join('\n');
-    navigator.clipboard.writeText(text).catch(() => {});
+  function copyToClipboard() {
+    const text = [draft.title, '', draft.description, '', `Prix suggéré : ${draft.price} €`].join('\n');
+    navigator.clipboard?.writeText(text).catch(() => {});
   }
 
-  // ── Logique principale : réessaie jusqu'à ce que le formulaire soit prêt ──
-  function run() {
-    const draft = getDraftFromHash();
-    if (!draft) return; // Pas de données CardBulk2 dans l'URL
-
-    // Nettoie le hash de l'URL sans recharger la page
-    history.replaceState(null, '', window.location.pathname + window.location.search);
-
+  // ── Attend que le DOM soit prêt puis remplit ───────────────────────────────
+  function startFilling() {
     let attempts = 0;
     const interval = setInterval(() => {
       attempts++;
-      const filled = tryFillForm(draft);
+      const filled = tryFillForm();
 
-      if (filled >= 2 || attempts >= 20) {
+      if (filled >= 2 || attempts >= 30) {
         clearInterval(interval);
 
         if (filled >= 2) {
           showBanner(
-            `CardBulk2 ✓ — Annonce pré-remplie (${filled} champs). Ajoute les photos et vérifie le prix avant de publier.`,
+            `CardBulk2 ✓ — Annonce pré-remplie (${filled} champs). Ajoute les photos et vérifie avant de publier.`,
             true
           );
         } else {
-          copyToClipboard(draft);
+          copyToClipboard();
           showBanner(
-            'CardBulk2 — Impossible de remplir les champs automatiquement. Données copiées dans le presse-papier.',
+            'CardBulk2 — Champs non trouvés. Données copiées dans le presse-papier.',
             false
           );
         }
       }
-    }, 500);
+    }, 400);
   }
 
-  if (document.readyState === 'complete') {
-    setTimeout(run, 800); // Petite attente pour que React hydrate
+  // Lance le remplissage dès que le body existe
+  if (document.body) {
+    startFilling();
   } else {
-    window.addEventListener('load', () => setTimeout(run, 800));
+    document.addEventListener('DOMContentLoaded', startFilling);
   }
+
 })();
