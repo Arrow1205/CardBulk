@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw } from 'lucide-react';
+import { ChevronLeft, Edit, Star, Loader2, Smartphone, TrendingUp, TrendingDown, RotateCw, ShoppingBag } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import FOOTBALL_CLUBS from '@/data/football-clubs.json';
@@ -676,6 +676,53 @@ export default function CardDetailsPage() {
           {card.website_url && (
             <button onClick={() => window.open(card.website_url, '_blank')} className="w-full max-w-[320px] border-2 border-[#AFFF25]/30 text-[#AFFF25] py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#AFFF25]/10 active:scale-95 transition-transform">
               Voir sur le site
+            </button>
+          )}
+
+          {isOwner && (
+            <button
+              onClick={() => {
+                const badges = [
+                  card.is_auto ? 'Auto' : '',
+                  card.is_patch ? 'Patch' : '',
+                  card.is_rookie ? 'RC' : '',
+                  card.is_numbered && card.numbering_max ? `/${card.numbering_max}` : '',
+                  card.is_graded && card.grading_company ? `${card.grading_company} ${card.grading_grade || ''}`.trim() : '',
+                ].filter(Boolean).join(' ');
+
+                const variation = card.variation ? card.variation.replace(/\s*\/\s*/g, ' - ') : 'Base';
+                const title = [
+                  card.brand, card.series, card.year,
+                  card.firstname, card.lastname,
+                  variation, badges,
+                ].filter(Boolean).join(' ').slice(0, 80);
+
+                const suggestedPrice = averagePrice
+                  ? Math.max(Math.round(averagePrice * 0.85), 1)
+                  : card.purchase_price
+                    ? Math.max(Math.round(card.purchase_price * 1.2), 1)
+                    : 0;
+
+                const description = [
+                  `${card.brand} ${card.series} ${card.year}`,
+                  `Joueur : ${card.firstname} ${card.lastname}${card.club_name ? ` (${card.club_name})` : ''}`,
+                  `Variation : ${variation}`,
+                  badges ? `Spécificités : ${badges}` : '',
+                  '',
+                  'Carte en très bon état, expédition soignée en enveloppe rigide avec protection.',
+                  'Envoi suivi disponible.',
+                  '',
+                  card.image_url ? `📷 Photo recto disponible.` : '',
+                  card.image_url_back ? `📷 Photo verso disponible.` : '',
+                ].filter(s => s !== undefined).join('\n').trim();
+
+                const draft = { title, description, price: suggestedPrice, image_url: card.image_url };
+                localStorage.setItem('vinted_draft', JSON.stringify(draft));
+                window.open('https://www.vinted.fr/items/new', '_blank');
+              }}
+              className="w-full max-w-[320px] mt-3 bg-[#00b4b4]/10 border-2 border-[#00b4b4]/40 text-[#00b4b4] py-3 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-[#00b4b4]/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+              <ShoppingBag size={16} /> Vendre sur Vinted
             </button>
           )}
         </div>
